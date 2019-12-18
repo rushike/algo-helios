@@ -1,0 +1,117 @@
+nav{
+    transition: box-shadow .8s;
+}
+
+
+
+.navbar{
+        border-radius: 0 !important;
+        background-color: white !important;
+        border: none !important;
+        transition: background-color .2s;
+}
+
+.navbar-collapse{
+    padding-top: 25px;
+    transition: padding-top 0.2s;
+    font-family: 'Patua One', cursive;
+}
+
+.navbar-inverse .navbar-collapse{
+    border-color:white !important;
+}
+
+.navbar-inverse .navbar-toggle{
+    background-color: #515252;
+    border:none !important;
+}
+
+.navbar-inverse .navbar-nav .active a{
+    background-color:white!important;
+    color:darkgrey !important;
+}
+
+.navbar-header{
+    padding-left: 10px;
+    padding-top:18px;
+    padding-bottom:18px;
+    transition: padding-top 0.2s;
+
+}
+
+
+#myNavbar li a{
+    font-size: 18px !important;
+    color:#515252 !important;
+    transition-duration: .2s;
+    
+    
+}
+
+#myNavbar li a:hover{
+    transform: scale(1.1) !important;
+    
+}
+
+.navbar-header .navbarlogo img{
+    transition: transform .2s;
+}
+
+#logo:hover{
+    transform: scale(1.05);
+}
+
+.wrapper{
+    margin: 20vh 0vh;
+    background-color: #f9f9f9;
+    padding:5% 10% !important;
+}
+
+.outwrapper{
+    padding: 0% 10%;
+}
+.wrapper h2{
+    font-size: 3vmax !important;
+    color: #004B96;
+    font-family: 'Roboto', sans-serif !important;
+    margin: 0 auto;  
+}
+.classichr{ 
+    border-bottom: 5.5px solid #7DDCFF;
+    margin: 2% 45%;
+}
+
+
+
+
+.wrapper p{
+    font-size:3vh;
+    font-family: 'Lato', sans-serif !important;
+}
+
+.wrapper h3{
+    font-size: 2vmax;
+    font-family: 'Lato', sans-serif !important;
+}
+
+footer{
+    padding-top: 50px;
+    padding-bottom: 50px;
+    background-color: #3a3a3a;
+}
+
+.footerc p{
+    display:inline;
+    padding: 30px;
+    color:white;
+    font-size: 16px;
+}
+
+.footerc img{
+
+    width: 30px;
+}
+.footer-menu{
+    padding:80px;
+
+}
