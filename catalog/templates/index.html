@@ -5,32 +5,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 {% endblock %}
 
-{% block content %}
-
-<!--Navigation Bar Starts-->
-<nav class="container-fluid navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-header">
-        <a class="navbarlogo" href="{%url 'index'%}"><img id="logo" src="{% static 'algotext.png' %}" width="150px"
-                height="auto"></a>
-        <button type="button" id="toggleButton" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-
-    <div class="collapse navbar-collapse" id="myNavbar" style="font-size:16px;">
-        <ul style="text-align: center;" class="nav navbar-nav navbar-right">
-            <li><a id="" style="cursor: pointer;" href="blog">Blog</a></li>
-            <li><a id="whatwedoicon" style="cursor: pointer;">What We Do?</a></li>
-            <li><a id="aboutusicon" style="cursor: pointer;">About Us</a></li>
-            <li><a id="productsicon" style="cursor: pointer;" href="#">Products</a></li>
-            <!--<li><a href="#loginModal" class="trigger-btn" data-toggle="modal"><span class="	glyphicon glyphicon-user"></span> Login</a></li>-->
-        </ul>
-    </div>
-    </div>
-</nav>
-
 <!--<div id="loginModal" class="modal fade">-->
     <!--<div class="modal-dialog modal-login">-->
         <!--<div class="modal-content">-->
@@ -66,10 +40,14 @@
 <!--</div>-->
 
 
-
+{% block sidebar_wrapper %}
+    {% with sidebar=True%}
+        {{ block.super }}
+    {% endwith%}
+{% endblock sidebar_wrapper%}
 <!--Navigation Bar Ends-->
 
-
+{% block content %}
 <!--Landing Page Banner Starts-->
 <section id="landing-page">
     <div data-aos="zoom-in" data-aos-duration="2000" class="landing-page">
@@ -431,11 +409,6 @@
         }
     }
 
-
-
-
-
-
     var typed = new Typed('#typed', {
         strings: ["Trade Decisions", "Trading Systems", "Portfolio Management"],
         backDelay: 1200,
@@ -497,15 +470,15 @@
         $("#aboutusicon").click(function () {
             $('html, body').animate({
                 scrollTop: $("#aboutuscont").offset().top - 60
-            }, 800);
+            }, 100);
         });
     });
 
     $(document).ready(function () {
-        $("#whatwedoicon").click(function () {
+        $("#whatwedoicon").on('click', function () {
             $('html, body').animate({
                 scrollTop: $("#whatwedocont").offset().top - 60
-            }, 800);
+            }, 100);
         });
     });
 
@@ -513,7 +486,7 @@
         $("#productsicon").click(function () {
             $('html, body').animate({
                 scrollTop: $("#productscont").offset().top - 60
-            }, 800);
+            }, 100);
         });
     });
 
