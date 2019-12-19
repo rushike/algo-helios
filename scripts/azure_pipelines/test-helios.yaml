@@ -1,0 +1,12 @@
+pool:
+  vmImage: 'ubuntu-latest'
+steps:
+- bash: |
+    ls
+    sudo apt-get update
+    sudo apt-get install -y python3-pip python3-venv
+    sudo python3 -m venv ~/venv
+    sudo ~/venv/bin/pip install -r requirements.txt
+    sudo ~/venv/bin/python manage.py test
+trigger:
+- master

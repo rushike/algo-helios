@@ -1,0 +1,4 @@
+# IDE files and virtual environment
+venv/
+.venv/
+.idea/
