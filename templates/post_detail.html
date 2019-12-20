@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
 {% load static %}
+
 {% block css_imports %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
 {% endblock %}
@@ -10,15 +12,11 @@
     body {
         font-family: "Roboto", sans-serif;
         font-size: 18px;
-        background-color: #fdfdfd;
+        background-color: white;
     }
 
     .head_text {
         color: white;
-    }
-
-    .card {
-        box-shadow: 0 4px 12px #E3E7EB;
     }
 
     .shadow {
@@ -49,49 +47,57 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-8 card mb-4  mt-3 left  top">
+    <div class="col-md-7 mt-3 left">
+    <div class="card mb-4">
       <div class="card-body">
-        <h1>{% block title %} {{ post.title }} {% endblock title %}</h1>
-        <p class=" text-muted">{{ post.author }} | {{ post.created_on }}</p>
-        <p class="card-text ">{{ post.content | safe }}</p>
+        <h1 style="font-size: 2.5rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
+        <p class=" text-muted" >{{ post.author }} | {{ post.created_on }}</p>
+        <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>
       </div>
     </div>
-    {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
 
-    <div class="col-md-8 card mb-4  mt-3 ">
+      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">
+
+
+    <div class="card mb-4">
       <div class="card-body">
         <!-- comments -->
-        <h2>{{ comments.count }} comments</h2>
+        <h2 style="font-size: 2.5rem; font-weight: 800;">{{ comments.count }} comments</h2>
 
         {% for comment in comments %}
         <div class="comments" style="padding: 10px;">
-          <p class="font-weight-bold">
+          <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;">
             {{ comment.name }}
-            <span class=" text-muted font-weight-normal">
+            <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem;">
               {{ comment.created_on }}
             </span>
           </p>
-          {{ comment.body | linebreaks }}
+          <h4 style="font-size: 1.6rem; margin-left:4rem;">{{ comment.body | linebreaks }}</h4>
         </div>
         {% endfor %}
       </div>
     </div>
-    <div class="col-md-8 card mb-4  mt-3 ">
+
+      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">
+
+    <div class="card mb-4">
       <div class="card-body">
         {% if new_comment %}
         <div class="alert alert-success" role="alert">
           Your comment is awaiting moderation
         </div>
         {% else %}
-        <h3>Leave a comment</h3>
-        <form method="post" style="margin-top: 1.3em;">
-          {{ comment_form.as_p }}
+        <h3 style="font-size: 2.5rem; font-weight: 800;">Leave a comment</h3>
+        <form method="post" style="margin-top: 1.3em; font-size:1.4rem;">
+          {{ comment_form | crispy }}
           {% csrf_token %}
           <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
         </form>
         {% endif %}
       </div>
     </div>
+  </div>
+    {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
   </div>
 </div>
 {% endblock content %}

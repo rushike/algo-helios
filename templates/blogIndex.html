@@ -16,15 +16,19 @@
   }
 
   .card {
-    padding-bottom: 2rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    border: 2px;
-    border-style: solid;
-    margin-bottom: 4rem;
-    border-color: #D4D4D4;
-    border-radius: 2rem;
-    box-shadow: 0 4px 12px #E3E7EB;
+    padding-top:0.1rem;
+    padding-bottom:1rem;
+    padding-left:2rem;
+    padding-right:2rem;
+    margin-bottom: 2rem;
+    border-radius:10px;
+  }
+
+  .card:hover{
+    background-color:#004B96;
+    color:white;
+    transition: background-color .3s,text-decoration 0s !important;
+    box-shadow: 0 8px 4px -2px rgba(0, 0, 0, 0.1);
   }
 
   .shadow {
@@ -139,14 +143,17 @@
     <!-- Blog Entries Column -->
     <div class="col-md-7 mt-3 left">
       {% for post in post_list %}
+      <a href="{% url 'post_detail' post.slug  %}"  style="text-decoration: none; color:black;">
       <div class="card mb-4">
         <div class="card-body">
-          <h2 class="card-title">{{ post.title }}</h2>
-          <p class="card-text text-muted h6">{{ post.author }} | {{ post.created_on}} </p>
-          <p class="card-text">{{post.content|slice:":200" }}</p>
-          <a href="{% url 'post_detail' post.slug  %}" class="btn btn-primary">Read More &rarr;</a>
+          <h2 class="card-title" style="font-size: 20px; font-weight: 800;">{{ post.title }}</h2>
+          <p class="card-text h6" style="margin-left: 2rem;">{{ post.author }} | {{ post.created_on}} </p>
+          <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
+          <p class="card-text" style="font-size: 1.5rem;">{{post.content|slice:":260" }}...</p>
+          <p class="knowmore">Read More</p>
         </div>
       </div>
+      </a>
       {% endfor %}
     </div>
 
