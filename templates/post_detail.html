@@ -42,6 +42,12 @@
       margin-bottom:5rem;
     }
 
+    .comment-card{
+      border-radius: 4rem;
+      border-width: thin;
+      box-shadow: 0 4px 12px #D4D4D4;
+    }
+
 </style>
 
 
@@ -56,29 +62,29 @@
       </div>
     </div>
 
-      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">
+<!--      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">-->
 
 
-    <div class="card mb-4">
+    <div class="comment-card card mb-4">
       <div class="card-body">
         <!-- comments -->
         <h2 style="font-size: 2.5rem; font-weight: 800;">{{ comments.count }} comments</h2>
 
         {% for comment in comments %}
-        <div class="comments" style="padding: 10px;">
-          <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;">
+        <div class="comments" style="padding: 10px; padding: 10px; background: whitesmoke; border-radius: 2rem; margin-bottom: 1rem;">
+          <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;font-weight: bold;">
             {{ comment.name }}
-            <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem;">
+            <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem; margin-top: 0.4rem; float: right;">
               {{ comment.created_on }}
             </span>
           </p>
-          <h4 style="font-size: 1.6rem; margin-left:4rem;">{{ comment.body | linebreaks }}</h4>
+          <h4 style="font-size: 1.5rem; margin-left:5rem;">{{ comment.body | linebreaks }}</h4>
         </div>
         {% endfor %}
       </div>
     </div>
 
-      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">
+<!--      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">-->
 
     <div class="card mb-4">
       <div class="card-body">
