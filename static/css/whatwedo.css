@@ -2,8 +2,6 @@ nav{
     transition: box-shadow .8s;
 }
 
-
-
 .navbar{
     border-radius: 0 !important;
     background-color: white !important;
@@ -36,9 +34,7 @@ nav{
     padding-top:18px;
     padding-bottom:18px;
     transition: padding-top 0.2s;
-
 }
-
 
 #myNavbar li a{
     font-size: 18px !important;
@@ -46,11 +42,8 @@ nav{
     transition-duration: .2s;  
 }
 
-    
-
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
-    
 }
 
 .navbar-header .navbarlogo img{
@@ -67,24 +60,23 @@ nav{
     font-size:3.8vmax;
     font-family: 'Roboto', sans-serif;
     margin: 0 auto;
-    
 }
-
 
 .wrapper{
     margin: 2% 5%;
     padding:2% 0%;
 }
 
-
 a:hover,a:focus{
     text-decoration: none;
     outline: none;
 }
+
 .vertical-tab{
     font-family: 'Roboto', sans-serif;
     display: table;
 }
+
 .vertical-tab .nav-tabs{
     display: table-cell;
     width: 28%;
@@ -100,13 +92,13 @@ a:hover,a:focus{
     border: none !important;
 }
 
-
 .vertical-tab .nav-tabs li{
    float: none;
    vertical-align: top;
    padding: 10px 0px;
    background-color:transparent;
 }
+
 .vertical-tab .nav-tabs li a{
     text-align:left;
     color:white;
@@ -120,6 +112,7 @@ a:hover,a:focus{
     border: none;
     transition: all 0.3s ease 0s;
 }
+
 .vertical-tab .nav-tabs li a:hover,
 .vertical-tab .nav-tabs li.active a,
 .vertical-tab .nav-tabs li.active a:hover{
@@ -127,6 +120,7 @@ a:hover,a:focus{
     background: #fff;
     border: none;
 }
+
 .vertical-tab .nav-tabs li a:before,
 .vertical-tab .nav-tabs li a:after{
     content: ">";
@@ -141,6 +135,7 @@ a:hover,a:focus{
     z-index: 1;
     transition: all 0.3s ease 0.1s;
 }
+
 .vertical-tab .nav-tabs li a:after{
     content: "";
     background: #004B96;
@@ -151,16 +146,19 @@ a:hover,a:focus{
     right: 8px;
     transition: all 0.3s ease 0s;
 }
+
 .vertical-tab .nav-tabs li a:hover:before,
 .vertical-tab .nav-tabs li.active a:before{
     opacity: 1;
     right: -17px;
 }
+
 .vertical-tab .nav-tabs li a:hover:after,
 .vertical-tab .nav-tabs li.active a:after{
     opacity: 1;
     right: -3px;
 }
+
 .vertical-tab .tab-content{
     color: #555;
     background-color: #fff;
@@ -171,19 +169,16 @@ a:hover,a:focus{
     display: table-cell;
     position: relative;
 }
+
 .vertical-tab .tab-content h3{
     font-weight: 600;
     text-transform: uppercase;
     margin: 0 0 5px 0;
 }
 
-
-
 .tab-content{
     padding: 30px 80px !important;
-
 }
-
 
 @media only screen and (max-width: 479px){
     .vertical-tab .nav-tabs{
@@ -240,8 +235,7 @@ a:hover,a:focus{
 }
 
 #accordion .panel{
-    margin: 5vw 0vw
-    ;
+    margin: 5vw 0vw;
 }
 
 @media only screen and (max-width: 600px) {
@@ -251,7 +245,7 @@ a:hover,a:focus{
     .col-md-4 img{
         display: none;
     }
-  }
+}
 
 #accordion .panel-heading{
     background-color:#004B96;
@@ -279,7 +273,6 @@ a[aria-expanded=false]{
     border-bottom: 5px solid #004B96;
 }
 
-
 footer{
     padding-top: 50px;
     background-color: #3a3a3a;
@@ -293,11 +286,9 @@ footer{
 }
 
 .footerc img{
-
     width: 30px;
 }
+
 .footer-menu{
     padding:80px;
-
 }
-

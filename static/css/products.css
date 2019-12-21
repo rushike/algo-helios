@@ -2,8 +2,6 @@ nav{
     transition: box-shadow .8s;
 }
 
-
-
 .navbar{
         border-radius: 0 !important;
         background-color: white !important;
@@ -36,21 +34,16 @@ nav{
     padding-top:18px;
     padding-bottom:18px;
     transition: padding-top 0.2s;
-
 }
-
 
 #myNavbar li a{
     font-size: 18px !important;
     color:#515252 !important;
     transition-duration: .2s;
-    
-    
 }
 
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
-    
 }
 
 .navbar-header .navbarlogo img{
@@ -60,6 +53,7 @@ nav{
 #logo:hover{
     transform: scale(1.05);
 }
+
 .pands-heading{
     text-align: center;
     font-family: 'Roboto', sans-serif !important;
@@ -99,7 +93,6 @@ nav{
     background: #004B96;
 }
 
-
 #navoverride .active a{
     background: #FFF !important;
     border-bottom: none !important;
@@ -107,7 +100,6 @@ nav{
     color: #515252 !important;
     border-top-left-radius:5px;
     border-top-right-radius:5px;
-    
 }
 
 .pands{
@@ -127,7 +119,6 @@ nav{
     visibility:visible;
 }
 
-
 .tab-content li{
     padding:1.5%;
     text-align: justify;
@@ -140,8 +131,6 @@ nav{
 .tab-content li a{
     
 }
-
-
 
 .pands .col-md-8{
     padding:3% 2%;
@@ -160,8 +149,7 @@ nav{
 }
 
 #accordion .panel{
-    margin: 5vw 0vw
-    ;
+    margin: 5vw 0vw;
 }
 
 @media only screen and (max-width: 600px) {
@@ -171,7 +159,7 @@ nav{
     .col-md-4 img{
         display: none;
     }
-  }
+}
 
 #accordion .panel-heading{
     background-color:#004B96;
@@ -212,10 +200,9 @@ footer{
 }
 
 .footerc img{
-
     width: 30px;
 }
+
 .footer-menu{
     padding:80px;
-
 }
