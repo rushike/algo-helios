@@ -20,9 +20,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <div class="avatar" style="text-align:center;">
                     <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" width="80px" height="80px" alt="Avatar">
-                    
                 </div>
-
             </div>
             <div class="modal-body">
                 <form action="" name="login" method="post">
@@ -45,80 +43,35 @@
     </div>
 </div>
 
-
 <div class="outwrapper">
+    <div class="container wrapper">
 
-<div class="container wrapper">
+        <h2 style="text-align: center;">About Us<hr class="classichr"></h2>
 
-    <h2 style="text-align: center;">About Us<hr class="classichr"></h2>
-    
-    <p style="padding: 5% 0%; ">
-            Algonauts is a team of finance and technology professionals with combined experience over 20 years.
-            We as a firm strongly believe that algorithmic trading is the future, and is a way to trade and make
-            money in the markets. Extensive use of technology and numerous years of experience in stock market
-            empower us to build new algorithms.Our aim is to bridge the gap between technology and
-            quantitative world, and to generate consistent superior returns.
-            <br><br>
-            We identify, evaluate, analyze and leverage trading and investment opportunities to build algorithms using
-            statistical and mathematical models. This is achieved through a comprehensive set of modules which do return
-            analysis, variance analysis, trade simulations, and multiple trading strategies. All the algorithms are subsequently
-            put through stringent tests for accuracy in predicting markets. Our automated trading systems have been back tested 
-            and have passed strict criteria for generating returns over long time horizons.
-    </p>    
-    <h2 style="text-align: center;">Our Team<hr class="classichr"></h2>
-    <h3>Mr Sharad Sankaran</h3>
-    <p>
-            Mr. Sharad Sankaran is a Chartered Accountant and he has cleared three levels of CFA Institute USA. He has 15 years experience in financial markets spanning from equity analysis to wealth management. He started his career in financial markets working for Clear Capital, a UK based equity research in 2004. Since 2007, he has managed wealth for HNIs in his individual capacity
-    </p>
-    <h3>Mr Gaurav Mane</h3>
-    <p>
-        Mr. Gaurav Mane has worked at Morgan Stanley Advantage Services for past 4 years as a Software Developer primarily in the Electronic Trading domain, 
-        while having expertise in C/C++ and Python technology.
-    </p>
+        <p style="padding: 5% 0%; ">
+                Algonauts is a team of finance and technology professionals with combined experience over 20 years.
+                We as a firm strongly believe that algorithmic trading is the future, and is a way to trade and make
+                money in the markets. Extensive use of technology and numerous years of experience in stock market
+                empower us to build new algorithms.Our aim is to bridge the gap between technology and
+                quantitative world, and to generate consistent superior returns.
+                <br><br>
+                We identify, evaluate, analyze and leverage trading and investment opportunities to build algorithms using
+                statistical and mathematical models. This is achieved through a comprehensive set of modules which do return
+                analysis, variance analysis, trade simulations, and multiple trading strategies. All the algorithms are subsequently
+                put through stringent tests for accuracy in predicting markets. Our automated trading systems have been back tested
+                and have passed strict criteria for generating returns over long time horizons.
+        </p>
+        <h2 style="text-align: center;">Our Team<hr class="classichr"></h2>
+        <h3>Mr Sharad Sankaran</h3>
+        <p>
+                Mr. Sharad Sankaran is a Chartered Accountant and he has cleared three levels of CFA Institute USA. He has 15 years experience in financial markets spanning from equity analysis to wealth management. He started his career in financial markets working for Clear Capital, a UK based equity research in 2004. Since 2007, he has managed wealth for HNIs in his individual capacity
+        </p>
+        <h3>Mr Gaurav Mane</h3>
+        <p>
+            Mr. Gaurav Mane has worked at Morgan Stanley Advantage Services for past 4 years as a Software Developer primarily in the Electronic Trading domain,
+            while having expertise in C/C++ and Python technology.
+        </p>
+    </div>
 </div>
-
-</div>
-
-
-
-
-{% endblock %}
-
-
-{% block scripts %}
-<script>
-$(function () {
-    $(window).scroll(function () {
-        if ($(this).scrollTop() > 200) {
-            $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
-            $('.navbar-collapse').attr('style', 'padding-top:10px;');
-            $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
-            $('#logo').attr('style', 'transform: scale(0.8)');
-
-
-            $("#logo").hover(function () {
-                $("#logo").attr('style', 'transform:scale(0.85)');
-            }, function () {
-                $("#logo").attr('style', 'transform:scale(0.8)');
-            });
-
-
-
-
-        }
-        if ($(this).scrollTop() < 200) {
-            $('nav').attr('style', 'box-shadow:none;');
-            $('.navbar-collapse').attr('style', 'padding-top:25px;');
-            $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
-            $('#logo').attr('style', 'transform: scale(1)');
-            $("#logo").hover(function () {
-                $("#logo").attr('style', 'transform:scale(1.1)');
-            }, function () {
-                $("#logo").attr('style', 'transform:scale(1)');
-            });
-        }
-    })
-});
-</script>
 
 {% endblock %}

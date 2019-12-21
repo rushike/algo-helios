@@ -161,35 +161,3 @@
   </div>
 </div>
 {%endblock%}
-
-{% block scripts %}
-<script>
-  $(function () {
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 200) {
-                $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
-                $('.navbar-collapse').attr('style', 'padding-top:10px;');
-                $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
-                $('#logo').attr('style', 'transform: scale(0.8)');
-
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(0.85)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(0.8)');
-                });
-            }
-            if ($(this).scrollTop() < 200) {
-                $('nav').attr('style', 'box-shadow:none;');
-                $('.navbar-collapse').attr('style', 'padding-top:25px;');
-                $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
-                $('#logo').attr('style', 'transform: scale(1)');
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(1.1)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(1)');
-                });
-            }
-        })
-    });
-</script>
-{% endblock %}
