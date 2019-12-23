@@ -14,7 +14,7 @@ steps:
     chmod 400 ~/.ssh/id_rsa
     ssh-keyscan $(HELIOS_DEV_IP) > ~/.ssh/known_hosts
     chmod 644 ~/.ssh/known_hosts
-    scp -P $(HELIOS_DEV_SSH_PORT) ./scripts/startup/update.sh $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP):~/update.sh
+    scp -P $(HELIOS_DEV_SSH_PORT) _helios/scripts/startup/update.sh $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP):~/update.sh
     ssh -p $(HELIOS_DEV_SSH_PORT) $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP) "HELIOS_GIT_SOURCE=$(HELIOS_GIT_SOURCE) HELIOS_DEPLOYMENT_BRANCH=$(HELIOS_DEV_BRANCH) /bin/bash ~/update.sh"
     ssh -p $(HELIOS_DEV_SSH_PORT) $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP) "rm update.sh"
 trigger: none
