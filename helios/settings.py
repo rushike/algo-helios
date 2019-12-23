@@ -26,7 +26,7 @@ SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'dev.algonaunts.in',
+    'dev.algonauts.in',
     'algonauts.in'
 ]
 
