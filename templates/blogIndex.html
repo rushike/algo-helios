@@ -16,10 +16,10 @@
   }
 
   .card {
-    padding-top:0.1rem;
-    padding-bottom:1rem;
-    padding-left:2rem;
-    padding-right:2rem;
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
     margin-bottom: 2rem;
     border-radius:10px;
   }
@@ -65,10 +65,10 @@
       <div class="card mb-4">
         <div class="card-body">
           <h2 class="card-title" style="font-size: 20px; font-weight: 800;">{{ post.title }}</h2>
-          <p class="card-text h6" style="margin-left: 2rem;">{{ post.author }} | {{ post.created_on}} </p>
+          <p class="card-text h6" style="margin-left: 2rem; text-align:right;">{{ post.author }} | {{ post.created_on}} </p>
           <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
-          <p class="card-text" style="font-size: 1.5rem;">{{post.content|slice:":260" }}...</p>
-          <p class="knowmore">Read More</p>
+          <p class="card-text" style="font-size: 1.5rem;">{{post.content|slice:":245" }}...</p>
+          <p class="knowmore" style="font-size: 14px;">Read More</p>
         </div>
       </div>
       </a>

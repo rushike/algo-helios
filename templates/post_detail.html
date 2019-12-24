@@ -50,7 +50,8 @@
     <div class="card mb-4">
       <div class="card-body">
         <h1 style="font-size: 2.5rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
-        <p class=" text-muted" >{{ post.author }} | {{ post.created_on }}</p>
+        <p class=" text-muted" style="text-align: right; font-size: small;">{{ post.author }} | {{ post.created_on }}</p>
+        <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
         <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>
       </div>
     </div>
@@ -63,7 +64,7 @@
         <h2 style="font-size: 2.5rem; font-weight: 800;">{{ comments.count }} comments</h2>
 
         {% for comment in comments %}
-        <div class="comments" style="padding: 10px; padding: 10px; background:#D3EFFD; border-radius: 2rem; margin-bottom: 1rem;">
+        <div class="comments" style="padding: 10px; padding: 10px; background:#F7F7F7; border-radius: 2rem; margin-bottom: 1rem;">
           <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;font-weight: bold;">
             {{ comment.name }}
             <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem; margin-top: 0.4rem; float: right;">
@@ -94,6 +95,7 @@
         {% endif %}
       </div>
     </div>
+
   </div>
     {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
   </div>

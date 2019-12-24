@@ -11,7 +11,7 @@
     <meta name="google-site-verification" content="FV4auFZ7htxbNwQnweEaYCJ3C4bNcPx3R5JC2H5-gZA" />
     <title>Algonauts Technologies</title>
     <link rel="icon" href="{% static 'algonauts.png' %}" type="image/gif" sizes="16x16">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <meta name="description" content="Algonauts is an Algo Trading firm that automates the trading decisions and systems. Trading strategies built on statistical and mathematical models to generate superior returns.">
     <meta name="keywords" content="Trading,Algo,Automate,India,Market,Stock">
@@ -31,9 +31,19 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{% static 'js/accordion.js' %}"></script>
+    <script src="https://kit.fontawesome.com/a26aa1e038.js" crossorigin="anonymous"></script>
+
+    <!--Chatbot-->
+      <!-- CSS -->
+        <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
+
+<mybot></mybot>
+
+
     {% block sidebar_wrapper %}
     {% if sidebar %}
     <nav class="container-fluid navbar navbar-inverse navbar-fixed-top">
@@ -81,6 +91,7 @@
         </div>
         </div>
     </nav>
+
     {% endif %}
     {% endblock sidebar_wrapper%}
 
@@ -139,6 +150,7 @@
             <p>&copy;&nbsp;2019 Algonauts. All rights reserved</p>
         </div>
     </footer>
+
     {% block scripts %}
 
     {% endblock %}
@@ -172,6 +184,9 @@
         })
     });
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 
 </html>
