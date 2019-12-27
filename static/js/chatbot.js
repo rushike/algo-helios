@@ -32,7 +32,7 @@ $(document).ready(function() {
     								'<input type="text" id="chat-input" autocomplete="off" placeholder="Try typing here"'+ 'class="form-control bot-txt"/>'+
   								'</div>'+
   								'<div style="float: right;">'+
-    								'<input id="send-img" type="image" src="/static/img/send.png" style="width:3rem; height:3rem; text-align: center;"/>'+
+    								'<span id="send-img" class="glyphicon glyphicon-send" style="width:3rem; height:3rem; text-align: center; font-size: 2.5rem;">'+
   								'</div>'+
 								'</div>'+
 
@@ -67,7 +67,7 @@ $(document).ready(function() {
 		$('.chatForm').toggle();
 		$('.help').toggle();
 
-		valArray = ['You Can Ask Questions like this!','Founders of Agonauts','Know more about Algonauts','What do we do?','Price of our Products?'];
+		valArray = ['You Can Ask Questions like this!','I am just curious about Algonauts','I want to know about your product','Contact Us'];
 
 		val = valArray[0];
 
@@ -100,8 +100,7 @@ $(document).ready(function() {
 	});
 
 	$('.help').click(function(){
-		valArray = ['You Can Ask Questions like this!','Founders of Agonauts','Know more about Algonauts','What do we do?','Price of our Products?'];
-
+		valArray = ['You Can Ask Questions like this!','I am just curious about Algonauts','I want to know about your product','Contact Us'];
 		val = valArray[0];
 
 		var BotResponse = '';

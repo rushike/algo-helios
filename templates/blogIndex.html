@@ -15,7 +15,7 @@
     color: white;
   }
 
-  .card {
+  .card1 {
     padding-top: 0.5rem;
     padding-bottom: 2rem;
     padding-left: 3rem;
@@ -24,7 +24,7 @@
     border-radius:10px;
   }
 
-  .card:hover{
+  .card1:hover{
     background-color:#004B96;
     color:white;
     transition: background-color .3s,text-decoration 0s !important;
@@ -62,7 +62,7 @@
     <div class="col-md-7 mt-3 left">
       {% for post in post_list %}
       <a href="{% url 'post_detail' post.slug  %}"  style="text-decoration: none; color:black;">
-      <div class="card mb-4">
+      <div class="card1 card mb-4">
         <div class="card-body">
           <h2 class="card-title" style="font-size: 20px; font-weight: 800;">{{ post.title }}</h2>
           <p class="card-text h6" style="margin-left: 2rem; text-align:right;">{{ post.author }} | {{ post.created_on}} </p>
