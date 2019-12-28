@@ -29,7 +29,7 @@ $(document).ready(function() {
 								'<div class="chatForm" id="chat-div">'+
 
 									'<div style="float: left; width: 87%;">'+
-    								'<input type="text" id="chat-input" autocomplete="off" placeholder="Try typing here"'+ 'class="form-control bot-txt"/>'+
+    								'<input type="text" id="chat-input" style="margin-left:0.5rem;" autocomplete="off" placeholder="Try typing here"'+ 'class="form-control bot-txt"/>'+
   								'</div>'+
   								'<div style="float: right;">'+
     								'<span id="send-img" class="glyphicon glyphicon-send" style="width:3rem; height:3rem; text-align: center; font-size: 2.5rem;">'+
@@ -39,13 +39,13 @@ $(document).ready(function() {
 							'</div>'+
 
 							'<div class="profile_div">'+
-								'<div class="row">'+
+								'<div class="row" style="float:right; margin-right:0.2rem;">'+
 									'<div class="col-hgt">'+
 										'<img src="/static/img/bot2.svg" class="img-circle img-profile">'+
 									'</div><!--col-hgt end-->'+
 									'<div class="col-hgt">'+
 										'<div class="chat-txt">'+
-											'Chat with us now!'+
+											'Chat with us!'+
 										'</div>'+
 									'</div><!--col-hgt end-->'+
 								'</div><!--row end-->'+
