@@ -48,11 +48,45 @@
 
     @media only screen and (max-width: 1000px) {
       .content {
-        padding:0 10%;
+        padding:0 13%;
       }
     }
 
+    /* Social Icons */
+    #social_side_links {
+      position: fixed;
+      top: 40%;
+      left: 0;
+      padding: 0;
+      list-style: none;
+      z-index: 99;
+    }
+
+    #social_side_links li a {
+      display: block;
+      line-height: 4.5rem;
+      font-size:1.5rem;
+    }
+
+    #social_side_links li a img {
+      display: block;
+      height:40px;
+      padding: 10px;
+      -webkit-transition:  background .2s ease-in-out;
+      -moz-transition:  background .2s ease-in-out;
+      -o-transition:  background .2s ease-in-out;
+      transition:  background .2s ease-in-out;
+    }
+
 </style>
+
+<!-- Social Icons -->
+<ul id="social_side_links">
+	<li><a style="background-color: #3c5a96;"href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f"></i></a></li>
+	<li><a style="background-color: #1dadeb;" href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter"></i></a></li>
+	<li><a style="background-color: #1178b3;" href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in"></i></a></li>
+    <li><a style="background-color: #B92B27;" href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora"></i></a></li>
+</ul>
 
 <div class="container">
   <div class="row">
@@ -65,8 +99,6 @@
         <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>
       </div>
     </div>
-
-<!--      <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium; border-color:#8D7777">-->
 
       <br>
     <div class="comment-card card mb-4">
@@ -87,7 +119,6 @@
         {% endfor %}
       </div>
     </div>
-
       <br>
     <div class="card mb-4">
       <div class="card-body">
@@ -105,9 +136,7 @@
         {% endif %}
       </div>
     </div>
-
   </div>
-
   </div>
 </div>
 {% endblock content %}

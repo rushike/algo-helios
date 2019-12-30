@@ -1,5 +1,5 @@
 html{
-scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
 a:hover,a:focus{
@@ -215,7 +215,6 @@ nav{
 }
 
 .knowmore{
-    
     border-bottom: 4px solid #7DDCFF;
     width: max-content;
     width: -moz-fit-content;

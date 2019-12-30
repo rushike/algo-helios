@@ -67,14 +67,6 @@ input:focus{
 
 #send-img:focus {outline:0;}
 
-/* #send-img:active {
-  background: #e5e5e5;
-  -webkit-box-shadow: inset 0px 0px 5px #c1c1c1;
-     -moz-box-shadow: inset 0px 0px 5px #c1c1c1;
-          box-shadow: inset 0px 0px 5px #c1c1c1;
-   outline: none;
-} */
-
 /* Demo */
 .hd1 {
   margin-top: 15vh;
@@ -115,7 +107,6 @@ input:focus{
   color: #fb2323;
 }
 /* Demo end */
-
 
 
 /* MyBot */
@@ -406,7 +397,6 @@ mybot .suggestion span:last-child {
   height: 100%;
 }
 
-
 @media screen and (max-width: 500px) {
   mybot .resultDiv .userEnteredText,
   mybot .resultDiv .botResult,
@@ -424,9 +414,6 @@ mybot .suggestion span:last-child {
 }
 /* MyBot end */
 
-
-
-
 /* Bot Initiating Conversation Buttons */
 .buttons{
   position: fixed;
@@ -436,12 +423,6 @@ mybot .suggestion span:last-child {
   z-index: 10001;
   height: 10rem;
 }
-
-
-/* .dynamic_button_div{
-  width:100%;
-  text-align: left;
-} */
 
 .btn-primary{
   border-radius: 12px;

@@ -330,13 +330,11 @@ $(document).on("click", "button.mybtn", function(f){
 		$('.suggestion').remove();
 	}
 
-
 	//---------------------------------- Scroll to the bottom of the results div -------------------------------
 	function scrollToBottomOfResults() {
 		var terminalResultsDiv = document.getElementById('result_div');
 		terminalResultsDiv.scrollTop = terminalResultsDiv.scrollHeight;
 	}
-
 
 	//---------------------------------------- Ascii Spinner ---------------------------------------------------
 	function showSpinner() {
@@ -345,7 +343,6 @@ $(document).on("click", "button.mybtn", function(f){
 	function hideSpinner() {
 		$('.spinner').hide();
 	}
-
 
 	//------------------------------------------- Suggestions --------------------------------------------------
 	function addSuggestion(textToAdd) {

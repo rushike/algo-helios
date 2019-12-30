@@ -37,18 +37,14 @@ nav{
 
 }
 
-
 #myNavbar li a{
     font-size: 18px !important;
     color:#515252 !important;
     transition-duration: .2s;
-    
-    
 }
 
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
-    
 }
 
 .navbar-header .navbarlogo img{
@@ -79,9 +75,6 @@ nav{
     margin: 2% 45%;
 }
 
-
-
-
 .wrapper p{
     font-size:3vh;
     font-family: 'Lato', sans-serif !important;
@@ -105,10 +98,9 @@ footer{
 }
 
 .footerc img{
-
     width: 30px;
 }
+
 .footer-menu{
     padding:80px;
-
 }

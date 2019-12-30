@@ -33,26 +33,25 @@
     <script src="{% static 'js/accordion.js' %}"></script>
     <script src="https://kit.fontawesome.com/a26aa1e038.js" crossorigin="anonymous"></script>
 
-    <!--Chatbot-->
-      <!-- CSS -->
-        <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+    <!--Chatbot CSS-->
+    <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
 
     <style>
         .fab{
             color:white;
-            margin-left:2rem;
-            margin-right:2rem;
+            margin-left:1.5rem;
+            margin-right:1.5rem;
         }
-        .fa-facebook-f:hover{
+        .fa-f:hover{
             color:#3B5998;
         }
-        .fa-twitter:hover{
+        .fa-t:hover{
             color:#1DA1F2;
         }
-        .fa-linkedin-in:hover{
+        .fa-l:hover{
             color:#0073B0;
         }
-        .fa-quora:hover{
+        .fa-q:hover{
             color:#B92B27;
         }
     </style>
@@ -61,7 +60,6 @@
 <body>
 
 <mybot></mybot>
-
 
     {% block sidebar_wrapper %}
     {% if sidebar %}
@@ -110,36 +108,31 @@
         </div>
         </div>
     </nav>
-
     {% endif %}
     {% endblock sidebar_wrapper%}
 
-
     {% block content %}
     {% endblock content%}
-
     <footer>
         <div class="container-fluid">
             <div class="row" style="padding-top:1rem;">
-                <div class="col-md-3 text-center">
+                <div class="col-md-4 text-center">
                     <img src="{% static 'algonautsw.png' %}" width="20%"><br><br>
                     <p><i class="glyphicon glyphicon-envelope" style="color: white;">&nbsp;<a
                                 href="mailto:coreteam@algonauts.in" data-rel="external"
                                 style="color: white; font-family: 'Open Sans', sans-serif; font-size: 14px;">sales@algonauts.in</a></i></p>
                 </div>
 
-                <div class="col-md-9">
-
+                <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-6" style="text-align:center; font-size:2.5rem;">
                             <div class="row footerc">
-                                <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f"></i></a>
-                                <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter"></i></a>
-                                <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in"></i></a>
-                                <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora"></i></a>
+                                <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
+                                <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
+                                <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
+                                <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <p style="color: aliceblue;">
                                     Find us at :<br>
@@ -149,7 +142,6 @@
                                     Mumbai 400053
                             </p>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -160,40 +152,39 @@
     </footer>
 
     {% block scripts %}
-
     {% endblock %}
 
-<script>
-    $(function () {
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 200) {
-                $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
-                $('.navbar-collapse').attr('style', 'padding-top:10px;');
-                $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
-                $('#logo').attr('style', 'transform: scale(0.8)');
+    <script>
+        $(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 200) {
+                    $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
+                    $('.navbar-collapse').attr('style', 'padding-top:10px;');
+                    $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
+                    $('#logo').attr('style', 'transform: scale(0.8)');
 
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(0.85)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(0.8)');
-                });
-            }
-            if ($(this).scrollTop() < 200) {
-                $('nav').attr('style', 'box-shadow:none;');
-                $('.navbar-collapse').attr('style', 'padding-top:25px;');
-                $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
-                $('#logo').attr('style', 'transform: scale(1)');
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(1.1)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(1)');
-                });
-            }
-        })
-    });
-</script>
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(0.85)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(0.8)');
+                    });
+                }
+                if ($(this).scrollTop() < 200) {
+                    $('nav').attr('style', 'box-shadow:none;');
+                    $('.navbar-collapse').attr('style', 'padding-top:25px;');
+                    $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
+                    $('#logo').attr('style', 'transform: scale(1)');
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(1.1)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(1)');
+                    });
+                }
+            })
+        });
+    </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="{% static 'js/chatbot.js' %}"></script>
 </body>
 

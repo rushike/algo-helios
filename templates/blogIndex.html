@@ -72,6 +72,21 @@
       </div>
       </a>
       {% endfor %}
+
+      {% if is_paginated %}
+      <div style="width:100%; text-align:center;">
+        <nav aria-label="Page navigation conatiner"></nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+          <li><a href="?page={{ page_obj.previous_page_number }}" class="page-link" style="background-color: #004B96; color:white;">&laquo; PREV </a></li>
+          {% endif %}
+          {% if page_obj.has_next %}
+          <li><a href="?page={{ page_obj.next_page_number }}" class="page-link" style="background-color: #004B96; color:white;"> NEXT &raquo;</a></li>
+          {% endif %}
+        </ul>
+        </nav>
+      </div>
+      {% endif %}
     </div>
 
     {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
