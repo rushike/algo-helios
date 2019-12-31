@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
 	var temp = 0;
+	var arraylen = 0;
 
 	// Credentials
 	var baseUrl = "https://api.dialogflow.com/v1/query?v=20150910&";
@@ -11,7 +12,7 @@ $(document).ready(function() {
 	var mybot = '<div class="chatCont" id="chatCont">'+
 
 								'<div class="bot_profile">'+
-									'<img src="/static/img/bot2.svg" class="bot_p_img">'+
+									'<img src="/static/img/chat1.jpg" class="bot_p_img">'+
 									'<div class="close">'+
 										'<i class="fa fa-times" aria-hidden="true"></i>'+
 									'</div>'+
@@ -41,13 +42,9 @@ $(document).ready(function() {
 							'<div class="profile_div">'+
 								'<div class="row" style="float:right; margin-right:0.2rem;">'+
 									'<div class="col-hgt">'+
-										'<img src="/static/img/bot2.svg" class="img-circle img-profile">'+
+										'<img src="/static/img/chat1.jpg" class="img-circle img-profile">'+
 									'</div><!--col-hgt end-->'+
-									'<div class="col-hgt">'+
-										'<div class="chat-txt">'+
-											'Chat with us!'+
-										'</div>'+
-									'</div><!--col-hgt end-->'+
+
 								'</div><!--row end-->'+
 							'</div><!--profile_div end-->'+
 
@@ -70,14 +67,14 @@ $(document).ready(function() {
 		valArray = ['You Can Ask Questions like this!','I am just curious about Algonauts','I want to know about your product','Contact Us'];
 
 		val = valArray[0];
+		arraylen = valArray.length;
 
 		var BotResponse = '';
 
 		var i;
 		for (i = 1; i < (valArray.length); i++) {
-			BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+i+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i] +'</button>';
+			BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+(100000+i)+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i] +'</button>';
 		}
-		temp = i;
 
 		BotResponse = '<p class="botResult">'+val+BotResponse+'</p><div class="clearfix"></div>';
 
@@ -107,9 +104,8 @@ $(document).ready(function() {
 
 		var i;
 		for (i = 1; i < (valArray.length); i++) {
-			BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+i+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i] +'</button>';
+			BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+(100000+i)+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i] +'</button>';
 		}
-		temp = i;
 
 		BotResponse = '<p class="botResult">'+val+BotResponse+'</p><div class="clearfix"></div>';
 
@@ -229,7 +225,6 @@ $(document).on("click", "button.mybtn", function(f){
 	}
 });
 
-
 	//------------------------------------------- Send request to API.AI ---------------------------------------
 	function send(text) {
 		$.ajax({
@@ -250,7 +245,6 @@ $(document).on("click", "button.mybtn", function(f){
 			}
 		});
 	}
-
 
 	//------------------------------------------- Main function ------------------------------------------------
 	function main(data) {
@@ -281,7 +275,6 @@ $(document).on("click", "button.mybtn", function(f){
 		}
 	}
 
-
 	//------------------------------------ Set bot response in result_div -------------------------------------
 	function setBotResponse(val) {
 		setTimeout(function(){
@@ -291,7 +284,6 @@ $(document).on("click", "button.mybtn", function(f){
 						$(BotResponse).appendTo('#result_div');
 			}
 			else {
-
 						if(val.includes('->')){
 							valArray = val.split("->");
 
@@ -300,8 +292,8 @@ $(document).on("click", "button.mybtn", function(f){
 							var BotResponse = '';
 
 							var i;
-							for (i = temp+1; i < (valArray.length+temp); i++) {
-								BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+(i+4)+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i-temp] +'</button>';
+							for (i = temp; i < (valArray.length+temp-1); i++) {
+								BotResponse = BotResponse + '<br class="dynamic_button"><button id="button'+(i+arraylen-1)+'" class="dynamic_button mybtn btn btn-sm btn-primary" type="button">'+ valArray[i-temp+1] +'</button>';
 							}
 							temp = i;
 

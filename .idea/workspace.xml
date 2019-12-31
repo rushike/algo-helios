@@ -6,35 +6,16 @@
       <change beforePath="$PROJECT_DIR$/blog/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blog/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/apps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blog/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/catalog/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/templates/aboutus.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/aboutus.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/catalog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/helios/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/helios/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helios/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/helios/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/aboutus.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/aboutus.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/css/chatbot.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/chatbot.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/css/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/FontAwesome.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/fontawesome-webfont.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/fontawesome-webfont.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/fontawesome-webfont.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/fontawesome-webfont.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/fontawesome-webfont.woff2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/glyphicons-halflings-regular.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/glyphicons-halflings-regular.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/glyphicons-halflings-regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/glyphicons-halflings-regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/fonts/glyphicons-halflings-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/img/bot2.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/chatbot.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/chatbot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/blogIndex.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/blogIndex.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/postDetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/postDetail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/sidebar.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,9 +93,9 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="401" y="145" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.680@0.0.1280.680" timestamp="1577704902480" />
-    <state x="336" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1577686667425">
+    <state x="336" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1577771671990">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="336" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1577686667425" />
+    <state x="336" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1577771671990" />
   </component>
 </project>

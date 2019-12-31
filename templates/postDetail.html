@@ -78,22 +78,66 @@
       transition:  background .2s ease-in-out;
     }
 
+    #div_id_name, #div_id_email, #div_id_body{
+      display: table;
+      width: 100%;
+    }
+
+    #div_id_name label, #div_id_name div, #div_id_email label, #div_id_email div, #div_id_body label, #div_id_body div{
+      display:table-cell;
+    }
+
+    #div_id_body label, #div_id_name label, #div_id_email label{
+      font-size: 0;
+    }
+
+    #div_id_body label:before{
+      content: "Comment";
+      font-size: 14px;
+    }
+
+    #div_id_name label:before{
+      content: "Name";
+      font-size: 14px;
+    }
+
+    #div_id_email label:before{
+      content: "Email";
+      font-size: 14px;
+    }
+
+    #div_id_name label, #div_id_email label, #div_id_body label{
+      width:8rem;
+    }
+
+    #div_id_body textarea{
+      height:7em;
+    }
+
+    .card-text{
+      line-height: 2.5rem;
+    }
+
+    form button{
+      float:right;
+      font-size:2rem;
+    }
 </style>
 
 <!-- Social Icons -->
-<ul id="social_side_links">
-	<li><a style="background-color: #3c5a96;"href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f"></i></a></li>
-	<li><a style="background-color: #1dadeb;" href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter"></i></a></li>
-	<li><a style="background-color: #1178b3;" href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in"></i></a></li>
-    <li><a style="background-color: #B92B27;" href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora"></i></a></li>
-</ul>
+<!--<ul id="social_side_links">-->
+<!--	<li><a style="background-color: #3c5a96;"href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f"></i></a></li>-->
+<!--	<li><a style="background-color: #1dadeb;" href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter"></i></a></li>-->
+<!--	<li><a style="background-color: #1178b3;" href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in"></i></a></li>-->
+<!--    <li><a style="background-color: #B92B27;" href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora"></i></a></li>-->
+<!--</ul>-->
 
 <div class="container">
   <div class="row">
     <div class="content col-md-7 mt-3">
     <div class="card mb-4">
       <div class="card-body">
-        <h1 style="font-size: 2.5rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
+        <h1 style="font-size: 3rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
         <p class=" text-muted" style="text-align: right; font-size: small;">{{ post.author }} | {{ post.created_on }}</p>
         <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
         <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>

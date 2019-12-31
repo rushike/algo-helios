@@ -159,7 +159,6 @@ mybot .bot_profile {
 
 mybot .bot_p_img {
   width: 80px;
-  border-radius: 50%;
   width: 70px;
   border-radius: 50%;
   background: #fff;
@@ -509,6 +508,7 @@ mybot .suggestion span:last-child {
 .btn-hover.color-11 {
        background-image: linear-gradient(to right, #eb3941, #f15e64, #e14e53, #e2373f);  box-shadow: 0 5px 15px rgba(242, 97, 103, .4);
 }
+
 
 /* .btn6, .btn6:link, .btn6:visited {
   padding: 13px 0;
