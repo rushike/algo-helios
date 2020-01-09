@@ -5,11 +5,11 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/whatwedo.css' %}">
 {% endblock %}
 
-{% block sidebar_wrapper %}
-    {% with sidebar=False%}
+{% block navbar_selector %}
+    {% with Navbar=False%}
         {{ block.super }}
     {% endwith%}
-{% endblock sidebar_wrapper%}
+{% endblock navbar_selector%}
 
 {% block content %}
 <div id="loginModal" class="modal fade">

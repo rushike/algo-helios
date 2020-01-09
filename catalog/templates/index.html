@@ -40,11 +40,11 @@
 <!--</div>-->
 
 
-{% block sidebar_wrapper %}
-    {% with sidebar=True%}
+{% block navbar_selector %}
+    {% with Navbar=True%}
         {{ block.super }}
     {% endwith%}
-{% endblock sidebar_wrapper%}
+{% endblock navbar_selector%}
 <!--Navigation Bar Ends-->
 
 {% block content %}

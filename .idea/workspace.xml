@@ -3,19 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="c6bd221d-9fb1-4497-a384-14b7e749ddba" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blog/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blog/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blog/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blog/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/catalog/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/blog/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog/templates/aboutus.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/aboutus.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog/templates/products.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/products.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog/templates/whatwedo.html" beforeDir="false" afterPath="$PROJECT_DIR$/catalog/templates/whatwedo.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helios/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/helios/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/static/css/chatbot.css" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/chatbot.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/img/bot2.svg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/static/js/chatbot.js" beforeDir="false" afterPath="$PROJECT_DIR$/static/js/chatbot.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/postDetail.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/postDetail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,9 +90,9 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="401" y="145" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.680@0.0.1280.680" timestamp="1577704902480" />
-    <state x="336" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1577771671990">
+    <state x="336" y="166" key="com.intellij.ide.util.TipDialog" timestamp="1578574634361">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="336" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1577771671990" />
+    <state x="336" y="166" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1578574634361" />
   </component>
 </project>

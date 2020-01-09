@@ -185,45 +185,45 @@ $(document).ready(function() {
 				$('#chat-input').focus();
 				return false;
 		}
-});
+    });
 
-$(".mybtn").click(function(f){
-	var text = $("#"+$(this).attr('id')).text();
+    $(".mybtn").click(function(f){
+        var text = $("#"+$(this).attr('id')).text();
 
-	// console.log(text);
+        // console.log(text);
 
-	if(text == "" ||  $.trim(text) == '') {
-			f.preventDefault();
-			$('#chat-input').focus();
-			return false;
-	} else {
-			$("#chat-input").blur();
-			setUserResponse(text);
-			send(text);
-			f.preventDefault();
-			$('#chat-input').focus();
-			return false;
-	}
-});
+        if(text == "" ||  $.trim(text) == '') {
+                f.preventDefault();
+                $('#chat-input').focus();
+                return false;
+        } else {
+                $("#chat-input").blur();
+                setUserResponse(text);
+                send(text);
+                f.preventDefault();
+                $('#chat-input').focus();
+                return false;
+        }
+    });
 
-$(document).on("click", "button.mybtn", function(f){
-	var text = $("#"+$(this).attr('id')).text();
+    $(document).on("click", "button.mybtn", function(f){
+        var text = $("#"+$(this).attr('id')).text();
 
-	// console.log(text);
+        // console.log(text);
 
-	if(text == "" ||  $.trim(text) == '') {
-			f.preventDefault();
-			$('#chat-input').focus();
-			return false;
-	} else {
-			$("#chat-input").blur();
-			setUserResponse(text);
-			send(text);
-			f.preventDefault();
-			$('#chat-input').focus();
-			return false;
-	}
-});
+        if(text == "" ||  $.trim(text) == '') {
+                f.preventDefault();
+                $('#chat-input').focus();
+                return false;
+        } else {
+                $("#chat-input").blur();
+                setUserResponse(text);
+                send(text);
+                f.preventDefault();
+                $('#chat-input').focus();
+                return false;
+        }
+    });
 
 	//------------------------------------------- Send request to API.AI ---------------------------------------
 	function send(text) {
