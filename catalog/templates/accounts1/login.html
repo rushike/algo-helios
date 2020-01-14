@@ -143,9 +143,14 @@
 						<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                         {{ message }}
                     </div>
-            		{% endfor %}
+					{% endfor %}
+					
 
 				</form>
+
+				<input type="submit" name="submit" value="facebook"
+							   class="btn login_btn" onclick="location.href='localhost:8000/accounts/facebook/login/?process=login'" />
+
 			</div>
 		</div>
 	</div>

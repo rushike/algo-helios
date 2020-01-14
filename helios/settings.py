@@ -26,8 +26,10 @@ SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'dev.algonauts.in',
-    'algonauts.in'
+    'localhost',
+    '127.0.0.1'
+    # 'dev.algonauts.in',
+    # 'algonauts.in'
 ]
 
 
@@ -36,12 +38,25 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook', 
+    'allauth.socialaccount.providers.google', 
+    'django_extensions',
     'catalog',
 ]
+
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+
+LOGIN_REDIRECT_URL = '/'
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,10 +70,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'helios.urls'
 
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+    
+)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

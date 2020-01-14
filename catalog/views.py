@@ -21,5 +21,5 @@ class ProductsPageView(TemplateView):
     template_name = "products.html"
 
 def login(request):
-    return render(request, 'login.html')
+    return render(request, 'accounts/login.html')
 
