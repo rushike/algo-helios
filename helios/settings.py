@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook', 
     'allauth.socialaccount.providers.google', 
     'django_extensions',
+    'crispy_forms',
+
     'catalog',
 ]
 
@@ -56,7 +58,26 @@ INSTALLED_APPS = [
 
 LOGIN_REDIRECT_URL = '/'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+LOGIN_REDIRECT_URL = '/profile/'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'javaproject1024@gmail.com'
+
+EMAIL_HOST_PASSWORD = 'JavaProjec'
+EMAIL_USE_TLS = True
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,7 +103,7 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'catalog/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

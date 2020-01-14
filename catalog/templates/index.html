@@ -7,6 +7,7 @@
 
 {% block content %}
 
+
 <!--Navigation Bar Starts-->
 <nav class="container-fluid navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-header">
@@ -21,7 +22,7 @@
 
     <div class="collapse navbar-collapse" id="myNavbar" style="font-size:16px;">
         <ul style="text-align: center;" class="nav navbar-nav navbar-right">
-            <li><a id="whatwedoicon" style="cursor: pointer;">What We Do?</a></li>
+            <li><a id="whatwedoicon" style="cursor: pointer;">What We Do? {{ user.name }}</a></li>
             <li><a id="aboutusicon" style="cursor: pointer;">About Us</a></li>
             <li><a id="productsicon" style="cursor: pointer;" href="#">Products</a></li>
             <!--<li><a href="#loginModal" class="trigger-btn" data-toggle="modal"><span class="	glyphicon glyphicon-user"></span> Login</a></li>-->
@@ -29,6 +30,10 @@
     </div>
     </div>
 </nav>
+
+<p> {% if user.is_authenticated %} hello 
+    {{ user.username }} 
+    {% else %} visitor {% endif %}</p>
 
 <!--<div id="loginModal" class="modal fade">-->
     <!--<div class="modal-dialog modal-login">-->
