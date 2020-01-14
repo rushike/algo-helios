@@ -19,3 +19,7 @@ class WhatWeDoPageView(TemplateView):
 
 class ProductsPageView(TemplateView):
     template_name = "products.html"
+
+def login(request):
+    return render(request, 'login.html')
+
