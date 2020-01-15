@@ -1,3 +1,12 @@
+.pad{
+    float: right; /* float all of this to the right */
+    list-style: none;
+    height: 26px;
+    margin: 0;
+    padding: 4;
+    clear: left; /* clear the children that are floated left */
+  }
+
 a:hover,a:focus{
     text-decoration: none;
     outline: none;
