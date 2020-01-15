@@ -29,7 +29,33 @@
           <a id="productsicon" class="p-2" style="cursor: pointer;" >Products</a>
         </li>
         <li class="nav-item">
-            {%}
+            {% if user.is_anonymous %}
+                
+                <button type="button" class="btn btn-block btn-outline-dark" onclick="location.href = '/accounts/login'" >Login</button>
+                
+                
+            {% else %}
+                <div class="btn-group">
+                    <button class="btn btn-dark btn-lg" type="button">
+                        <img src="{{ user.get_avatar_url }}"/>
+                        <samp>{{user.username}}<samp>
+                    </button>
+                    
+                    <button type="button" class="btn btn-lg btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <form method="post" action="{% url 'account_logout' %}">
+                            {% csrf_token %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                            {% endif %}
+                            <button type="submit" class="dropdown-item" onclick="myfun">'LogOut</button>
+                            
+                          </form>
+                    </div>
+                    </div>
+            {% endif %}
             <!-- <a class="nav-link disabled p-2" href="#">Log In</a> -->
         </li>
       </ul>
@@ -147,6 +173,9 @@
 <!--What we do banner ends-->
 
 <!--How we Do it banner starts-->
+
+
+
 <div class="container-fluid hwd">
     <div class="container hwdcontainer" id="howwedocont">
         <div class="hwdheading">
@@ -155,9 +184,9 @@
         </div>
 
         <div class="row row-eq-height howwedobann container-fluid">
-            <a href="{% url 'whatwedo' %}#Section1" title="Click to know more">
-                <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
 
+                <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
+                    <a href="{% url 'whatwedo' %}#Section1" title="Click to know more">
                     <div class="content">
                         <img src="{% static 'whatwedo/prizeanalysis.png' %}">
                         <h2>Price Analysis</h2>
@@ -169,13 +198,13 @@
                         </div>
                     </div>
 
-
+                </a>
                 </div>
-            </a>
+            
 
-            <a href="{% url 'whatwedo' %}#Section2" title="Click to know more">
                 <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
-
+                    <a href="{% url 'whatwedo' %}#Section2" title="Click to know more">
+           
                     <div class="content">
                         <img src="{% static 'whatwedo/returnanalysis.png' %}">
                         <h2>Return Analysis</h2>
@@ -188,14 +217,13 @@
 
                         </div>
                     </div>
-
+                </a>
                 </div>
-            </a>
+            <!-- </a> -->
 
 
-            <a href="{% url 'whatwedo' %}#Section3 " title="Click to know more">
                 <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
-
+                    <a href="{% url 'whatwedo' %}#Section3 " title="Click to know more">
                     <div class="content">
                         <img src="{% static 'whatwedo/variationanalysis.png' %}">
                         <h2>Variation Analysis</h2>
@@ -208,17 +236,16 @@
 
                         </div>
                     </div>
-
+                    </a>
                 </div>
-            </a>
+            
 
         </div>
         <div class="row row-eq-height howwedobann container-fluid">
 
 
-            <a href="{% url 'whatwedo' %}#Section4" title="Click to know more">
                 <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
-
+                    <a href="{% url 'whatwedo' %}#Section4" title="Click to know more">
                     <div class="content">
                         <img src="{% static 'whatwedo/portfoliocreation.png' %}">
                         <h2>Portfolio Creation</h2>
@@ -231,13 +258,12 @@
 
                         </div>
                     </div>
-
+                    </a>
                 </div>
-            </a>
+            
 
-            <a href="{% url 'whatwedo' %}#Section5" title="Click to know more">
                 <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
-
+                    <a href="{% url 'whatwedo' %}#Section5" title="Click to know more">
                     <div class="content">
                         <img src="{% static 'whatwedo/tradesimulator.png' %}">
                         <h2>Trade Simulation</h2>
@@ -249,14 +275,14 @@
 
                         </div>
                     </div>
-
+                    </a>
                 </div>
-            </a>
+            
 
 
-            <a href="{% url 'whatwedo' %}#Section6" title="Click to know more">
                 <div data-aos="fade-up" data-aos-duration="1000" class="col-md-4">
-
+                    <a href="{% url 'whatwedo' %}#Section6" title="Click to know more">
+            
                     <div class="content">
                         <img src="{% static 'whatwedo/multitradingstrat.png' %}">
                         <h2>Trading Strategies</h2>
@@ -270,9 +296,9 @@
 
                         </div>
                     </div>
-
+                    </a>
                 </div>
-            </a>
+            
 
         </div>
     </div>
@@ -570,5 +596,6 @@
         });
     });
 
+</script>
 </script>
 {% endblock %}
