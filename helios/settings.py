@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     'dev.algonauts.in',
     'algonauts.in',
     '127.0.0.1'
+    'localhost'
 ]
 
 # Application definition
