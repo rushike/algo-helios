@@ -1,0 +1,149 @@
+<!-- Sidebar Widgets Column -->
+
+<style>
+
+  .head_text {
+    color: white;
+  }
+
+  .card {
+    padding-top: 0.6rem;
+    padding-bottom: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .shadow {
+    box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-danger {
+    color: #fff;
+    background-color: #004B96;
+    border-color: #004B96;
+  }
+
+  .btn-danger:hover{
+    background-color: #02386E;
+    border-color: #02386E;
+  }
+
+  .container {
+    margin-top: 10rem;
+    margin-bottom: 5rem;
+  }
+
+  @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
+
+    #social {
+      float:right;
+      width: 100%;
+      text-align: center;
+    }
+
+    .smGlobalBtn { /* global button class */
+        display: inline-block;
+        position: relative;
+        cursor: pointer;
+        width: 50px;
+        height: 50px;
+        border:2px solid #ddd; /* add border to the buttons */
+        box-shadow: 0 3px 3px #999;
+        padding: 0px;
+        text-decoration: none;
+        text-align: center;
+        color: #fff;
+        font-size: 25px;
+        font-weight: normal;
+        line-height: 2em;
+        border-radius: 27px;
+        -moz-border-radius:27px;
+        -webkit-border-radius:27px;
+        margin-right:2.2rem;
+    }
+
+    /* facebook button class*/
+    .facebookBtn{
+        background: #4060A5;
+    }
+
+    .facebookBtn:before{ /* use :before to add the relevant icons */
+        font-family: "FontAwesome";
+        content: "\f09a"; /* add facebook icon */
+    }
+
+    .facebookBtn:hover{
+        color: #4060A5;
+        background: #fff;
+        border-color: #4060A5; /* change the border color on mouse hover */
+        text-decoration: none;
+    }
+
+    /* twitter button class*/
+    .twitterBtn{
+        background: #00ABE3;
+    }
+
+    .twitterBtn:before{
+          font-family: "FontAwesome";
+          content: "\f099"; /* add twitter icon */
+    }
+
+    .twitterBtn:hover{
+          color: #00ABE3;
+          background: #fff;
+          border-color: #00ABE3;
+          text-decoration: none;
+    }
+
+    /* linkedin button class*/
+    .linkedinBtn{
+        background: #0094BC;
+    }
+
+    .linkedinBtn:before{
+          font-family: "FontAwesome";
+          content: "\f0e1"; /* add linkedin icon */
+    }
+
+    .linkedinBtn:hover{
+          color: #0094BC;
+          background: #fff;
+          border-color: #0094BC;
+          text-decoration: none;
+    }
+
+    .quoraBtn{
+        background: #B92B27;
+    }
+
+    .quoraBtn:before{
+          font-family: "FontAwesome";
+          content: "\f2c4"; /* add quora icon */
+    }
+
+    .quoraBtn:hover{
+          color: #B92B27;
+          background: #fff;
+          border-color: #B92B27;
+          text-decoration: none;
+    }
+
+</style>
+
+<div class="col-md-4 float-right fix" style="float:right;">
+<div class="card my-4">
+    <h4 class="card-header">About Us</h4>
+    <div class="card-body">
+        <p class="card-text" style="font-size: 1.5rem;"> Algonauts is a team of finance and technology professionals with combined experience over 20 years. We as a firm strongly believe that algorithmic trading is the future and is a way to trade and make money in the markets. Extensive use of technology and numerous years of experience in stock market empower us to build new algorithms.</p>
+        <a href="{%url 'aboutus'%}" class="btn btn-danger">Know more!</a>
+    </div>
+</div>
+    <div id="social">
+        <a class="facebookBtn smGlobalBtn" href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"></a>
+        <a class="twitterBtn smGlobalBtn" href="https://twitter.com/AlgonautsT"></a>
+        <a class="linkedinBtn smGlobalBtn" href="https://www.linkedin.com/in/algonauts-technologies/"></a>
+        <a class="quoraBtn smGlobalBtn" href="https://www.quora.com/profile/Algonauts-Technologies-1"></a>
+    </div>
+</div>

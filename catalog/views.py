@@ -1,10 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView # Import TemplateView
 
-# Create your views here.
 
-
-# Add the two views we have been talking about  all this time :)
 class IndexPageView(TemplateView):
     template_name = "index.html"
 
@@ -19,7 +16,3 @@ class WhatWeDoPageView(TemplateView):
 
 class ProductsPageView(TemplateView):
     template_name = "products.html"
-
-def login(request):
-    return render(request, 'accounts/login.html')
-

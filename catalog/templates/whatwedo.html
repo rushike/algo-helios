@@ -5,29 +5,13 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/whatwedo.css' %}">
 {% endblock %}
 
+{% block navbar_selector %}
+    {% with Navbar=False%}
+        {{ block.super }}
+    {% endwith%}
+{% endblock navbar_selector%}
+
 {% block content %}
-<nav class="container-fluid navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-header">
-        <a class="navbarlogo" href="{%url 'index'%}"><img id="logo" src="{% static 'algotext.png' %}" width="150px"
-                height="auto"></a>
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-
-    <div class="collapse navbar-collapse" id="myNavbar" style="font-size:16px;">
-        <ul style="text-align: center;" class="nav navbar-nav navbar-right">
-            <li class="active"><a id="whatwedoicon" href="{%url 'whatwedo'%}" style="cursor: pointer;">What We Do?</a></li>
-            <li><a id="aboutusicon" href="{%url 'aboutus'%}" style="cursor: pointer;">About Us</a></li>
-            <li><a id="productsicon"  style="cursor: pointer;" href="{%url 'products'%}">Products</a></li>
-            <!--<li><a href="#loginModal" class="trigger-btn" data-toggle="modal"><span class="	glyphicon glyphicon-user"></span> Login</a></li>-->
-        </ul>
-    </div>
-    </div>
-</nav>
-
 <div id="loginModal" class="modal fade">
     <div class="modal-dialog modal-login">
         <div class="modal-content">
@@ -37,7 +21,6 @@
                     <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" width="80px" height="80px" alt="Avatar">
                     
                 </div>
-
             </div>
             <div class="modal-body">
                 <form action="" name="login" method="post">
@@ -60,18 +43,10 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
 <div style="height: 100px"></div>
 <div class="heading container">
     <h2>What We Do ?</h2>
 </div>
-
 
 <div class="container wrapper">
             <div class="vertical-tab" role="tabpanel">
@@ -169,61 +144,24 @@
 {% endblock %}
 
 {% block scripts %}
- 
-<script>
+    <script>
 
-getAccordion("#navoverride",768);
+        getAccordion("#navoverride",768);
 
-    $(function () {
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 200) {
-                $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
-                $('.navbar-collapse').attr('style', 'padding-top:10px;');
-                $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
-                $('#logo').attr('style', 'transform: scale(0.8)');
-
-
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(0.85)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(0.8)');
-                });
-
-
-
-
-            }
-            if ($(this).scrollTop() < 200) {
-                $('nav').attr('style', 'box-shadow:none;');
-                $('.navbar-collapse').attr('style', 'padding-top:25px;');
-                $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
-                $('#logo').attr('style', 'transform: scale(1)');
-                $("#logo").hover(function () {
-                    $("#logo").attr('style', 'transform:scale(1.1)');
-                }, function () {
-                    $("#logo").attr('style', 'transform:scale(1)');
-                });
-            }
-        })
-    });
-
-    $(document).ready(function () {
-        $("#logo").hover(function () {
-            $("#logo").attr('style', 'transform:scale(0.85)')
-
+        $(document).ready(function () {
+            $("#logo").hover(function () {
+                $("#logo").attr('style', 'transform:scale(0.85)')
+            });
         });
-    });
 
-    $(document).ready(function () {
-        $("body").click(function () {
-            if ($("#myNavbar").hasClass("in")) {
-                $("#myNavbar").removeClass("in", 1000);
-                $("#myNavbar").attr('aria-expanded', 'false');
-
-            }
+        $(document).ready(function () {
+            $("body").click(function () {
+                if ($("#myNavbar").hasClass("in")) {
+                    $("#myNavbar").removeClass("in", 1000);
+                    $("#myNavbar").attr('aria-expanded', 'false');
+                }
+            });
         });
-    });
 
-
-</script>
+    </script>
 {% endblock %}
