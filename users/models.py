@@ -3,23 +3,25 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 from django.utils import timezone
+
+from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class UserManager(BaseUserManager):
 
-  def _create_user(self, first_name, last_name, email, contact, password, is_superuser, is_staff, **extra_fields):
+  def _create_user(self, first_name, last_name, email, contact_no, password, is_superuser, is_staff, **extra_fields):
     if not email:
         raise ValueError('Users must have an email address')
     now = timezone.now()
     first_name = first_name.capitalize()
     last_name = last_name.capitalize()
-    contact = contact
+    contact_no = contact_no.strip()
     email = self.normalize_email(email)
     user = self.model(
         first_name = first_name,
         last_name = last_name,
         email=email,
-        contact = contact,
+        contact_no = contact_no,
         is_staff=is_staff, 
         is_active=True,
         is_superuser=is_superuser, 
@@ -31,8 +33,8 @@ class UserManager(BaseUserManager):
     user.save(using=self._db)
     return user
 
-  def create_user(self, first_name, last_name, email, contact, password, **extra_fields):
-    return self._create_user(first_name, last_name, email, contact, password, False, False, **extra_fields)
+  def create_user(self, first_name, last_name, email, contact_no, password, **extra_fields):
+    return self._create_user(first_name, last_name, email, contact_no, password, False, False, **extra_fields)
 
   def create_superuser(self, email, password, **extra_fields):
     user=self._create_user("", "", email, "", password, True, True, **extra_fields)
@@ -46,7 +48,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     email = models.EmailField(max_length=254, unique=True)
-    contact = models.CharField(max_length=10) #RegexValidator(regex = r'^[0-9]*$')
+    contact_no = PhoneNumberField(max_length=10) #RegexValidator(regex = r'^[0-9]*$')
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

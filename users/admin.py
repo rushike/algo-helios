@@ -6,10 +6,11 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import AlgonautsUser
 
+admin.site.site_header = "ALgonauts Admininstration Page"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'name', 'last_login')}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -28,10 +29,10 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact', 'is_staff', 'last_login')
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
-    ordering = ('first_name', 'last_name', 'email', 'contact')
+    ordering = ('first_name', 'last_name', 'email', 'contact_no')
     filter_horizontal = ('groups', 'user_permissions',)
 
 

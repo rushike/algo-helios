@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css_imports %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<style>
+  /* body {
+    font-family: "Roboto", sans-serif;
+  }
+
+  .head_text {
+    color: white;
+  }
+
+  .card1 {
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    margin-bottom: 2rem;
+    border-radius:10px;
+  }
+
+  .card1:hover{
+    background-color:#004B96;
+    color:white;
+    transition: background-color .3s,text-decoration 0s !important;
+    box-shadow: 0 8px 4px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow {
+    box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-danger {
+    color: #fff;
+    background-color: #f00000;
+    border-color: #dc281e;
+  }
+
+  .masthead {
+    background: #3398E1;
+    height: auto;
+    padding-bottom: 15px;
+    box-shadow: 0 16px 48px #E3E7EB;
+    padding-top: 10px;
+  }
+
+  .container {
+    margin-top: 10rem;
+    margin-bottom: 5rem;
+  } */
+
+</style>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container-fluid md-5">
+
+  <div class="row md-5">
+		<!-- Blog Entries Column -->
+		<div class="col-md-8 col-sm-12 col-xs-12 mt-3">
+			{% for post in post_list %}
+			<a href="{% url 'post_detail' post.slug  %}"  style="text-decoration: none; color:black;">
+			<div class="card1 card mb-4">
+				<div class="card-body">
+				<h2 class="card-title" style="font-size: 20px; font-weight: 800;">{{ post.title }}</h2>
+				<p class="card-text h6" style="margin-left: 2rem; text-align:right;">{{ post.author }} | {{ post.created_on}} </p>
+				<hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
+				<p class="card-text" style="font-size: 1.5rem;">{{post.content|slice:":245" }}...</p>
+				<p class="knowmore" style="font-size: 14px;">Read More</p>
+				</div>
+			</div>
+			</a>
+			{% endfor %}
+
+			{% if is_paginated %}
+			<div style="width:100%; text-align:center;">
+				<nav aria-label="Page navigation conatiner"></nav>
+				<ul class="pagination justify-content-center">
+				{% if page_obj.has_previous %}
+				<li><a href="?page={{ page_obj.previous_page_number }}" class="page-link" style="background-color: #004B96; color:white;">&laquo; PREV </a></li>
+				{% endif %}
+				{% if page_obj.has_next %}
+				<li><a href="?page={{ page_obj.next_page_number }}" class="page-link" style="background-color: #004B96; color:white;"> NEXT &raquo;</a></li>
+				{% endif %}
+				</ul>
+				</nav>
+			</div>
+			{% endif %}
+		</div>
+		<div class="col-md-4 col-sm-12 col-xs-12">
+        {% block sidebar %} 
+          	{% include 'blog/sidebar.html' %} 
+        {% endblock sidebar %}
+   		</div>
+
+	</div>
+</div>
+<br>
+<br>
+{%endblock%}

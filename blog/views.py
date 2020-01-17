@@ -8,7 +8,7 @@ from django.shortcuts import render, get_object_or_404
 
 class PostList(generic.ListView):
     queryset = Post.objects.filter(status=1).order_by('-created_on')
-    template_name = 'blogIndex.html'
+    template_name = 'blog/blogIndex.html'
     paginate_by = 3
 
 

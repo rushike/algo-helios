@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block css_imports %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        background-color: white;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+    .shadow {
+        box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #f00000;
+        border-color: #dc281e;
+    }
+
+    .masthead {
+        background: #3398E1;
+        height: auto;
+        padding-bottom: 15px;
+        box-shadow: 0 16px 48px #E3E7EB;
+        padding-top: 10px;
+    }
+
+    .container {
+      margin-top:10rem;
+      margin-bottom:5rem;
+    }
+
+    .content{
+      width:100%;
+      padding:0 20%;
+    }
+
+    @media only screen and (max-width: 1000px) {
+      .content {
+        padding:0 13%;
+      }
+    }
+
+    /* Social Icons */
+    #social_side_links {
+      position: fixed;
+      top: 40%;
+      left: 0;
+      padding: 0;
+      list-style: none;
+      z-index: 99;
+    }
+
+    #social_side_links li a {
+      display: block;
+      line-height: 4.5rem;
+      font-size:1.5rem;
+    }
+
+    #social_side_links li a img {
+      display: block;
+      height:40px;
+      padding: 10px;
+      -webkit-transition:  background .2s ease-in-out;
+      -moz-transition:  background .2s ease-in-out;
+      -o-transition:  background .2s ease-in-out;
+      transition:  background .2s ease-in-out;
+    }
+
+    #div_id_name, #div_id_email, #div_id_body{
+      display: table;
+      width: 100%;
+    }
+
+    #div_id_name label, #div_id_name div, #div_id_email label, #div_id_email div, #div_id_body label, #div_id_body div{
+      display:table-cell;
+    }
+
+    #div_id_body label, #div_id_name label, #div_id_email label{
+      font-size: 0;
+    }
+
+    #div_id_body label:before{
+      content: "Comment";
+      font-size: 14px;
+    }
+
+    #div_id_name label:before{
+      content: "Name";
+      font-size: 14px;
+    }
+
+    #div_id_email label:before{
+      content: "Email";
+      font-size: 14px;
+    }
+
+    #div_id_name label, #div_id_email label, #div_id_body label{
+      width:8rem;
+    }
+
+    #div_id_body textarea{
+      height:7em;
+    }
+
+    .card-text{
+      line-height: 2.5rem;
+    }
+
+    form button{
+      float:right;
+      font-size:2rem;
+    }
+</style>
+
+<!-- Social Icons -->
+<!--<ul id="social_side_links">-->
+<!--	<li><a style="background-color: #3c5a96;"href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f"></i></a></li>-->
+<!--	<li><a style="background-color: #1dadeb;" href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter"></i></a></li>-->
+<!--	<li><a style="background-color: #1178b3;" href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in"></i></a></li>-->
+<!--    <li><a style="background-color: #B92B27;" href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora"></i></a></li>-->
+<!--</ul>-->
+
+<div class="container">
+  <div class="row">
+    <div class="content col-md-7 mt-3">
+    <div class="card mb-4">
+      <div class="card-body">
+        <h1 style="font-size: 3rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
+        <p class=" text-muted" style="text-align: right; font-size: small;">{{ post.author }} | {{ post.created_on }}</p>
+        <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
+        <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>
+      </div>
+    </div>
+
+      <br>
+    <div class="comment-card card mb-4">
+      <div class="card-body">
+        <!-- comments -->
+        <h2 style="font-size: 2.1rem; font-weight: 800;">{{ comments.count }} comments</h2>
+
+        {% for comment in comments %}
+        <div class="comments" style="padding: 10px; padding: 10px; background:#F7F7F7; border-radius: 2rem; margin-bottom: 1rem;">
+          <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;font-weight: bold;">
+            {{ comment.name }}
+            <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem; margin-top: 0.4rem; float: right;">
+              {{ comment.created_on }}
+            </span>
+          </p>
+          <h4 style="font-size: 1.5rem; margin-left:5rem;">{{ comment.body | linebreaks }}</h4>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+      <br>
+    <div class="card mb-4">
+      <div class="card-body">
+        {% if new_comment %}
+        <div class="alert alert-success" role="alert">
+          Your comment is awaiting moderation
+        </div>
+        {% else %}
+        <h3 style="font-size: 2.1rem; font-weight: 800;">Leave a comment</h3>
+        <form method="post" style="margin-top: 1.3em; font-size:1.4rem;">
+          {{ comment_form | crispy }}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+{% endblock content %}

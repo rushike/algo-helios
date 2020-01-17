@@ -18,10 +18,10 @@ SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
     'dev.algonauts.in',
     'algonauts.in',
-    '127.0.0.1'
-    'localhost'
 ]
 
 # Application definition
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook', 
     'allauth.socialaccount.providers.google', 
     'django_extensions',
-    'crispy_forms',
+    'phonenumber_field',
 
     'catalog',
     'users',
@@ -99,6 +99,7 @@ AUTHENTICATION_BACKENDS = (
 ACCOUNT_FORMS = {
 'signup': 'catalog.forms.signup.AlgonautsSignupForm',
 }
+
 
 """
 Allauth Variable Ends

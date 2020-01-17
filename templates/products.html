@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_imports %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block navbar_selector %}
+    {% with Navbar=False%}
+        {{ block.super }}
+    {% endwith%}
+{% endblock navbar_selector%}
+
+{% block content %}
+
+<div id="loginModal" class="modal fade">
+    <div class="modal-dialog modal-login">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <div class="avatar" style="text-align:center;">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" width="80px" height="80px" alt="Avatar">
+                    <h4>Login Now</h4>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form action="" name="login" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="username" placeholder="Username" required="required">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Password" required="required">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" name="submit" value="Login" class="btn btn-primary btn-lg btn-block login-btn">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#">Register Now</a>&nbsp;&nbsp;
+                <a href="#">Forgot Password?</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid" style="height:100px;"></div>
+
+<div class="pands-heading">
+    Products and Services
+</div>
+
+<div id="responsiveTabsDemo" class="pands container">
+
+    <ul class="nav nav-tabs nav-justified" id="navoverride" role="tablist">
+        <li id="callsgenNav" class="nav-item active">
+            <a class="nav-link" data-toggle="tab" href="#callsgen">Calls Generator</a>
+        </li>
+        <li id="portfolioNav" class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#portfolio">Portfolio Manager</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="callsgen" class="tab-pane fade in active">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul>
+                        <li>Algorithms generate calls in every time horizon for Nifty 500 stocks.</li>
+                        <li>Algorithms are security agnostic and can generate calls for any security, as it just
+                            requires the
+                            historical data and present data to generate calls.</li>
+                        <li>There are total 5 algos at present labeled P1, P2, P3, P4 and P5. Each one analyzes
+                            prices
+                            differently and is refreshed for every interval.</li>
+                        <li>The intervals targeted are 5 mins, 15 mins, 60 mins and 1 day for these algos, but
+                            it is
+                            capable of
+                            having any other interval.</li>
+                        <li>The user has the choice to pick the stock, algo and processing time depending on
+                            his/her
+                            preference.
+                        </li>
+                        <li>The algo will generate calls based on the configuration. For example, if the user
+                            wishes
+                            to
+                            trade
+                            Reliance using inputs from the P4 algo refreshed every 15 minutes, then one has to
+                            choose
+                            (Reliance,
+                            P4, 15mins).</li>
+                        <li>Ready-made algo portfolios for stocks are already engineered which can be used if
+                            you
+                            wish
+                            to avoid
+                            the hassle of making the decisions on stocks, algos and time-horizons.</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <img src="{% static 'products/callgen.png' %}" width="70%">
+                </div>
+            </div>
+        </div>
+
+        <div id="portfolio" class="tab-pane fade">
+            <div class="row">
+                <div class="col-md-8">
+                    <ul>
+                        <li>Portfolios are created, managed and traded in real time by the algorithms.</li>
+                        <li>Automated Portfolio manager is capable of creating and managing the portfolio as per your
+                            risk appetite and
+                            requirements if you find it tedious and/or technical.</li>
+                        <li>The process is fully automated and you need to put in capital only after you have
+                            fully
+                            convinced
+                            yourself of the authenticity and viability of the portfolio.</li>
+                        <li>The backtested results and profit numbers of simulated portfolio trades are
+                            available on the
+                            website. (Coming Soon)</li>
+                        <li>Initial testing with limited capital can be done to ensure the performance.</li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <img src="{% static 'products/portfoliomanager.png' %}" width="70%">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"></div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/products.js' %}"></script>
+<script src="{% static 'js/responsive-tabs.js' %}"></script>
+<script>
+    getAccordion("#navoverride",768);
+
+    $(window).ready(function () {
+        $(".loader").fadeOut("slow");
+    });
+
+    $(document).ready(function () {
+        $("body").click(function () {
+            if ($("#myNavbar").hasClass("in")) {
+                $("#myNavbar").removeClass("in", 1000);
+                $("#myNavbar").attr('aria-expanded', 'false');
+            }
+        });
+    });
+
+</script>
+{% endblock %}

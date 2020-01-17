@@ -6,7 +6,7 @@
 
 {% block content %}
 <style>
-  body {
+  /* body {
     font-family: "Roboto", sans-serif;
   }
 
@@ -51,14 +51,14 @@
   .container {
     margin-top: 10rem;
     margin-bottom: 5rem;
-  }
+  } */
 
 </style>
 
 <div class="container">
   <div class="row">
     <!-- Blog Entries Column -->
-    <div class="col-md-7 mt-3 left">
+    <div class="col mt-3">
       {% for post in post_list %}
       <a href="{% url 'post_detail' post.slug  %}"  style="text-decoration: none; color:black;">
       <div class="card1 card mb-4">
