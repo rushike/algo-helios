@@ -41,14 +41,14 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google', 
     'django_extensions',
     'phonenumber_field',
-
+    'sslserver',
     'catalog',
     'users',
     'blog',
     'crispy_forms',
 ]
 
-
+SECURE_SSL_REDIRECT = True
 """
 Algonauts User Model
 """
