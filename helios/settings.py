@@ -40,8 +40,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook', 
     'allauth.socialaccount.providers.google', 
     'django_extensions',
-    'phonenumber_field',
-    'sslserver',
     'catalog',
     'users',
     'blog',
