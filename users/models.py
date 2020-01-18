@@ -4,7 +4,6 @@ from django.core.validators import RegexValidator
 
 from django.utils import timezone
 
-from phonenumber_field.modelfields import PhoneNumberField
 # Create your models here.
 
 class UserManager(BaseUserManager):
@@ -48,7 +47,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     email = models.EmailField(max_length=254, unique=True)
-    contact_no = PhoneNumberField(max_length=10) #RegexValidator(regex = r'^[0-9]*$')
+    contact_no = models.CharField(max_length=10) #RegexValidator(regex = r'^[0-9]*$')
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

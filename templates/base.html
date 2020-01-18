@@ -89,6 +89,7 @@
   
     <div class="collapse navbar-collapse text-center" id="navbarNav" style="font-size:16px;">
       <ul class="nav navbar-nav ml-auto justify-content-between full-width">
+
         <li class="nav-item">
             <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'home' %}">Blog</a>
           </li>
@@ -101,31 +102,60 @@
         <li class="nav-item">
           <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
         </li>
-        <li class="nav-item">
+        
             {% if user.is_anonymous %}
-                
-                <a type="button" class="btn btn-default nav-link" onclick="location.href = '/accounts/login'" >Login</a>
-                
+            <li class="nav-item">        
+                <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>
+            </li>
                 
             {% else %}
-                <div class="pl-2 btn-group"><samp>
-                    <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+            <li>
+                <!-- <div class="pl-2 btn-group dropdown"><samp>
+                    <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" 
+                    role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <img src="{{ user.get_avatar_url }}"/>
                         <samp>{{user.first_name}}
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-right dropdown-menu-md-right dropdown-menu-sm-right dropdown-menu-xs-right">
+                    <div class="dropdown-menu">
                         <form method="post" action="{% url 'account_logout' %}">
                             {% csrf_token %}
                             {% if redirect_field_value %}
                             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                             {% endif %}
+                            <button class="btn btn-sm dropdown-item">DashBoard</button>
                             <button type="submit" class="btn btn-sm dropdown-item" onclick="myfun">LogOut</button>
                           </form>
-                    </div>
-                    </samp></div>
+                    </div> -->
+<!-- =------------------------------------------------------------------ -->
+                    <div class="pl-2 dropdown">
+                        <a class="btn btn-outline-dark dropdown-toggle" href="#" 
+                        role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ user.get_avatar_url }}"/>
+                        {{user.first_name}}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                            <form method="post" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                {% if redirect_field_value %}>
+                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>    
+                                {% endif %}
+                                <!-- <a class="btn btn-sm dropdown-item">DashBoard</a> -->
+                                <button class="btn btn-sm dropdown-item" type="submit" onclick="myfun">LogOut</button>
+                            </form>
+                            <!-- <a class="dropdown-item" href="#">Action</a> -->
+                            <!-- <a class="dropdown-item" href="#">Another action</a> -->
+                            <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                        </div>
+                          </div>
+<!-- =------------------------------------------------------------------ -->
+
+
+                </div>
+                </li>
             {% endif %}
             <!-- <a class="nav-link disabled p-2" href="#">Log In</a> -->
-        </li>
+        
       </ul>
   </div>
   </nav>
