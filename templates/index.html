@@ -12,66 +12,6 @@
 
   
 
-<!-- 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="navbar-header">
-        <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px"
-                height="auto"></a>
-        <button type="button" id="toggleButton" class="navbar-toggler navbar-toggler-right" data-toggle="collapse" data-target="#myNavbar">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-
-    <div class="collapse navbar-collapse  my-2 my-lg-0" id="myNavbar" style="font-size:16px;">
-        <ul style="text-align: center;" class="nav navbar-nav navbar-right  mr-auto">
-            <li><a class="pad" id="whatwedoicon" style="cursor: pointer;">What We Do?</a></li>
-            <li><a class="pad"  id="aboutusicon" style="cursor: pointer;">About Us</a></li>
-            <li><a class="pad"  id="productsicon" style="cursor: pointer;" href="#">Products</a></li>
-            <li><a  class="pad"  href="#loginModal" class="trigger-btn" data-toggle="modal"><span class="	glyphicon glyphicon-user"></span> Login</a></li>
-        </ul>
-    </div>
-    </div>
-</nav> -->
-
-<!-- <p> {% if user.is_authenticated %} hello 
-    {{ user.username }} 
-    {% else %} visitor {% endif %}</p> -->
-
-<!--<div id="loginModal" class="modal fade">-->
-    <!--<div class="modal-dialog modal-login">-->
-        <!--<div class="modal-content">-->
-            <!--<div class="modal-header">-->
-                <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-                <!--<div class="avatar" style="text-align:center;">-->
-                    <!--<img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" width="80px" height="80px" alt="Avatar">-->
-                <!--</div>-->
-
-            <!--</div>-->
-            <!--<div class="modal-body">-->
-                <!--<form action="" name="login" method="post">-->
-                    <!--<div class="input-group">-->
-
-                            <!--<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>-->
-                        <!--<input type="text" class="form-control" name="username" placeholder="Username" required="required">-->
-                    <!--</div>-->
-                    <!--<div class="input-group">-->
-                            <!--<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>-->
-                        <!--<input type="password" class="form-control" name="password" placeholder="Password" required="required">-->
-                    <!--</div>-->
-                    <!--<div class="form-group text-center">-->
-                        <!--<button id="loginBtn" type="submit" name="submit" value="Login" class="btn btn-primary btn-md login-btn">Login</button>-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--</div>-->
-            <!--<div class="modal-footer">-->
-                <!--<a href="{# url 'accounts:register' #}">Register Now</a>&nbsp;&nbsp;-->
-                <!--<a href="#">Forgot Password?</a>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
 
 
 
@@ -512,11 +452,14 @@
 
     $(document).ready(function () {
         $("#whatwedoicon").click(function () {
+            console.log("scroll top onclick : ", $("#whatwedocont").offset().top - 70)
             $('html, body').animate({
-                scrollTop: $("#whatwedocont").offset().top - 40
+                scrollTop: $("#whatwedocont").offset().top - 60
             }, 800);
         });
     });
+
+    console.log("scroll top : ", $("#whatwedocont").offset().top - 60)
 
     $(document).ready(function () {
         $("#productsicon").click(function () {
@@ -525,6 +468,9 @@
             }, 800);
         });
     });
+
+    
+    
 
 
    $(document).ready(function () {
@@ -547,5 +493,5 @@
     });
 
 </script>
-</script>
+<!-- </script> -->
 {% endblock %}

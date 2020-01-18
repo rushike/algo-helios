@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 """
 Algonauts User Model
 """

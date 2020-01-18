@@ -13,42 +13,13 @@
 
 {% block content %}
 
-<div id="loginModal" class="modal fade">
-    <div class="modal-dialog modal-login">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <div class="avatar" style="text-align:center;">
-                    <img src="https://cdn.iconscout.com/icon/free/png-256/avatar-372-456324.png" width="80px" height="80px" alt="Avatar">
-                    <h4>Login Now</h4>
-                </div>
-            </div>
-            <div class="modal-body">
-                <form action="" name="login" method="post">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="username" placeholder="Username" required="required">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required="required">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" name="submit" value="Login" class="btn btn-primary btn-lg btn-block login-btn">Login</button>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <a href="#">Register Now</a>&nbsp;&nbsp;
-                <a href="#">Forgot Password?</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid" style="height:100px;"></div>
+<div class="container-fluid" style="height:100px;" ></div>
 
 <div class="pands-heading">
     Products and Services
 </div>
+
+
 
 <div id="responsiveTabsDemo" class="pands container">
 
@@ -62,11 +33,11 @@
     </ul>
 
     <div class="tab-content">
-        <div id="callsgen" class="tab-pane fade in active">
+        <div id="callsgen" class="tab-pane in active">
             <div class="row">
                 <div class="col-md-8">
                     <ul>
-                        <li>Algorithms generate calls in every time horizon for Nifty 500 stocks.</li>
+                        <li>Algorithms generate calls in every time horizon for Nifty 200 stocks.</li>
                         <li>Algorithms are security agnostic and can generate calls for any security, as it just
                             requires the
                             historical data and present data to generate calls.</li>
@@ -97,18 +68,19 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <img src="{% static 'products/callgen.png' %}" width="70%">
+                    <img src="/static/products/callgen.png" width="70%">
                 </div>
             </div>
         </div>
+
 
         <div id="portfolio" class="tab-pane fade">
             <div class="row">
                 <div class="col-md-8">
                     <ul>
                         <li>Portfolios are created, managed and traded in real time by the algorithms.</li>
-                        <li>Automated Portfolio manager is capable of creating and managing the portfolio as per your
-                            risk appetite and
+                        <li>Portfolio manager is capable of creating and managing the portfolio as per your risk
+                            appetite and
                             requirements if you find it tedious and/or technical.</li>
                         <li>The process is fully automated and you need to put in capital only after you have
                             fully
@@ -121,25 +93,68 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <img src="{% static 'products/portfoliomanager.png' %}" width="70%">
+                    <img src="/static/products/portfoliomanager.png" width="70%">
                 </div>
             </div>
         </div>
+
+
     </div>
 
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"></div>
+
+
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true"></div> 
+
 
 </div>
+
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/products.js' %}"></script>
-<script src="{% static 'js/responsive-tabs.js' %}"></script>
+<script src="/static/products.js"></script>
+</script>
+<script src="/static/responsive-tabs.js"></script>
 <script>
     getAccordion("#navoverride",768);
 
+
     $(window).ready(function () {
         $(".loader").fadeOut("slow");
+
+
+    });
+
+    $(function () {
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 200) {
+                $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
+                $('.navbar-collapse').attr('style', 'padding-top:10px;');
+                $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
+                $('#logo').attr('style', 'transform: scale(0.8)');
+
+
+                $("#logo").hover(function () {
+                    $("#logo").attr('style', 'transform:scale(0.85)');
+                }, function () {
+                    $("#logo").attr('style', 'transform:scale(0.8)');
+                });
+
+
+
+
+            }
+            if ($(this).scrollTop() < 200) {
+                $('nav').attr('style', 'box-shadow:none;');
+                $('.navbar-collapse').attr('style', 'padding-top:25px;');
+                $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
+                $('#logo').attr('style', 'transform: scale(1)');
+                $("#logo").hover(function () {
+                    $("#logo").attr('style', 'transform:scale(1.1)');
+                }, function () {
+                    $("#logo").attr('style', 'transform:scale(1)');
+                });
+            }
+        })
     });
 
     $(document).ready(function () {
@@ -147,6 +162,14 @@
             if ($("#myNavbar").hasClass("in")) {
                 $("#myNavbar").removeClass("in", 1000);
                 $("#myNavbar").attr('aria-expanded', 'false');
+
+            }
+        });
+        $("body").onload(function () {
+            if ($("#myNavbar").hasClass("in")) {
+                $("#myNavbar").removeClass("in", 1000);
+                $("#myNavbar").attr('aria-expanded', 'false');
+
             }
         });
     });

@@ -6,7 +6,7 @@
 
 {% block content %}
 <style>
-  /* body {
+  body {
     font-family: "Roboto", sans-serif;
   }
 
@@ -51,7 +51,7 @@
   .container {
     margin-top: 10rem;
     margin-bottom: 5rem;
-  } */
+  } 
 
 </style>
 <br>
@@ -60,14 +60,14 @@
 <br>
 <br>
 
-<div class="container-fluid md-5">
+<div class="container md-5">
 
   <div class="row md-5">
 		<!-- Blog Entries Column -->
 		<div class="col-md-8 col-sm-12 col-xs-12 mt-3">
 			{% for post in post_list %}
 			<a href="{% url 'post_detail' post.slug  %}"  style="text-decoration: none; color:black;">
-			<div class="card1 card mb-4">
+			<div class="card mb-4">
 				<div class="card-body">
 				<h2 class="card-title" style="font-size: 20px; font-weight: 800;">{{ post.title }}</h2>
 				<p class="card-text h6" style="margin-left: 2rem; text-align:right;">{{ post.author }} | {{ post.created_on}} </p>
