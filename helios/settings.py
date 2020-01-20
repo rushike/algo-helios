@@ -18,8 +18,8 @@ SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
     'localhost',
+    '127.0.0.1',
     'dev.algonauts.in',
     'algonauts.in',
 ]
@@ -44,9 +44,13 @@ INSTALLED_APPS = [
     'users',
     'blog',
     'crispy_forms',
+
+    "djangosecure",
+    "sslserver",
 ]
 
-# SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT     = True
+SECURE_SSL_REDIRECT = False
 """
 Algonauts User Model
 """
@@ -113,6 +117,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MIDDLEWARE_CLASSES = (
+    "djangosecure.middleware.SecurityMiddleware",
+)
+
 ROOT_URLCONF = 'helios.urls'
 
 
@@ -124,7 +132,7 @@ ROOT_URLCONF = 'helios.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'catalog/templates')],
+        
         'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
