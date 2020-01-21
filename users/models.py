@@ -4,11 +4,24 @@ from django.core.validators import RegexValidator
 # from unixtimestampfield.fields import UnixTimeStampField
 from django.utils import timezone
 import datetime
+from django.db.models.fields import DateTimeField
+
+
+"""
+Constants
+"""
+USER_TIME = 52 # 52 weeks once user created user is active
+
+DEFAULT_GROUP_LEAVE_TIME = 4 # after 4 weeks from registration user will be out / inactive from group
+
+def end_date_time():
+	return datetime.datetime.now() - datetime.timedelta(DEFAULT_GROUP_LEAVE_TIME)
+
 
 """
 Custom Field Declaration 
 """
-from django.db.models.fields import DateTimeField
+
 
 class UTCField(DateTimeField):
 
@@ -70,7 +83,7 @@ class UserManager(BaseUserManager):
 
 
 class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
-	id = models.IntegerField(primary_key=True)
+	# id = models.IntegerField(primary_key=True)
 	first_name = models.CharField(max_length=64)
 	last_name = models.CharField(max_length=64)
 	email = models.EmailField(max_length=254, unique=True)
@@ -92,7 +105,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 		return "/users/%i/" % (self.pk)
 
 class UserGroupType(models.Model):
-	id = models.IntegerField(primary_key=True)
+	# id = models.IntegerField(primary_key=True)
 	type_name = models.CharField(max_length=128)
 	max_members = models.IntegerField()
 	min_members = models.IntegerField()
@@ -105,7 +118,7 @@ class UserGroupType(models.Model):
 
 
 class UserGroup(models.Model):
-	id = models.IntegerField(primary_key=True)
+	# id = models.IntegerField(primary_key=True, )
 	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
 	members = models.ManyToManyField(
 		AlgonautsUser,
@@ -115,14 +128,16 @@ class UserGroup(models.Model):
 	registration_time = models.DateTimeField(auto_now=True)
 
 
+
 class UserGroupMapping(models.Model):
-	id = models.IntegerField(primary_key=True)
+	# id = models.IntegerField(primary_key=True)
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
 	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE)
 	time_added = models.DateTimeField(auto_now=True)
-	time_removed = models.DateTimeField(null=True, blank=True)
+	time_removed = models.DateTimeField(default = end_date_time, null=True, blank=True)
 	group_admin = models.BooleanField(default=False)
 
+	
 	@property
 	def is_present(self):
 		if datetime.datetime.now > self.time_removed : 
