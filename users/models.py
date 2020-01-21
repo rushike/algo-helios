@@ -112,6 +112,7 @@ class UserGroup(models.Model):
 		through='UserGroupMapping',
 		through_fields=('user_group_id', 'user_profile_id'),
 	)
+	registration_time = models.DateTimeField(auto_now=True)
 
 
 class UserGroupMapping(models.Model):
@@ -119,6 +120,12 @@ class UserGroupMapping(models.Model):
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
 	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE)
 	time_added = models.DateTimeField(auto_now=True)
-	time_removed = models.DateTimeField(auto_now=True)
-	group_admin = models.BooleanField()
+	time_removed = models.DateTimeField(null=True, blank=True)
+	group_admin = models.BooleanField(default=False)
+
+	@property
+	def is_present(self):
+		if datetime.datetime.now > self.time_removed : 
+			return True
+		return False
 
