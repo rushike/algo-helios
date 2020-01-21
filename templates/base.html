@@ -1,0 +1,277 @@
+{% load static %}
+
+
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="theme" content="#004B96">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="FV4auFZ7htxbNwQnweEaYCJ3C4bNcPx3R5JC2H5-gZA" />
+    <title>Algonauts Technologies</title>
+    <link rel="icon" href="{% static 'algonauts.png' %}" type="image/gif" sizes="16x16">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="Algonauts is an Algo Trading firm that automates the trading decisions and systems. Trading strategies built on statistical and mathematical models to generate superior returns.">
+    <meta name="keywords" content="Trading,Algo,Automate,India,Market,Stock">
+    <meta name="author" content="Algonauts Technologies">
+    {% block css_imports %}
+    {% endblock %}
+
+
+    
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script src="https://kit.fontawesome.com/a26aa1e038.js" crossorigin="anonymous"></script>
+    <script src="/static/js/accordion.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/static/accordion.js"></script> -->
+
+    <script src="{% static 'js/accordion.js' %}"></script>
+    <!--Chatbot CSS-->
+    <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+
+    <style>
+        .fab{
+            color:white;
+            margin-left:1.5rem;
+            margin-right:1.5rem;
+        }
+        .fa-f:hover{
+            color:#3B5998;
+        }
+        .fa-t:hover{
+            color:#1DA1F2;
+        }
+        .fa-l:hover{
+            color:#0073B0;
+        }
+        .fa-q:hover{
+            color:#B92B27;
+        }
+    </style>
+</head>
+
+<body>
+
+<mybot></mybot>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5">
+    <a class="navbar-brand" href="#">
+    <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px" height="auto" alt="image"></a>
+  
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse text-center" id="navbarNav" style="font-size:16px;">
+      <ul class="nav navbar-nav ml-auto justify-content-between full-width" style="font-size:1.05rem;">
+
+        <li class="nav-item">
+            <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'home' %}">Blog</a>
+          </li>
+        <li class="nav-item">
+          <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+        </li>
+        <li class="nav-item">
+          <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+        </li>
+        
+            {% if user.is_anonymous %}
+            <li class="nav-item">        
+                <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>
+            </li>
+                
+            {% else %}
+            <li>
+                <!-- <div class="pl-2 btn-group dropdown"><samp>
+                    <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" 
+                    role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ user.get_avatar_url }}"/>
+                        <samp>{{user.first_name}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <form method="post" action="{% url 'account_logout' %}">
+                            {% csrf_token %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                            {% endif %}
+                            <button class="btn btn-sm dropdown-item">DashBoard</button>
+                            <button type="submit" class="btn btn-sm dropdown-item" onclick="myfun">LogOut</button>
+                          </form>
+                    </div> -->
+<!-- =------------------------------------------------------------------ -->
+                    <div class="pl-2 dropdown">
+                        <a class="btn btn-outline-dark dropdown-toggle" href="#" 
+                        role="button" id="dropdownMenuLink" data-toggle="dropdown" 
+                        aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ user.get_avatar_url }}"/>
+                        {{user.first_name}}
+                        </a>
+                        
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                            <button class="btn btn-sm dropdown-item">Dashboard</button>
+                            <form method="post" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                {% if redirect_field_value %}>
+                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>    
+                                {% endif %}
+                                <!-- <a class="btn btn-sm dropdown-item">DashBoard</a> -->
+                                <button class="btn btn-sm dropdown-item" type="submit" onclick="myfun">LogOut</button>
+                            </form>
+                            
+                            <!-- <a class="dropdown-item" href="#">Action</a> -->
+                            <!-- <a class="dropdown-item" href="#">Another action</a> -->
+                            <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                        </div>
+                          </div>
+<!-- =------------------------------------------------------------------ -->
+
+
+                </div>
+                </li>
+            {% endif %}
+            <!-- <a class="nav-link disabled p-2" href="#">Log In</a> -->
+        
+      </ul>
+  </div>
+  </nav>
+
+
+    {% block content %}
+    {% endblock content%}
+    <footer>
+        <div class="container-fluid">
+            <div class="row" style="padding-top:1rem;">
+                <div class="col-md-4 text-center">
+                    <img src="{% static 'algonautsw.png' %}" width="20%"><br><br>
+                    <p><i class="glyphicon glyphicon-envelope" style="color: white;">&nbsp;<a
+                                href="mailto:coreteam@algonauts.in" data-rel="external"
+                                style="color: white; font-family: 'Open Sans', sans-serif; font-size: 14px;">sales@algonauts.in</a></i></p>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6" style="text-align:center; font-size:2.5rem;">
+                            <div class="row footerc">
+                                <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
+                                <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
+                                <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
+                                <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
+                            </div>
+                            <br>
+                            <div class="row footerc" style="padding:10px;">
+                                <p>
+                                    <a href="https://www.quora.com/profile/Algonauts-Technologies-1">
+                                    <!--<img src="{% static 'quora.png' %}"></a>-->
+                                </p>
+                                <p class="text-center">
+                                    <a href="https://www.linkedin.com/in/algonauts-technologies/">
+                                    <img src="{% static 'linkedin.png' %}"></a>
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-center text-lg-left" style="color: aliceblue;font-size:16px;">
+                                    Find us at :<br>
+                                    20, 2nd Floor, SP-TBI,<br> RPI Building,
+                                    Next to Bhavans College Main Gate,<br>
+                                    Munshi Nagar, Andheri West,
+                                    Mumbai 400053
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="padding:10px; color:white;text-align: center; background-color:#3a3a3a;">
+            <p>&copy;&nbsp;2020 Algonauts. All rights reserved</p>
+        </div>
+    </footer>
+
+    {% block scripts %}
+
+
+    {% endblock %}
+
+    <script>
+        $(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 200) {
+                    $('nav').attr('style', 'box-shadow:2px 2px 5px grey;');
+                    $('.navbar-collapse').attr('style', 'padding-top:10px;');
+                    $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;');
+                    $('#logo').attr('style', 'transform: scale(0.8)');
+
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(0.85)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(0.8)');
+                    });
+                }
+                if ($(this).scrollTop() < 200) {
+                    $('nav').attr('style', 'box-shadow:none;');
+                    $('.navbar-collapse').attr('style', 'padding-top:25px;');
+                    $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;')
+                    $('#logo').attr('style', 'transform: scale(1)');
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(1.1)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(1)');
+                    });
+                }
+            })
+        });
+
+        
+
+    </script>
+
+    
+
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    <!-- <script> var $y = jQuery.noConflict(); </script> -->
+    <script src="{% static 'js/chatbot.js' %}"></script>
+</body>
+
+</html>

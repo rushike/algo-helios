@@ -1,0 +1,56 @@
+
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5">
+    <a class="navbar-brand" href="#">
+    <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px" height="auto" alt="image"></a>
+  
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse text-center" id="navbarNav" style="font-size:16px;">
+      <ul class="nav navbar-nav ml-auto justify-content-between full-width">
+        <li class="nav-item">
+          <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+        </li>
+        <li class="nav-item">
+          <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+        </li>
+        <li class="nav-item">
+            {% if user.is_anonymous %}
+                
+                <a type="button" class="btn btn-default nav-link" onclick="location.href = '/accounts/login'" >Login</a>
+                
+                
+            {% else %}
+                <div class="pl-2 btn-group"><samp>
+                    <button class="btn btn-dark btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                        <img src="{{ user.get_avatar_url }}"/>
+                        <samp>{{user.username}}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-right dropdown-menu-md-right dropdown-menu-sm-right dropdown-menu-xs-right">
+                        <form method="post" action="{% url 'account_logout' %}">
+                            {% csrf_token %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                            {% endif %}
+                            <button type="submit" class="btn btn-sm dropdown-item" onclick="myfun">LogOut</button>
+                          </form>
+                    </div>
+                    </samp></div>
+            {% endif %}
+            <!-- <a class="nav-link disabled p-2" href="#">Log In</a> -->
+        </li>
+      </ul>
+  </div>
+  </nav>
+  <br>
+  <br>
+{% block content %}
+
+{% endblock %}
+  <footer class="footer" style="margin-top: auto;">
