@@ -144,3 +144,19 @@ class UserGroupMapping(models.Model):
 			return True
 		return False
 
+
+
+class ReferralOffer(models.Model):
+    offer_name = models.CharField(max_length=100)
+
+
+class Referrals(models.Model):
+    referral_code = models.IntegerField()
+    referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE) 
+    referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE) 
+    referral_time = models.DateTimeField()
+    referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE)
+
+
+
+
