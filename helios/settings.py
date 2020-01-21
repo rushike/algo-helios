@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'users',
     'blog',
     'crispy_forms',
+    
     'products',
+    'subscriptions'
     ]
 
 # SECURE_SSL_REDIRECT     = True
