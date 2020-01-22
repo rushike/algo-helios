@@ -6,6 +6,7 @@ sudo mkdir /var/www/algonauts.in/log
 sudo git -C /var/www/algonauts.in clone ${HELIOS_GIT_SOURCE} -b ${HELIOS_DEPLOYMENT_BRANCH}
 sudo python3 -m venv /var/www/algonauts.in/venv
 sudo /var/www/algonauts.in/venv/bin/pip install -r /var/www/algonauts.in/helios/requirements.txt
+sudo /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py migrate
 sudo cp /var/www/algonauts.in/helios/scripts/apache_helios.conf /etc/apache2/sites-available/apache_helios.conf
 sudo a2ensite apache_helios.conf
 sudo a2dissite 000-default.conf
