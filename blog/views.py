@@ -13,7 +13,7 @@ class PostList(generic.ListView):
 
 
 def post_detail(request, slug):
-    template_name = 'postDetail.html'
+    template_name = 'blog/postDetail.html'
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.filter(active=True)
     new_comment = None
