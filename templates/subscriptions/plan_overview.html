@@ -1,0 +1,17 @@
+
+{% block subscriptions_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+                <div class="card-body" >
+                    <h1>{{plan.plan_name}}<br></h1>
+                    <h1>{{plan.price_per_month}}<br></h1>
+                    <h1>{{plan.price_per_year}}<br></h1>
+                </div>
+                <hr>
+                <button onclick="location.href='subscribe'"> Subscribe </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

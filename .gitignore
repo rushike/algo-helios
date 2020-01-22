@@ -6,7 +6,8 @@ env/
 *.log
 *.pot
 *.pyc
-
+.vscode
+postgres.txt
 .vscode/* 
 !.vscode/settings.json 
 !.vscode/tasks.json 

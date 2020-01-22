@@ -1,0 +1,19 @@
+
+{% block subscriptions_content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% for plan in plans %}
+                    <div class="card-body" onclick="location.href= 'plan_overview/'">
+                        <h1>{{plan.plan_name}}<br></h1>
+                        <h1>{{plan.price_per_month}}<br></h1>
+                        <h1>{{plan.price_per_year}}<br></h1>
+                    </div>
+                    <hr>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
