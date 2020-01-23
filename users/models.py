@@ -1,4 +1,4 @@
-from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser, Group
 from django.db import models
 from django.core.validators import RegexValidator
 # from unixtimestampfield.fields import UnixTimeStampField
@@ -111,12 +111,6 @@ class UserGroupType(models.Model):
 	min_members = models.IntegerField()
 	standard_group = models.CharField(max_length=128)
 
-# class UserGroup(models.Model):
-# 	id = models.IntegerField(primary_key=True)
-# 	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
-# 	registration_time = models.TimeField()
-
-
 class UserGroup(models.Model):
 	# id = models.IntegerField(primary_key=True, )
 	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
@@ -126,7 +120,6 @@ class UserGroup(models.Model):
 		through_fields=('user_group_id', 'user_profile_id'),
 	)
 	registration_time = models.DateTimeField(auto_now=True)
-
 
 
 class UserGroupMapping(models.Model):
@@ -152,8 +145,8 @@ class ReferralOffer(models.Model):
 
 class Referrals(models.Model):
     referral_code = models.IntegerField()
-    referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE) 
-    referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE) 
+    referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='by') 
+    referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='to') 
     referral_time = models.DateTimeField()
     referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE)
 
