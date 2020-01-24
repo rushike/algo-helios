@@ -74,11 +74,11 @@ EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-# EMAIL_HOST_USER = 'admin@algonauts.in'
-# EMAIL_HOST_PASSWORD = '123123#Ab'
+EMAIL_HOST_USER = 'algonauts.tech@gmail.com'
+EMAIL_HOST_PASSWORD = ''
 
-EMAIL_HOST_USER = 'javaproject1024@gmail.com'
-EMAIL_HOST_PASSWORD = 'JavaProjec'
+# EMAIL_HOST_USER = 'javaproject1024@gmail.com'
+# EMAIL_HOST_PASSWORD = 'JavaProjec'
 
 
 EMAIL_USE_TLS = True
