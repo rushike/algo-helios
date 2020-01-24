@@ -1,7 +1,7 @@
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TEMPLATES_DIR = os.path.join(BASE_DIR,'templates')
 
@@ -10,12 +10,15 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
+
 ALLOWED_HOSTS = [
+    'localhost',
     'dev.algonauts.in',
     'algonauts.in',
 ]
@@ -40,12 +43,12 @@ INSTALLED_APPS = [
     'blog',
     'crispy_forms',
     
-    # 'products',
-    # 'subscriptions'
+    'products',
+    'subscriptions'
     ]
 
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 # Algonauts User Model
 AUTH_USER_MODEL = 'users.AlgonautsUser'
@@ -71,8 +74,12 @@ EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'admin@algonauts.in'
-EMAIL_HOST_PASSWORD = '123123#Ab'
+# EMAIL_HOST_USER = 'admin@algonauts.in'
+# EMAIL_HOST_PASSWORD = '123123#Ab'
+
+EMAIL_HOST_USER = 'javaproject1024@gmail.com'
+EMAIL_HOST_PASSWORD = 'JavaProjec'
+
 
 EMAIL_USE_TLS = True
 

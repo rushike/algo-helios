@@ -5,6 +5,7 @@ from django.utils import timezone
 import datetime
 from django.db.models.fields import DateTimeField
 
+from django.db.models.signals import post_save, pre_save
 
 """
 Constants
@@ -82,6 +83,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	is_active = models.BooleanField(default=True)
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
+	# algo_credits = models.IntegerField()
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -96,7 +98,10 @@ class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
 	max_members = models.IntegerField()
 	min_members = models.IntegerField()
-	standard_group = models.CharField(max_length=128)
+	standard_group = models.CharField(max_length=1)
+
+	def __str__(self):
+		return self.type_name
 
 class UserGroup(models.Model):
 	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
@@ -132,3 +137,30 @@ class UserGroupMapping(models.Model):
 		if datetime.datetime.now > self.time_removed : 
 			return True
 		return False
+
+
+  
+# Code to add permission to group 
+def create_individual_user_group(sender, instance, **kwargs):
+	indiv = UserGroupType.objects.get(type_name='User')
+
+	group = UserGroup.objects.create(user_group_type_id=indiv)
+	group.save()  
+
+	group_map = UserGroupMapping.objects.create(user_group_id = group, user_profile_id = instance, time_added = datetime.datetime.now(), \
+					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4))
+	group_map.save()
+
+def validate_group_restriction(sender, instance, **kwargs):
+	# mems = UserGroupMapping.objects.filter()
+	print("Im called")
+	print(instance)
+
+
+
+# DB Signals 
+post_save.connect(create_individual_user_group, sender=AlgonautsUser)
+
+post_save.connect(validate_group_restriction, sender= UserGroupMapping)
+
+
