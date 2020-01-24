@@ -93,6 +93,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
+	def __str__(self):
+		return "_".join((str(self.email)).split("@"))
 
 class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
@@ -111,7 +113,7 @@ class UserGroup(models.Model):
 	)
 	registration_time = models.DateTimeField(auto_now=True)
 	def __str__(self):
-		return str(self.user_group_type_id)
+		return "%".join([str(self.id), str(self.user_group_type_id),] )
 
 
 class ReferralOffer(models.Model):
@@ -136,10 +138,6 @@ class UserGroupMapping(models.Model):
 	time_added = models.DateTimeField(auto_now=True)
 	time_removed = models.DateTimeField(default = end_date_time, null=True, blank=True)
 	group_admin = models.BooleanField(default=False)
-	def __str__(self):
-		return "#".join([self.user_group_id , self.user_profile_id])
-
-
 
 	@property
 	def is_present(self):
@@ -147,29 +145,41 @@ class UserGroupMapping(models.Model):
 			return True
 		return False
 
-
+	def __str__(self):
+		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
   
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):
-	indiv = UserGroupType.objects.get(type_name='User')
+	indiv = UserGroupType.objects.get(type_name='Individual')
 
 	group = UserGroup.objects.create(user_group_type_id=indiv)
-	group.save()  
+	# group.save()  
 
 	group_map = UserGroupMapping.objects.create(user_group_id = group, user_profile_id = instance, time_added = datetime.datetime.now(), \
-					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4))
-	group_map.save()
+					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4), group_admin = True)
+	# group_map.save()
+	return
+
+
 
 def validate_group_restriction(sender, instance, **kwargs):
-	# mems = UserGroupMapping.objects.filter()
-	print("Im called")
-	print(instance)
-
+	mems = UserGroupMapping.objects.filter(user_group_id = instance.user_group_id)
+	unq = UserGroupMapping.objects.filter(user_group_id = instance.user_group_id, user_profile_id = instance.user_profile_id).count()
+	if unq > 1:
+		instance.delete()
+		return
+	
+	mzx = UserGroupType.objects.filter(type_name = instance.user_group_id.user_group_type_id)[0]
+	if mzx.max_members < len(mems):
+		instance.delete()
+		return
+	
+	
 
 
 # DB Signals 
-post_save.connect(create_individual_user_group, sender=AlgonautsUser)
+post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser")
 
-post_save.connect(validate_group_restriction, sender= UserGroupMapping)
+post_save.connect(validate_group_restriction, sender= UserGroupMapping, dispatch_uid="users.models.UserGroupMapping")
 
 
