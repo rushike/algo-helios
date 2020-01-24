@@ -10,14 +10,8 @@ def plans(request):
 def plan_overview(request, slug):
     return render(request, 'subscriptions/plan_overview.html', {'plan' : Plan.objects.get(plan_name=slug)})
 
-def subscribe(request):
-    if request.POST:
-        form = Subscription_Form(request.POST)
-        if form.is_valid():
-            details = form.save()
-            grp_id = UserGroupMapping.objects.get(user_profile_id=request.user)
-    return HttpResponse("hello")
-
-
-    # author = models.CharField(User.get_username()) #AUTOMATICALLY STORE USERNAME
-
+def plan_subscribe(request):
+    subs_attr = dict(request.POST.lists())
+    subs_attr['email'] = request.user.email
+    
+    return HttpResponse(subs_attr.items())
