@@ -16,8 +16,6 @@ SECRET_KEY = '&z750(_rn%vr8bb&!yv$_ps*$m(#+^q-cq$v11pe&za-(46fl)'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
     'dev.algonauts.in',
     'algonauts.in',
 ]
@@ -47,7 +45,7 @@ INSTALLED_APPS = [
     ]
 
 
-# SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # Algonauts User Model
 AUTH_USER_MODEL = 'users.AlgonautsUser'
@@ -73,12 +71,8 @@ EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-# EMAIL_HOST_USER = 'admin@algonauts.in'
-# EMAIL_HOST_PASSWORD = '123123#Ab'
-
-EMAIL_HOST_USER = 'javaproject1024@gmail.com'
-
-EMAIL_HOST_PASSWORD = 'JavaProjec'
+EMAIL_HOST_USER = 'admin@algonauts.in'
+EMAIL_HOST_PASSWORD = '123123#Ab'
 
 EMAIL_USE_TLS = True
 

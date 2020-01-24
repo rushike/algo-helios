@@ -4,11 +4,11 @@ from django.contrib import admin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager
+from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral
 
 # from myproject.admin_site import custom_admin_site
 
-admin.site.site_header = "ALgonauts Admininstration Page"
+admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
@@ -37,21 +37,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('first_name', 'last_name', 'email', 'contact_no')
     filter_horizontal = ('groups', 'user_permissions',)
 
-
-# @admin.register(UserGroup, UserGroupMapping, UserGroupType, site=custom_admin_site)
-# class GroupAdmin(admin.ModelAdmin):
-#     fieldsets = (
-#         (None, {'fields': ()}),
-#         ('Permissions', {'fields': (
-#             'is_active', 
-#             'is_staff', 
-#             'is_superuser',
-#             'groups', 
-#             'user_permissions',
-#         )}),
-#     )
-
-
 admin.site.register(AlgonautsUser, UserAdmin) 
 
 admin.site.register(UserGroup)
@@ -59,3 +44,8 @@ admin.site.register(UserGroup)
 admin.site.register(UserGroupMapping)
 
 admin.site.register(UserGroupType)
+
+admin.site.register(Referral)
+
+admin.site.register(ReferralOffer)
+

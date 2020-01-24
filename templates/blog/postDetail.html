@@ -134,13 +134,13 @@
 
 <div class="container">
   <div class="row">
-    <div class="content col-md-7 mt-3">
+    <div class="col-md-8 mt-3">
     <div class="card mb-4">
       <div class="card-body">
         <h1 style="font-size: 3rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
         <p class=" text-muted" style="text-align: right; font-size: small;">{{ post.author }} | {{ post.created_on }}</p>
         <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
-        <p class="card-text" style="font-size: 1.5rem;">{{ post.content | safe }}</p>
+        <p class="card-text" style="font-size: 1.2rem;">{{ post.content | safe }}</p>
       </div>
     </div>
 
@@ -181,6 +181,13 @@
       </div>
     </div>
   </div>
+
+  <div class="col-md-4 col-sm-12 col-xs-12">
+    {% block sidebar %} 
+        {% include 'blog/sidebar.html' %} 
+    {% endblock sidebar %}
+   </div>
+
   </div>
 </div>
 {% endblock content %}
