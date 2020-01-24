@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from users.models import UserGroup
 # Create your models here.
-   
 
 class AlgoProductCategory(models.Model):
     product_category_name = models.CharField(max_length=50)

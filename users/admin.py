@@ -8,7 +8,7 @@ from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, U
 
 # from myproject.admin_site import custom_admin_site
 
-admin.site.site_header = "ALgonauts Admininstration Page"
+admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (

@@ -1,7 +1,6 @@
 from django.db import models
-
 from users.models import UserGroup
-
+from products.models import AlgoProduct, AlgoProductCategory
 
 class Plan(models.Model):
     plan_name = models.CharField(max_length=500)
@@ -11,6 +10,8 @@ class Plan(models.Model):
     entry_time = models.DateTimeField()
     expiry_time = models.DateTimeField()
     is_active = models.BooleanField(default=False)
+    def __str__(self):
+        return str(self.plan_name)
 
 class Subscription(models.Model):
     user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)  #
@@ -18,5 +19,6 @@ class Subscription(models.Model):
     subscription_start = models.DateTimeField()
     subscription_end = models.DateTimeField()
     subscription_active = models.BooleanField()
-    payment_id = models.IntegerField(default=0)  
-    
+    payment_id = models.IntegerField(default=0) 
+    def __str__(self):
+        return str(self.user_group_id)

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser, Group
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
@@ -98,10 +98,9 @@ class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
 	max_members = models.IntegerField()
 	min_members = models.IntegerField()
-	standard_group = models.CharField(max_length=1)
-
+	standard_group = models.CharField(max_length=128)
 	def __str__(self):
-		return self.type_name
+		return str(self.type_name)
 
 class UserGroup(models.Model):
 	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
@@ -111,18 +110,24 @@ class UserGroup(models.Model):
 		through_fields=('user_group_id', 'user_profile_id'),
 	)
 	registration_time = models.DateTimeField(auto_now=True)
+	def __str__(self):
+		return str(self.user_group_type_id)
 
 
 class ReferralOffer(models.Model):
-    offer_name = models.CharField(max_length=100)
+    offer_name = models.CharField(max_length=100) 
+    def __str__(self):
+    	return str(self.offer_name)
 
 
 class Referral(models.Model):
-    referral_code = models.IntegerField()
-    referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='by') 
-    referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='to') 
-    referral_time = models.DateTimeField()
-    referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE)
+	referral_code = models.IntegerField()
+	referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='by') 
+	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='to') 
+	referral_time = models.DateTimeField()
+	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE)
+	def __str__(self):
+		return str(self.referral_code)
 
 
 class UserGroupMapping(models.Model):
@@ -131,6 +136,10 @@ class UserGroupMapping(models.Model):
 	time_added = models.DateTimeField(auto_now=True)
 	time_removed = models.DateTimeField(default = end_date_time, null=True, blank=True)
 	group_admin = models.BooleanField(default=False)
+	def __str__(self):
+		return "#".join([self.user_group_id , self.user_profile_id])
+
+
 
 	@property
 	def is_present(self):
