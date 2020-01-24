@@ -14,5 +14,6 @@ postgres.txt
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
-
+.test.py
+test.py
 stunnel/

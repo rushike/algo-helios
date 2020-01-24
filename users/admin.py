@@ -37,13 +37,44 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('first_name', 'last_name', 'email', 'contact_no')
     filter_horizontal = ('groups', 'user_permissions',)
 
+class GroupMappingAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')}),
+    )
+    list_display = ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')
+    list_filter = ('group_admin',)
+    search_fields = ('user_profile_id', )
+    ordering = ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')
+
+class GroupAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ( 'user_group_type_id',)}),
+    )
+
+  
+    list_display = ('id', 'user_group_type_id', 'registration_time')
+    list_filter = ('user_group_type_id',)
+    search_fields = ('user_group_type_id', )
+    ordering = ('user_group_type_id', 'registration_time')
+
+
+class GroupTypeAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('type_name', 'max_members', 'min_members', 'standard_group')}),
+    )
+    list_display = ('type_name', 'max_members', 'min_members', 'standard_group',)
+    list_filter = ('type_name', 'max_members', 'min_members', 'standard_group',)
+    search_fields = ('type_name', )
+    ordering = ('type_name', 'max_members', 'min_members', 'standard_group',)
+
+
 admin.site.register(AlgonautsUser, UserAdmin) 
 
-admin.site.register(UserGroup)
+admin.site.register(UserGroup, GroupAdmin)
 
-admin.site.register(UserGroupMapping)
+admin.site.register(UserGroupMapping, GroupMappingAdmin)
 
-admin.site.register(UserGroupType)
+admin.site.register(UserGroupType, GroupTypeAdmin)
 
 admin.site.register(Referral)
 
