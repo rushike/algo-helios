@@ -12,7 +12,7 @@ admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login')}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', 'trail')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -31,10 +31,10 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login')
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits', 'trail')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
-    ordering = ('first_name', 'last_name', 'email', 'contact_no')
+    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'trail')
     filter_horizontal = ('groups', 'user_permissions',)
 
 class GroupMappingAdmin(admin.ModelAdmin):
@@ -48,14 +48,14 @@ class GroupMappingAdmin(admin.ModelAdmin):
 
 class GroupAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ( 'user_group_type_id',)}),
+        (None, {'fields': ( 'user_group_type_id', 'admin')}),
     )
 
   
-    list_display = ('id', 'user_group_type_id', 'registration_time')
+    list_display = ('id', 'user_group_type_id', 'registration_time', 'admin')
     list_filter = ('user_group_type_id',)
     search_fields = ('user_group_type_id', )
-    ordering = ('user_group_type_id', 'registration_time')
+    ordering = ('user_group_type_id', 'registration_time', 'admin')
 
 
 class GroupTypeAdmin(admin.ModelAdmin):

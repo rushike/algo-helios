@@ -1,7 +1,5 @@
 {% load static %}
 
-
-
 <!DOCTYPE html>
 
 <html>
@@ -23,9 +21,6 @@
 
 
     
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     
     
@@ -51,19 +46,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="/static/accordion.js"></script> -->
-
     <script src="{% static 'js/accordion.js' %}"></script>
     <!--Chatbot CSS-->
     <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
@@ -85,6 +67,9 @@
         }
         .fa-q:hover{
             color:#B92B27;
+        }
+        body{
+            padding-top: 70px;
         }
     </style>
 </head>
@@ -124,23 +109,6 @@
                 
             {% else %}
             <li>
-                <!-- <div class="pl-2 btn-group dropdown"><samp>
-                    <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" 
-                    role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ user.get_avatar_url }}"/>
-                        <samp>{{user.first_name}}
-                    </button>
-                    <div class="dropdown-menu">
-                        <form method="post" action="{% url 'account_logout' %}">
-                            {% csrf_token %}
-                            {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                            {% endif %}
-                            <button class="btn btn-sm dropdown-item">DashBoard</button>
-                            <button type="submit" class="btn btn-sm dropdown-item" onclick="myfun">LogOut</button>
-                          </form>
-                    </div> -->
-<!-- =------------------------------------------------------------------ -->
                     <div class="pl-2 dropdown">
                         <a class="btn btn-outline-dark dropdown-toggle" href="#" 
                         role="button" id="dropdownMenuLink" data-toggle="dropdown" 
@@ -150,7 +118,8 @@
                         </a>
                         
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                            <button class="btn btn-sm dropdown-item">Dashboard</button>
+                            
+                            <button class="btn btn-sm dropdown-item" onclick="location.href = '{{user.email|cut:'@'}}'; ">Dashboard</button>
                             <form method="post" action="{% url 'account_logout' %}">
                                 {% csrf_token %}
                                 {% if redirect_field_value %}>
@@ -159,13 +128,8 @@
                                 <!-- <a class="btn btn-sm dropdown-item">DashBoard</a> -->
                                 <button class="btn btn-sm dropdown-item" type="submit" onclick="myfun">LogOut</button>
                             </form>
-                            
-                            <!-- <a class="dropdown-item" href="#">Action</a> -->
-                            <!-- <a class="dropdown-item" href="#">Another action</a> -->
-                            <!-- <a class="dropdown-item" href="#">Something else here</a> -->
                         </div>
                           </div>
-<!-- =------------------------------------------------------------------ -->
 
 
                 </div>
@@ -205,10 +169,7 @@
                                     <a href="https://www.quora.com/profile/Algonauts-Technologies-1">
                                     <!--<img src="{% static 'quora.png' %}"></a>-->
                                 </p>
-                                <p class="text-center">
-                                    <a href="https://www.linkedin.com/in/algonauts-technologies/">
-                                    <img src="{% static 'linkedin.png' %}"></a>
-                                </p>
+                                
                             </div>
 
                         </div>
