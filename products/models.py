@@ -21,6 +21,8 @@ class Product(models.Model):
     
     def __str__(self):
         return str(self.product_name)
+    def __repr__(self):
+        return self.__str__()
 
 class PlanProductMap(models.Model):
     plan_id = models.ForeignKey(Plan, on_delete = models.CASCADE, related_name="ppm_plan_id")
@@ -34,4 +36,6 @@ class UserProductFilter(models.Model):
     user_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="upf_user_id")
     product_id = models.ForeignKey(Product, on_delete = models.CASCADE, related_name="upf_product_id")
     filter_attributes = models.CharField(max_length=200)
-    pass
+    
+    def __str__(self):
+        return "#".join([str(self.user_id), self.product_id])

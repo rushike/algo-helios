@@ -434,14 +434,12 @@
 
     $(document).ready(function () {
         $("#whatwedoicon").click(function () {
-            console.log("scroll top onclick : ", $("#whatwedocont").offset().top - 70)
             $('html, body').animate({
                 scrollTop: $("#whatwedocont").offset().top - 60
             }, 800);
         });
     });
 
-    console.log("scroll top : ", $("#whatwedocont").offset().top - 60)
 
     $(document).ready(function () {
         $("#productsicon").click(function () {

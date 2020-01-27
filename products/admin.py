@@ -62,4 +62,4 @@ class UserProductFilterAdmin(admin.ModelAdmin):
 admin.site.register(ProductCategory, ProductCategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(PlanProductMap, PlanProductAdmin)
-admin.site.register(UserProductFilter, UserProductFilter)
+admin.site.register(UserProductFilter, UserProductFilterAdmin)
