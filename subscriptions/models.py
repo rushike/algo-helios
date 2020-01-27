@@ -1,10 +1,10 @@
 from django.db import models
-from users.models import UserGroup
-from products.models import AlgoProduct, AlgoProductCategory
+from users.models import UserGroupType, UserGroup
+# from products.models import Product, ProductCategory
 
 class Plan(models.Model):
-    plan_name = models.CharField(max_length=500)
-    user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
+    plan_name = models.CharField(max_length=50)
+    user_group_type_id = models.ForeignKey(UserGroupType, on_delete=models.CASCADE)
     price_per_month = models.PositiveIntegerField()
     price_per_year = models.PositiveIntegerField()
     entry_time = models.DateTimeField()

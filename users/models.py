@@ -5,8 +5,6 @@ from django.utils import timezone
 import datetime
 from django.db.models.fields import DateTimeField
 
-from django.db.models.signals import post_save, pre_save
-
 """
 Constants
 """
@@ -83,7 +81,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	is_active = models.BooleanField(default=True)
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
-	# algo_credits = models.IntegerField()
+	algo_credits = models.IntegerField(default=0)
+	trail = models.IntegerField(default=0)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -98,20 +97,38 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
-	max_members = models.IntegerField()
-	min_members = models.IntegerField()
-	standard_group = models.CharField(max_length=128)
+	max_members = models.IntegerField(default=1)
+	min_members = models.IntegerField(default=1)
+	standard_group = models.BooleanField(default=True, blank=True)
+	objects = models.Manager()
 	def __str__(self):
 		return str(self.type_name)
 
+
+class UserGroupManager(models.Manager):
+	def create_user_group(self, user_group_type_id, registration_time, admin):
+		try : #can validate if any restrictions
+			user_group = self.model(user_group_type_id = user_group_type_id, registration_time = registration_time, admin = admin)
+			user_group.save(using=self._db)
+			return user_group
+		except:
+			return 
+
+
 class UserGroup(models.Model):
-	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE)
-	members = models.ManyToManyField(
+	user_group_type_id = models.ForeignKey(UserGroupType, on_delete = models.CASCADE,related_name="ug_user_group_type_id")
+	memb = models.ManyToManyField(
 		AlgonautsUser,
 		through='UserGroupMapping',
 		through_fields=('user_group_id', 'user_profile_id'),
 	)
 	registration_time = models.DateTimeField(auto_now=True)
+	admin = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ug_admin")
+	objects = UserGroupManager()
+
+	class Meta:
+		unique_together = ('user_group_type_id','admin')
+
 	def __str__(self):
 		return "%".join([str(self.id), str(self.user_group_type_id),] )
 
@@ -124,21 +141,36 @@ class ReferralOffer(models.Model):
 
 class Referral(models.Model):
 	referral_code = models.IntegerField()
-	referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='by') 
-	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='to') 
+	referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_referred_by') 
+	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()
-	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE)
+	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE, related_name="r_referral_offer_id")
 	def __str__(self):
 		return str(self.referral_code)
 
+class UserGroupMappingManager(models.Manager):
+	def create_user_group_mapping(self, user_profile_id, user_group_id, delta_period, group_admin): # delta period in number of weeks
+		if user_group_id is None: return # if group is not form due to some err, don't add user_group_mapping 
+		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
+		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
+		if unq: return # allow one user to be admin of only one user group of particular type
+		
+		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
+		if mzx < mems: return # do not add more than max number specified
+		mapper = self.create(user_group_id = user_group_id, user_profile_id = user_profile_id, time_added = datetime.datetime.now(), \
+					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4), group_admin = True)
+		mapper.save(using = self._db)
+		return mapper
+
+	pass
 
 class UserGroupMapping(models.Model):
-	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
-	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE)
+	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE, related_name="ugm_user_group_id")
+	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ugm_user_profile_id")
 	time_added = models.DateTimeField(auto_now=True)
 	time_removed = models.DateTimeField(default = end_date_time, null=True, blank=True)
 	group_admin = models.BooleanField(default=False)
-
+	objects = UserGroupMappingManager()
 	@property
 	def is_present(self):
 		if datetime.datetime.now > self.time_removed : 
@@ -148,38 +180,26 @@ class UserGroupMapping(models.Model):
 	def __str__(self):
 		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
   
+
+from django.db.models.signals import post_save, pre_save
+import datetime
+
+
+# from users.models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType
+
+
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):
-	indiv = UserGroupType.objects.get(type_name='Individual')
+	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
 
-	group = UserGroup.objects.create(user_group_type_id=indiv)
-	# group.save()  
-
-	group_map = UserGroupMapping.objects.create(user_group_id = group, user_profile_id = instance, time_added = datetime.datetime.now(), \
-					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4), group_admin = True)
-	# group_map.save()
+	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, registration_time = datetime.datetime.now(), admin = instance)
+	# group.save()
+	if group is None : return
+	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, delta_period= 4, group_admin = True)
+	group_map.save()
 	return
 
 
 
-def validate_group_restriction(sender, instance, **kwargs):
-	mems = UserGroupMapping.objects.filter(user_group_id = instance.user_group_id)
-	unq = UserGroupMapping.objects.filter(user_group_id = instance.user_group_id, user_profile_id = instance.user_profile_id).count()
-	if unq > 1:
-		instance.delete()
-		return
-	
-	mzx = UserGroupType.objects.filter(type_name = instance.user_group_id.user_group_type_id)[0]
-	if mzx.max_members < len(mems):
-		instance.delete()
-		return
-	
-	
-
-
 # DB Signals 
-post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser")
-
-post_save.connect(validate_group_restriction, sender= UserGroupMapping, dispatch_uid="users.models.UserGroupMapping")
-
-
+post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
