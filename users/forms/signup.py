@@ -1,7 +1,6 @@
 from allauth.account.forms import SignupForm
 from django.contrib.auth import get_user_model
 from django import forms
-from phonenumber_field.modelfields import PhoneNumberField
 
 class AlgonautsSignupForm(SignupForm):
     first_name = forms.CharField(max_length=30, label='First Name')
@@ -19,7 +18,7 @@ class AlgonautsSignupForm(SignupForm):
         self.fields["contact_no"].label = 'Contact'
         self.fields["contact_no"].widget.attrs["placeholder"] = "Contact Number"
         self.fields["password1"].label = 'Password'
-        self.fields["password1"].widget.attrs["placeholder"] = "Password"
+        self.fields["password1"].widget.attrs["placeholder"] = "Password2"
         self.fields["password2"].label = 'Confirm'
         self.fields["password2"].widget.attrs["placeholder"] = "Confirm Password"
 

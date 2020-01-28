@@ -11,7 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helios.settings')    
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", 'helios.settings.common')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'helios.settings')    
 
 application = get_wsgi_application()

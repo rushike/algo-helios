@@ -2,8 +2,12 @@ from django.contrib.auth.models import BaseUserManager, PermissionsMixin, Abstra
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
-import datetime
+
 from django.db.models.fields import DateTimeField
+
+
+from django.db.models.signals import post_save, pre_save
+import datetime
 
 """
 Constants
@@ -14,7 +18,6 @@ DEFAULT_GROUP_LEAVE_TIME = 4 # after 4 weeks from registration user will be out 
 
 def end_date_time():
 	return datetime.datetime.now() - datetime.timedelta(DEFAULT_GROUP_LEAVE_TIME)
-
 
 """
 Custom Field Declaration 
@@ -32,9 +35,6 @@ class UTCField(DateTimeField):
                 value = datetime.datetime.fromtimestamp(int(value))
                 setattr(model_instance, self.attname, value)
             return super(UTCField, self).pre_save(model_instance, add)
-
-
-
 
 # Create your models here.
 class UserManager(BaseUserManager):
@@ -82,7 +82,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
-	trail = models.IntegerField(default=0)
+	had_trial = models.BooleanField(default=False)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -92,6 +92,10 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
+	def join_to_group(self, group_id): # method add user(self) to the specific group with group_id 
+		user_group_id = UserGroup.objects.get(id = group_id)
+		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, delta_period=4, group_admin= False)
+		return mapper
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
 
@@ -157,11 +161,15 @@ class UserGroupMappingManager(models.Manager):
 		
 		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
 		if mzx < mems: return # do not add more than max number specified
-		mapper = self.create(user_group_id = user_group_id, user_profile_id = user_profile_id, time_added = datetime.datetime.now(), \
-					time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4), group_admin = True)
+		
+		mapper = self.create(
+				user_group_id = user_group_id, 
+				user_profile_id = user_profile_id, 
+				time_added = datetime.datetime.now(),
+				time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4),
+				group_admin = True)
 		mapper.save(using = self._db)
 		return mapper
-
 	pass
 
 class UserGroupMapping(models.Model):
@@ -180,14 +188,6 @@ class UserGroupMapping(models.Model):
 	def __str__(self):
 		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
   
-
-from django.db.models.signals import post_save, pre_save
-import datetime
-
-
-# from users.models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType
-
-
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):
 	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
@@ -198,8 +198,6 @@ def create_individual_user_group(sender, instance, **kwargs):
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, delta_period= 4, group_admin = True)
 	group_map.save()
 	return
-
-
 
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation

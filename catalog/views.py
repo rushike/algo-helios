@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView # Import TemplateView
-from django.http import HttpResponse, HttpResponseNotFound, Http404,  HttpResponseRedirect
+from django.http import HttpResponse,  HttpResponseRedirect
 
 
 class IndexPageView(TemplateView):

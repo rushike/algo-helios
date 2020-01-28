@@ -74,8 +74,8 @@ EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'javaproject1024@gmail.com'
-EMAIL_HOST_PASSWORD = 'JavaProjec'
+EMAIL_HOST_USER = 'alogonauts.tech@gmail.com'
+EMAIL_HOST_PASSWORD = 'algonauts@123'
 
 
 EMAIL_USE_TLS = True
@@ -86,7 +86,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ACCOUNT_FORMS = {
-'signup': 'catalog.forms.signup.AlgonautsSignupForm',
+'signup': 'users.forms.signup.AlgonautsSignupForm',
 }
 
 

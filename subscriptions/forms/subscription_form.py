@@ -10,12 +10,3 @@ class subscription_form(forms.Form):
         for x in all_plans:
             print(x)
     
-    
-
-# user_group_id 
-# plan_id
-# subscription_start
-# subscription_end 
-# subscription_active
-# payment_id 
-    
