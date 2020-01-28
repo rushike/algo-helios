@@ -8,6 +8,3 @@ ALLOWED_HOSTS = [
 ]
 
 SECURE_SSL_REDIRECT = True
-
-EMAIL_HOST_USER = 'admin@algonauts.in'
-EMAIL_HOST_PASSWORD = '123123#Ab'

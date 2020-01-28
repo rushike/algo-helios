@@ -74,7 +74,7 @@ EMAIL_SUBJECT_PREFIX = '[dev user skeleton] '
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'alogonauts.tech@gmail.com'
+EMAIL_HOST_USER = 'algonauts.tech@gmail.com'
 EMAIL_HOST_PASSWORD = 'algonauts@123'
 
 

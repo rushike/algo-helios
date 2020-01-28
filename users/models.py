@@ -2,23 +2,15 @@ from django.contrib.auth.models import BaseUserManager, PermissionsMixin, Abstra
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
-
 from django.db.models.fields import DateTimeField
-
-
 from django.db.models.signals import post_save, pre_save
+
 import datetime
+
 
 """
 Constants
 """
-USER_TIME = 52 # 52 weeks once user created user is active
-
-DEFAULT_GROUP_LEAVE_TIME = 4 # after 4 weeks from registration user will be out / inactive from group
-
-def end_date_time():
-	return datetime.datetime.now() - datetime.timedelta(DEFAULT_GROUP_LEAVE_TIME)
-
 """
 Custom Field Declaration 
 """
@@ -82,7 +74,6 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
-	had_trial = models.BooleanField(default=False)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -176,7 +167,7 @@ class UserGroupMapping(models.Model):
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE, related_name="ugm_user_group_id")
 	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ugm_user_profile_id")
 	time_added = models.DateTimeField(auto_now=True)
-	time_removed = models.DateTimeField(default = end_date_time, null=True, blank=True)
+	time_removed = models.DateTimeField(default = datetime.datetime.now, null=True, blank=True)
 	group_admin = models.BooleanField(default=False)
 	objects = UserGroupMappingManager()
 	@property
