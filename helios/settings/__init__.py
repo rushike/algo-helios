@@ -1,5 +1,5 @@
-from .base import *
+from .dev import *
 # import os
 if os.environ.get('DJANGO_DEVELOPMENT') is not None:
-    from .base import * 
+    from .dev import * 
 else : from .production import *

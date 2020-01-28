@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Subscription, Plan
+from .models import Subscription, Plan, Offer, OfferPrerequisites, PlanOfferMap
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
@@ -31,3 +31,6 @@ class PlanAdmin(admin.ModelAdmin):
 
 admin.site.register(Subscription,SubscriptionAdmin)
 admin.site.register(Plan, PlanAdmin)
+admin.site.register(Offer)
+admin.site.register(PlanOfferMap)
+admin.site.register(OfferPrerequisites)

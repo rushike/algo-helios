@@ -176,7 +176,11 @@ class UserGroupMapping(models.Model):
 		if datetime.datetime.now > self.time_removed : 
 			return True
 		return False
-
+	
+	@property
+	def get_user_group_type(self):
+		return self.user_group_id.user_group_type_id
+	
 	def __str__(self):
 		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
   
