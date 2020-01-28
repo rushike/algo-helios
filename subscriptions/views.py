@@ -20,7 +20,6 @@ def plan_subscribe(request):
     #below : one user linked with multiple groups
     user_all_groups = UserGroupMapping.objects.filter(user_profile_id=request.user)
     
-
     #below:  a user goes only one group on basis of plan
     
     # interm = UserGroupMapping.objects.select_related('user_group_type_id') 
