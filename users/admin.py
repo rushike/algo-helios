@@ -12,7 +12,7 @@ admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', 'trail')}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', 'had_trial')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -31,10 +31,10 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits', 'trail')
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits', 'had_trial')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
-    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'trail')
+    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'had_trial')
     filter_horizontal = ('groups', 'user_permissions',)
 
 class GroupMappingAdmin(admin.ModelAdmin):
