@@ -12,9 +12,9 @@ steps:
     mkdir ~/.ssh
     cp "$(ALGONAUTS_PRIVATE_KEY.secureFilePath)" ~/.ssh/id_rsa
     chmod 400 ~/.ssh/id_rsa
-    ssh-keyscan -p $(HELIOS_DEV_SSH_PORT) $(HELIOS_DEV_IP) > ~/.ssh/known_hosts
+    ssh-keyscan $(HELIOS_IP) > ~/.ssh/known_hosts
     chmod 644 ~/.ssh/known_hosts
-    scp -P $(HELIOS_DEV_SSH_PORT) _helios/scripts/startup/deploy.sh $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP):~/deploy.sh
-    ssh -p $(HELIOS_DEV_SSH_PORT) $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP) "HELIOS_GIT_SOURCE=$(HELIOS_GIT_SOURCE) HELIOS_DEPLOYMENT_BRANCH=$(HELIOS_DEV_BRANCH) HELIOS_DOMAIN_NAME=$(HELIOS_DEV_DOMAIN) HELIOS_SSL_EMAIL=$(HELIOS_SSL_EMAIL) /bin/bash ~/deploy.sh"
-    ssh -p $(HELIOS_DEV_SSH_PORT) $(HELIOS_DEV_USER)@$(HELIOS_DEV_IP) "rm deploy.sh"
+    scp -P $(HELIOS_SSH_PORT) _helios/scripts/startup/deploy.sh $(HELIOS_USER)@$(HELIOS_IP):~/deploy.sh
+    ssh -p $(HELIOS_SSH_PORT) $(HELIOS_USER)@$(HELIOS_IP) "HELIOS_GIT_SOURCE=$(HELIOS_GIT_SOURCE) HELIOS_DEPLOYMENT_BRANCH=$(HELIOS_BRANCH) HELIOS_DOMAIN_NAME=$(HELIOS_DOMAIN) HELIOS_SSL_EMAIL=$(HELIOS_SSL_EMAIL) HELIOS_POSTGRES_DB=$(HELIOS_POSTGRES_DB) HELIOS_POSTGRES_USER=$(HELIOS_POSTGRES_USER) HELIOS_POSTGRES_PASSWORD=$(HELIOS_POSTGRES_PASSWORD) HELIOS_POSTGRES_HOST=$(HELIOS_POSTGRES_HOST) /bin/bash ~/deploy.sh"
+    ssh -p $(HELIOS_SSH_PORT) $(HELIOS_USER)@$(HELIOS_IP) "rm deploy.sh"
 trigger: none

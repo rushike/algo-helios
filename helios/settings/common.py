@@ -131,12 +131,12 @@ WSGI_APPLICATION = 'helios.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'algonauts',
-        'USER': 'algonauts',
-        'PASSWORD': 'okokok99',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'HELIOS_POSTGRES_DB',
+        'USER': 'HELIOS_POSTGRES_USER',
+        'PASSWORD': 'HELIOS_POSTGRES_PASSWORD',
+        'HOST': 'HELIOS_POSTGRES_HOST',
+        'PORT': '5432',
     }
 }
 # Password validation
