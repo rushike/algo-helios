@@ -2,8 +2,6 @@ nav{
     transition: box-shadow .8s;
 }
 
-
-
 .navbar{
         border-radius: 0 !important;
         background-color: white !important;
@@ -39,18 +37,14 @@ nav{
 
 }
 
-
 #myNavbar li a{
     font-size: 18px !important;
     color:#515252 !important;
     transition-duration: .2s;
-    
-    
 }
 
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
-    
 }
 
 .navbar-header .navbarlogo img{
@@ -81,9 +75,6 @@ nav{
     margin: 2% 45%;
 }
 
-
-
-
 .wrapper p{
     font-size:3vh;
     font-family: 'Lato', sans-serif !important;
@@ -95,8 +86,7 @@ nav{
 }
 
 footer{
-    padding-top: 50px;
-    padding-bottom: 50px;
+    padding-top: 25px;
     background-color: #3a3a3a;
 }
 
@@ -108,10 +98,9 @@ footer{
 }
 
 .footerc img{
-
     width: 30px;
 }
+
 .footer-menu{
     padding:80px;
-
 }

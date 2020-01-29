@@ -1,0 +1,59 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}	
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block account_st %}
+
+{% get_providers as socialaccount_providers %}
+
+
+{% if socialaccount_providers %}
+		<h1 class="display-5">Sign In</h1><hr>
+		<form class="login" method="POST" action="{% url 'account_login' %}">
+		
+			{% csrf_token %}
+			{{ form|crispy }}
+			
+			{% if redirect_field_value %}
+				<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+			{% endif %}
+			
+			<button class="primaryAction btn btn-outline-dark btn-block" type="submit">{% trans "Sign In" %}</button>
+			<a class="button secondaryAction pt-5" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+			
+		</form>
+			<hr>
+			<p class="text-center font-weight-bold">OR</p>
+		</form>
+
+
+{% else %}
+	<p> 
+		{% blocktrans %} 
+			If you have not created an account yet, then please
+			<a href="{{ signup_url }}">sign up</a> first.
+		{% endblocktrans %}
+	</p>
+	{% endif %}
+	
+	<p>
+	</p>
+
+	<div class="socialaccount_ballot">
+		{% include "socialaccount/snippets/provider_list.html" with process="login" %}
+	<div class="login-or">
+		</div>
+	</div>
+	{% include "socialaccount/snippets/login_extra.html" %}
+	<hr>
+	<a class="button secondaryAction btn btn-block btn-dark mt-2" href="{{ signup_url }}">Sign Up</a>
+			
+</div>
+	</div>
+</div>
+
+{% endblock %}
