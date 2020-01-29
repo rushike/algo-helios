@@ -28,3 +28,13 @@ LOGGING = {
         },
     },
 }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'algonauts',
+        'USER': 'algonauts',
+        'PASSWORD': 'okokok99',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}

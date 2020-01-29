@@ -24,10 +24,10 @@ def plan_subscribe(request):
     ne = UserGroup.objects.create_user_group(user_plan.user_group_type_id, datetime.datetime.now(), admin=request.user)
     ugti = user_plan.user_group_type_id.id
     usermpa = UserGroupMapping.objects.all()
-    u_gid_____ = UserGroupMapping.objects.all().values('user_group_id','user_profile_id','user_group_id__user_group_type_id') 
-    u_gid = u_gid_____.filter(user_profile_id=request.user, user_group_id__user_group_type_id=user_plan.user_group_type_id)
+    u_gid = UserGroupMapping.objects.all().values('user_group_id','user_profile_id','user_group_id__user_group_type_id') \
+        .filter(user_profile_id=request.user, user_group_id__user_group_type_id=user_plan.user_group_type_id)
 
-    u_g = UserGroup.objects.get(id=u_gid[0])
+    u_g = UserGroup.objects.get(id=u_gid[0]['user_group_id'])
     # import logging
     # import logging.config
     
@@ -55,7 +55,7 @@ def plan_subscribe(request):
         payment_id = 0, 
     ).save()
     
-    return HttpResponse(u_gid)
+    return HttpResponse(u_g)
 
 
 
