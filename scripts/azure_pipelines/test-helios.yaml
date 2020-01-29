@@ -6,7 +6,7 @@ steps:
     sudo apt-get update
     sudo apt-get install -y python3-pip python3-venv python3-dev libpq-dev
     sudo python3 -m venv ~/venv
-    sudo ~/venv/bin/pip install psycopg2
+    sudo ~/venv/bin/pip install wheel psycopg2
     sudo ~/venv/bin/pip install -r requirements.txt
     sudo ~/venv/bin/python manage.py test
 trigger:
