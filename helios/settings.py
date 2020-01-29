@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'helios.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'HELIOS_POSTGRES_DB',
+        'USER': 'HELIOS_POSTGRES_USER',
+        'PASSWORD': 'HELIOS_POSTGRES_PASSWORD',
+        'HOST': 'HELIOS_POSTGRES_HOST',
+        'PORT': '5432',
     }
 }
 
