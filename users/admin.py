@@ -65,7 +65,7 @@ class GroupTypeAdmin(admin.ModelAdmin):
     ordering = ('type_name', 'max_members', 'min_members', 'standard_group',)
 
 
-# admin.site.register(AlgonautsUser, UserAdmin) 
+admin.site.register(AlgonautsUser, UserAdmin) 
 
 admin.site.register(UserGroup, GroupAdmin)
 

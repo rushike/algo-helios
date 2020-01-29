@@ -30,7 +30,7 @@ class Offer(models.Model):
 class Subscription(models.Model):
     user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE) 
     plan_id = models.ForeignKey(Plan, on_delete=models.CASCADE) 
-    offer_id = models.ForeignKey(Offer, on_delete=models.DO_NOTHING, null=True)
+    offer_id = models.ForeignKey(Offer, on_delete=models.DO_NOTHING, null = True)
     subscription_start = models.DateTimeField()
     subscription_end = models.DateTimeField()
     subscription_active = models.BooleanField()

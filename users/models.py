@@ -197,5 +197,12 @@ def create_individual_user_group(sender, instance, **kwargs):
 	group_map.save()
 	return
 
+def create_ug_mapping(sender, instance, **kwargs):
+	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, delta_period= 4, group_admin = True)
+	group_map.save()
+	return
+
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
+
+post_save.connect(create_ug_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
