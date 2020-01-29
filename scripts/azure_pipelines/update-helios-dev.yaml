@@ -1,7 +1,7 @@
 variables:
   - group: dev
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-18.04'
 steps:
 - task: DownloadSecureFile@1
   name: ALGONAUTS_PRIVATE_KEY
