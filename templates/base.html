@@ -1,9 +1,7 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html>
-
 <head>
     <meta name="theme" content="#004B96">
     <meta charset="utf-8">
@@ -19,11 +17,7 @@
     {% block css_imports %}
     {% endblock %}
 
-
-    
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-    
     
     <link rel="stylesheet" type="text/css" href="/static/css/index.css">
 
@@ -123,15 +117,12 @@
                                 {% if redirect_field_value %}>
                                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>    
                                 {% endif %}
-                                <!-- <a class="btn btn-sm dropdown-item">DashBoard</a> -->
                                 <button class="btn btn-sm dropdown-item" type="submit" onclick="myfun">LogOut</button>
                             </form>
                         </div>
                     </div>
                 </li>
             {% endif %}
-            <!-- <a class="nav-link disabled p-2" href="#">Log In</a> -->
-        
       </ul>
   </div>
   </nav>
@@ -162,11 +153,9 @@
                             <div class="row footerc" style="padding:10px;">
                                 <p>
                                     <a href="https://www.quora.com/profile/Algonauts-Technologies-1">
-                                    <!--<img src="{% static 'quora.png' %}"></a>-->
                                 </p>
                                 
                             </div>
-
                         </div>
                         <div class="col-md-6">
                             <p class="text-center text-lg-left" style="color: aliceblue;font-size:16px;">
@@ -187,7 +176,6 @@
     </footer>
 
     {% block scripts %}
-
 
     {% endblock %}
 
@@ -219,15 +207,7 @@
                 }
             })
         });
-
-        
-
     </script>
-
-    
-
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
-    <!-- <script> var $y = jQuery.noConflict(); </script> -->
     <script src="{% static 'js/chatbot.js' %}"></script>
 </body>
 

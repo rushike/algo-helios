@@ -105,13 +105,16 @@ class UserGroupType(models.Model):
 	min_members = models.IntegerField(default=1)
 	standard_group = models.BooleanField(default=True, blank=True)
 	objects = models.Manager()
+	class Meta:
+		unique_together = ('type_name',)
+
 	def __str__(self):
 		return str(self.type_name)
 
 
 class UserGroupManager(models.Manager):
 	def create_user_group(self, user_group_type_id, registration_time, admin):
-		try : #can validate if any restrictions
+		try : #can validate if any restrictions, returns None if, user_group with user_group_type, admin already present
 			user_group = self.model(user_group_type_id = user_group_type_id, registration_time = registration_time, admin = admin)
 			user_group.save(using=self._db)
 			return user_group
@@ -132,7 +135,7 @@ class UserGroup(models.Model):
 
 	class Meta:
 		unique_together = ('user_group_type_id','admin')
-
+		 
 	def __str__(self):
 		return "%".join([str(self.id), str(self.user_group_type_id),] )
 
