@@ -7,6 +7,8 @@ from django.db.models.signals import post_save, pre_save
 
 import datetime
 
+# from subscriptions.models import Plan
+
 
 """
 Constants
@@ -87,6 +89,23 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 		user_group_id = UserGroup.objects.get(id = group_id)
 		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, delta_period=4, group_admin= False)
 		return mapper
+
+	def get_user_subs_plans(self):
+		iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
+		eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
+		#one user linked with multiple groups
+		user_all_groups = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id__user_group_type_id')
+		indivdual =	user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
+		group = user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id__in = eGroupType) # filter out all groups of profile with non individual group type 
+		
+		indivdual_plans = Plan.objects.filter(user_group_type_id__in = indivdual)
+		group_plans = Plan.objects.filter(user_group_type_id__in = group)		
+
+		raise InterruptedError("Checking variable values")
+		
+
+		pass
+
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
 

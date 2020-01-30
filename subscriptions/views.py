@@ -17,33 +17,15 @@ def plan_subscribe(request):
     # user_plan is an array type
     user_plan = Plan.objects.filter(plan_name=subs_attr['plan_name'][0])[0] 
 
-    #one user linked with multiple groups
-    # user_all_groups = UserGroupMapping.objects.filter(user_profile_id=request.user)
-    
+
 
     ne = UserGroup.objects.create_user_group(user_plan.user_group_type_id, datetime.datetime.now(), admin=request.user)
     ugti = user_plan.user_group_type_id.id
     usermpa = UserGroupMapping.objects.all()
     u_gid = UserGroupMapping.objects.all().values('user_group_id','user_profile_id','user_group_id__user_group_type_id') \
-        .filter(user_profile_id=request.user, user_group_id__user_group_type_id=user_plan.user_group_type_id)
+            .filter(user_profile_id=request.user, user_group_id__user_group_type_id=user_plan.user_group_type_id)
 
-    u_g = UserGroup.objects.get(id=u_gid[0]['user_group_id'])
-    # import logging
-    # import logging.config
-    
-    # logging.config.fileConfig('logging.conf')
-    # logger = logging.getLogger('applog')
-    # logger.debug(str(u_gid)+"prit")
-
-    # print(u_gid)
-
-    # for i in range(user_all_groups.count()):
-        
-    #     if user_all_groups[i].user_group_id.user_group_type_id == user_plan.user_group_type_id:
-    #         u_gid = user_all_groups[i].user_group_id
-    #         break
-    
-    
+    u_g = UserGroup.objects.get(id=u_gid[0]['user_group_id'])    
     # saving all the stuff 
 
     Subscription.objects.create(
