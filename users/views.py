@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views.generic import TemplateView 
-from Users.models import AlgonautsUser
+from django.contrib.auth.decorators import login_required
 
+from users.functions import *
 
-def profile_page(request,uid):
-    template_name = "users/profile.html"
-    return render(request, template_name, context=user_info)
+@login_required(login_url = '/accounts/login/')
+def profile_page(request, uid):
+    x = get_user_subs_plans(request.user)
+    # y = get_all_users_in_group(request.user)
+    raise AttributeError
