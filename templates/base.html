@@ -113,7 +113,7 @@
                         
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                             
-                            <button class="btn btn-sm dropdown-item" onclick="location.href = '{{user.email|cut:'@'}}'; ">Dashboard</button>
+                            <button class="btn btn-sm dropdown-item" onclick="location.href = ">Dashboard</button>
                             <form method="post" action="{% url 'account_logout' %}">
                                 {% csrf_token %}
                                 {% if redirect_field_value %}>
