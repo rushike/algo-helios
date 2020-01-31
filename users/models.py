@@ -11,10 +11,15 @@ import datetime
 
 
 """
-Constants
+Constants or Functions
+Calculates the default end date for user to removed
 """
+
+def end_date():
+		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
 """
 Custom Field Declaration 
+
 """
 class UTCField(DateTimeField):
 
@@ -123,9 +128,9 @@ class UserGroupType(models.Model):
 
 
 class UserGroupManager(models.Manager):
-	def create_user_group(self, user_group_type_id, registration_time, admin):
+	def create_user_group(self, user_group_type_id, admin):
 		try : #can validate if any restrictions, returns None if, user_group with user_group_type, admin already present
-			user_group = self.model(user_group_type_id = user_group_type_id, registration_time = registration_time, admin = admin)
+			user_group = self.model(user_group_type_id = user_group_type_id, registration_time = datetime.datetime.now, admin = admin)
 			user_group.save(using=self._db)
 			return user_group
 		except:
@@ -189,7 +194,7 @@ class UserGroupMapping(models.Model):
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE, related_name="ugm_user_group_id")
 	user_profile_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ugm_user_profile_id")
 	time_added = models.DateTimeField(auto_now=True)
-	time_removed = models.DateTimeField(default = datetime.datetime.now, null=True, blank=True)
+	time_removed = models.DateTimeField(default = end_date)
 	group_admin = models.BooleanField(default=False)
 	objects = UserGroupMappingManager()
 	@property
@@ -197,11 +202,11 @@ class UserGroupMapping(models.Model):
 		if datetime.datetime.now > self.time_removed : 
 			return True
 		return False
-	
+
 	@property
 	def get_user_group_type(self):
 		return self.user_group_id.user_group_type_id
-	
+
 	def __str__(self):
 		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
   
@@ -209,7 +214,7 @@ class UserGroupMapping(models.Model):
 def create_individual_user_group(sender, instance, **kwargs):
 	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
 
-	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, registration_time = datetime.datetime.now(), admin = instance)
+	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, admin = instance)
 	# group.save()
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, delta_period= 4, group_admin = True)

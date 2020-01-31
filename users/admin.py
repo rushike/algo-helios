@@ -36,12 +36,12 @@ class UserAdmin(BaseUserAdmin):
 
 class GroupMappingAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')}),
+        (None, {'fields': ('user_group_id', 'user_profile_id', 'time_removed', 'group_admin')}),
     )
-    list_display = ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')
+    list_display = ('user_group_id', 'user_profile_id', 'time_removed', 'group_admin')
     list_filter = ('group_admin',)
     search_fields = ('user_profile_id', )
-    ordering = ('user_group_id', 'user_profile_id', 'time_added', 'time_removed', 'group_admin')
+    ordering = ('user_group_id', 'user_profile_id', 'time_removed', 'group_admin')
 
 class GroupAdmin(admin.ModelAdmin):
     fieldsets = (

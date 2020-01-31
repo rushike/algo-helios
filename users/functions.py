@@ -2,6 +2,8 @@ from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMappi
 from subscriptions.models import Plan, Subscription
 from products.models import Product, ProductCategory, PlanProductMap
 
+import datetime
+
 
 def join_to_group(user, group_id): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -9,6 +11,8 @@ def join_to_group(user, group_id): # method add user(self) to the specific group
     return mapper
 
 def get_user_subs_plans(user):
+    user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
+
     iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
     #one user linked with multiple groups
@@ -27,11 +31,11 @@ def get_user_subs_product(user):
     gproducts = PlanProductMap.objects.filter(plan_id__in = gplan)
 
     ig_products = list(iproducts)
-    igl_products = ig_products.extend(gproducts)
-
-    raise InterruptedError("Checking Variables value") 
+    ig_products.extend(gproducts)
+    return ig_products
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    users = UserGroupMapping.objects.filter(user_group_id = group)
+    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now())
+    return users
     

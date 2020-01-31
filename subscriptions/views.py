@@ -24,7 +24,7 @@ def plan_subscribe(request):
 
     #one user linked with multiple groups
     
-    ne = UserGroup.objects.create_user_group(user_plan.user_group_type_id, datetime.datetime.now(), admin=request.user)
+    ne = UserGroup.objects.create_user_group(user_plan.user_group_type_id, admin=request.user)
     ugti = user_plan.user_group_type_id.id
     usermpa = UserGroupMapping.objects.all()
     u_gid = UserGroupMapping.objects.all().values('user_group_id','user_profile_id','user_group_id__user_group_type_id') \
