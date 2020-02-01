@@ -6,14 +6,14 @@ class SubscriptionAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, 
         {
-            'fields': ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'subscription_active', 'payment_id')
+            'fields': ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'is_trial', 'payment_id')
         }),
     )
     
-    list_display = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'subscription_active', 'payment_id')
-    list_filter = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'subscription_active', 'payment_id')
+    list_display = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'is_trial', 'payment_id')
+    list_filter = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'is_trial', 'payment_id')
     search_fields = ('plan_id','user_group_id')
-    ordering = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'subscription_active', 'payment_id')
+    ordering = ('user_group_id', 'plan_id', 'subscription_start', 'subscription_end' ,'is_trial', 'payment_id')
 
 class PlanAdmin(admin.ModelAdmin):
     fieldsets = (

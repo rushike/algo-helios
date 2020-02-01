@@ -9,6 +9,9 @@
                         <a href="" data-target="#profile" data-toggle="tab" class="nav-link active">Profile</a>
                     </li>
                     <li class="nav-item">
+                            <a href="" data-target="#allplans" data-toggle="tab" class="nav-link">Your Plans</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="" data-target="#messages" data-toggle="tab" class="nav-link">Messages</a>
                     </li>
                     <li class="nav-item">
@@ -17,32 +20,35 @@
                 </ul>
                 <div class="tab-content py-4">
                     <div class="tab-pane active" id="profile">
-                        <h5 class="mb-3">User Profile</h5>
+                        <h1 class="display-4">Hello {{user.first_name }}</h1>
+                        <hr>
+                        <h5 class="mb-3"></h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <h6>About</h6>
+                                <h6>Individual Plans</h6>
                                 <p>
-                                    Web Designer, UI/UX Engineer
+                                    {% for iplan in iplans %}
+                                        {{ iplan.plan_name }}
+                                    {% endfor %}
                                 </p>
-                                <h6>Hobbies</h6>
+                                <h6>Group Plans</h6>
                                 <p>
-                                    Indie music, skiing and hiking. I love the great outdoors.
+                                    {% if gplans|length == 0 %}
+                                    No Group Plans 
+                                    {% else %}
+                                        {% for gplan in gplans %}
+                                            {{ gplan.plan_name }}
+                                        {% endfor %}
+                                    {% endif %}
                                 </p>
                             </div>
+
                             <div class="col-md-6">
-                                <h6>Recent badges</h6>
-                                <a href="#" class="badge badge-dark badge-pill">html5</a>
-                                <a href="#" class="badge badge-dark badge-pill">react</a>
-                                <a href="#" class="badge badge-dark badge-pill">codeply</a>
-                                <a href="#" class="badge badge-dark badge-pill">angularjs</a>
-                                <a href="#" class="badge badge-dark badge-pill">css3</a>
-                                <a href="#" class="badge badge-dark badge-pill">jquery</a>
-                                <a href="#" class="badge badge-dark badge-pill">bootstrap</a>
-                                <a href="#" class="badge badge-dark badge-pill">responsive-design</a>
-                                <hr>
-                                <span class="badge badge-primary"><i class="fa fa-user"></i> 900 Followers</span>
-                                <span class="badge badge-success"><i class="fa fa-cog"></i> 43 Forks</span>
-                                <span class="badge badge-danger"><i class="fa fa-eye"></i> 245 Views</span>
+                                    <h6>Algo Credits</h6>
+                                    {{ user.algo_credits }}
+                            </div>    
+                            <div class="col-md-12">
+                                <p class="display-4">This is Your Referral</p>
                             </div>
                             <div class="col-md-12">
                                 <h5 class="mt-2"><span class="fa fa-clock-o ion-clock float-right"></span> Recent Activity</h5>
@@ -50,27 +56,8 @@
                                     <tbody>                                    
                                         <tr>
                                             <td>
-                                                <strong>Abby</strong> joined ACME Project Team in <strong>`Collaboration`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Gary</strong> deleted My Board1 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Kensington</strong> deleted MyBoard3 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>John</strong> deleted My Board1 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Skell</strong> deleted his post Look at Why this is.. in <strong>`Discussions`</strong>
+                                                <strong>Last Login</strong>
+                                                {{ user.last_login }}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -79,6 +66,45 @@
                         </div>
                         <!--/row-->
                     </div>
+                    <div class="tab-pane" id="allplans">
+                        <div class="container">
+                            <div class="card-deck mb-3 text-center">
+                            {% for iplan in iplans %}
+                                <div class="card mb-4 shadow-sm">
+                                <div class="card-header">
+                                    <h4 class="my-0 font-weight-normal">{{ iplan.plan_name }}</h4>
+                                </div>
+                                <div class="card-body">
+                                    <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+                                    <ul class="list-unstyled mt-3 mb-4">
+                                    <li>{{ iplan.entry_time }}</li>
+                                    <li>{{ iplan.expiry_time }}</li>
+                                    </ul>
+                                    <!-- <button type="button" class="btn btn-lg btn-block btn-outline-dark">Sign up for free</button> -->
+                                </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="card-deck mb-3 text-center">
+                                    {% for gplan in gplans %}
+                                        <div class="card mb-4 shadow-sm">
+                                        <div class="card-header">
+                                            <h4 class="my-0 font-weight-normal">{{ gplan.plan_name }}</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+                                            <ul class="list-unstyled mt-3 mb-4">
+                                            <li>{{ gplan.entry_time }}</li>
+                                            <li>{{ gplan.expiry_time }}</li>
+                                            </ul>
+                                            <!-- <button type="button" class="btn btn-lg btn-block btn-outline-dark">Sign up for free</button> -->
+                                        </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                        </div>          
+                    </div>
+
                     <div class="tab-pane" id="messages">
                         <div class="alert alert-info alert-dismissable">
                             <a class="panel-close close" data-dismiss="alert">×</a> This is an <strong>.alert</strong>. Use this to show important messages to the user.

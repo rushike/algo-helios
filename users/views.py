@@ -11,6 +11,7 @@ def profile_page(request):
                 'iplans':iplans, 
                 'gplans' : gplans,
             }
+    
     return render(request, 'users/profile.html', context= context)
     # gid = UserGroupMapping.objects.filter(user_profile_id = request.user)[1].user_group_id
     # get_all_users_in_group(gid)
