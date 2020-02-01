@@ -1,9 +1,8 @@
-from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping
+from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
 from subscriptions.models import Plan, Subscription
 from products.models import Product, ProductCategory, PlanProductMap
 
 import datetime
-
 
 def join_to_group(user, group_id): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -20,8 +19,10 @@ def get_user_subs_plans(user):
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType) # filter out all groups of profile with non individual group type 
     
-    indivdual_plans = Plan.objects.filter(user_group_type_id__in = indivdual)
-    group_plans = Plan.objects.filter(user_group_type_id__in = group)		
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'plan_id__user_group_type_id')
+    group_plans = plans.filter(plan_id__user_group_type_id__in = group)		
+    indivdual_plans = plans.filter(plan_id__user_group_type_id = indivdual)
+    
 
     return indivdual_plans, group_plans
 
@@ -39,3 +40,10 @@ def get_all_users_in_group(group_id):
     users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now())
     return users
     
+
+def add_referal_credits(self_uid, referal_code):
+    ref_to = AlgonautsUser.objects.get(referal_code=referal_code)
+    ref_by = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
+    referral_offer_id = ReferralOffer.objects.filter(is_active = True)
+    referral_time =datetime.datetime.now()
+    return True

@@ -1,11 +1,11 @@
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser, Group
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
 
-import datetime
+import datetime, random, string
 
 # from subscriptions.models import Plan
 
@@ -14,9 +14,17 @@ import datetime
 Constants or Functions
 Calculates the default end date for user to removed
 """
+REFERAL_CODE_LEN = 6
 
 def end_date():
 		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
+
+def get_unique_referal_code():
+	# return '000000'
+	ref = random.sample(string.ascii_uppercase, REFERAL_CODE_LEN)
+	while AlgonautsUser.objects.filter(referal_code = ref).exists():
+		ref = random.sample(string.ascii_uppercase, REFERAL_CODE_LEN)
+	return ''.join(ref)	
 """
 Custom Field Declaration 
 
@@ -81,12 +89,16 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
+	referal_code = models.CharField(max_length=REFERAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referal_code)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
 	REQUIRED_FIELDS = []
 
 	objects = UserManager()
+
+	class Meta:
+		unique_together = ('referal_code',)
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
@@ -156,9 +168,14 @@ class UserGroup(models.Model):
 
 
 class ReferralOffer(models.Model):
-    offer_name = models.CharField(max_length=100) 
-    def __str__(self):
-    	return str(self.offer_name)
+	offer_name = models.CharField(max_length=100) 
+	offer_credits_to = models.IntegerField()
+	offer_credits_by = models.IntegerField()
+	offer_start = models.DateTimeField(auto_now=True)
+	offer_end = models.DateTimeField(blank = True)
+	offer_active = models.BooleanField(default=True)
+	def __str__(self):
+		return str(self.offer_name)	
 
 
 class Referral(models.Model):
@@ -167,6 +184,7 @@ class Referral(models.Model):
 	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()
 	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE, related_name="r_referral_offer_id")
+	
 	def __str__(self):
 		return str(self.referral_code)
 
