@@ -5,6 +5,8 @@ from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, 
 import datetime
 from django.contrib.auth.decorators import login_required
 import pytz
+from users.functions import *
+
 
 def plans(request):
     return render(request, 'subscriptions/plans.html', {'plans' : Plan.objects.filter(is_active=True) })
@@ -12,7 +14,14 @@ def plans(request):
 @login_required(login_url='/accounts/login/') 
 #above User must be logged in for selecting a plan
 def plan_overview(request, slug):
-    return render(request, 'subscriptions/plan_overview.html', {'plan' : Plan.objects.get(plan_name=slug)})
+    iplans, gplans = get_user_subs_plans(request.user.id)
+    context = {
+                'iplans' : iplans, 
+                'gplans' : gplans,
+                'plan' : Plan.objects.get(plan_name=slug)
+            }
+    
+    return render(request, 'subscriptions/plan_overview.html',context=context)
 
 
 def plan_subscribe(request):

@@ -3,6 +3,7 @@ from users.models import UserGroupType, UserGroup, UserGroupMapping
 # from products.models import Product, ProductCategory
 import datetime
 from django.utils import timezone 
+import pytz
 
 class Plan(models.Model):
     plan_name = models.CharField(max_length=50)
@@ -54,7 +55,14 @@ class SubscriptionManager(models.Manager):
             # current_plan_id = Plan.
 
             # new --------------------------------- 
-            subscription_start = datetime.datetime.now()
+            subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
+
+            prev_end_date = Subscription.objects.filter(plan_id = user_plan, user_group_id = u_g).order_by('subscription_start').values().last()
+            prev_end_date = prev_end_date['subscription_end']
+            prev_end_date
+            if subscription_start < prev_end_date:
+                subscription_start = prev_end_date 
+
             if Subscription.objects.filter(user_group_id=u_g).exists():
                 is_trial = False
                 subscription_end = subscription_start + datetime.timedelta(days=t_delta) 
@@ -66,6 +74,11 @@ class SubscriptionManager(models.Manager):
             valid_trial_group.save(using=self._db)
             return valid_trial_group
 
+    def renew(self):
+        pass
+
+    def is_subscribed(self):
+        pass
             # raise AttributeError
             
 
@@ -78,8 +91,6 @@ class Subscription(models.Model):
     payment_id = models.IntegerField(default=0) 
     is_trial = models.BooleanField(default=False)
     objects = SubscriptionManager()
-    def renew(self):
-        pass
 
     def __str__(self):
         return str(self.user_group_id)
