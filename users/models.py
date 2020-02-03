@@ -158,6 +158,7 @@ class UserGroup(models.Model):
 	)
 	registration_time = models.DateTimeField(auto_now=True)
 	admin = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ug_admin")
+	multiplier = models.IntegerField(default=1) # describle quatity of subscription simutanouesly allowed in on subscription
 	objects = UserGroupManager()
 
 	class Meta:
@@ -167,6 +168,21 @@ class UserGroup(models.Model):
 		return "%".join([str(self.id), str(self.user_group_type_id),] )
 
 
+class ReferralOfferManager(models.Manager):
+	def create_referral_offer(self, offer_name, offer_credits_to, offer_credits_by, offer_start, offer_end, offer_active):
+		if offer_active:
+			ReferralOffer.objects.filter(offer_active = True).update(offer_active = False)
+		referral_offer = self.model(offer_name = offer_name,
+									 offer_credits_to = offer_credits_to, 
+									 offer_credits_by = offer_credits_by, 
+									 offer_start = datetime.datetime.now, 
+									 offer_end = offer_end, 
+									 offer_active = offer_active)
+		referral_offer.save(using=self._db)
+		raise EnvironmentError
+		pass
+	pass
+
 class ReferralOffer(models.Model):
 	offer_name = models.CharField(max_length=100) 
 	offer_credits_to = models.IntegerField()
@@ -174,17 +190,20 @@ class ReferralOffer(models.Model):
 	offer_start = models.DateTimeField(auto_now=True)
 	offer_end = models.DateTimeField(blank = True)
 	offer_active = models.BooleanField(default=True)
+	objects = ReferralOfferManager()
+	
 	def __str__(self):
 		return str(self.offer_name)	
 
 
 class Referral(models.Model):
-	referral_code = models.IntegerField()
+	referral_code = models.CharField(max_length=REFERAL_CODE_LEN)
 	referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_referred_by') 
 	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()
 	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE, related_name="r_referral_offer_id")
-	
+	class Meta:
+		unique_together = ('referred_by', 'referred_to',)
 	def __str__(self):
 		return str(self.referral_code)
 
@@ -244,7 +263,17 @@ def create_ug_mapping(sender, instance, **kwargs):
 	# group_map.save()
 	return
 
+def active_referral_offer_checks(sender, instance, **kwargs):
+	# ReferralOffer.
+	offer_active = instance.offer_active
+	if offer_active:
+			ReferralOffer.objects.filter(offer_active = True).update(offer_active = False)
+			
+# pass
+
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
 
 post_save.connect(create_ug_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
+
+pre_save.connect(active_referral_offer_checks, sender=ReferralOffer, dispatch_uid='users.models.ReferralOffer')

@@ -3,11 +3,30 @@ from subscriptions.models import Plan, Subscription
 from products.models import Product, ProductCategory, PlanProductMap
 
 import datetime
+from hashlib import md5
+
+# ha = md5
 
 def join_to_group(user, group_id): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, delta_period=4, group_admin= False)
     return mapper
+
+def generate_group_add_link(group_id):
+    group_id = group_id._wrapped if hasattr(group_id,'_wrapped') else group_id # if group id is wrapped by other object e.g. SimplyLazyObject
+    group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
+    admin = group.admin.email
+    id_ = group.id
+    link = 'user/add_to_group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
+    return link
+    
+def validate_group_add_url_slug(group_id, hash_):
+    # group_id, admin_email_hash = slug.split('#')
+    # group_id = int(group_id)
+    group = UserGroup.objects.get(id = group_id)
+    if md5(str(group.admin.email).encode()).hexdigest() == hash_:
+        return True
+    return False
 
 def get_user_subs_plans(user):
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
@@ -42,23 +61,26 @@ def get_all_users_in_group(group_id):
     return users
     
 
-def add_referal_credits(self_uid, referal_code):
-    ref_to = AlgonautsUser.objects.get(referal_code=referal_code)
+def add_referral_credits(self_uid, referral_code):
+    ref_to = AlgonautsUser.objects.get(referal_code=referral_code)
     ref_by = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
-    referral_offer_id = ReferralOffer.objects.filter(is_active = True)
+    referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
     referral_time =datetime.datetime.now()
     
+    if Referral.objects.filter(referred_by = ref_by, referred_to = ref_to).exists():
+        return None, False
+
     algo_credits_to = ref_to.algo_credits + referral_offer_id.offer_credits_to
     algo_credits_by = ref_by.algo_credits + referral_offer_id.offer_credits_by
-    ref_to.update(algo_credits = algo_credits_to)
-    ref_by.update(algo_credits = algo_credits_by)
+    AlgonautsUser.objects.filter(email = ref_to.email).update(algo_credits = algo_credits_to)
+    AlgonautsUser.objects.filter(email = ref_by.email).update(algo_credits = algo_credits_by)
 
-    Referral.objects.create(
-                            referal_code = referal_code, 
+    ref = Referral.objects.create(
+                            referral_code = referral_code, 
                             referral_offer_id = referral_offer_id, 
                             referral_time = referral_time, 
                             referred_to = ref_to, 
                             referred_by=ref_by
                         )
-    return True
+    return ref, True
 
