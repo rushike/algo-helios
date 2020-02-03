@@ -19,22 +19,11 @@
                 <input id="price_per_month" name="price_per_month" class="input" value="{{ plan.price_per_month }}" readonly><br>
                 <input id="price_per_year" name="price_per_year" class="input" value="{{ plan.price_per_year }}" readonly><br>
                 <input id="t_delta" name="t_delta" class="input" value="30" readonly><br>
-                <input type="submit" value="Get Tfdfhis Plan" class="btn btn-dark" onclick="location.href='/user/profile/info'">  
-            </form>
-
-            <form action="renew" method="POST">
-                    {% csrf_token %}
-                    <br>
-                    <!-- <div class="card-body">
-                        <h1>Name : {{plan.plan_name}}<br></h1>
-                        <h1>PPM : {{plan.price_per_month}}<br></h1>
-                        <h1>PA : {{plan.price_per_year}}<br></h1>
-                    </div> -->
-                    <!-- <label for="plan_name">plan name </label> -->
-                    <!-- <input id="plan_name" name="plan_name" class="input" value="{{ plan.plan_name }}" readonly><br>
-                    <input id="price_per_month" name="price_per_month" class="input" value="{{ plan.price_per_month }}" readonly><br>
-                    <input id="price_per_year" name="price_per_year" class="input" value="{{ plan.price_per_year }}" readonly><br> -->
-                    <input type="submit" value="Renew this Plan" class="btn btn-danger btn-lg">  
+                {% if user. %}
+                    <input type="" value="Renew this Plan" class="btn btn-outline-danger">  
+                {% else %}
+                    <input type="submit" value="Get This Plan" class="btn btn-dark" onclick="location.href='/user/profile/info'">  
+                    {% endif %}
             </form>
             <hr>
         </div>
