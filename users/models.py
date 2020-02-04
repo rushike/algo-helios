@@ -97,8 +97,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	objects = UserManager()
 
-	class Meta:
-		unique_together = ('referal_code',)
+	# class Meta:
+	# 	unique_together = ('referal_code',)
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
