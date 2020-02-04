@@ -9,7 +9,7 @@ admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', )}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', 'referal_code')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -28,10 +28,10 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits',)
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits', 'referal_code')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
-    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', )
+    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'referal_code' )
     filter_horizontal = ('groups', 'user_permissions',)
 
 class GroupMappingAdmin(admin.ModelAdmin):
@@ -55,6 +55,27 @@ class GroupAdmin(admin.ModelAdmin):
     ordering = ('user_group_type_id', 'registration_time', 'admin')
 
 
+class ReferralOfferAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active')}),
+    )
+
+  
+    list_display = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active',)
+    list_filter = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active',)
+    search_fields = ('offer_name', )
+    ordering = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active')
+
+class ReferralAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('referral_code', 'referred_by', 'referred_to', 'referred_time', 'referral_offer_id',)}),
+    )
+
+    list_display = ('referral_code', 'referred_by', 'referred_to', 'referral_time', 'referral_offer_id',)
+    list_filter = ('referral_code', 'referred_by', 'referred_to', 'referral_time', 'referral_offer_id',)
+    search_fields = ('referral_code', )
+    ordering = ('referral_code', 'referred_by', 'referred_to', 'referral_time', 'referral_offer_id',)
+
 class GroupTypeAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('type_name', 'max_members', 'min_members', 'standard_group')}),
@@ -73,7 +94,7 @@ admin.site.register(UserGroupMapping, GroupMappingAdmin)
 
 admin.site.register(UserGroupType, GroupTypeAdmin)
 
-admin.site.register(Referral)
+admin.site.register(Referral, ReferralAdmin)
 
-admin.site.register(ReferralOffer)
+admin.site.register(ReferralOffer, ReferralOfferAdmin)
 

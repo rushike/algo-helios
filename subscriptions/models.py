@@ -12,7 +12,12 @@ class Plan(models.Model):
     price_per_year = models.PositiveIntegerField()
     entry_time = models.DateTimeField()
     expiry_time = models.DateTimeField()
-    is_active = models.BooleanField(default=False)
+    # is_active = models.BooleanField(default=False)
+    @property
+    def is_active(self):
+        return self.expiry_time > datetime.datetime.now(pytz.timezone('UTC')) or self.entry_time < datetime.datetime.now(pytz.timezone('UTC'))
+
+
     def __str__(self):
         return str(self.plan_name)
 
@@ -31,7 +36,7 @@ class Offer(models.Model):
         return str(self.offer_name)
 
 class SubscriptionManager(models.Manager):
-    def create_subscription(self,plan_name,user,t_delta, payment_id):
+    def create_subscription(self, plan_name,user, t_delta, payment_id):
         # user_plan is an array type
             user_plan = Plan.objects.filter(plan_name=plan_name)[0]
             #one user linked with multiple groups
@@ -42,19 +47,13 @@ class SubscriptionManager(models.Manager):
                 .filter(user_profile_id=user, user_group_id__user_group_type_id=user_plan.user_group_type_id)
 
             now = datetime.datetime.now()
-            # now = datetime.datetime.strftime(now, "%Y-%m-%d")
             u_g = UserGroup.objects.get(id=u_gid[0]['user_group_id'])
-            # all_off = Offer.objects.all().values('offer_start_date','offer_end_date').filter(offer_end_date__gt = now, offer_start_date__lt = now)
             live_offer_id = PlanOfferMap.objects.all().values('offer_id','plan_id','offer_id__offer_start_date','offer_id__offer_end_date') \
                 .filter(offer_id__offer_end_date__gt = now, offer_id__offer_start_date__lt = now)
 
             live_offer_id = live_offer_id[0]['offer_id']
-            # dat = all_off['offer_end_date']
-            # subs_all = Subscription.objects.all().values('offer_id')
             live_offer_id = Offer.objects.get(id=live_offer_id)    
-            # current_plan_id = Plan.
-
-            # new --------------------------------- 
+ 
             subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
             prev_end_date = Subscription.objects.filter(plan_id = user_plan, user_group_id = u_g).order_by('subscription_start').values().last()
             if prev_end_date:
@@ -71,6 +70,7 @@ class SubscriptionManager(models.Manager):
 
             valid_trial_group = self.model(user_group_id = u_g,plan_id = user_plan, offer_id =live_offer_id, subscription_start = subscription_start, subscription_end = subscription_end, payment_id = payment_id, is_trial = is_trial)
             valid_trial_group.save(using=self._db)
+
             return valid_trial_group
 
     def renew(self):
