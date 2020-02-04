@@ -1,6 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView 
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, sig_
 
 import users.functions 
 
@@ -11,11 +11,7 @@ def profile_page(request):
                 'iplans':iplans, 
                 'gplans' : gplans,
             }
-    
     return render(request, 'users/profile.html', context= context)
-    # gid = UserGroupMapping.objects.filter(user_profile_id = request.user)[1].user_group_id
-    # get_all_users_in_group(gid)
-    # raise EnvironmentError
 
 @login_required(login_url = '/accounts/login/')
 def add_referral_credits(request, referral_code):
@@ -27,13 +23,15 @@ def add_referral_credits(request, referral_code):
 def create_custom_user_group(request):
     return HttpResponse("Rello")
     
+@login_required(login_url = '/accounts/login/')    
 def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>md5_hash(admin_email)
-    can_add = users.functions.validate_group_add_url_slug(group_id, hash_)
-    # raise EnvironmentError
-    us = request.user
-    logged_user = request.user._wrapped if hasattr(request.user,'_wrapped') else request.user
-    raise EnvironmentError
+    can_add = users.functions.validate_group_add_url_slug(group_id, hash_) # checks if link is validated and with right credentials
     if can_add:
-        users.functions.join_to_group(request.user, group_id)
-        return HttpResponse("Successfully added to group")
-    return HttpResponse("Link invalidate")
+        obj = users.functions.join_to_group(request.user, group_id)
+        if obj: return HttpResponseRedirect(redirect_to='/user/profile/info')
+        return HttpResponse("<h1>Might be alredy present</h1>")
+    return HttpResponse("<h1>Link invalidate</h1>")
+
+@login_required(login_url = '/accounts/signup/')
+def join_via_referral_link(request, referral_code):
+    return HttpResponseRedirect('/user/refer/code=?' + str(referral_code))

@@ -7,26 +7,29 @@ from hashlib import md5
 
 # ha = md5
 
-def join_to_group(user, group_id): # method add user(self) to the specific group with group_id 
+def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, delta_period=4, group_admin= False)
     return mapper
 
-def generate_group_add_link(group_id):
+def generate_group_add_link(group_id:UserGroup):
     group_id = group_id._wrapped if hasattr(group_id,'_wrapped') else group_id # if group id is wrapped by other object e.g. SimplyLazyObject
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     admin = group.admin.email
+    
     id_ = group.id
     link = 'user/add_to_group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
-    
-def validate_group_add_url_slug(group_id, hash_):
-    # group_id, admin_email_hash = slug.split('#')
-    # group_id = int(group_id)
+
+def validate_group_add_url_slug(group_id:int, hash_:str):
     group = UserGroup.objects.get(id = group_id)
     if md5(str(group.admin.email).encode()).hexdigest() == hash_:
         return True
     return False
+
+def generate_referral_user_add_link(user:AlgonautsUser):
+    link = 'user/refer/user=?' + user.referal_code
+    return link
 
 def get_user_subs_plans(user):
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
@@ -34,16 +37,14 @@ def get_user_subs_plans(user):
     iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
     #one user linked with multiple groups
-    user_all_groups2 = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id')
-    user_all_groups = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id')
+    # user_all_groups2 = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id')
+    user_all_groups = UserGroupMapping.objects.filter(user_profile_id = user).values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id')
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
-    group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType) # filter out all groups of profile with non individual group type 
+    group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id')
-    group_plans = plans.filter(plan_id__user_group_type_id__in = group)		
-    indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual)
-    
-    # raise EnvironmentError
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__is_active')
+    group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__is_active = True)		
+    indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__is_active = True)
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
@@ -60,6 +61,10 @@ def get_all_users_in_group(group_id):
     users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now())
     return users
     
+def get_all_groups_of_user(user_id):
+    user = user_id if type(user_id) == UserGroup else UserGroup.objects.get(id = user_id)
+    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now())
+    return groups
 
 def add_referral_credits(self_uid, referral_code):
     ref_to = AlgonautsUser.objects.get(referal_code=referral_code)

@@ -10,6 +10,8 @@ ALLOWED_HOSTS = [
     'algonauts.in',
 ]
 
+ABSOLUTE_URL_HOME = 'http://localhost:8000/'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -38,3 +40,4 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+

@@ -48,15 +48,14 @@ class SubscriptionManager(models.Manager):
 
             live_offer_id = live_offer_id[0]['offer_id']
             live_offer_id = Offer.objects.get(id=live_offer_id)    
-
-            # new --------------------------------- 
+ 
             subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
 
             prev_end_date = Subscription.objects.filter(plan_id = user_plan, user_group_id = u_g).order_by('subscription_start').values().last()
-            prev_end_date = prev_end_date['subscription_end']
-            prev_end_date
-            if subscription_start < prev_end_date:
-                subscription_start = prev_end_date 
+            if prev_end_date:
+                prev_end_date = prev_end_date['subscription_end']
+                if subscription_start < prev_end_date:
+                    subscription_start = prev_end_date 
 
             if Subscription.objects.filter(user_group_id=u_g).exists():
                 is_trial = False
@@ -67,6 +66,7 @@ class SubscriptionManager(models.Manager):
 
             valid_trial_group = self.model(user_group_id = u_g,plan_id = user_plan, offer_id =live_offer_id, subscription_start = subscription_start, subscription_end = subscription_end, payment_id = payment_id, is_trial = is_trial)
             valid_trial_group.save(using=self._db)
+
             return valid_trial_group
 
     def renew(self):
