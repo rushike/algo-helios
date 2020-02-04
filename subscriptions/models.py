@@ -12,7 +12,12 @@ class Plan(models.Model):
     price_per_year = models.PositiveIntegerField()
     entry_time = models.DateTimeField()
     expiry_time = models.DateTimeField()
-    is_active = models.BooleanField(default=False)
+    # is_active = models.BooleanField(default=False)
+    @property
+    def is_active(self):
+        return self.expiry_time > datetime.datetime.now(pytz.timezone('UTC')) or self.entry_time < datetime.datetime.now(pytz.timezone('UTC'))
+
+
     def __str__(self):
         return str(self.plan_name)
 

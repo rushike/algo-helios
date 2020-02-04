@@ -1,15 +1,21 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView 
-from django.contrib.auth.decorators import login_required, sig_
+from django.contrib.auth.decorators import login_required
 
+from helios.settings import ABSOLUTE_URL_HOME
+import users
 import users.functions 
+
 
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
     iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
+    referral_link = ABSOLUTE_URL_HOME + users.functions.generate_referral_user_add_link(request.user)
+    
     context = {
                 'iplans':iplans, 
                 'gplans' : gplans,
+                'referral_link' : referral_link,
             }
     return render(request, 'users/profile.html', context= context)
 

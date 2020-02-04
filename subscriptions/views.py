@@ -11,7 +11,11 @@ import subscriptions.functions
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
 def plans(request):
-    return render(request, 'subscriptions/plans.html', {'plans' : Plan.objects.filter(is_active=True) })
+    context = {
+                'iplans' : Plan.objects.filter(plan_name__startswith = 'i_'),
+                'gplans' : Plan.objects.exclude(plan_name__startswith = 'i_')
+            }
+    return render(request, 'subscriptions/plans.html', context=context)
 
 @login_required(login_url='/accounts/login/') 
 #above User must be logged in for selecting a plan
