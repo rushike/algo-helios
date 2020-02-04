@@ -1,243 +1,111 @@
 {% extends "users/base.html" %}
 
 {% block profile_content %}
-    <div class="container">
-        <div class="row my-2">
-            <div class="col-lg-8 order-lg-2">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a href="" data-target="#profile" data-toggle="tab" class="nav-link active">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                            <a href="" data-target="#allplans" data-toggle="tab" class="nav-link">Your Plans</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" data-target="#messages" data-toggle="tab" class="nav-link">Messages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" data-target="#edit" data-toggle="tab" class="nav-link">Edit</a>
-                    </li>
+
+<div class="container mb-5">
+<h1 class="display-4 p-3">DashBoard</h1>
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Check Your Email ! Click On Verify Me</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+  
+  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link text-dark active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-dark" id="edit-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+    
+      <div class="row">
+          <div class="col-md-6 bg-light p-3">
+              <div class="text-center">
+                <img src="//placehold.it/150" alt="..." class="w-50 rounded-lg" style="max-height: 200px;">
+              </div>
+          </div>
+          <div class="col-md-6">
+              <div class="flush-left">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item">Name : {{ user.first_name }}</li>
+                  <li class="list-group-item">Credits : {{ user.algo_credits }}</li>
+                  <li class="list-group-item">Last Login : {{ user.last_login }}</li>
                 </ul>
-                <div class="tab-content py-4">
-                    <div class="tab-pane active" id="profile">
-                        <h1 class="display-4">Hello {{user.first_name }}</h1>
-                        <hr>
-                        <h5 class="mb-3"></h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Individual Plans</h6>
-                                <p>
-                                    {% for iplan in iplans %}
-                                        {{ iplan.plan_name }}
-                                    {% endfor %}
-                                </p>
-                                <h6>Group Plans</h6>
-                                <p>
-                                    {% if gplans|length == 0 %}
-                                    No Group Plans 
-                                    {% else %}
-                                        {% for gplan in gplans %}
-                                            {{ gplan.plan_name }}
-                                        {% endfor %}
-                                    {% endif %}
-                                </p>
-                            </div>
-
-                            <div class="col-md-6">
-                                    <h6>Algo Credits</h6>
-                                    {{ user.algo_credits }}
-                            </div>    
-                            <div class="col-md-12">
-                                <p class="display-4">This is Your Referral</p>
-                            </div>
-                            <div class="col-md-12">
-                                <h5 class="mt-2"><span class="fa fa-clock-o ion-clock float-right"></span> Recent Activity</h5>
-                                <table class="table table-sm table-hover table-striped">
-                                    <tbody>                                    
-                                        <tr>
-                                            <td>
-                                                <strong>Last Login</strong>
-                                                {{ user.last_login }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!--/row-->
-                    </div>
-                    <div class="tab-pane" id="allplans">
-                        <div class="container">
-                            <div class="card-deck mb-3 text-center">
-                            {% for iplan in iplans %}
-                                <div class="card mb-4 shadow-sm">
-                                <div class="card-header">
-                                    <h4 class="my-0 font-weight-normal">{{ iplan.plan_name }}</h4>
-                                </div>
-                                <div class="card-body">
-                                    <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
-                                    <ul class="list-unstyled mt-3 mb-4">
-                                    <li>{{ iplan.entry_time }}</li>
-                                    <li>{{ iplan.expiry_time }}</li>
-                                    </ul>
-                                    <!-- <button type="button" class="btn btn-lg btn-block btn-outline-dark">Sign up for free</button> -->
-                                </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="card-deck mb-3 text-center">
-                                    {% for gplan in gplans %}
-                                        <div class="card mb-4 shadow-sm">
-                                        <div class="card-header">
-                                            <h4 class="my-0 font-weight-normal">{{ gplan.plan_name }}</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
-                                            <ul class="list-unstyled mt-3 mb-4">
-                                            <li>{{ gplan.entry_time }}</li>
-                                            <li>{{ gplan.expiry_time }}</li>
-                                            </ul>
-                                            <!-- <button type="button" class="btn btn-lg btn-block btn-outline-dark">Sign up for free</button> -->
-                                        </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                        </div>          
-                    </div>
-
-                    <div class="tab-pane" id="messages">
-                        <div class="alert alert-info alert-dismissable">
-                            <a class="panel-close close" data-dismiss="alert">×</a> This is an <strong>.alert</strong>. Use this to show important messages to the user.
-                        </div>
-                        <table class="table table-hover table-striped">
-                            <tbody>                                    
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">3 hrs ago</span> Here is your a link to the latest summary report from the..
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">Yesterday</span> There has been a request on your account since that was..
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/10</span> Porttitor vitae ultrices quis, dapibus id dolor. Morbi venenatis lacinia rhoncus. 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/4</span> Vestibulum tincidunt ullamcorper eros eget luctus. 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/4</span> Maxamillion ais the fix for tibulum tincidunt ullamcorper eros. 
-                                    </td>
-                                </tr>
-                            </tbody> 
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="edit">
-                        <form role="form">
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">First name</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="Jane">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Last name</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="Bishop">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Email</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="email" value="email@gmail.com">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Company</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Website</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="url" value="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Address</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="" placeholder="Street">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-6">
-                                    <input class="form-control" type="text" value="" placeholder="City">
-                                </div>
-                                <div class="col-lg-3">
-                                    <input class="form-control" type="text" value="" placeholder="State">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Time Zone</label>
-                                <div class="col-lg-9">
-                                    <select id="user_time_zone" class="form-control" size="0">
-                                        <option value="Hawaii">(GMT-10:00) Hawaii</option>
-                                        <option value="Alaska">(GMT-09:00) Alaska</option>
-                                        <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
-                                        <option value="Arizona">(GMT-07:00) Arizona</option>
-                                        <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
-                                        <option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>
-                                        <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
-                                        <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Username</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="janeuser">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" value="11111122333">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Confirm password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" value="11111122333">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-9">
-                                    <input type="reset" class="btn btn-secondary" value="Cancel">
-                                    <input type="button" class="btn btn-primary" value="Save Changes">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 order-lg-1 text-center">
-                <img src="//placehold.it/150" class="mx-auto img-fluid img-circle d-block" alt="avatar">
-                <h6 class="mt-2">Upload a different photo</h6>
-                <label class="custom-file">
-                    <input type="file" id="file" class="custom-file-input">
-                    <span class="custom-file-control">Choose file</span>
-                </label>
-            </div>
-        </div>
+              </div>
+          </div>
+      </div>
     </div>
+    <!-- --------------- -->
+    
+    <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
+
+      <h1 class="display-4 mt-3">Personal Plans</h1>
+      <div class="container mt-5">
+        <div class="card-deck mb-3 text-center">
+          <div class="card mb-4 shadow-sm">
+              {% for iplan in iplans %}
+            <div class="card-header">
+              <h4 class="my-0 font-weight-normal">{{iplan.plan_name}}</h4>
+            </div>
+            <div class="card-body">
+              <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+              <ul class="list-unstyled mt-3 mb-4">
+                <li>{{ iplan.plan_desc }}</li>
+              </ul>
+              <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe/renew</button>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <hr>
+      {% if gplans %}
+      <h1 class="display-4">Group Plans</h1>
+      <div class="container mt-5">
+            <div class="card-deck mb-3 text-center">
+              <div class="card mb-4 shadow-sm">
+                  {% for gplan in gplans %}
+                <div class="card-header">
+                  <h4 class="my-0 font-weight-normal">{{gplan.plan_name}}</h4>
+                </div>
+                <div class="card-body">
+                  <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+                  <ul class="list-unstyled mt-3 mb-4">
+                    <li>{{ gplan.plan_desc }}</li>
+                  </ul>
+                  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe/renew</button>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+            <h1 class="display-4">No Group Plans Yet</h1>
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">...</div>
+  </div>
+<!-- </div> -->
+</div>
+
+
+
+
+
+</samp>
+<script type="text/javascript">
+
+$('.alert').alert()
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
 {% endblock %}

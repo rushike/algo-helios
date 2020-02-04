@@ -56,12 +56,11 @@ class SubscriptionManager(models.Manager):
 
             # new --------------------------------- 
             subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
-
             prev_end_date = Subscription.objects.filter(plan_id = user_plan, user_group_id = u_g).order_by('subscription_start').values().last()
-            prev_end_date = prev_end_date['subscription_end']
-            prev_end_date
-            if subscription_start < prev_end_date:
-                subscription_start = prev_end_date 
+            if prev_end_date:
+                prev_end_date = prev_end_date['subscription_end']
+                if subscription_start < prev_end_date:
+                    subscription_start = prev_end_date 
 
             if Subscription.objects.filter(user_group_id=u_g).exists():
                 is_trial = False

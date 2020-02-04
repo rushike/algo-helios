@@ -8,7 +8,9 @@ import pytz
 from users.functions import *
 
 
+
 def plans(request):
+    
     return render(request, 'subscriptions/plans.html', {'plans' : Plan.objects.filter(is_active=True) })
 
 @login_required(login_url='/accounts/login/') 
