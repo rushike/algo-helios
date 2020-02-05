@@ -95,7 +95,9 @@
         <li class="nav-item">
           <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
         </li>
-        
+        <li class="nav-item">
+          <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
+        </li>
             {% if user.is_anonymous %}
             <li class="nav-item">        
                 <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>

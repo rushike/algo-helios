@@ -160,7 +160,7 @@ class UserGroup(models.Model):
 		AlgonautsUser,
 		through='UserGroupMapping',
 		through_fields=('user_group_id', 'user_profile_id'),
-	)
+	) 
 	registration_time = models.DateTimeField(auto_now=True)
 	admin = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ug_admin")
 	multiplier = models.IntegerField(default=1) # describle quatity of subscription simutanouesly allowed in on subscription
