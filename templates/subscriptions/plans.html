@@ -1,6 +1,7 @@
 {% extends 'subscriptions/base.html' %}
 
 {% block subscriptions_content %}
+<link rel="stylesheet" type="text/css" href="/static/css/plans.css">
 <br>
 <br>
     <!-- -----------------------------fresh down---------------------------- -->
@@ -36,8 +37,41 @@
     </ul>
     <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-individual" role="tabpanel" aria-labelledby="pills-individual-tab">
+                <div class="row mt-5">
+                        <div class="col-md-6">     
+                            <a href="#I_BASIC">           
+                            <div class="card rounded shadow mt-3 border-light rounded-pill">
+                                <div class="text-center pt-4 pb-0 text-dark"><h2>Basic</h2>
+                                Choose any one
+                                </div>
+                                <div class="card-body text-dark">
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">        
+                            <a href="#I_PREMIUM">        
+                                <div class="card rounded shadow mt-3 border-light rounded-pill">
+                                    <div class="text-center pt-4 text-dark"><h2>Premium</h2>
+                                    Family Pack
+                                    </div>
+                                    <div class="card-body text-dark">
+                                </div>
+                                </div>
+                            </a>
+                        </div>
+
+                </div>
+            <div class="container">
+                <div class="mt-5 algo-align" id="I_BASIC">
+                    <br>
+                    <hr>
+                    <br>
+                </div>
+            </div>
             <div class="row mt-5">
-            {% for plan in plans %}
+            <h3 class="mr-4">Basic Plans</h3>
+            {% for plan in iplans %}
                 <div class="col-md-4">                
                     <div class="card border-dark mb-3 rounded">
                         <div class="card-header font-weight-bold text-center"><h2>{{plan.plan_name}}</h2></div>
@@ -47,7 +81,16 @@
                                         ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
                                 <li class="list-group-item">
                                         ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
+                            
+                                <li class="list-group-item">
+                                        Get This Plan
+                                    <label class="checkbox">
+                                        <input type="checkbox" />
+                                        <span class="primary"></span>
+                                    </label>
+                                </li>
                             </ul>
+
                         <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
                         View
                         </button>
@@ -56,19 +99,51 @@
                 </div>
             {% endfor %}
             </div>
+            <div class="container">
+                <div class="mt-5 algo-align" id="I_PREMIUM">
+                    <br>
+                    <hr>
+                    <br>
+                </div>
+            </div>
+            <div class="row mt-5">
+                    <h3 class="mr-4">Premium Plans</h3>
+                    {% for plan in iplans %}
+                        <div class="col-md-4">                
+                            <div class="card border-dark mb-3 rounded">
+                                <div class="card-header font-weight-bold text-center"><h2>{{plan.plan_name}}</h2></div>
+                                <div class="card-body text-dark">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                                ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
+                                        <li class="list-group-item">
+                                                ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
+                                    </ul>
+                                <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
+                                View
+                                </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            </div>
         </div>
         <div class="tab-pane fade" id="pills-group" role="tabpanel" aria-labelledby="pills-group-tab">
             <div class="row mt-5">
                     <div class="col-md-4">                
                         <div class="card rounded shadow mt-3 border-light rounded-pill">
-                            <div class="text-center pt-4"><h2>Basic</h2></div>
+                            <div class="text-center pt-4 pb-0"><h2>Basic</h2>
+                            Choose any one
+                            </div>
                             <div class="card-body text-dark">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">                
                         <div class="card rounded shadow mt-3 border-light rounded-pill">
-                            <div class="text-center pt-4"><h2>Premium</h2></div>
+                            <div class="text-center pt-4"><h2>Premium</h2>
+                            Family Pack
+                            </div>
                             <div class="card-body text-dark">
                         </div>
                     </div>

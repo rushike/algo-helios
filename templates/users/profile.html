@@ -26,17 +26,33 @@
     <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
     
       <div class="row">
-          <div class="col-md-6 bg-light p-3">
-              <div class="text-center">
-                <img src="//placehold.it/150" alt="..." class="w-50 rounded-lg" style="max-height: 200px;">
-              </div>
-          </div>
-          <div class="col-md-6">
+          <div class="col-md-8">
               <div class="flush-left">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item">Name : {{ user.first_name }}</li>
                   <li class="list-group-item">Credits : {{ user.algo_credits }}</li>
                   <li class="list-group-item">Last Login : {{ user.last_login }}</li>
+                  <li class="list-group-item">Your Referral Code : 
+                    <span class="badge badge-dark">{{ user.referal_code }}</span>
+                    <form class="form-inline">
+                    <input type="text" class="form-control" value={{ referral_link }} id="myInput">
+                    <button class="btn btn-sm btn-dark mt-2 mx-4" onclick="myFunction()">Copy text</button>
+                    </form>
+                    <small>Share link to avail 30 Credits (Applicable only Once)</small><br>
+                  </li>
+                  <li class="list-group-item">
+                    <form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
+                      {% csrf_token %}
+                        <div class="form-group">
+                          <label for="">Enter Referal Code</label>
+                          <input type="text" id="" maxlength="6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+                          <br><small id="helptext" class="text-muted">
+                            Must be 6 characters long.
+                          </small>
+                        </div>
+                        <button class="btn btn-dark" type="submit">Ok</button>
+                      </form>
+                  </li>
                 </ul>
               </div>
           </div>
@@ -107,5 +123,20 @@ $('.alert').alert()
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
+
+  function myFunction() {
+  /* Get the text field */
+  var copyText = document.getElementById("myInput");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+  /* Alert the copied text */
+  alert("Copied the text: " + copyText.value);
+}
 </script>
 {% endblock %}

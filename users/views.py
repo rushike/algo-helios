@@ -40,4 +40,4 @@ def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>m
 
 @login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):
-    return HttpResponseRedirect('/user/refer/code=?' + str(referral_code))
+    return HttpResponseRedirect('/user/refer/code=' + str(referral_code))

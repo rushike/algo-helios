@@ -19,7 +19,7 @@ REFERAL_CODE_LEN = 6
 def end_date():
 		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
 
-def get_unique_referal_code():
+def get_unique_referral_code():
 	# return '000000'
 	ref = random.sample(string.ascii_uppercase, REFERAL_CODE_LEN)
 	while AlgonautsUser.objects.filter(referal_code = ref).exists():
@@ -89,7 +89,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
-	referal_code = models.CharField(max_length=REFERAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referal_code)
+	referal_code = models.CharField(max_length=REFERAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -97,8 +97,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	objects = UserManager()
 
-	# class Meta:
-	# 	unique_together = ('referal_code',)
+	class Meta:
+		unique_together = ('referal_code',)
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
@@ -155,7 +155,7 @@ class UserGroup(models.Model):
 		AlgonautsUser,
 		through='UserGroupMapping',
 		through_fields=('user_group_id', 'user_profile_id'),
-	)
+	) 
 	registration_time = models.DateTimeField(auto_now=True)
 	admin = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="ug_admin")
 	multiplier = models.IntegerField(default=1) # describle quatity of subscription simutanouesly allowed in on subscription

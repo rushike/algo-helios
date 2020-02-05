@@ -34,7 +34,7 @@ def plan_overview(request, slug):
 def plan_subscribe(request):
     subs_attr = dict(request.POST.lists()) 
     recepient = [request.user.email]
-    recepient.extend(subs_attr['emails_to'])
+    recepient.extend(subs_attr['group_emails'])
     subscribed = Subscription.objects.create_subscription(
                     plan_name = subs_attr['plan_name'][0],
                     user = request.user,

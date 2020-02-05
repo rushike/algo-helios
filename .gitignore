@@ -18,3 +18,5 @@ postgres.txt
 test.py
 consideration.txt
 stunnel/
+*/migrations/*
+*/migrations/*.py
