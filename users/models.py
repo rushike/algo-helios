@@ -5,26 +5,29 @@ from django.utils import timezone
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
 
-import datetime, random, string
-
+import datetime, random, string, time
+from hashlib import md5
 # from subscriptions.models import Plan
-
+# random.seed(random.randint(0, 1000000))
 
 """
 Constants or Functions
 Calculates the default end date for user to removed
 """
-REFERAL_CODE_LEN = 6
+REFERRAL_CODE_LEN = 6
 
 def end_date():
 		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
 
-def get_unique_referral_code():
+def get_unique_referral_code(seed = 0):
 	# return '000000'
-	ref = random.sample(string.ascii_uppercase, REFERAL_CODE_LEN)
-	while AlgonautsUser.objects.filter(referal_code = ref).exists():
-		ref = random.sample(string.ascii_uppercase, REFERAL_CODE_LEN)
+	# random.seed(md5(str(time.time).encode('utf8')))
+	ref = random.sample(string.ascii_uppercase, REFERRAL_CODE_LEN)
+	while AlgonautsUser.objects.filter(referral_code = ref).exists():
+		ref = random.sample(string.ascii_uppercase, REFERRAL_CODE_LEN) #[random.choice(string.ascii_uppercase) for i in range(REFERRAL_CODE_LEN)]
 	return ''.join(ref)	
+def get_unique_referral_code_():
+	return get_unique_referral_code(0)
 """
 Custom Field Declaration 
 
@@ -53,6 +56,7 @@ class UserManager(BaseUserManager):
 		last_name = last_name.capitalize()
 		contact_no = contact_no.strip()
 		email = self.normalize_email(email)
+		referral_code = get_unique_referral_code(email)
 		user = self.model(
 			first_name = first_name,
 			last_name = last_name,
@@ -63,6 +67,7 @@ class UserManager(BaseUserManager):
 			is_superuser=is_superuser, 
 			last_login=now,
 			date_joined=now, 
+			referral_code = referral_code,
 			**extra_fields
 		)
 		user.set_password(password)
@@ -89,7 +94,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
-	referal_code = models.CharField(max_length=REFERAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code)
+	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code_)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -97,8 +102,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	objects = UserManager()
 
-	class Meta:
-		unique_together = ('referal_code',)
+	# class Meta:
+	# 	unique_together = ('referral_code',)
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
@@ -197,7 +202,7 @@ class ReferralOffer(models.Model):
 
 
 class Referral(models.Model):
-	referral_code = models.CharField(max_length=REFERAL_CODE_LEN)
+	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN)
 	referred_by = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_referred_by') 
 	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()

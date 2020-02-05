@@ -63,7 +63,7 @@ def get_all_groups_of_user(user_id):
     return groups
 
 def add_referral_credits(self_uid, referral_code):
-    ref_to = AlgonautsUser.objects.get(referal_code=referral_code)
+    ref_to = AlgonautsUser.objects.get(referral_code=referral_code)
     ref_by = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
     referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
     referral_time =datetime.datetime.now()
@@ -86,6 +86,8 @@ def add_referral_credits(self_uid, referral_code):
     return ref, True
 
 def generate_referral_user_add_link(user:AlgonautsUser):
-    link = 'user/refer/user=?' + user.referal_code
+    link = 'user/refer/user=' + user.referral_code
     return link
 
+def if_referred(user:AlgonautsUser):
+    return Referral.objects.filter(referred_by = user).exists()
