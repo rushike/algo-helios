@@ -16,7 +16,7 @@ def plans(request):
                 'iplans' : Plan.objects.filter(plan_name__startswith = 'i_'),
                 'gplans' : Plan.objects.exclude(plan_name__startswith = 'i_')
             }
-    raise EnvironmentError
+    # raise EnvironmentError
     return render(request, 'subscriptions/plans.html', context=context)
 
 @login_required(login_url='/accounts/login/') 
