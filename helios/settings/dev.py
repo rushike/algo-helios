@@ -41,3 +41,6 @@ DATABASES = {
     }
 }
 
+EMAIL_HOST_USER = 'javaproject1024@gmail.com'
+EMAIL_HOST_PASSWORD = 'JavaProjec'
+

@@ -29,7 +29,7 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
 
 def get_user_subs_plans(user):
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
-    now = datetime.datetime.now(pytz.datetime('UTC'))
+    now = datetime.datetime.now(pytz.timezone('UTC'))
     iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
     #one user linked with multiple groups
@@ -38,9 +38,9 @@ def get_user_subs_plans(user):
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__entry_date', 'plan_id__expiry_date')
-    group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_date__lt = now, plan_id__expiry_date__gt = now )		
-    indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_date__lt = now, plan_id__expiry_date__ = now)
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__entry_time', 'plan_id__expiry_time')
+    group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
+    indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
@@ -63,7 +63,7 @@ def get_all_groups_of_user(user_id):
     return groups
 
 def add_referral_credits(self_uid, referral_code):
-    ref_to = AlgonautsUser.objects.get(referal_code=referral_code)
+    ref_to = AlgonautsUser.objects.get(referral_code=referral_code)
     ref_by = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
     referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
     referral_time =datetime.datetime.now()
@@ -86,6 +86,8 @@ def add_referral_credits(self_uid, referral_code):
     return ref, True
 
 def generate_referral_user_add_link(user:AlgonautsUser):
-    link = 'user/refer/user=?' + user.referal_code
+    link = 'user/refer/user=' + user.referral_code
     return link
 
+def if_referred(user:AlgonautsUser):
+    return Referral.objects.filter(referred_by = user).exists()
