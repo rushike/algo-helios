@@ -51,6 +51,7 @@ def create_individual_plan(sender, instance, **kwargs):
              price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now() , is_active = False)
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = iplan, product_id= instance)
     
-    
 
-post_save.connect(create_individual_plan, Product, dispatch_uid="products.models.Product")
+# post_save.connect(create_individual_plan, Product, dispatch_uid="products.models.Product")
+
+# post_save.connect(create_premium_plan, Plan, dispatch_uid='subscriptions.models.Plan')

@@ -4,7 +4,7 @@ from django.db.models import query
 from django.contrib.auth.decorators import login_required
 
 import datetime
-import pytz
+import pytz, re
 
 import users.functions 
 import subscriptions.functions 
@@ -14,28 +14,35 @@ from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, 
 def plans(request):
     context = {
                 'iplans' : Plan.objects.filter(plan_name__startswith = 'i_'),
-                'gplans' : Plan.objects.exclude(plan_name__startswith = 'i_')
+                'gplans' : Plan.objects.exclude(plan_name__startswith = 'i_'),
             }
     # raise EnvironmentError
     return render(request, 'subscriptions/plans.html', context=context)
 
 @login_required(login_url='/accounts/login/') 
+def plan_for_users(request):
+    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
+
 #above User must be logged in for selecting a plan
 def plan_overview(request, slug):
-    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
+    now = datetime.datetime.now(pytz.timezone('UTC'))
+    plan = Plan.objects.get(plan_name=slug, entry_time__lt = now, expiry_time__gt = now) # get the only active plan
+    is_group_plan = subscriptions.functions.is_group_plan(plan_id = plan)
     context = {
-                'iplans' : iplans, 
-                'gplans' : gplans,
-                'plan' : Plan.objects.get(plan_name=slug)
+                'plan' : plan,
+                'is_group_plan' : is_group_plan,
             }
-    
+    # raise EnvironmentError
     return render(request, 'subscriptions/plan_overview.html',context=context)
 
 @login_required(login_url='/accounts/login/')
 def plan_subscribe(request):
     subs_attr = dict(request.POST.lists()) 
     recepient = [request.user.email]
-    recepient.extend(subs_attr['group_emails'])
+    if 'group_emails' in subs_attr:    
+        email_list = [v.strip() for v in re.split(",", subs_attr['group_emails'][0])]
+        recepient.extend(email_list)
+        raise EnvironmentError
     subscribed = Subscription.objects.create_subscription(
                     plan_name = subs_attr['plan_name'][0],
                     user = request.user,
