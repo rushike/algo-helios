@@ -12,6 +12,13 @@ def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(sel
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, delta_period=4, group_admin= False)
     return mapper
 
+def get_all_standard_groups():
+    """
+        These are the non-individual group type.
+    """
+    gtypes = UserGroupType.objects.all() #exclude(type_name = 'individual')
+    return gtypes.order_by('max_members')
+
 def generate_group_add_link(group_id:UserGroup):
     group_id = group_id._wrapped if hasattr(group_id,'_wrapped') else group_id # if group id is wrapped by other object e.g. SimplyLazyObject
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -38,7 +45,7 @@ def get_user_subs_plans(user):
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__entry_time', 'plan_id__expiry_time')
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__entry_time', 'plan_id__expiry_time', 'plan_id__price_per_month')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
     return indivdual_plans, group_plans
