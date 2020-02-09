@@ -33,7 +33,7 @@
                   <li class="list-group-item">Credits : {{ user.algo_credits }}</li>
                   <li class="list-group-item">Last Login : {{ user.last_login }}</li>
                   <li class="list-group-item">Your Referral Code : 
-                    <span class="badge badge-dark">{{ user.referal_code }}</span>
+                    <span class="badge badge-dark">{{ user.referral_code }}</span>
                     <form class="form-inline">
                     <input type="text" class="form-control" value={{ referral_link }} id="myInput">
                     <button class="btn btn-sm btn-dark mt-2 mx-4" onclick="myFunction()">Copy text</button>
@@ -41,10 +41,10 @@
                     <small>Share link to avail 30 Credits (Applicable only Once)</small><br>
                   </li>
                   <li class="list-group-item">
-                    <form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
+                    <form class="form-inline" action="/user/refer/user={{ user.referral_code }}" method="POST">
                       {% csrf_token %}
                         <div class="form-group">
-                          <label for="">Enter Referal Code</label>
+                          <label for="">Enter Refferal Code</label>
                           <input type="text" id="" maxlength="6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
                           <br><small id="helptext" class="text-muted">
                             Must be 6 characters long.

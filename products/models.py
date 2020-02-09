@@ -48,7 +48,7 @@ def create_individual_plan(sender, instance, **kwargs):
     iGroupType = UserGroupType.objects.get(type_name = 'individual')
     #atomatically creating individual plan for particlar product register
     iplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['i', str(instance.product_name)]), user_group_type_id = iGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now() , is_active = False)
+             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now())
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = iplan, product_id= instance)
     
     
