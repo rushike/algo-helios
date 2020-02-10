@@ -1,5 +1,5 @@
 {% extends 'subscriptions/base.html' %}
-
+{% load define_action %}
 {% block subscriptions_content %}
 
 <link rel="stylesheet" type="text/css" href="/static/css/plans.css">
@@ -7,209 +7,150 @@
 <br>
     <!-- -----------------------------fresh down---------------------------- -->
 <div class="container mt-5">
-    <h1 class="display-4">All Plans</h1>
+    <h1 class="display-4 text-center">Our Products</h1>
+    <!-- <div class="display-4">{{details}}</div> -->
 
-    <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active btn-lg" id="pills-individual-tab" data-toggle="pill" href="#pills-individual" role="tab" aria-controls="pills-individual" aria-selected="true">Individual</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link btn-lg" id="pills-group-tab" data-toggle="pill" href="#pills-group" role="tab" aria-controls="pills-group" aria-selected="false">Group</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-        <div class="tab-pane fade show active" id="pills-individual" role="tabpanel" aria-labelledby="pills-individual-tab">
-                <div class="row mt-5">
+        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            {% for group_type in details %}
+            <li class="nav-item">
+                <a class="nav-link btn-lg" id="pills-{{group_type.1}}-tab" data-toggle="pill" href="#{{group_type.1}}" role="tab" aria-controls="pills-{{group_type.1}}" aria-selected="true">{{group_type.1.max_members}} Members</a>
+            </li>
+            <script>
+                $(document).ready(function(){
+                    $("#{{group_type.1}}").click(function(){
+                        console.log("{{group_type.1}}")
+                        $('input[name="groupcode"]').val("{{group_type.1}}");
+                    });
+                });
+            </script>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content" id="pills-tabContent">                
+            {% for group_type in details %}
+            <div class="tab-pane fade show" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
+                <!-- <div class="display-1">{{group_type.1}}</div> -->
+                <div class="row">
+                    {% for plan_type in group_type.0 %}
                         <div class="col-md-6">     
-                            <a href="#I_BASIC">           
-                            <div class="card rounded shadow mt-3 border-light rounded-pill">
-                                <div class="text-center pt-4 pb-0 text-dark"><h2>Basic</h2>
-                                Choose any one
-                                </div>
-                                <div class="card-body text-dark">
-                                </div>
-                            </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">        
-                            <a href="#I_PREMIUM">        
-                                <div class="card rounded shadow mt-3 border-light rounded-pill">
-                                    <div class="text-center pt-4 text-dark"><h2>Premium</h2>
-                                    Family Pack
+                            <form method = "POST" action="/subscriptions/subscribe"> 
+                                {% csrf_token %}        
+                                <div class="card rounded shadow mt-3  border-light ">
+                                    <a href="#ibasic"> 
+                                        <div class="text-center pt-4 pb-0 text-dark">
+                                            <h2>{{plan_type.1.type_name}}</h2>
+                                            {{plan_type.1.type_description}}
+                                        </div>
+                                    </a>
+                                    <div class="card-body text-dark text-center">
+                                        <ul class="list-group mr-5 ml-5">
+                                            <div class="form-check list-group_item ">
+                                                <span class="badge badge-pill badge-warning">Choose Period</span><br>
+                                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                    <label class="btn btn-primary active">
+                                                        
+                                                        <!-- <div class="h1">{{plan_type.0.0.1}}</div> -->
+                                                        <input type="radio" name="period" id="g1-monthly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="monthly" checked> <span class="font-weight-bold"> Monthly : </span><span> ₹ {{plan_type.0.0.1.price_per_month}} </span><br>
+                                                    </label>
+                                                    <label class="btn btn-primary">
+                                                        <input type="radio" name="period" id="g1-yearly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly : </span><span> ₹ {{plan_type.0.0.1.price_per_year}} </span>
+                                                    </label>
+                                                </div>
+                                                <!-- <span class="font-weight-bold"> Monthly : </span><span> {{gplans.0.plan_id.price_per_month}} </span><hr>
+                                                <span class="font-weight-bold"> Year : </span><span> {{gplans.0.plan_id.price_per_year}} </span><hr> -->
+                                            </div>
+                                        </ul>
                                     </div>
                                     <div class="card-body text-dark">
+                                        <ul class="font-weight-bold list-group mr-5 ml-5">
+                                            {% for plan in plan_type.0 %}
+                                                {% if plan_type.1.products_count == 1 %}
+                                                        <div class="form-check list-group-item pl-5">
+                                                            <!-- <div class="h3">{{plan.1}}</div> -->
+                                                            <input class="form-check-input" type="radio" name="radio" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
+                                                            <label class="form-check-label" for="{{plan.1}}">
+                                                                    {{plan.0.0.product_name}}
+                                                            </label>
+                                                        </div>
+                                                {% elif plan_type.1.products_count == 0 %} 
+                                                        {% for product in plan.0 %}
+                                                            <div class="form-check list-group-item pl-5">
+                                                                <input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
+                                                                <label class="form-check-label" for="{{plan.1}}" style="color: black;">    
+                                                                    {{product.product_name}}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
                                 </div>
+                                <input class="plancode" name= "plancode" value="" hidden></input>
+                                <input class="groupcode" name= "groupcode" value="" hidden></input>
+                                <div class="card rounded shadow mt-3  border-light" class = "plancode-div">
+                                    <button type='submit' class="col btn  btn-primary plancode-div"> Take the plan</button>
                                 </div>
-                            </a>
-                        </div>
-                </div>
-            <div class="container">
-                <div class="mt-5 algo-align" id="I_BASIC">
-                    <br>
-                    <hr>
-                    <br>
-                </div>
-            </div>
-            <div class="row mt-5">
-            <h3 class="mr-4">Basic Plans</h3>
-            {% for plan in iplans %}
-                <div class="col-md-4">                
-                    <div class="card border-dark mb-3 rounded">
-                        <div class="card-header font-weight-bold text-center">
-                        <h2>
-                            {{ plan.plan_name|slice:'2:' }}
-                        </h2></div>
-                        <div class="card-body text-dark">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                        ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
-                                <li class="list-group-item">
-                                        ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
-                            
-                                <li class="list-group-item">
-                                        Get This Plan
-                                    <label class="checkbox">
-                                        <input type="checkbox" />
-                                        <span class="primary"></span>
-                                    </label>
-                                </li>
-                            </ul>
+                            </form>
 
-                        <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
-                        View
-                        </button>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
-            <div class="container">
-                <div class="mt-5 algo-align" id="I_PREMIUM">
-                    <br>
-                    <hr>
-                    <br>
-                </div>
-            </div>
-            <div class="row mt-5">
-                    <h3 class="mr-4">Premium Plans</h3>
-                    {% for plan in gplans %}
-                        <div class="col-md-4">                
-                            <div class="card border-dark mb-3 rounded">
-                                <div class="card-header font-weight-bold text-center"><h2>{{plan.plan_name}}</h2></div>
-                                <div class="card-body text-dark">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                                ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
-                                        <li class="list-group-item">
-                                                ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
-                                    </ul>
-                                <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
-                                View
-                                </button>
-                                </div>
-                            </div>
+                            <script>
+                                $(document).ready(function(){
+                                    console.log("{{plan_type.1}}")
+                                    // $('input[name="plancode"]').val("{{plan_type.1}}");
+                                    $(".plancode-div").hover(function(){
+                                        // $(this).css("background-color", "yellow");
+                                        console.log("{{group_type.1}}-{{plan_type.1}}")
+                                        $('input[name="plancode"]').val("{{plan.1}}");
+                                    }, function(){
+                                        // $(this).css("background-color", "black");
+                                        console.log("{{group_type.1}}-{{plan.1}}")
+                                        $('input[name="plancode"]').val("{{plan_type.1}}");
+                                    });
+                                    $(".plancode-div").click(function(){
+                                        // $(this).css("background-color", "yellow");
+                                        console.log("{{group_type.1}}-{{plan_type.1}}")
+                                        $('input[name="plancode"]').val("{{plan_type.1}}");
+                                    });
+                                    
+
+
+                                });
+                            </script>
                         </div>
                     {% endfor %}
-            </div>
+                </div>
+                
+            </div>                    
+            {% endfor %}
+        
         </div>
-        <div class="tab-pane fade" id="pills-group" role="tabpanel" aria-labelledby="pills-group-tab">
-                <div class="row mt-5">
-                        <div class="col-md-6">     
-                            <a href="#I_BASIC">           
-                            <div class="card rounded shadow mt-3 border-light rounded-pill">
-                                <div class="text-center pt-4 pb-0 text-dark"><h2>Basic</h2>
-                                Choose any one
-                                </div>
-                                <div class="card-body text-dark">
-                                </div>
-                            </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">        
-                            <a href="#I_PREMIUM">        
-                                <div class="card rounded shadow mt-3 border-light rounded-pill">
-                                    <div class="text-center pt-4 text-dark"><h2>Premium</h2>
-                                    Family Pack
-                                    </div>
-                                    <div class="card-body text-dark">
-                                </div>
-                                </div>
-                            </a>
-                        </div>
-                </div>
-            <div class="container">
-                <div class="mt-5 algo-align" id="I_BASIC">
-                    <br>
-                    <hr>
-                    <br>
-                </div>
-            </div>
-            <div class="row mt-5">
-            <h3 class="mr-4">Basic Plans</h3>
-            {% for plan in iplans %}
-                <div class="col-md-4">                
-                    <div class="card border-dark mb-3 rounded">
-                        <div class="card-header font-weight-bold text-center">
-                        <h2>
-                            {{ plan.plan_name|slice:'2:' }}
-                        </h2></div>
-                        <div class="card-body text-dark">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                        ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
-                                <li class="list-group-item">
-                                        ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
-                            
-                                <li class="list-group-item">
-                                        Get This Plan
-                                    <label class="checkbox">
-                                        <input type="checkbox" />
-                                        <span class="primary"></span>
-                                    </label>
-                                </li>
-                            </ul>
+            {{grouptype}}
+    <!-- </div>
+        </div> -->
 
-                        <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
-                        View
-                        </button>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-            </div>
-            <div class="container">
-                <div class="mt-5 algo-align" id="I_PREMIUM">
-                    <br>
-                    <hr>
-                    <br>
-                </div>
-            </div>
-            <div class="row mt-5">
-                    <h3 class="mr-4">Premium Plans</h3>
-                    {% for plan in gplans %}
-                        <div class="col-md-4">                
-                            <div class="card border-dark mb-3 rounded">
-                                <div class="card-header font-weight-bold text-center"><h2>{{plan.plan_name}}</h2></div>
-                                <div class="card-body text-dark">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item">
-                                                ppm &#x20B9; {{plan.price_per_month}}<small class="text-muted">/ mo</small></li>
-                                        <li class="list-group-item">
-                                                ppa &#x20B9; {{plan.price_per_year}}<small class="text-muted">/ year</small></li>
-                                    </ul>
-                                <button class="btn btn-block btn-dark mt-3" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
-                                View
-                                </button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-            </div>
-    
+        
+
+    <div class="container">
+        <div class="mt-5 algo-align" id="ibasic">
+            <br>
+            <hr>
+            <br>
+        </div>
+    </div>
+
+
 </div>
 </div>
 </div>
 
 <br>
 <br>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $("#individual").addClass("active")
+        $("#pills-individual-tab").addClass("active")
+        
+    </script>
 {% endblock %}

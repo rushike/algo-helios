@@ -30,14 +30,39 @@
               <div class="flush-left">
                 <ul class="list-group list-group-flush">
                   <li class="list-group-item">Name : {{ user.first_name }}</li>
-                  <li class="list-group-item">Credits : {{ user.algo_credits }}</li>
+                  <li class="list-group-item">Credits : <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
                   <li class="list-group-item">Last Login : {{ user.last_login }}</li>
                   <li class="list-group-item">Your Referral Code : 
-                    <span class="badge badge-dark">{{ user.referral_code }}</span>
-                    <form class="form-inline">
+                    <span class="badge badge-dark">{{ user.referal_code }}</span>
+                    <!-- <form class="form-group"> -->
+                    <div class="input-group mb-3">
+                      <!-- <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> -->
+                      <input type="text" class="form-control" value="{{ referral_link }}" id="myInput"/>
+                      <div class="input-group-append">
+                        <span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="myFunction()">copy</span>
+                      </div>
+                    </div>
+                  <!-- </form> -->
+
+                  <!-- <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">@example.com</span>
+                    </div>
+                  </div>
+
+                  <div class="input-group">
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                    <div class="input-group-append">
+                      <span class="input-group-text">$</span>
+                      <span class="input-group-text">0.00</span>
+                    </div>
+                  </div> -->
+
+                    <!-- <form class="form-inline form-group">
                     <input type="text" class="form-control" value={{ referral_link }} id="myInput">
-                    <button class="btn btn-sm btn-dark mt-2 mx-4" onclick="myFunction()">Copy text</button>
-                    </form>
+                    <button class=" form-control btn btn-sm btn-dark mt-2 mx-4" onclick="myFunction()">Copy text</button>
+                    </form> -->
                     <small>Share link to avail 30 Credits (Applicable only Once)</small><br>
                   </li>
                   <li class="list-group-item">
@@ -71,7 +96,7 @@
               <h4 class="my-0 font-weight-normal">{{iplan.plan_name}}</h4>
             </div>
             <div class="card-body">
-              <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+              <h1 class="card-title pricing-card-title">&#x20B9;{{iplan.price_per_month}} <small class="text-muted">/ mo</small></h1>
               <ul class="list-unstyled mt-3 mb-4">
                 <li>{{ iplan.plan_desc }}</li>
               </ul>
@@ -92,7 +117,7 @@
                   <h4 class="my-0 font-weight-normal">{{gplan.plan_name}}</h4>
                 </div>
                 <div class="card-body">
-                  <h1 class="card-title pricing-card-title">&#x20B9;0 <small class="text-muted">/ mo</small></h1>
+                  <h1 class="card-title pricing-card-title">&#x20B9;{{iplan.plan_id}} <small class="text-muted">/ mo</small></h1>
                   <ul class="list-unstyled mt-3 mb-4">
                     <li>{{ gplan.plan_desc }}</li>
                   </ul>

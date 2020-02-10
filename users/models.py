@@ -102,8 +102,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	objects = UserManager()
 
-	# class Meta:
-	# 	unique_together = ('referral_code',)
+	class Meta:
+		unique_together = ('referral_code',)
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
@@ -131,12 +131,18 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
 
+class UserGroupTypeManager(models.Manager):
+	def create_user_group_type(self):
+		pass
+	pass
+
 class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
 	max_members = models.IntegerField(default=1)
 	min_members = models.IntegerField(default=1)
 	standard_group = models.BooleanField(default=True, blank=True)
-	objects = models.Manager()
+	eligible_for_trial = models.BooleanField(default=True)
+	objects = UserGroupTypeManager()
 	class Meta:
 		unique_together = ('type_name',)
 
@@ -145,13 +151,14 @@ class UserGroupType(models.Model):
 
 
 class UserGroupManager(models.Manager):
-	def create_user_group(self, user_group_type_id, admin):
-		try : #can validate if any restrictions, returns None if, user_group with user_group_type, admin already present
-			user_group = self.model(user_group_type_id = user_group_type_id, registration_time = datetime.datetime.now, admin = admin)
-			user_group.save(using=self._db)
-			return user_group
-		except:
-			return 
+	def create_user_group(self, user_group_type_id, admin, multiplier = 1):
+		#can validate if any restrictions, returns None if, user_group with user_group_type, admin already present
+		user_group = UserGroup.objects.filter(user_group_type_id = user_group_type_id, admin = admin, multiplier = multiplier)
+		if user_group.exists():
+			return user_group.first()
+		user_group = self.model(user_group_type_id = user_group_type_id, registration_time = datetime.datetime.now, admin = admin)
+		user_group.save(using=self._db)
+		return user_group
 
 
 class UserGroup(models.Model):

@@ -9,7 +9,7 @@ admin.site.site_header = "Algonauts Administration"
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits', )}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits','referral_code' )}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -28,10 +28,10 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits', )
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits','referral_code' )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
-    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits',  )
+    ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'referral_code' )
     filter_horizontal = ('groups', 'user_permissions',)
 
 class GroupMappingAdmin(admin.ModelAdmin):
@@ -78,12 +78,12 @@ class ReferralAdmin(admin.ModelAdmin):
 
 class GroupTypeAdmin(admin.ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('type_name', 'max_members', 'min_members', 'standard_group')}),
+        (None, {'fields': ('type_name', 'max_members', 'min_members', 'standard_group' ,'eligible_for_trial', )}),
     )
-    list_display = ('type_name', 'max_members', 'min_members', 'standard_group',)
-    list_filter = ('type_name', 'max_members', 'min_members', 'standard_group',)
+    list_display = ('type_name', 'max_members', 'min_members', 'standard_group','eligible_for_trial',)
+    list_filter = ('type_name', 'max_members', 'min_members', 'standard_group','eligible_for_trial',)
     search_fields = ('type_name', )
-    ordering = ('type_name', 'max_members', 'min_members', 'standard_group',)
+    ordering = ('type_name', 'max_members', 'min_members', 'standard_group','eligible_for_trial',)
 
 
 admin.site.register(AlgonautsUser, UserAdmin) 
