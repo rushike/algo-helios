@@ -45,7 +45,7 @@ def get_user_subs_plans(user):
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now).values('plan_id', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', 'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year')
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now).values('plan_id', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', 'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     # subs = plans.filter(subscription_type_id__in = SubscriptionType.objects.all())
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)

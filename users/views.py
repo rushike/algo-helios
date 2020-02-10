@@ -16,6 +16,7 @@ def profile_page(request):
     context = {
                 'iplans':iplans, 
                 'gplans' : gplans,
+                'plans' : [iplans, gplans],
                 'referral_link' : referral_link,
                 'if_referred' : if_referred,
             }

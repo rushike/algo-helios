@@ -1,9 +1,10 @@
 {% extends "users/base.html" %}
 
 {% block profile_content %}
-
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard.css">
 <div class="container mb-5">
-<h1 class="display-4 p-3">DashBoard</h1>
+<br>
+<h3>DashBoard</h3>
 <div class="alert alert-warning alert-dismissible fade show" role="alert">
   <strong>Check Your Email ! Click On Verify Me</strong>
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -18,159 +19,149 @@
     <li class="nav-item">
       <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" id="edit-tab" data-toggle="tab" href="#edit" role="tab" aria-controls="edit" aria-selected="false">Edit</a>
-    </li>
   </ul>
+
+
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    
-      <div class="row">
-          <div class="col-md-8">
-              <div class="flush-left">
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item"><b>Name : </b>{{ user.first_name }} {{user.last_name}} </li>
-                  <li class="list-group-item"><b>Credits :</b> <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
-                  <li class="list-group-item"><b>Last Login : </b>{{ user.last_login }}</li>
-                  <li class="list-group-item"><b>Your Referral Code : </b>
-                    <span class="badge badge-pill badge-dark"><div class="h3">&nbsp;&nbsp; {{ user.referral_code }}&nbsp; &nbsp;</div></span>
-                    <!-- <form class="form-group"> -->
-                    <div class="input-group mb-3">
-                      <!-- <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> -->
-						<input type="text" class="form-control" value="{{ referral_link }}" id="myInput" />
-						<div class="input-group-append">
-							<span class="input-group-text" id="basic-addon1"  onclick="myFunction()">copy</span>
+		<div class="row">
+			<div class="col-md-10">
+				<div class="flush-left">
+						<div class="card rounded">
+							<div class="card-body p-2">
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><b>Name : </b>{{ user.first_name }} {{user.last_name}} </li>
+									<li class="list-group-item"><b>Credits :</b> <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
+									<li class="list-group-item"><b>Last Login : </b>{{ user.last_login }}</li>
+									<li class="list-group-item"><b>Your Referral Code : </b>
+									<span class="badge badge-pill badge-dark p-2"> {{ user.referral_code }} </span>
+										<div class="flush-left">
+											<div class="input-group">
+												<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
+												<div class="input-group-append">
+													<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="myFunction()">copy</span>
+												</div>
+											</div>
+										</div>		
+										<small>Share link to avail 30 Credits (Applicable only Once)</small><br>
+									</li>
+									{% if not if_referred %}
+										<li class="list-group-item">
+										<form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
+											{% csrf_token %}
+											<div class="form-group">
+												<label for="">Enter Referal Code</label>
+												<input type="text" id="" maxlength="6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
+												<br><small id="helptext" class="text-muted">
+												Must be 6 characters long.
+												</small>
+											</div>
+											<button class="btn btn-dark" type="submit">Ok</button>
+											</form>
+										</li>
+									{% endif %}
+								</ul>
+							</div> 
 						</div>
-					</div>
-					
-                    <small>Share link to avail 30 Credits (Applicable only Once)</small><br>
-                  </li>
-
-                  {% if not if_referred %}
-                    <li class="list-group-item">
-                      <form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
-                        {% csrf_token %}
-                          <div class="form-group">
-                            <label for="">Enter Referal Code</label>
-                            <input type="text" id="" maxlength="6" class="form-control mx-sm-3" aria-describedby="passwordHelpInline">
-                            <br><small id="helptext" class="text-muted">
-                              Must be 6 characters long.
-                            </small>
-                          </div>
-                          <button class="btn btn-dark" type="submit">Ok</button>
-                        </form>
-                    </li>
-                  {% endif %}
-                </ul>
-              </div>
-          </div>
-      </div>
-    </div>
-    <!-- --------------- -->
+				</div>
+			</div>
+		</div> 
+	</div> <!-- profile tab ends-->
+    <!-- ------------------------------------------------------------------------------------------ -->
     
     <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
-
-      <h1 class="display-4 mt-3">Personal Plans</h1>
-      <div class="container mt-5">
-        <div class="card-deck mb-3 text-center">
-          <div class="card mb-4 shadow-sm col-md-3">
-              {% for iplan in iplans %}
-              <!-- <div class="h3">  {{iplan}} </div> -->
-            <div class="card-header">
-              <h4 class="my-0 font-weight-normal">{{iplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{iplan.subscription_type_id__type_name}}</h4>
-            </div>
-            <div class="card-body">
-              {% if iplan.subscription_type_id__type_name == "Trial" %}
-              <!-- <h1> Trial </h1> -->
-              <h4> Subscribe With on of following plan</h4>
-              <h3 class="card-title pricing-card-title">&#x20B9;{{iplan.plan_id__price_per_month}} <small class="text-muted">/ month</small></h3>
-              <h3 class="card-title pricing-card-title">&#x20B9;{{iplan.plan_id__price_per_year}} <small class="text-muted">/ year</small></h3>
-              {% elif iplan.subscription_type_id__type_name == "Monthly" %}
-              <h1 class="card-title pricing-card-title">&#x20B9;{{iplan.plan_id__price_per_month}} <small class="text-muted">/ month</small></h1>
-              {% else %}
-              <h1 class="card-title pricing-card-title">&#x20B9;{{iplan.plan_id__price_per_year}} <small class="text-muted">/ month</small></h1>
-              {% endif %}
-              <ul class="list-unstyled mt-3 mb-4">
-                <li>{{ iplan.plan_desc }}</li>
-              </ul>
-				{% if iplan.subscription_type_id__type_name == "Trial" %}
-					<button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
-				{% else %}
-					<button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
-				{% endif %}
-			</div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      <hr>
-      {% if gplans %}
-	  <h1 class="display-4">Group Plans</h1>
-	  <div class="container mt-5">
-        <div class="card-deck mb-3 text-center">
-          <div class="card mb-4 shadow-sm">
-              {% for gplan in gplans %}
-              <!-- <div class="h3">  {{gplan}} </div> -->
-            <div class="card-header">
-              <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
-            </div>
-            <div class="card-body">
-              {% if gplan.subscription_type_id__type_name == "Trial" %}
-              <h4> Subscribe With on of following plan</h4>
-              <h3 class="card-title pricing-card-title">&#x20B9;{{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></h3>
-              <h3 class="card-title pricing-card-title">&#x20B9;{{gplan.plan_id__price_per_year}} <small class="text-muted">/ mo</small></h3>
-              {% elif gplan.subscription_type_id__type_name == "Monthly" %}
-              <h1 class="card-title pricing-card-title">&#x20B9;{{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></h1>
-              {% else %}
-              <h1 class="card-title pricing-card-title">&#x20B9;{{gplan.plan_id__price_per_year}} <small class="text-muted">/ mo</small></h1>
-              {% endif %}
-              <ul class="list-unstyled mt-3 mb-4">
-                <li>{{ gplan.plan_desc }}</li>
-              </ul>
-				{% if gplan.subscription_type_id__type_name == "Trial" %}
-					<button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
-				{% else %}
-					<button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
-				{% endif %}
-			</div>
-            {% endfor %}
-          </div>
-        </div>
-	  </div>
 	  
-<!-- 	  
+		<h1 class="display-4">Personal Plans</h1>
+      		{% if iplans %}
+      			<div class="container mt-5">
+          			<div class="row">
+          				{% for iplan in iplans %}
+              				<div class="mb-3 col-md-3">
+								
+                				<div class="card shadow-sm">     
+                  					<div class="card-header">
+                    					<h4 class="my-0 font-weight-normal">{{iplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{iplan.subscription_type_id__type_name}}</span><br></h4>
+									</div>
+									  
+                  					<div class="card-body">
+											{% if iplan.subscription_type_id__type_name == "Trial" %}
+											<p class="lead"> Subscribe With the following Plan</p>
+											<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+										  {% elif iplan.subscription_type_id__type_name == "Monthly" %}
+											<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+										  {% else %}
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+										  {% endif %}
+											<ul class="list-group mb-4">
+											  <li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ iplan.subscription_start }}</li>
+											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.subscription_end }}</li>
+											</ul>
+								  
+											{% if iplan.subscription_type_id__type_name == "Trial" %}
+											  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
+											{% else %}
+											  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
+											{% endif %}
+                  					</div>
+								</div>
+								
+              				</div>
+          				{% endfor %}
+		  			</div>
+      			</div>
+			{% else %}
+				<h6>No Personal Plans Yet</h6>
+			{% endif %}
+
+      <!-- ------------------------------- -->
+      <h1 class="display-4">Group Plans</h1>
+      
+      {% if gplans %}
       <div class="container mt-5">
-            <div class="card-deck mb-3 text-center">
-              <div class="card mb-4 shadow-sm">
-                  {% for gplan in gplans %}
-                <div class="card-header">
-                  <h4 class="my-0 font-weight-normal">{{gplan.plan_name}}</h4>
+          <div class="row">
+		  {% for gplan in gplans %}
+              <div class="mb-3 col-md-3">
+                <div class="card shadow-sm">     
+                  <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
+                  </div>
+                  <div class="card-body">
+                    {% if gplan.subscription_type_id__type_name == "Trial" %}
+                      <p class="lead"> Subscribe With the following Plan</p>
+                      <p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+                    {% elif gplan.subscription_type_id__type_name == "Monthly" %}
+                      <p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+                    {% else %}
+                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+                    {% endif %}
+                      <ul class="list-group mb-4">
+						<li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ gplan.subscription_start }}</li>
+						<li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ gplan.subscription_end }}</li>
+                      </ul>
+            
+                      {% if gplan.subscription_type_id__type_name == "Trial" %}
+                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
+                      {% else %}
+                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
+                      {% endif %}
+                      
+                  </div>
                 </div>
-                <div class="card-body">
-                  <h1 class="card-title pricing-card-title">&#x20B9;{{gplan.plan_id}} <small class="text-muted">/ mo</small></h1>
-                  <ul class="list-unstyled mt-3 mb-4">
-                    <li>{{ gplan.plan_desc }}</li>
-                  </ul>
-                  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe/renew</button>
-                </div>
-                {% endfor %}
               </div>
-            </div>
+          {% endfor %}
           </div>
-        {% else %}
-            <h1 class="display-4">No Group Plans Yet</h1>
-        {% endif %}
-    </div> -->
-    <div class="tab-pane fade" id="edit" role="tabpanel" aria-labelledby="edit-tab">...</div>
+      {% else %}
+        <h6>No Group Plans Yet</h6>
+      </div>
+      {% endif %}
+    </div>
   </div>
 </div>
+
+
 </div>
-
-
-
-
-
-</samp>
 <script type="text/javascript">
 
 $('.alert').alert()
@@ -194,4 +185,5 @@ $('.alert').alert()
   alert("Copied the text: " + copyText.value);
 }
 </script>
+
 {% endblock %}
