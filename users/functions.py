@@ -1,5 +1,5 @@
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
-from subscriptions.models import Plan, Subscription
+from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
 import pytz
 import datetime
@@ -37,17 +37,19 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
 def get_user_subs_plans(user):
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     now = datetime.datetime.now(pytz.timezone('UTC'))
-    iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
-    eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
+    iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
+    eGroupType = UserGroupType.objects.exclude(min_members = 1, max_members = 1) # get rest group types available from model
     #one user linked with multiple groups
     # user_all_groups2 = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id')
     user_all_groups = UserGroupMapping.objects.filter(user_profile_id = user).values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id')
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups).values('plan_id', 'user_group_id', 'plan_id__user_group_type_id', 'plan_id__entry_time', 'plan_id__expiry_time', 'plan_id__price_per_month')
+    plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now).values('plan_id', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', 'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year')
+    # subs = plans.filter(subscription_type_id__in = SubscriptionType.objects.all())
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
+    # raise EnvironmentError
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
@@ -97,4 +99,6 @@ def generate_referral_user_add_link(user:AlgonautsUser):
     return link
 
 def if_referred(user:AlgonautsUser):
-    return Referral.objects.filter(referred_by = user).exists()
+    ref = Referral.objects.filter(referred_by = user).exists()
+    # raise EnvironmentError
+    return ref

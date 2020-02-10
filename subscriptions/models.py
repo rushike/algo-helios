@@ -69,11 +69,6 @@ class SubscriptionManager(models.Manager):
         plan_id = Plan.objects.filter(plan_name=plan_name, user_group_type_id = user_group_type_id).first()
         #one user linked with multiple groups
         user_group_id = UserGroup.objects.create_user_group(user_group_type_id, admin=user)
-        # ugti = plan_id.user_group_type_id.id
-        # usermpa = UserGroupMapping.objects.all()
-        # u_gid = UserGroupMapping.objects.all().values('user_group_id','user_profile_id','user_group_id__user_group_type_id') \
-        #     .filter(user_profile_id=user, user_group_id__user_group_type_id=plan_id.user_group_type_id)
-        # user_group_id = UserGroup.objects.get(id=u_gid[0]['user_group_id'])
 
         now = datetime.datetime.now()
         

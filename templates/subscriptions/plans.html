@@ -46,12 +46,10 @@
                                             <div class="form-check list-group_item ">
                                                 <span class="badge badge-pill badge-warning">Choose Period</span><br>
                                                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                                    <label class="btn btn-primary active">
-                                                        
-                                                        <!-- <div class="h1">{{plan_type.0.0.1}}</div> -->
+                                                    <label class="btn btn-primary active" id = m-{{group_type.1}}-{{plan_type.1}}>
                                                         <input type="radio" name="period" id="g1-monthly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="monthly" checked> <span class="font-weight-bold"> Monthly : </span><span> ₹ {{plan_type.0.0.1.price_per_month}} </span><br>
                                                     </label>
-                                                    <label class="btn btn-primary">
+                                                    <label class="btn" id = y-{{group_type.1}}-{{plan_type.1}}>
                                                         <input type="radio" name="period" id="g1-yearly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly : </span><span> ₹ {{plan_type.0.0.1.price_per_year}} </span>
                                                     </label>
                                                 </div>
@@ -59,6 +57,23 @@
                                                 <span class="font-weight-bold"> Year : </span><span> {{gplans.0.plan_id.price_per_year}} </span><hr> -->
                                             </div>
                                         </ul>
+                                        <script>
+                                            $(document).ready(function(){
+                                                $("#m-{{group_type.1}}-{{plan_type.1}}").click(function(){
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-primary");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-primary");
+                                                });
+
+                                                $("#y-{{group_type.1}}-{{plan_type.1}}").click(function(){
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-primary");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-primary");
+                                                });
+                                            });
+                                        </script>
                                     </div>
                                     <div class="card-body text-dark">
                                         <ul class="font-weight-bold list-group mr-5 ml-5">
