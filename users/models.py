@@ -144,7 +144,7 @@ class UserGroupType(models.Model):
 	eligible_for_trial = models.BooleanField(default=True)
 	objects = UserGroupTypeManager()
 	class Meta:
-		unique_together = ('type_name',)
+		unique_together = ('type_name', 'max_members', 'min_members')
 
 	def __str__(self):
 		return str(self.type_name)

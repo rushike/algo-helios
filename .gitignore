@@ -20,3 +20,5 @@ consideration.txt
 stunnel/
 */migrations/*
 */migrations/*.py
+
+*.sql

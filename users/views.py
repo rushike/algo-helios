@@ -10,6 +10,7 @@ import users.functions
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
     iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
+    
     referral_link = ABSOLUTE_URL_HOME + users.functions.generate_referral_user_add_link(request.user)
     if_referred = users.functions.if_referred(request.user)
     context = {
