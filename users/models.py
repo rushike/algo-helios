@@ -235,6 +235,12 @@ class UserGroupMapping(models.Model):
 
 	def __str__(self):
 		return "#".join([str(self.user_profile_id) , str(self.user_group_id)])
+
+
+class UserFeedback(models.Model):
+	email = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE)
+	feedback_message = models.CharField(max_length=1024)
+	product_name = models.CharField(max_length=20)
   
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):

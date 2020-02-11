@@ -36,3 +36,12 @@ def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>m
 @login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):
     return HttpResponseRedirect('/user/refer/code=' + str(referral_code))
+
+@login_required(login_url = '/accounts/login/')
+def get_feedback(request):
+    return render(request,'users/feedback.html')
+
+def register_feedback(request):
+    fbdata = dict(request.POST)
+    users.functions.add_feedback(request.user, fbdata['product-name'][0], fbdata['feedback-message'][0])
+    return HttpResponseRedirect('/user/profile/info')

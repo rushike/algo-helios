@@ -1,4 +1,4 @@
-from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
+from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral, UserFeedback
 from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
 import pytz
@@ -95,3 +95,7 @@ def generate_referral_user_add_link(user:AlgonautsUser):
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
     return ref
+
+def add_feedback(user, product, message):
+    UserFeedback.objects.create(email=user, product_name = product, feedback_message=message).save()
+

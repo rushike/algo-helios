@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral
+from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral, UserFeedback
 
 admin.site.site_header = "Algonauts Administration"
 
@@ -94,4 +94,5 @@ admin.site.register(UserGroupMapping, GroupMappingAdmin)
 admin.site.register(UserGroupType, GroupTypeAdmin)
 admin.site.register(Referral, ReferralAdmin)
 admin.site.register(ReferralOffer, ReferralOfferAdmin)
+admin.site.register(UserFeedback)
 

@@ -6,12 +6,14 @@
 <div class="container mb-5">
 <br>
 <h3>DashBoard</h3>
-<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
-  <strong>Check Your Email ! Click On Verify Me</strong>
-  <button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
+
+	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
+		<strong>Check Your Email ! Click On Verify Me</strong>
+		<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
   
   <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item">
@@ -73,7 +75,7 @@
       			<div class="container mt-5">
           			<div class="row">
           				{% for iplan in iplans %}
-              				<div class="mb-3 col-md-3">
+              				<div class="mb-3 col-md-4">
 								
                 				<div class="card shadow-sm">     
                   					<div class="card-header">
@@ -118,7 +120,7 @@
       <div class="container mt-5">
           <div class="row">
 		  {% for gplan in gplans %}
-              <div class="mb-3 col-md-3">
+              <div class="mb-3 col-md-4">
                 <div class="card shadow-sm">     
                   <div class="card-header">
                     <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
