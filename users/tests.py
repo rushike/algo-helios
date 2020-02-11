@@ -4,4 +4,4 @@ from django.test import TestCase
 
 for x in AlgonautsUser.objects.all():
     u = AlgonautsUser.objects.filter(id=x.id)
-    u.update(referal_code=get_unique_referral_code())
+    u.update(referral_code=get_unique_referral_code())

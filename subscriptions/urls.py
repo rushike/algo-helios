@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-
 from subscriptions import views
 
 urlpatterns = [
@@ -9,5 +8,4 @@ urlpatterns = [
     path('order-details', views.order_details, name= 'order_details'),
     path('plan_overview/subscribe',views.plan_subscribe, name=''),
     path('plan_overview/<slug:slug>', views.plan_overview, name='plan_overview_page'),
-    # path('plan_subscribe/',views.subscribe, name='plan_subscribe')
 ]

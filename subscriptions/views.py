@@ -2,15 +2,11 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 from django.db.models import query
 from django.contrib.auth.decorators import login_required
-
 import datetime
 import pytz, re
-
 import users.functions 
 import subscriptions.functions 
-import subscriptions.constants
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
-
 
 def plans(request):
     POST = request.session.get('order_details_post')
@@ -73,14 +69,10 @@ def subscribe(request):
     if 'group_emails' in POST:    
         email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
         recepients.extend(email_list)
-
-    subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type , plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
-
-       
+    
+    subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type ,   \
+                    plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
-
-def subscribe_redirect_to_order_page():
-    return
 
 @login_required(login_url='/accounts/login/') 
 def plan_for_users(request):
@@ -95,7 +87,6 @@ def plan_overview(request, slug):
                 'plan' : plan,
                 'is_group_plan' : is_group_plan,
             }
-       
     return render(request, 'subscriptions/plan_overview.html',context=context)
 
 @login_required(login_url='/accounts/login/')
@@ -106,7 +97,6 @@ def plan_subscribe(request):
     if 'group_emails' in POST:    
         email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
         recepient.extend(email_list)
-           
     subscribed = Subscription.objects.create_subscription(
                     plan_name = POST['plan_name'][0],
                     user = request.user,

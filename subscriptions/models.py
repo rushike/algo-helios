@@ -1,9 +1,9 @@
 from django.db import models
 from users.models import UserGroupType, UserGroup, UserGroupMapping
-# from products.models import Product, ProductCategory
 import datetime
 from django.utils import timezone 
 import pytz
+
 
 class PlanType(models.Model):
     type_name = models.CharField(max_length=64)
@@ -48,10 +48,6 @@ class Plan(models.Model):
     trial_applicable = models.BooleanField(default= False)
     objects = models.Manager()
     
-    # @property
-    # def is_active(self):
-    #     return self.expiry_time > datetime.datetime.now(pytz.timezone('UTC')) or self.entry_time < datetime.datetime.now(pytz.timezone('UTC'))
-
     class Meta:
         unique_together = ('plan_name', 'user_group_type_id', 'plan_type_id') 
     @staticmethod
@@ -65,12 +61,15 @@ class Plan(models.Model):
     def __str__(self):
         return "#".join([str(self.plan_name), str(self.user_group_type_id), str(self.plan_type_id)])
 
+
 class OfferPrerequisites(models.Model):
     plan_id = models.ForeignKey( Plan, on_delete=models.CASCADE, null = True, default= None)
     objects = models.Manager()
+
     def __str__(self):
         return str(self.plan_id)
         
+
 class Offer(models.Model):
     offer_name = models.CharField(max_length=20, null=True, default= None)
     offer_preqreq = models.ForeignKey(OfferPrerequisites, on_delete=models.CASCADE)
@@ -78,8 +77,10 @@ class Offer(models.Model):
     offer_end_date = models.DateTimeField()
     offer_desc = models.CharField(max_length=100) 
     objects = models.Manager()
+
     def __str__(self):
         return str(self.offer_name)
+
 
 class SubscriptionType(models.Model):
     type_name = models.CharField(max_length=64)
@@ -91,6 +92,7 @@ class SubscriptionType(models.Model):
         
 
 class SubscriptionManager(models.Manager):
+
     def create_subscription(self, user, group_type, plan_type, plan_name, period, payment_id):
         # user_plan is an array type
         user_group_type_id = UserGroupType.objects.filter(type_name = group_type).first() # group type is string 
@@ -104,10 +106,9 @@ class SubscriptionManager(models.Manager):
         period = subscription_type.duration_in_days
 
         subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
-        prev_end_date = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).order_by('subscription_end').last() # get the latest entry in the table
+        prev_end_date = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id) \
+                    .order_by('subscription_end').last() # get the latest entry in the table
 
-           
-        
         if prev_end_date:
             prev_end_date = prev_end_date.subscription_end
             if subscription_start < prev_end_date:
@@ -121,7 +122,6 @@ class SubscriptionManager(models.Manager):
             subscription_type = SubscriptionType.objects.filter(type_name__iexact = 'Trial').first()         
             subscription_end = subscription_start + datetime.timedelta(days=1)
 
-           
         subscription = self.model(
                         user_group_id = user_group_id, 
                         plan_id = plan_id, 
@@ -135,13 +135,6 @@ class SubscriptionManager(models.Manager):
 
         return subscription
 
-    def renew(self):
-        pass
-
-    def is_subscribed(self):
-        pass
-            # raise AttributeError
-            
 
 class Subscription(models.Model):
     user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE) 
@@ -163,6 +156,7 @@ class PlanOfferMap(models.Model):
     offer_id = models.ForeignKey( Offer, on_delete=models.CASCADE)
     plan_id = models.ForeignKey( Plan, on_delete=models.CASCADE)
     objects = models.Manager()
+    
     def __str__(self):
         return str(self.offer_id)
 

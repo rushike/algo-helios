@@ -1,16 +1,13 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView 
 from django.contrib.auth.decorators import login_required
-
 from helios.settings import ABSOLUTE_URL_HOME
 import users
 import users.functions 
 
-
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
-    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
-    
+    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)    
     referral_link = ABSOLUTE_URL_HOME + users.functions.generate_referral_user_add_link(request.user)
     if_referred = users.functions.if_referred(request.user)
     context = {
@@ -19,19 +16,13 @@ def profile_page(request):
                 'referral_link' : referral_link,
                 'if_referred' : if_referred,
             }
-       
     return render(request, 'users/profile.html', context= context)
 
 @login_required(login_url = '/accounts/login/')
 def add_referral_credits(request, referral_code):
     logged_user = request.user._wrapped if hasattr(request.user,'_wrapped') else request.user
-    email = logged_user.email
-    users.functions.add_referral_credits(logged_user, referral_code = 	referral_code)
-    # return render(request, 'users/profile.html')
+    users.functions.add_referral_credits(logged_user, referral_code=referral_code)
     return HttpResponseRedirect('/user/profile/info')
-
-def create_custom_user_group(request):
-    return HttpResponse("Rello")
     
 @login_required(login_url = '/accounts/login/')    
 def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>md5_hash(admin_email)

@@ -1,11 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
 from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral
 
-# from myproject.admin_site import custom_admin_site
-
 admin.site.site_header = "Algonauts Administration"
+
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
@@ -34,6 +32,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'referral_code' )
     filter_horizontal = ('groups', 'user_permissions',)
 
+
 class GroupMappingAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('user_group_id', 'user_profile_id', 'time_removed', 'group_admin')}),
@@ -42,6 +41,7 @@ class GroupMappingAdmin(admin.ModelAdmin):
     list_filter = ('group_admin',)
     search_fields = ('user_profile_id', )
     ordering = ('user_group_id', 'user_profile_id', 'time_removed', 'group_admin')
+
 
 class GroupAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -60,11 +60,11 @@ class ReferralOfferAdmin(admin.ModelAdmin):
         (None, {'fields': ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active')}),
     )
 
-  
     list_display = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active',)
     list_filter = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active',)
     search_fields = ('offer_name', )
     ordering = ('offer_name', 'offer_credits_to', 'offer_credits_by', 'offer_end', 'offer_active')
+
 
 class ReferralAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -76,10 +76,12 @@ class ReferralAdmin(admin.ModelAdmin):
     search_fields = ('referral_code', )
     ordering = ('referral_code', 'referred_by', 'referred_to', 'referral_time', 'referral_offer_id',)
 
+
 class GroupTypeAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('type_name', 'max_members', 'min_members', 'standard_group' ,'eligible_for_trial', )}),
     )
+
     list_display = ('type_name', 'max_members', 'min_members', 'standard_group','eligible_for_trial',)
     list_filter = ('type_name', 'max_members', 'min_members', 'standard_group','eligible_for_trial',)
     search_fields = ('type_name', )
@@ -87,14 +89,9 @@ class GroupTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AlgonautsUser, UserAdmin) 
-
 admin.site.register(UserGroup, GroupAdmin)
-
 admin.site.register(UserGroupMapping, GroupMappingAdmin)
-
 admin.site.register(UserGroupType, GroupTypeAdmin)
-
 admin.site.register(Referral, ReferralAdmin)
-
 admin.site.register(ReferralOffer, ReferralOfferAdmin)
 
