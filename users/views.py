@@ -19,7 +19,7 @@ def profile_page(request):
                 'referral_link' : referral_link,
                 'if_referred' : if_referred,
             }
-    # raise EnvironmentError
+       
     return render(request, 'users/profile.html', context= context)
 
 @login_required(login_url = '/accounts/login/')

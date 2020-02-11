@@ -1,0 +1,54 @@
+{% extends 'subscriptions/base.html' %}
+
+{% block subscriptions_content %}
+<br>
+<br>
+
+<div class="container mt-5">
+    <div class="display-1">ORDER DETAILS</div>
+    <h1 class="display-4 mb-3">Plan Details</h1>
+
+    <div class="card border-primary mb-3" style="max-width: 18rem;">
+        <div class="card-header">Header</div>
+        <div class="card-body text-primary">
+          <h5 class="card-title">Primary card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+      </div>
+
+
+    
+    <form action="subscribe" method="POST">
+            {% csrf_token %}
+        <div class="form-group">
+            <label for="plan_name">Plan Name</label>
+            <input id="plan_name" name="plan_name" class="input form-control bg-light" value="{{ plan.plan_name }}" readonly><br>
+        </div>
+        <div class="form-group">
+            <label for="plan_name">PPM</label>
+            <input id="price_per_month" name="price_per_month" class="input form-control bg-light" value="{{ plan.price_per_month }}" readonly> 
+        </div>
+        <div class="form-group">
+            <label for="plan_name">PPA</label>
+            <input id="price_per_year" name="price_per_year" class="input form-control bg-light" value="{{ plan.price_per_year }}" readonly><br>
+        </div>
+        <div class="form-group">
+            <label for="plan_name">Plan duration</label>
+            <input id="t_delta" name="t_delta" class="input form-control bg-light" value="30" readonly><br>   
+        </div>
+        {% if is_group_plan %}
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Emails</label>
+                <small>  </small>
+                <input name="group_emails" class="form-control" id="group_emails" rows="3"></input>
+            </div>
+        {% endif %}
+        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+  
+    </form>
+    <button type="submit" value="Get This Plan" class="btn btn-dark mt-3" onclick="location.href='/subscriptions/subscribe'">
+</div>
+<br>
+<br>
+
+{% endblock %}

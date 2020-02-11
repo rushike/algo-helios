@@ -5,10 +5,14 @@
 <br>
 <br>
     <!-- -----------------------------fresh down---------------------------- -->
-<div class="container mt-5">
+        {% if alert %}
+            <h4 class="text-center">Can't Subscribe or Take a trial, you might already had a trial with the plan</h1>
+        {% endif %}
+    <div class="container mt-5">
+    
     <h1 class="display-4 text-center">Our Products</h1>
     <!-- <div class="display-4">{{details}}</div> -->
-
+        
         <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
             {% for group_type in details %}
             <li class="nav-item">
@@ -32,7 +36,7 @@
                 <div class="row">
                     {% for plan_type in group_type.0 %}
                         <div class="col-md-6">     
-                            <form method = "POST" action="/subscriptions/subscribe"> 
+                            <form method = "POST" action="/subscriptions/order-details"> 
                                 {% csrf_token %}        
                                 <div class="card rounded shadow mt-3  border-light ">
                                     <a href="#ibasic"> 
@@ -102,8 +106,12 @@
                                 </div>
                                 <input class="plancode" name= "plancode" value="" hidden></input>
                                 <input class="groupcode" name= "groupcode" value="" hidden></input>
-                                <div class="card rounded shadow mt-3  border-light" class = "plancode-div">
-                                    <button type='submit' class="col btn  btn-primary plancode-div"> Take the plan</button>
+                                <div class="card rounded shadow mt-3  border-light" class = "plancode-div" id = "{{group_type.1}}-{{plan_type.1}}">
+                                    {% if group_type.1.eligible_for_trial and plan_type.1.trial_applicable %}
+                                        <button type='submit' class="col btn  btn-primary plancode-div"> Take the Trial</button>
+                                    {% else %}
+                                    <button type='submit' class="col btn  btn-primary plancode-div"> Take the Plan</button>
+                                    {% endif %}
                                 </div>
                             </form>
 
@@ -111,18 +119,18 @@
                                 $(document).ready(function(){
                                     console.log("{{plan_type.1}}")
                                     // $('input[name="plancode"]').val("{{plan_type.1}}");
-                                    $(".plancode-div").hover(function(){
+                                    $("#{{group_type.1}}-{{plan_type.1}}").hover(function(){
                                         // $(this).css("background-color", "yellow");
                                         console.log("{{group_type.1}}-{{plan_type.1}}")
-                                        $('input[name="plancode"]').val("{{plan.1}}");
+                                        $('input[name="plancode"]').val("{{plan_type.1}}");
                                     }, function(){
                                         // $(this).css("background-color", "black");
                                         console.log("{{group_type.1}}-{{plan.1}}")
                                         $('input[name="plancode"]').val("{{plan_type.1}}");
                                     });
-                                    $(".plancode-div").click(function(){
+                                    $("#{{group_type.1}}-{{plan_type.1}}").click(function(){
                                         // $(this).css("background-color", "yellow");
-                                        console.log("{{group_type.1}}-{{plan_type.1}}")
+                                        console.log("click ==== > {{group_type.1}}-{{plan_type.1}}")
                                         $('input[name="plancode"]').val("{{plan_type.1}}");
                                     });
                                     
@@ -139,8 +147,6 @@
         
         </div>
             {{grouptype}}
-    <!-- </div>
-        </div> -->
 
         
 

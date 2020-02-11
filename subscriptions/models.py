@@ -15,6 +15,27 @@ class PlanType(models.Model):
     def __str__(self):
         return str(self.type_name)
 
+class PlanManager(models.Manager):
+    def create_plan(self,plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable = None):
+        if type(user_group_type_id) == int and type(plan_type_id) == int:
+            user_group_type_id = UserGroupType.objects.get(id = user_group_type_id)
+            plan_type_id = PlanType.objects.get(id = plan_type_id) 
+        if not trial_applicable:
+            trial_applicable =  user_group_type_id.eligible_for_trial and plan_type_id.trial_applicable
+        
+        plan_type = self.model(
+                                plan_name = plan_name,
+                                user_group_type_id = user_group_type_id,
+                                plan_type_id = plan_type_id, 
+                                price_per_month = price_per_month,
+                                price_per_year = price_per_year,
+                                entry_time = entry_time,
+                                expiry_time = expiry_time,
+                                trial_applicable = trial_applicable,
+                            )
+        plan_type.save(using = self._db)
+    pass
+
 class Plan(models.Model):
     plan_name = models.CharField(max_length=50)
     user_group_type_id = models.ForeignKey(UserGroupType, on_delete=models.CASCADE)
@@ -33,6 +54,13 @@ class Plan(models.Model):
 
     class Meta:
         unique_together = ('plan_name', 'user_group_type_id', 'plan_type_id') 
+    @staticmethod
+    def update_trial_applicable_to_default():
+        now = datetime.datetime.now()
+        active_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now)
+        for plan in active_plans:
+            plan.trial_applicable = plan.user_group_type_id.eligible_for_trial and plan.plan_type_id.trial_applicable
+            plan.save()
 
     def __str__(self):
         return "#".join([str(self.plan_name), str(self.user_group_type_id), str(self.plan_type_id)])
@@ -65,7 +93,7 @@ class SubscriptionType(models.Model):
 class SubscriptionManager(models.Manager):
     def create_subscription(self, user, group_type, plan_type, plan_name, period, payment_id):
         # user_plan is an array type
-        user_group_type_id = UserGroupType.objects.get(type_name = group_type) # group type is string 
+        user_group_type_id = UserGroupType.objects.filter(type_name = group_type).first() # group type is string 
         plan_id = Plan.objects.filter(plan_name=plan_name, user_group_type_id = user_group_type_id).first()
         #one user linked with multiple groups
         user_group_id = UserGroup.objects.create_user_group(user_group_type_id, admin=user)
@@ -78,14 +106,14 @@ class SubscriptionManager(models.Manager):
         subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
         prev_end_date = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).order_by('subscription_end').last() # get the latest entry in the table
 
-
+           
         
         if prev_end_date:
             prev_end_date = prev_end_date.subscription_end
             if subscription_start < prev_end_date:
                 subscription_start = prev_end_date 
 
-        if Subscription.objects.filter(user_group_id=user_group_id).exists():
+        if Subscription.objects.filter(user_group_id=user_group_id).exists() or not plan_id.trial_applicable:
             is_trial = False
             subscription_end = subscription_start + datetime.timedelta(days=period) 
         else:
@@ -93,7 +121,7 @@ class SubscriptionManager(models.Manager):
             subscription_type = SubscriptionType.objects.filter(type_name__iexact = 'Trial').first()         
             subscription_end = subscription_start + datetime.timedelta(days=1)
 
-        # raise EnvironmentError
+           
         subscription = self.model(
                         user_group_id = user_group_id, 
                         plan_id = plan_id, 

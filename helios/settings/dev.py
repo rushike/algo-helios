@@ -3,8 +3,6 @@ from .common import *
 
 
 ALLOWED_HOSTS = [
-    # 'https://5bd793f7.ngrok.io',
-    # '5bd793f7.ngrok.io',
     'localhost',
     'dev.algonauts.in',
     'algonauts.in',

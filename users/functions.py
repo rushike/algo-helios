@@ -49,7 +49,7 @@ def get_user_subs_plans(user):
     # subs = plans.filter(subscription_type_id__in = SubscriptionType.objects.all())
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
-    # raise EnvironmentError
+       
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
@@ -100,5 +100,5 @@ def generate_referral_user_add_link(user:AlgonautsUser):
 
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
-    # raise EnvironmentError
+       
     return ref

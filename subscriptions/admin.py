@@ -33,14 +33,14 @@ class PlanAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, 
         {
-            'fields': ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'is_active')
+            'fields': ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'trial_applicable', 'is_active')
         }),
     )
     
-    list_display = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'is_active')
-    list_filter = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'is_active')
+    list_display = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
+    list_filter = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
     search_fields = ('plan_name','user_group_type_id')
-    ordering = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'is_active')
+    ordering = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
 
 class PlanTypeAdmin(admin.ModelAdmin):
     fieldsets = (
