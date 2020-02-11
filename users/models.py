@@ -4,12 +4,8 @@ from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
-
 import datetime, random, string, time
 from hashlib import md5
-# from subscriptions.models import Plan
-# random.seed(random.randint(0, 1000000))
-
 """
 Constants or Functions
 Calculates the default end date for user to removed
@@ -19,35 +15,13 @@ REFERRAL_CODE_LEN = 6
 def end_date():
 		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
 
-def get_unique_referral_code(seed = 0):
-	# return '000000'
-	# random.seed(md5(str(time.time).encode('utf8')))
-	ref = random.sample(string.ascii_uppercase, REFERRAL_CODE_LEN)
-	while AlgonautsUser.objects.filter(referral_code = ref).exists():
-		ref = random.sample(string.ascii_uppercase, REFERRAL_CODE_LEN) #[random.choice(string.ascii_uppercase) for i in range(REFERRAL_CODE_LEN)]
-	return ''.join(ref)	
-def get_unique_referral_code_():
-	return get_unique_referral_code(0)
-"""
-Custom Field Declaration 
+def get_unique_referral_code():
+	token=os.urandom(REFERRAL_CODE_LEN)
+	return base64.urlsafe_b64encode(token).decode('utf8')
 
-"""
-class UTCField(DateTimeField):
 
-    def pre_save(self, model_instance, add):
-        if self.auto_now or (self.auto_now_add and add):
-            value = datetime.datetime.now()
-            setattr(model_instance, self.attname, value)
-            return value
-        else:
-            value = getattr(model_instance, self.attname)
-            if not isinstance(value, datetime):
-                value = datetime.datetime.fromtimestamp(int(value))
-                setattr(model_instance, self.attname, value)
-            return super(UTCField, self).pre_save(model_instance, add)
-
-# Create your models here.
 class UserManager(BaseUserManager):
+	
 	def _create_user(self, first_name, last_name, email, contact_no, password, is_superuser, is_staff, **extra_fields):
 		if not email:
 			raise ValueError('Users must have an email address')
@@ -107,6 +81,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	def get_absolute_url(self):
 		return "/users/%i/" % (self.pk)
+
 	def join_to_group(self, group_id): # method add user(self) to the specific group with group_id 
 		user_group_id = UserGroup.objects.get(id = group_id)
 		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, delta_period=4, group_admin= False)
@@ -116,25 +91,24 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 		iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
 		eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
 		#one user linked with multiple groups
-		user_all_groups = UserGroupMapping.objects.all().values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id__user_group_type_id')
-		indivdual =	user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
+		user_all_groups = UserGroupMapping.objects.all() \
+				.values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id') \
+				.values('user_group_id__user_group_type_id')
+		indivdual =	user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id = iGroupType) \
+				.values('user_group_id__user_group_type_id')
 		group = user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id__in = eGroupType) # filter out all groups of profile with non individual group type 
-		
 		indivdual_plans = Plan.objects.filter(user_group_type_id__in = indivdual)
 		group_plans = Plan.objects.filter(user_group_type_id__in = group)		
 
-		raise InterruptedError("Checking variable values")
-		
-
-		pass
-
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
+
 
 class UserGroupTypeManager(models.Manager):
 	def create_user_group_type(self):
 		pass
 	pass
+
 
 class UserGroupType(models.Model):
 	type_name = models.CharField(max_length=128)
@@ -143,6 +117,7 @@ class UserGroupType(models.Model):
 	standard_group = models.BooleanField(default=True, blank=True)
 	eligible_for_trial = models.BooleanField(default=True)
 	objects = UserGroupTypeManager()
+
 	class Meta:
 		unique_together = ('type_name', 'max_members', 'min_members')
 
@@ -191,9 +166,7 @@ class ReferralOfferManager(models.Manager):
 									 offer_end = offer_end, 
 									 offer_active = offer_active)
 		referral_offer.save(using=self._db)
-		raise EnvironmentError
-		pass
-	pass
+
 
 class ReferralOffer(models.Model):
 	offer_name = models.CharField(max_length=100) 
@@ -214,21 +187,23 @@ class Referral(models.Model):
 	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()
 	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE, related_name="r_referral_offer_id")
+	
 	class Meta:
-		unique_together = ('referred_by', 'referred_to',)
+		unique_together = ('referred_to',)
+
 	def __str__(self):
 		return str(self.referral_code)
 
+
 class UserGroupMappingManager(models.Manager):
+
 	def create_user_group_mapping(self, user_profile_id, user_group_id, delta_period, group_admin): # delta period in number of weeks
 		if user_group_id is None: return # if group is not form due to some err, don't add user_group_mapping 
 		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
 		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
 		if unq: return # allow one user to be admin of only one user group of particular type
-		
 		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
 		if mzx < mems: return # do not add more than max number specified
-		
 		mapper = self.create(
 				user_group_id = user_group_id, 
 				user_profile_id = user_profile_id, 
@@ -237,7 +212,7 @@ class UserGroupMappingManager(models.Manager):
 				group_admin = True)
 		mapper.save(using = self._db)
 		return mapper
-	pass
+	
 
 class UserGroupMapping(models.Model):
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE, related_name="ugm_user_group_id")
@@ -246,6 +221,7 @@ class UserGroupMapping(models.Model):
 	time_removed = models.DateTimeField(default = end_date)
 	group_admin = models.BooleanField(default=False)
 	objects = UserGroupMappingManager()
+
 	@property
 	def is_present(self):
 		if datetime.datetime.now > self.time_removed : 
@@ -262,17 +238,13 @@ class UserGroupMapping(models.Model):
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):
 	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
-
 	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, admin = instance)
-	# group.save()
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, delta_period= 4, group_admin = True)
-	# group_map.save()
 	return
 
 def create_ug_mapping(sender, instance, **kwargs):
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, delta_period= 4, group_admin = True)
-	# group_map.save()
 	return
 
 def active_referral_offer_checks(sender, instance, **kwargs):
@@ -281,8 +253,6 @@ def active_referral_offer_checks(sender, instance, **kwargs):
 	if offer_active:
 			ReferralOffer.objects.filter(offer_active = True).update(offer_active = False)
 			
-# pass
-
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
 

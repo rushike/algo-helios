@@ -5,8 +5,6 @@ import pytz
 import datetime
 from hashlib import md5
 
-# ha = md5
-
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, delta_period=4, group_admin= False)
@@ -72,12 +70,12 @@ def get_all_groups_of_user(user_id):
     return groups
 
 def add_referral_credits(self_uid, referral_code):
-    ref_to = AlgonautsUser.objects.get(referral_code=referral_code)
-    ref_by = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
+    ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
+    ref_to = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
     referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
     referral_time =datetime.datetime.now()
     
-    if Referral.objects.filter(referred_by = ref_by, referred_to = ref_to).exists():
+    if Referral.objects.filter(referred_to = ref_to).exists():
         return None, False
 
     algo_credits_to = ref_to.algo_credits + referral_offer_id.offer_credits_to
@@ -100,5 +98,4 @@ def generate_referral_user_add_link(user:AlgonautsUser):
 
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
-    # raise EnvironmentError
     return ref

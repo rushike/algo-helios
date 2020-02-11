@@ -1,10 +1,6 @@
 from .common import *
 
-
-
 ALLOWED_HOSTS = [
-    # 'https://5bd793f7.ngrok.io',
-    # '5bd793f7.ngrok.io',
     'localhost',
     'dev.algonauts.in',
     'algonauts.in',
@@ -41,6 +37,4 @@ DATABASES = {
     }
 }
 
-EMAIL_HOST_USER = 'javaproject1024@gmail.com'
-EMAIL_HOST_PASSWORD = 'JavaProjec'
 
