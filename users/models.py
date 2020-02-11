@@ -4,20 +4,21 @@ from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
-import datetime, random, string, time
+import datetime, random, string, time, os, base64
 from hashlib import md5
+
 """
 Constants or Functions
 Calculates the default end date for user to removed
 """
-REFERRAL_CODE_LEN = 6
+REFERRAL_CODE_LEN = 8
 
 def end_date():
 		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
 
 def get_unique_referral_code():
 	token=os.urandom(REFERRAL_CODE_LEN)
-	return base64.urlsafe_b64encode(token).decode('utf8')
+	return base64.urlsafe_b64encode(token).decode('utf8')[:REFERRAL_CODE_LEN]
 
 
 class UserManager(BaseUserManager):
@@ -68,7 +69,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	last_login = models.DateTimeField(null=True, blank=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
-	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code_)
+	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
