@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
 		last_name = last_name.capitalize()
 		contact_no = contact_no.strip()
 		email = self.normalize_email(email)
-		referral_code = get_unique_referral_code(email)
+		referral_code = get_unique_referral_code()
 		user = self.model(
 			first_name = first_name,
 			last_name = last_name,
@@ -241,6 +241,10 @@ class UserFeedback(models.Model):
 	email = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE)
 	feedback_message = models.CharField(max_length=1024)
 	product_name = models.CharField(max_length=20)
+
+	def __str__(self):
+		return self.product_name
+
   
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):

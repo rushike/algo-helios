@@ -18,7 +18,7 @@ class AlgonautsSignupForm(SignupForm):
         self.fields["contact_no"].label = 'Contact'
         self.fields["contact_no"].widget.attrs["placeholder"] = "Contact Number"
         self.fields["password1"].label = 'Password'
-        self.fields["password1"].widget.attrs["placeholder"] = "Password2"
+        self.fields["password1"].widget.attrs["placeholder"] = "Password"
         self.fields["password2"].label = 'Confirm'
         self.fields["password2"].widget.attrs["placeholder"] = "Confirm Password"
 

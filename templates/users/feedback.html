@@ -11,7 +11,7 @@
     {% csrf_token %}
     <div class="form-group">
     <label for="exampleFormControlInput1">Your Email address</label>
-    <input type="email" value="{{ user.email }}" name="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" readonly>
+    <input type="email" value="{{ user.email }}" name="email" class="form-control bg-light" id="exampleFormControlInput1" placeholder="name@example.com" readonly>
     </div>
     
     <div class="form-group">
@@ -26,7 +26,8 @@
 
     <div class="form-group">
     <label for="exampleFormControlTextarea1">Enter Feedback</label>
-    <textarea class="form-control" name="feedback-message" id="exampleFormControlTextarea1" rows="3" required></textarea>
+    <textarea class="form-control" name="feedback-message" placeholder="Start typing here....." 
+    rows="3" required></textarea>
     </div>
     <center>
     <button class="btn btn-outline-dark mb-4" type="submit">Submit</button>
