@@ -31,7 +31,7 @@ class UserManager(BaseUserManager):
 		last_name = last_name.capitalize()
 		contact_no = contact_no.strip()
 		email = self.normalize_email(email)
-		referral_code = get_unique_referral_code(email)
+		referral_code = get_unique_referral_code()
 		user = self.model(
 			first_name = first_name,
 			last_name = last_name,

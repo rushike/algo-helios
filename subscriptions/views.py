@@ -38,12 +38,13 @@ def order_details(request):
     if not subscriptions.functions.can_subscribe(request.user, group_type, plan_type, plan_name):
         POST["alert"] = True
         request.session['order_details_post'] = POST
+        # raise EnvironmentError
         return HttpResponseRedirect(redirect_to='/subscriptions/plans')
     if subscriptions.functions.is_trial_applicable(group_type = group_type, plan_type = plan_type, plan_name = plan_type):
         request.session['order_details_post'] = POST
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
             # request.session['order_details_post'] = request.POST
-            raise EnvironmentError
+            # raise EnvironmentError
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
         # return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
     

@@ -163,6 +163,7 @@ def already_had_trial(user, group_type, plan_type, plan_name):
     user_group_id_ = UserGroup.objects.filter(user_group_type_id = group_type_id, id__in = user_groups)
     user_group_id = user_group_id_.first()
     etz = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).exists()
+    # raise EnvironmentError
     return etz
     
 def send_subscription_link(group, recepients, to = None):

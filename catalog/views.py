@@ -19,7 +19,8 @@ class ProductsPageView(TemplateView):
     template_name = "products.html"
 
 def HomeRedirect(request):
-    return HttpResponseRedirect("/index")
+    return HttpResponseRedirect("/")
+
 
 def ERR404(request):
     return HttpResponse("404")
