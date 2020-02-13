@@ -60,19 +60,19 @@ def get_user_subs_product(user):
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now())
+    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return users
     
 def get_all_groups_of_user(user_id):
     user = user_id if type(user_id) == UserGroup else UserGroup.objects.get(id = user_id)
-    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now())
+    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return groups
 
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
     ref_to = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
     referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
-    referral_time =datetime.datetime.now()
+    referral_time = datetime.datetime.now(pytz.timezone('UTC'))
     if Referral.objects.filter(referred_to = ref_to).exists():
         return None, False
     algo_credits_to = ref_to.algo_credits + referral_offer_id.offer_credits_to

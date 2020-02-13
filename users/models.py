@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
 from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
-import datetime, random, string, time, os, base64
+import datetime, random, string, time, os, base64, pytz
 from hashlib import md5
 
 """
@@ -14,7 +14,7 @@ Calculates the default end date for user to removed
 REFERRAL_CODE_LEN = 8
 
 def end_date():
-		return datetime.datetime.now() + datetime.timedelta(weeks=52 * 100)
+		return datetime.datetime.max
 
 def get_unique_referral_code():
 	token=os.urandom(REFERRAL_CODE_LEN)
@@ -24,9 +24,7 @@ def get_unique_referral_code():
 class UserManager(BaseUserManager):
 	
 	def _create_user(self, first_name, last_name, email, contact_no, password, is_superuser, is_staff, **extra_fields):
-		if not email:
-			raise ValueError('Users must have an email address')
-		now = timezone.now()
+		now = datetime.datetime.now(pytz.timezone('UTC'))
 		first_name = first_name.capitalize()
 		last_name = last_name.capitalize()
 		contact_no = contact_no.strip()
@@ -208,8 +206,8 @@ class UserGroupMappingManager(models.Manager):
 		mapper = self.create(
 				user_group_id = user_group_id, 
 				user_profile_id = user_profile_id, 
-				time_added = datetime.datetime.now(),
-				time_removed = datetime.datetime.now() + datetime.timedelta(weeks=4),
+				time_added = datetime.datetime.now(pytz.timezone('UTC')),
+				time_removed = datetime.datetime.now(pytz.timezone('UTC')) + datetime.datetime.max,
 				group_admin = True)
 		mapper.save(using = self._db)
 		return mapper
@@ -240,10 +238,10 @@ class UserGroupMapping(models.Model):
 class UserFeedback(models.Model):
 	email = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE)
 	feedback_message = models.CharField(max_length=1024)
-	product_name = models.CharField(max_length=20)
+	category_name = models.CharField(max_length=20)
 
 	def __str__(self):
-		return self.product_name
+		return self.category_name
 
   
 # Code to add permission to group 
@@ -251,11 +249,11 @@ def create_individual_user_group(sender, instance, **kwargs):
 	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
 	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, admin = instance)
 	if group is None : return
-	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, delta_period= 4, group_admin = True)
+	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, group_admin = True)
 	return
 
-def create_ug_mapping(sender, instance, **kwargs):
-	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, delta_period= 4, group_admin = True)
+def create_usergrou_mapping(sender, instance, **kwargs):
+	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, group_admin = True)
 	return
 
 def active_referral_offer_checks(sender, instance, **kwargs):
@@ -267,6 +265,6 @@ def active_referral_offer_checks(sender, instance, **kwargs):
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
 
-post_save.connect(create_ug_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
+post_save.connect(create_usergrou_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
 
 pre_save.connect(active_referral_offer_checks, sender=ReferralOffer, dispatch_uid='users.models.ReferralOffer')

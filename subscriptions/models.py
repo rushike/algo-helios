@@ -73,7 +73,7 @@ class SubscriptionManager(models.Manager):
         #one user linked with multiple groups
         user_group_id = UserGroup.objects.create_user_group(user_group_type_id, admin=user)
 
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(pytz.timezone('UTC'))
         
         subscription_type = SubscriptionType.objects.filter(type_name__iexact = period).first()
         period = subscription_type.duration_in_days

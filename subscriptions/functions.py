@@ -16,7 +16,7 @@ def get_all_products_in_plan(plan_id:Plan):
     return Product.objects.filter(id__in = etc)
 
 def get_group_plans():
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(pytz.timezone('UTC'))
     enterprize = UserGroupType.objects.exclude(type_name = 'individual') # query give non individual group type
     group_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now, user_group_type_id__in = enterprize) # query gives active group plans
     return group_plans
@@ -27,7 +27,7 @@ def is_group_plan(plan_id):
     return x
 
 def get_individual_plans():
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(pytz.timezone('UTC'))
     individual = UserGroupType.objects.filter(type_name = 'individual') # query give non individual group type
     indv_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now, user_group_type_id__in = individual, plan_name__startswith = 'i_') # query gives active group plans
     return indv_plans

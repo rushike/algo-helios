@@ -18,7 +18,6 @@
             <script>
                 $(document).ready(function(){
                     $("#{{group_type.1}}").click(function(){
-                        console.log("{{group_type.1}}")
                         $('input[name="groupcode"]').val("{{group_type.1}}");
                     });
                 });
@@ -110,20 +109,12 @@
 
                             <script>
                                 $(document).ready(function(){
-                                    console.log("{{plan_type.1}}")
-                                    // $('input[name="plancode"]').val("{{plan_type.1}}");
                                     $(".plancode-div").hover(function(){
-                                        // $(this).css("background-color", "yellow");
-                                        console.log("{{group_type.1}}-{{plan_type.1}}")
                                         $('input[name="plancode"]').val("{{plan.1}}");
                                     }, function(){
-                                        // $(this).css("background-color", "black");
-                                        console.log("{{group_type.1}}-{{plan.1}}")
                                         $('input[name="plancode"]').val("{{plan_type.1}}");
                                     });
                                     $(".plancode-div").click(function(){
-                                        // $(this).css("background-color", "yellow");
-                                        console.log("{{group_type.1}}-{{plan_type.1}}")
                                         $('input[name="plancode"]').val("{{plan_type.1}}");
                                     });
                                     
@@ -140,11 +131,7 @@
         
         </div>
             {{grouptype}}
-    <!-- </div>
-        </div> -->
-
         
-
     <div class="container">
         <div class="mt-5 algo-align" id="ibasic">
             <br>

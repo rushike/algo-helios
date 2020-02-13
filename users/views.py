@@ -30,8 +30,8 @@ def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>m
     if can_add:
         obj = users.functions.join_to_group(request.user, group_id)
         if obj: return HttpResponseRedirect(redirect_to='/user/profile/info')
-        return HttpResponse("<h1>Might be alredy present</h1>")
-    return HttpResponse("<h1>Link invalidate</h1>")
+        return HttpResponse("<h1>You might be already present in Group</h1>")
+    return HttpResponse("<h1>Link Invalidate</h1>")
 
 @login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):

@@ -56,10 +56,10 @@ def create_individual_plan(sender, instance, **kwargs):
     gGroupType = UserGroupType.objects.get(type_name = 'enterprise')
     #atomatically creating individual plan for particlar product register
     iplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['i', str(instance.product_name)]), user_group_type_id = iGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now())
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = iplan, product_id= instance)
     gplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['g', str(instance.product_name)]), user_group_type_id = gGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now())
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = gplan, product_id= instance)
 
 
@@ -68,8 +68,7 @@ def create_standard_plans(sender, instance, **kwargs):
     plan_types =  PlanType.objects.all()  # returns all plan type, e.g. Basic, Premium
     BASIC = plan_types.get(type_name = "Basic")
     now = datetime.datetime.now(pytz.timezone('UTC'))
-    end_date = now + datetime.timedelta(730)
-    if not BASIC : raise AttributeError("There is not any 'Basic' plan type in database")
+    end_date = datetime.datetime.max
     product_name = str(instance.product_name)
     # Create a new BASIC plan for each product is created for all group type ids
     for group_t in group_types:
