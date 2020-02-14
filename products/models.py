@@ -68,7 +68,7 @@ def create_standard_plans(sender, instance, **kwargs):
     plan_types =  PlanType.objects.all()  # returns all plan type, e.g. Basic, Premium
     BASIC = plan_types.get(type_name = "Basic")
     now = datetime.datetime.now(pytz.timezone('UTC'))
-    end_date = datetime.datetime.max
+    end_date = datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC'))
     product_name = str(instance.product_name)
     # Create a new BASIC plan for each product is created for all group type ids
     for group_t in group_types:

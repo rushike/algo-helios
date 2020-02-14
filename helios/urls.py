@@ -4,9 +4,10 @@ from catalog import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('catalog.urls')),
+    
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('path_not_found_404', views.ERR404),
     path('subscriptions/', include('subscriptions.urls')),
+    path('', include('catalog.urls')),
 ]

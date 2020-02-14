@@ -2,8 +2,7 @@ from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 from django.db.models import query
 from django.contrib.auth.decorators import login_required
-import datetime
-import pytz, re
+import datetime, pytz, re
 import users.functions 
 import subscriptions.functions 
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
@@ -61,7 +60,9 @@ def plan_subscribe(request):
                     payment_id = 0,
                 )
     if subscribed:
-        subscriptions.functions.send_subscription_link(subscribed.user_group_id, recepient)
+        subject = 'Algonauts Plan Subscription Link'
+        message = 'This is the link for subscription for group : ' + ABSOLUTE_URL_HOME + users.functions.generate_group_add_link(group)
+        subscriptions.functions.send_email(subscribed.user_group_id, recepient, subject, message)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
     
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
@@ -76,7 +77,7 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
                     payment_id = payment_id,
                 )
     if subscribed:
-        subscriptions.functions.send_subscription_link(subscribed.user_group_id, recepients)
+        subscriptions.functions.send_email(subscribed.user_group_id, recepients)
     return subscribed
 
 

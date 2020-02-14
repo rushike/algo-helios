@@ -14,7 +14,7 @@ Calculates the default end date for user to removed
 REFERRAL_CODE_LEN = 8
 
 def end_date():
-		return datetime.datetime.max
+		return datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC'))
 
 def get_unique_referral_code():
 	token=os.urandom(REFERRAL_CODE_LEN)
@@ -83,7 +83,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 	def join_to_group(self, group_id): # method add user(self) to the specific group with group_id 
 		user_group_id = UserGroup.objects.get(id = group_id)
-		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, delta_period=4, group_admin= False)
+		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, group_admin= False)
 		return mapper
 
 	def get_user_subs_plans(self):
@@ -196,7 +196,7 @@ class Referral(models.Model):
 
 class UserGroupMappingManager(models.Manager):
 
-	def create_user_group_mapping(self, user_profile_id, user_group_id, delta_period, group_admin): # delta period in number of weeks
+	def create_user_group_mapping(self, user_profile_id, user_group_id, group_admin): # delta period in number of weeks
 		if user_group_id is None: return # if group is not form due to some err, don't add user_group_mapping 
 		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
 		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
@@ -207,7 +207,7 @@ class UserGroupMappingManager(models.Manager):
 				user_group_id = user_group_id, 
 				user_profile_id = user_profile_id, 
 				time_added = datetime.datetime.now(pytz.timezone('UTC')),
-				time_removed = datetime.datetime.now(pytz.timezone('UTC')) + datetime.datetime.max,
+				time_removed = datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC')),
 				group_admin = True)
 		mapper.save(using = self._db)
 		return mapper
