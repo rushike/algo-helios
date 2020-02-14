@@ -9,7 +9,8 @@ from subscriptions.models import Plan, PlanType
 class ProductFamily(models.Model):
     parent_product_name = models.CharField(max_length=64)
     description = models.CharField(max_length=1024)
-
+    def __str__(self):
+        return str(self.parent_product_name)
 
 class ProductCategory(models.Model):
     product_category_name = models.CharField(max_length=50)
@@ -115,7 +116,27 @@ def create_standard_plans(sender, instance, **kwargs):
         # Create Product - Plan map for PREMIUM PLAN
     
 def create_product(sender, instance, **kwargs):  
-    pass  
+    all_products = ProductFamily.objects.all()
+    # all_categories = ProductCategory.objects.all()
+
+    for product_family in all_products:
+        Product.objects.create(
+            product_name = "#".join([str(product_family), str(instance)]),
+            product_family_id = product_family,
+            product_category_id = instance,
+            product_details = "temp details",
+            access_link = "temp access links",
+        )
+    
+    
+    # product_name 
+    # product_family_id 
+    # product_category_id
+    # product_details 
+    # access_link 
+
+
+
 # DB Signals
 post_save.connect(create_product, ProductCategory)
 post_save.connect(create_standard_plans, Product, dispatch_uid="products.models.Product")
