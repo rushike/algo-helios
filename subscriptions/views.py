@@ -38,7 +38,7 @@ def order_details(request):
         'period' : period,
         'alert' : False
     }
-
+    # raise EnvironmentError
     if not subscriptions.functions.can_subscribe(request.user, group_type, plan_type, plan_name):
         POST["alert"] = True
         request.session['order_details_post'] = POST
@@ -54,7 +54,7 @@ def order_details(request):
     
     
     request.session['order_details_post'] = POST
-    # raise EnvironmentError
+
     return render(request, 'subscriptions/order_details.html', context=POST)
 
 
