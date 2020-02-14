@@ -20,6 +20,7 @@ class ProductCategory(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
+    product_family_id = models.ForeignKey(ProductFamily, on_delete=models.CASCADE)
     product_category_id = models.ForeignKey(ProductCategory,on_delete=models.CASCADE, related_name="p_product_category_id")
     product_details = models.CharField(max_length=200)
     access_link = models.URLField(max_length=300)
@@ -113,5 +114,8 @@ def create_standard_plans(sender, instance, **kwargs):
                             )
         # Create Product - Plan map for PREMIUM PLAN
     
+def create_product(sender, instance, **kwargs):  
+    pass  
 # DB Signals
+post_save.connect(create_product, ProductCategory)
 post_save.connect(create_standard_plans, Product, dispatch_uid="products.models.Product")
