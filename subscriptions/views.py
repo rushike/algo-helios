@@ -8,6 +8,10 @@ import users.functions
 import subscriptions.functions 
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
+def plans2(request):
+    context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : True}
+    return render(request, 'subscriptions/plans2.html', context = context)
+
 def plans(request):
     POST = request.session.get('order_details_post')
     if 'order_details_post' in request.session: del request.session['order_details_post']
@@ -52,6 +56,8 @@ def order_details(request):
     request.session['order_details_post'] = POST
     # raise EnvironmentError
     return render(request, 'subscriptions/order_details.html', context=POST)
+
+
 
 @login_required(login_url='/accounts/login/')
 def subscribe(request): 

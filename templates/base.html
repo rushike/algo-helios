@@ -28,6 +28,9 @@
     <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -40,9 +43,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script src="{% static 'js/accordion.js' %}"></script>
+    <script src="{% static 'js/colors.js' %}"></script>
     <!--Chatbot CSS-->
     <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% block js_imports %}
+    {% endblock %}
 
     <style>
         .fab{
@@ -62,9 +68,24 @@
         .fa-q:hover{
             color:#B92B27;
         }
-        body{
+        /* body{
             padding-top: 70px;
+        } */
+
+
+                /* html,
+        body {
+        height: 100%;
+        } */
+
+        #page-contentx {
+        flex: 1 0 auto;
         }
+
+        #sticky-footerx {
+        flex-shrink: none;
+        }
+
     </style>
 </head>
 
@@ -134,7 +155,110 @@
 
     {% block content %}
     {% endblock content%}
-    <footer>
+
+    <footer  style="background-image: radial-gradient( rgb(66, 66, 66), rgb(33, 33, 33), rgb(0, 0, 0)); color: white;" >
+        <div class="row p-4" >
+
+            <div class="col-md-3 offset-sm-1 ">
+                <div class="row">
+                    <div class="col-md-12 justify-content-center">
+                        <div class="p-4">    
+                            <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" >
+                        </div>
+                        <div class="pl-4">
+                            <span>We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+            <div class="col-md-4 p-1">
+                <div class="row">
+                    <div class="col-md-4 ">
+                        <div class="row content-heading font-weight-bold pb-2">
+                            <span>Navigation</span>
+                        </div>
+            
+                        <div class="row p-1">
+                            <span>What we do ?</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>How it works ?</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Pricing</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row content-heading pb-2" style="font-size: large;" >
+                            <span>Resources</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Support Center</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>FAQ's</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Testimonials</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="row content-heading pb-2" style="font-size: large;">
+                            <span>Account</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Manage Your Account</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Start a free trial</span>
+                        </div>
+                        <div class="row p-1">
+                            <span>Sign up</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" row text-right content-heading pr-2 pl-2">
+                            <span>Contact us</span>
+                        </div>	
+                        <div class="row text-right x-large pr-2 pl-2" >
+                            <span >+91 68768 86698</span>
+                        </div>
+                        <div class="text-right content-heading row p-2">
+                            <span>help@algonauts.in</span>
+                        </div>
+                        
+
+                    </div>	
+    
+                </div>
+                
+
+                <div class="row " style="text-align:center; font-size:2.5rem;">
+                    <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
+                    <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
+                    <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
+                    <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
+                </div>
+    
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center p-2">
+                <span class="">© 2020 Algonauts. All Rights reserved</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- <footer>
         <div class="container-fluid">
             <div class="row" style="padding-top:1rem;">
                 <div class="col-md-1"></div>
@@ -148,17 +272,15 @@
                 </div>
                 <div class="col-md-3"></div>
                 <div class="col-md-3 text-right">
-                    <!-- <div class="row">
-                        <div class="col-md-12" > -->
-                            <div class="row footerc" style="text-align:center; font-size:2.5rem;">
+
+                            <div class="row " style="text-align:center; font-size:2.5rem;">
                                 <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
                                 <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
                                 <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
                                 <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
                             </div>
                             <br>
-                        <!-- </div> -->
-                    <!-- </div> -->
+
                 </div>
             </div>
             <div class="row">
@@ -168,6 +290,7 @@
             </div>
         </div>
     </footer>
+    -->
 
     {% block scripts %}
 

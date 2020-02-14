@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'users',
     'blog',
     'crispy_forms',
+    'django_crontab',
     
     'products',
     'subscriptions'

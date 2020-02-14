@@ -37,4 +37,7 @@ DATABASES = {
     }
 }
 
+CRONJOBS = [
+    ('1 * * * *', 'subscriptions.cron.check_data_consistency')
+]
 
