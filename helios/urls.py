@@ -7,7 +7,7 @@ urlpatterns = [
     
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
-    path('path_not_found_404', views.ERR404),
+    path('path-not-found-404', views.ERR404),
     path('subscriptions/', include('subscriptions.urls')),
     path('', include('catalog.urls')),
 ]

@@ -127,14 +127,6 @@ def create_product(sender, instance, **kwargs):
             product_details = "temp details",
             access_link = "temp access links",
         )
-    
-    
-    # product_name 
-    # product_family_id 
-    # product_category_id
-    # product_details 
-    # access_link 
-
 
 
 # DB Signals

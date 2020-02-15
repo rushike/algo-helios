@@ -6,6 +6,7 @@ from subscriptions.models import Plan, Subscription, PlanType
 from products.models import Product, ProductCategory, PlanProductMap
 from helios.settings import EMAIL_HOST_USER, ABSOLUTE_URL_HOME
 import users.functions
+import jinja2
 
 def get_all_plan_type():
     return PlanType.objects.all()
@@ -25,13 +26,6 @@ def is_group_plan(plan_id):
     plan_id = plan_id if type(plan_id) == int else plan_id.id
     x = get_group_plans().filter(id = plan_id).exists()
     return x
-
-def get_individual_plans():
-    now = datetime.datetime.now(pytz.timezone('UTC'))
-    individual = UserGroupType.objects.filter(type_name = 'individual') # query give non individual group type
-    indv_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now, user_group_type_id__in = individual, plan_name__startswith = 'i_') # query gives active group plans
-    return indv_plans
-
 
 def get_all_plans_xxx_type(plan_type:PlanType):
     try:

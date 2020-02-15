@@ -23,7 +23,7 @@ def generate_group_add_link(group_id:UserGroup):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     admin = group.admin.email
     id_ = group.id
-    link = 'user/add_to_group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
+    link = 'user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
 def validate_group_add_url_slug(group_id:int, hash_:str):

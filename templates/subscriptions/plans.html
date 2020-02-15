@@ -83,7 +83,7 @@
                                                             <!-- <div class="h3">{{plan.1}}</div> -->
                                                             <input class="form-check-input" type="radio" name="radio" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
                                                             <label class="form-check-label" for="{{plan.1}}">
-                                                                    {{plan.0.0.product_name}}
+                                                                    {{ plan.0.0.product_names }}
                                                             </label>
                                                         </div>
                                                 {% elif plan_type.1.products_count == 0 %} 
@@ -91,7 +91,7 @@
                                                             <div class="form-check list-group-item pl-5">
                                                                 <input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
                                                                 <label class="form-check-label" for="{{plan.1}}" style="color: black;">    
-                                                                    {{product.product_name}}
+                                                                    {{ product.product_name }}
                                                                 </label>
                                                             </div>
                                                         {% endfor %}

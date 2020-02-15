@@ -44,7 +44,7 @@
 										<div class="input-group input-group-sm w-75 mx-auto">
 											<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
 											<div class="input-group-append">
-												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="myFunction()">copy</span>
+												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="copyTextFunction()">copy</span>
 											</div><br>
 										</div>
 										<small>Share link to avail 30 Credits (Applicable only Once)</small>
@@ -180,18 +180,11 @@ $('.alertx').alert()
 </script>
 
 <script type="text/javascript">
-  function myFunction() {
-  /* Get the text field */
+  function copyTextFunction() {
   var copyText = document.getElementById("myInput");
-
-  /* Select the text field */
   copyText.select();
-  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-
-  /* Copy the text inside the text field */
+  copyText.setSelectionRange(0, 99999);
   document.execCommand("copy");
-
-  /* Alert the copied text */
   alert("Copied the text: " + copyText.value);
 }
 </script>
