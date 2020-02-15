@@ -6,7 +6,6 @@ ALLOWED_HOSTS = [
     'algonauts.in',
 ]
 
-ABSOLUTE_URL_HOME = 'http://localhost:8000/'
 
 LOGGING = {
     'version': 1,

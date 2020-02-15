@@ -4,7 +4,7 @@ import time, datetime, pytz
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
 from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
-from helios.settings import EMAIL_HOST_USER, ABSOLUTE_URL_HOME
+from helios.settings import EMAIL_HOST_USER
 import users.functions
 import jinja2
 
@@ -77,9 +77,7 @@ def can_subscribe(user, group_type, plan_type, plan_name):
     subs_plans = Subscription.objects.filter(user_group_id = user_group_id, subscription_type_id__in = non_trial_subs).values('plan_id')
     ifsubs = subs_plans.exists()
     ifplan = Plan.objects.filter(id__in = subs_plans, plan_type_id = premium_plan_type).exists()
-    ret = not ifsubs or not ifplan 
-       
-    return ret
+    return not ifsubs or not ifplan 
 
 def is_trial_applicable(group_type, plan_type, plan_name):
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
@@ -95,9 +93,7 @@ def already_had_trial(user, group_type, plan_type, plan_name):
     user_groups = UserGroupMapping.objects.filter(user_profile_id = user).values("user_group_id")
     user_group_id_ = UserGroup.objects.filter(user_group_type_id = group_type_id, id__in = user_groups)
     user_group_id = user_group_id_.first()
-    etz = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).exists()
-    # raise EnvironmentError
-    return etz
+    return Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).exists()
     
 def send_subscription_link(group, recepients, to = None):
     threading.Thread(target=send_mail_async, args=(group, recepients,)).start()

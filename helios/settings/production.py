@@ -7,7 +7,7 @@ ALLOWED_HOSTS = [
     'algonauts.in',
 ]
 
-ABSOLUTE_URL_HOME = "https://dev.algonauts.in"
-
-
 SECURE_SSL_REDIRECT = True
+CRONJOBS = [
+    ('0 0 * * *', 'subscriptions.cron.check_data_consistency')
+]

@@ -1,4 +1,4 @@
-const header = ["", "MERCURY", "SERVICES \n & \nCONSULTANCY"  ]
+const header = ["", "MERCURY", "SERVICES"  ]
 const hlen = header.length
 var head = 1
 var active = "head-individual";

@@ -5,7 +5,6 @@ from subscriptions.models import Plan, Subscription
 def check_data_consistency():
     now = datetime.datetime.now(pytz.timezone('UTC'))
     # disabling incative plans
-    raise EnvironmentError
     Plan.objects.filter(expiry_time__lt = now).update(is_active = False)
     Plan.objects.filter(entry_time__gt = now).update(is_active = False)
     

@@ -12,5 +12,3 @@ urlpatterns = [
     path('subscriptions/', include('subscriptions.urls')),
     path('', include('catalog.urls')),
 ]
-
-# urlpatterns.insert(0, path('admin=' + str(datetime.datetime.now().date()), admin.site.urls))

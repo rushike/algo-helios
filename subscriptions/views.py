@@ -7,7 +7,6 @@ import users.functions
 import subscriptions.functions 
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
-from helios.settings import ABSOLUTE_URL_HOME
 
 def plans2(request):
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : True}
@@ -111,13 +110,15 @@ def plan_subscribe(request):
     subscribed = Subscription.objects.create_subscription(
                     plan_name = POST['plan_name'][0],
                     user = request.user,
+                    plan_type = POST['plan_type'],
                     group_type = None,
                     period = POST['period'],
                     payment_id = 0,
                 )
+    group = users.functions.get_group_of_user(request.user, POST['plan_name'])
     if subscribed:
         subject = 'Algonauts Plan Subscription Link'
-        message = 'This is the link for subscription for group : ' + ABSOLUTE_URL_HOME + users.functions.generate_group_add_link(group)
+        message = 'This is the link for subscription for group : ' + request.build_absolute_uri(users.functions.generate_group_add_link(group))
         subscriptions.functions.send_email(subscribed.user_group_id, recepient, subject, message)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
     
