@@ -5,15 +5,19 @@
 <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
 <div class="container mb-5">
 <br>
-<h3>DashBoard</h3>
-
+<br>
+<br>
+<br>
+<br>
+<!-- <h3>DashBoard</h3> -->
+{% if not user.is_verified %}
 	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
-		<strong>Check Your Email ! Click On Verify Me</strong>
-		<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-		</button>
+	<strong>Check Your Email ! Click On Verify Me</strong>
+	<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
 	</div>
-
+{% endif %}
   
   <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item">
@@ -30,7 +34,7 @@
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 		<div class="row">
-			<div class="col-md-10">
+			<div class="col-md-12">
 				<div class="flush-left">
 						<div class="card rounded">
 							<div class="card-body p-2">
@@ -78,7 +82,7 @@
           			<div class="row">
           				{% for iplan in iplans %}
               				<div class="mb-3 col-md-4">
-		
+								
                 				<div class="card shadow-sm">     
                   					<div class="card-header">
                     					<h4 class="my-0 font-weight-normal">{{iplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{iplan.subscription_type_id__type_name}}</span><br></h4>

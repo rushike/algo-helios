@@ -28,6 +28,9 @@
     <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
@@ -40,9 +43,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
     <script src="{% static 'js/accordion.js' %}"></script>
+    <script src="{% static 'js/colors.js' %}"></script>
     <!--Chatbot CSS-->
     <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {% block js_imports %}
+    {% endblock %}
 
     <style>
         .fab{
@@ -62,9 +68,15 @@
         .fa-q:hover{
             color:#B92B27;
         }
-        body{
-            padding-top: 70px;
+        
+        #page-contentx {
+        flex: 1 0 auto;
         }
+
+        #sticky-footerx {
+        flex-shrink: none;
+        }
+
     </style>
 </head>
 
@@ -82,22 +94,34 @@
   
     <div class="collapse navbar-collapse text-center" id="navbarNav" style="font-size:16px;">
       <ul class="nav navbar-nav ml-auto justify-content-between full-width" style="font-size:1.05rem;">
-
+        
+            <li class="nav-item">
+                <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'blog' %}">Blog</a>
+            </li>
+            <li class="nav-item">
+            <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+            </li>
+        {% if urls %}
+            <li class="nav-item">
+            <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+            </li>
+            <li class="nav-item">
+            <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+            </li>
+            <li class="nav-item">
+            <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
+            </li>
+        {% else %}
         <li class="nav-item">
-            <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'home' %}">Blog</a>
-          </li>
-        <li class="nav-item">
-          <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+        <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="/aboutus">About Us</a>
         </li>
         <li class="nav-item">
-          <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+        <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="/products">Products</a>
         </li>
         <li class="nav-item">
-          <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+        <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
         </li>
-        <li class="nav-item">
-          <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
-        </li>
+        {% endif %}
             {% if user.is_anonymous %}
             <li class="nav-item">        
                 <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>
@@ -135,31 +159,109 @@
 
     {% block content %}
     {% endblock content%}
-    <footer>
-        <div class="container-fluid">
-            <div class="row" style="padding-top:1rem;">
-                <div class="col-md-6 text-center">
-                    <img src="{% static 'algonautsw.png' %}" width="10%"><br><br>
-                    <p><i class="glyphicon glyphicon-envelope" style="color: white;"></i>&nbsp;<a
-                                href="mailto:coreteam@algonauts.in" data-rel="external"
-                                style="color: white; font-family: 'Open Sans', sans-serif; font-size: 14px;">sales@algonauts.in</a>
-                    </p>
-                    <small class="text-light">T&C | Privacy Policy | Disclaimer <br> &copy;&nbsp;2020 Algonauts. All rights reserved</small>
-                </div>
 
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6" style="text-align:center; font-size:2.5rem;">
-                            <div class="row footerc">
-                                <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
-                                <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
-                                <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
-                                <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
-                            </div>
-                            <br>
+    <footer  style="background-image: radial-gradient( rgb(66, 66, 66), rgb(33, 33, 33), rgb(0, 0, 0)); color: white;" >
+        <div class="row p-4" >
+
+            <div class="col-md-3 offset-sm-1 ">
+                <div class="row">
+                    <div class="col-md-8    ">
+                        <div class="row p-4 d-flex justify-content-center ">    
+                            <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" >
                         </div>
+                        <div class="row pl-4 d-flex justify-content-center justify-content-md-start">
+                            <span class="text-justify">We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
+                        </div>
+                        <div class="p-3"></div>
                     </div>
                 </div>
+    
+            </div>
+            <div class="col-md-5 p-1">
+                <div class="row">
+                    <div class="col-md-4 ">
+                        <div class="row content-heading font-weight-bold pb-2 d-flex justify-content-center justify-content-md-start">
+                            <span>Navigation</span>
+                        </div>
+            
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#whatwedocont'">
+                            <span class="whatwedoi">What we do ?</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#howwedocont'">
+                            <span class="howwedoi">How it works ?</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
+                            <span>Pricing</span>
+                        </div>
+                        <div class="p-2"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" >
+                            <span>Resources</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start">
+                            <span>Support Center</span>
+                        </div>
+                        <!-- <div class="row p-1 d-flex justify-content-center justify-content-md-start">
+                            <span>FAQ's</span>
+                        </div> -->
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start">
+                            <span>Testimonials</span>
+                        </div>
+                        <div class="p-2"></div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" onclick="location.href='/accounts/login/'">
+                            <span>Account</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/user/profile/info'">
+                            <span>Manage Your Account</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
+                            <span>Start a free trial</span>
+                        </div>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/accounts/signup'">
+                            <span>Sign up</span>
+                        </div>
+                        <div class="p-2"></div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="col-md-3">
+                <div class="row ">
+                    <div class="col-md-12 ">
+                        <div class=" row content-heading pr-2 pl-2 d-flex justify-content-center justify-content-md-start">
+                            <span>Contact us</span>
+                        </div>	
+                        <div class="row  x-large pr-2 pl-2 d-flex justify-content-center justify-content-md-start" >
+                            <span >+91 68768 86698</span>
+                        </div>
+                        <div class="row content-heading light row p-2 d-flex justify-content-center justify-content-md-start">
+                            <span>help@algonauts.in</span>
+                        </div>
+                        
+
+                    </div>	
+    
+                </div>
+                
+
+                <div class="row d-flex justify-content-center justify-content-md-start" style="text-align:center; font-size:2.2rem;">
+                    <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
+                    <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
+                    <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
+                    <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
+                </div>
+    
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center p-2">
+                <span class="">© 2020 Algonauts. All Rights reserved</span>
             </div>
         </div>
     </footer>
@@ -196,6 +298,27 @@
                 }
             })
         });
+
+
+        $(document).ready(function () {
+            $(".whatwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#whatwedocont").offset().top - 80
+                }, 800);
+            });
+
+            $(".howwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#howwedocont").offset().top - 80
+                }, 800);
+            });
+        });
+
+        $(document).ready(function () {
+            $("#chat-input").css({"margin-top":"1.0rem"});
+        });
+
+
     </script>
     <script src="{% static 'js/chatbot.js' %}"></script>
 </body>

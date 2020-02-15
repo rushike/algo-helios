@@ -6,26 +6,7 @@ ALLOWED_HOSTS = [
     'algonauts.in',
 ]
 
-ABSOLUTE_URL_HOME = 'http://localhost:8000/'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    },
-}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -37,4 +18,7 @@ DATABASES = {
     }
 }
 
+CRONJOBS = [
+    ('1 * * * *', 'subscriptions.cron.check_data_consistency')
+]
 

@@ -8,3 +8,6 @@ ALLOWED_HOSTS = [
 ]
 
 SECURE_SSL_REDIRECT = True
+CRONJOBS = [
+    ('0 0 * * *', 'subscriptions.cron.check_data_consistency')
+]

@@ -1,0 +1,24 @@
+.xx-large{
+    font-weight: 700;
+    font-size: xx-large;
+}
+
+.x-large{
+    font-weight: 700;
+    font-size: x-large;
+}
+
+.content-heading{
+    font-weight: 700;
+    font-size: large;
+}
+
+.light{
+    font-weight: 500;
+}
+
+.content-para{
+    font-family: "Lato, sans-serif";
+    font-weight: 400;
+    font-size: 20px;   
+}

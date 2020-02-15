@@ -10,6 +10,7 @@ defusedxml==0.6.0
 Django==3.0.1
 django-allauth==0.41.0
 django-crispy-forms==1.8.1
+django-crontab==0.7.1
 django-extensions==2.2.5
 django-phonenumber-field==4.0.0
 django-secure==1.0.1
@@ -17,7 +18,9 @@ django-sslserver==0.22
 django-unixtimestampfield==0.3.9
 idna==2.8
 isort==4.3.21
+Jinja2==2.11.1
 lazy-object-proxy==1.4.3
+MarkupSafe==1.1.1
 mccabe==0.6.1
 oauthlib==3.1.0
 phonenumbers==8.11.2

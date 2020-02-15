@@ -3,6 +3,7 @@ venv/
 .venv/
 .idea/
 env/
+envk/
 *.log
 *.pot
 *.pyc
