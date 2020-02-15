@@ -9,7 +9,8 @@ from subscriptions.models import Plan, PlanType
 class ProductFamily(models.Model):
     parent_product_name = models.CharField(max_length=64)
     description = models.CharField(max_length=1024)
-
+    def __str__(self):
+        return str(self.parent_product_name)
 
 class ProductCategory(models.Model):
     product_category_name = models.CharField(max_length=50)
@@ -20,6 +21,7 @@ class ProductCategory(models.Model):
 
 class Product(models.Model):
     product_name = models.CharField(max_length=50)
+    product_family_id = models.ForeignKey(ProductFamily, on_delete=models.CASCADE)
     product_category_id = models.ForeignKey(ProductCategory,on_delete=models.CASCADE, related_name="p_product_category_id")
     product_details = models.CharField(max_length=200)
     access_link = models.URLField(max_length=300)
@@ -56,10 +58,10 @@ def create_individual_plan(sender, instance, **kwargs):
     gGroupType = UserGroupType.objects.get(type_name = 'enterprise')
     #atomatically creating individual plan for particlar product register
     iplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['i', str(instance.product_name)]), user_group_type_id = iGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now())
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = iplan, product_id= instance)
     gplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['g', str(instance.product_name)]), user_group_type_id = gGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(), expiry_time = datetime.datetime.now())
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = gplan, product_id= instance)
 
 
@@ -68,8 +70,7 @@ def create_standard_plans(sender, instance, **kwargs):
     plan_types =  PlanType.objects.all()  # returns all plan type, e.g. Basic, Premium
     BASIC = plan_types.get(type_name = "Basic")
     now = datetime.datetime.now(pytz.timezone('UTC'))
-    end_date = now + datetime.timedelta(730)
-    if not BASIC : raise AttributeError("There is not any 'Basic' plan type in database")
+    end_date = datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC'))
     product_name = str(instance.product_name)
     # Create a new BASIC plan for each product is created for all group type ids
     for group_t in group_types:
@@ -114,5 +115,20 @@ def create_standard_plans(sender, instance, **kwargs):
                             )
         # Create Product - Plan map for PREMIUM PLAN
     
+def create_product(sender, instance, **kwargs):  
+    all_products = ProductFamily.objects.all()
+    # all_categories = ProductCategory.objects.all()
+
+    for product_family in all_products:
+        Product.objects.create(
+            product_name = "#".join([str(product_family), str(instance)]),
+            product_family_id = product_family,
+            product_category_id = instance,
+            product_details = "temp details",
+            access_link = "temp access links",
+        )
+
+
 # DB Signals
+post_save.connect(create_product, ProductCategory)
 post_save.connect(create_standard_plans, Product, dispatch_uid="products.models.Product")

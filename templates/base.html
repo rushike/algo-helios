@@ -149,6 +149,7 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                             
                             <button class="btn btn-sm dropdown-item" onclick="location.href ='/user/profile/info' ">Dashboard</button>
+                            <button class="btn btn-sm dropdown-item" onclick="location.href ='/user/feedback' ">Feedback</button>
                             <form method="post" action="{% url 'account_logout' %}">
                                 {% csrf_token %}
                                 {% if redirect_field_value %}>

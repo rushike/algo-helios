@@ -27,5 +27,5 @@ def index_view(request):
     return render(request, "index.html", context=context)
 
 
-def ERR404(request):
-    return HttpResponse("404")
+def ERR404(request, slug):
+    return render(request,"404page.html")

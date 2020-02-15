@@ -1,13 +1,14 @@
-from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
+from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral, UserFeedback
 from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
-import pytz
-import datetime
+import pytz, datetime
 from hashlib import md5
+import subscriptions.functions
+from helios.settings import EMAIL_HOST_USER
 
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, delta_period=4, group_admin= False)
+    mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
     return mapper
 
 def get_all_standard_groups():
@@ -22,7 +23,7 @@ def generate_group_add_link(group_id:UserGroup):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     admin = group.admin.email
     id_ = group.id
-    link = 'user/add_to_group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
+    link = 'user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
 def validate_group_add_url_slug(group_id:int, hash_:str):
@@ -60,19 +61,19 @@ def get_user_subs_product(user):
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now())
+    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return users
     
 def get_all_groups_of_user(user_id):
     user = user_id if type(user_id) == UserGroup else UserGroup.objects.get(id = user_id)
-    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now())
+    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return groups
 
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
     ref_to = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
     referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
-    referral_time =datetime.datetime.now()
+    referral_time = datetime.datetime.now(pytz.timezone('UTC'))
     if Referral.objects.filter(referred_to = ref_to).exists():
         return None, False
     algo_credits_to = ref_to.algo_credits + referral_offer_id.offer_credits_to
@@ -95,3 +96,12 @@ def generate_referral_user_add_link(user:AlgonautsUser):
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
     return ref
+
+def add_feedback(user, product, message):
+    recepient = [user.email, EMAIL_HOST_USER]
+    subject = product + "Feedback"
+    message = "Thank You We have received your Feedback \n" + message
+    subscriptions.functions.send_email(user.email, recepient, subject, message)
+    UserFeedback.objects.create(email=user, category_name = product, feedback_message=message).save()
+
+

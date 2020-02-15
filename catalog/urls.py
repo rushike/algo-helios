@@ -8,4 +8,5 @@ urlpatterns = [
     path('whatwedo/', views.WhatWeDoPageView.as_view(), name='whatwedo'),
     path('products/', views.ProductsPageView.as_view(), name='products'),    
     path('accounts/', include('allauth.urls')),
+    path('<slug:slug>', views.ERR404, name="path_not_found_404")
 ]

@@ -25,9 +25,11 @@
     </li>
     <li class="nav-item">
       <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
-    </li>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link text-dark" id="MyOrders-tab" data-toggle="tab" href="#MyOrders" role="tab" aria-controls="MyOrders" aria-selected="false">My Orders</a>
+	</li>
   </ul>
-
 
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -46,7 +48,7 @@
 										<div class="input-group input-group-sm w-75 mx-auto">
 											<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
 											<div class="input-group-append">
-												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="myFunction()">copy</span>
+												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="copyTextFunction()">copy</span>
 											</div><br>
 										</div>
 										<small>Share link to avail 30 Credits (Applicable only Once)</small>
@@ -102,9 +104,9 @@
 											</ul>
 								  
 											{% if iplan.subscription_type_id__type_name == "Trial" %}
-											  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
+											  <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
 											{% else %}
-											  <button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
+											  <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
 											{% endif %}
                   					</div>
 								</div>
@@ -145,9 +147,9 @@
                       </ul>
             
                       {% if gplan.subscription_type_id__type_name == "Trial" %}
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Subscribe</button>
+                        <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
                       {% else %}
-                        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Renew</button>
+                        <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
                       {% endif %}
                       
                   </div>
@@ -157,18 +159,24 @@
           </div>
       {% else %}
         <h6>No Group Plans Yet</h6>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-</div>
+	
+		{% endif %}  
+		</div> <!-- Plan tab ends-->
+		<!-- ------------------------------------------------------------------------------------------ -->
 
+	  <div class="tab-pane fade mt-5" id="MyOrders" role="tabpanel" aria-labelledby="MyOrders-tab">
+			<h3>Invoice</h3><hr>
+			
 
-</div>
+	  </div>
+
+	</div> <!-- Tab Content ends -->
+  </div> <!-- Container ends -->
+</div> 
+
 <script type="text/javascript">
 
 $('.alertx').alert()
-	console.log("func called")
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
@@ -176,18 +184,11 @@ $('.alertx').alert()
 </script>
 
 <script type="text/javascript">
-  function myFunction() {
-  /* Get the text field */
+  function copyTextFunction() {
   var copyText = document.getElementById("myInput");
-
-  /* Select the text field */
   copyText.select();
-  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
-
-  /* Copy the text inside the text field */
+  copyText.setSelectionRange(0, 99999);
   document.execCommand("copy");
-
-  /* Alert the copied text */
   alert("Copied the text: " + copyText.value);
 }
 </script>

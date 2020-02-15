@@ -78,7 +78,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'algonauts.tech@gmail.com'
 EMAIL_HOST_PASSWORD = 'algonauts@123'
 
-
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
@@ -180,3 +179,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# For Mailing Purpose 
+
+FEEDBACK_EMAIL_USER = 'feedback@gmail.com'
+FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
+
+
