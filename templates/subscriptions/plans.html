@@ -1,22 +1,158 @@
 {% extends 'subscriptions/base.html' %}
-
+{% load define_action %}
 {% block subscriptions_content %}
+
+
 <br>
 <br>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                {% for plan in plans %}
-                    <div class="card-body" onclick="location.href= 'plan_overview/{{plan.plan_name}}'">
-                        <h1>{{plan.plan_name}}<br></h1>
-                        <h1>{{plan.price_per_month}}<br></h1>
-                        <h1>{{plan.price_per_year}}<br></h1>
-                    </div>
-                    <hr>
-                {% endfor %}
-            </div>
+    <!-- -----------------------------fresh down---------------------------- -->
+<div class="container mt-5">
+    <h1 class="display-4 text-center">Our Products</h1>
+    <!-- <div class="display-4">{{details}}</div> -->
+
+        <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
+            {% for group_type in details %}
+            <li class="nav-item">
+                <a class="nav-link btn-lg" id="pills-{{group_type.1}}-tab" data-toggle="pill" href="#{{group_type.1}}" role="tab" aria-controls="pills-{{group_type.1}}" aria-selected="true">{{group_type.1.max_members}} Members</a>
+            </li>
+            <script>
+                $(document).ready(function(){
+                    $("#{{group_type.1}}").click(function(){
+                        $('input[name="groupcode"]').val("{{group_type.1}}");
+                    });
+                });
+            </script>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content" id="pills-tabContent">                
+            {% for group_type in details %}
+            <div class="tab-pane fade show" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
+                <!-- <div class="display-1">{{group_type.1}}</div> -->
+                <div class="row">
+                    {% for plan_type in group_type.0 %}
+                        <div class="col-md-6">     
+                            <form method = "POST" action="/subscriptions/subscribe"> 
+                                {% csrf_token %}        
+                                <div class="card rounded shadow mt-3  border-light ">
+                                    <a href="#ibasic"> 
+                                        <div class="text-center pt-4 pb-0 text-dark">
+                                            <h2>{{plan_type.1.type_name}}</h2>
+                                            {{plan_type.1.type_description}}
+                                        </div>
+                                    </a>
+                                    <div class="card-body text-dark text-center">
+                                        <ul class="list-group mr-5 ml-5">
+                                            <div class="form-check list-group_item ">
+                                                <span class="badge badge-pill badge-warning">Choose Period</span><br>
+                                                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                                    <label class="btn btn-primary active" id = m-{{group_type.1}}-{{plan_type.1}}>
+                                                        <input type="radio" name="period" id="g1-monthly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="monthly" checked> <span class="font-weight-bold"> Monthly : </span><span> ₹ {{plan_type.0.0.1.price_per_month}} </span><br>
+                                                    </label>
+                                                    <label class="btn" id = y-{{group_type.1}}-{{plan_type.1}}>
+                                                        <input type="radio" name="period" id="g1-yearly-{{group_type.1}}-{{plan_type.1}}" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly : </span><span> ₹ {{plan_type.0.0.1.price_per_year}} </span>
+                                                    </label>
+                                                </div>
+                                                <!-- <span class="font-weight-bold"> Monthly : </span><span> {{gplans.0.plan_id.price_per_month}} </span><hr>
+                                                <span class="font-weight-bold"> Year : </span><span> {{gplans.0.plan_id.price_per_year}} </span><hr> -->
+                                            </div>
+                                        </ul>
+                                        <script>
+                                            $(document).ready(function(){
+                                                $("#m-{{group_type.1}}-{{plan_type.1}}").click(function(){
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-primary");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-primary");
+                                                });
+
+                                                $("#y-{{group_type.1}}-{{plan_type.1}}").click(function(){
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").addClass("btn-primary");
+                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");                                                    $("#y-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-group btn-light");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").addClass("btn-group btn-light");
+                                                    $("#m-{{group_type.1}}-{{plan_type.1}}").removeClass("btn-primary");
+                                                });
+                                            });
+                                        </script>
+                                    </div>
+                                    <div class="card-body text-dark">
+                                        <ul class="font-weight-bold list-group mr-5 ml-5">
+                                            {% for plan in plan_type.0 %}
+                                                {% if plan_type.1.products_count == 1 %}
+                                                        <div class="form-check list-group-item pl-5">
+                                                            <!-- <div class="h3">{{plan.1}}</div> -->
+                                                            <input class="form-check-input" type="radio" name="radio" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
+                                                            <label class="form-check-label" for="{{plan.1}}">
+                                                                    {{ plan.0.0.product_names }}
+                                                            </label>
+                                                        </div>
+                                                {% elif plan_type.1.products_count == 0 %} 
+                                                        {% for product in plan.0 %}
+                                                            <div class="form-check list-group-item pl-5">
+                                                                <input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
+                                                                <label class="form-check-label" for="{{plan.1}}" style="color: black;">    
+                                                                    {{ product.product_name }}
+                                                                </label>
+                                                            </div>
+                                                        {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <input class="plancode" name= "plancode" value="" hidden></input>
+                                <input class="groupcode" name= "groupcode" value="" hidden></input>
+                                <div class="card rounded shadow mt-3  border-light" class = "plancode-div">
+                                    <button type='submit' class="col btn  btn-primary plancode-div"> Take the plan</button>
+                                </div>
+                            </form>
+
+                            <script>
+                                $(document).ready(function(){
+                                    $(".plancode-div").hover(function(){
+                                        $('input[name="plancode"]').val("{{plan.1}}");
+                                    }, function(){
+                                        $('input[name="plancode"]').val("{{plan_type.1}}");
+                                    });
+                                    $(".plancode-div").click(function(){
+                                        $('input[name="plancode"]').val("{{plan_type.1}}");
+                                    });
+                                    
+
+
+                                });
+                            </script>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+            </div>                    
+            {% endfor %}
+        
+        </div>
+            {{grouptype}}
+        
+    <div class="container">
+        <div class="mt-5 algo-align" id="ibasic">
+            <br>
+            <hr>
+            <br>
         </div>
     </div>
+
+
+</div>
+</div>
+</div>
+
 <br>
 <br>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $("#individual").addClass("active")
+        $("#pills-individual-tab").addClass("active")
+        
+    </script>
 {% endblock %}

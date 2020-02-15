@@ -6,7 +6,7 @@ from subscriptions.models import Plan
 class subscription_form(forms.Form):
     @staticmethod
     def total_plans(self):
-        all_plans = Plan.objects.filter(is_active=True)
+        all_plans = Plan.objects.filter()
         for x in all_plans:
             print(x)
     

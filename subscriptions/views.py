@@ -1,48 +1,86 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 from django.db.models import query
-from subscriptions.models import Plan, Subscription
-import datetime
+from django.contrib.auth.decorators import login_required
+import datetime, pytz, re
+import users.functions 
+import subscriptions.functions 
+from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
 def plans(request):
-    return render(request, 'subscriptions/plans.html', {'plans' : Plan.objects.all()})
+    context = {'details' : subscriptions.functions.get_context_for_plans(request.user)}
+    return render(request, 'subscriptions/plans.html', context=context)
 
+@login_required(login_url='/accounts/login/')
+def subscribe(request): 
+    subs_attr = dict(request.POST.lists())
+    group_type = subs_attr['groupcode'][0]
+    plan_type = subs_attr['plancode'][0]
+    plan_name = plan_type
+    if 'radio' in subs_attr:
+        plan_name = subs_attr['radio'][0]
+    period = subs_attr['period'][0]
+    
+    recepients = []
+    if 'group_emails' in subs_attr:    
+        email_list = [v.strip() for v in re.split(",", subs_attr['group_emails'][0])]
+        recepients.extend(email_list)
+    
+    subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type , \
+                plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
+    return HttpResponseRedirect(redirect_to='/user/profile/info')
+
+@login_required(login_url='/accounts/login/') 
+def plan_for_users(request):
+    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)
+
+#above User must be logged in for selecting a plan
 def plan_overview(request, slug):
-    return render(request, 'subscriptions/plan_overview.html', {'plan' : Plan.objects.get(plan_name=slug)})
+    now = datetime.datetime.now(pytz.timezone('UTC'))
+    plan = Plan.objects.get(plan_name=slug, entry_time__lt = now, expiry_time__gt = now) # get the only active plan
+    is_group_plan = subscriptions.functions.is_group_plan(plan_id = plan)
+    context = {
+                'plan' : plan,
+                'is_group_plan' : is_group_plan,
+            }
+    return render(request, 'subscriptions/plan_overview.html',context=context)
 
+@login_required(login_url='/accounts/login/')
 def plan_subscribe(request):
     subs_attr = dict(request.POST.lists()) 
-    subs_attr['email'] = request.user.email #get users email
-
-    # user_plan is an array type
-    user_plan = Plan.objects.filter(plan_name=subs_attr['plan_name'][0])[0] 
-
-    #one user linked with multiple groups
-    user_all_groups = UserGroupMapping.objects.filter(user_profile_id=request.user)
+    recepient = [request.user.email]
+    if 'group_emails' in subs_attr:    
+        email_list = [v.strip() for v in re.split(",", subs_attr['group_emails'][0])]
+        recepient.extend(email_list)
+    subscribed = Subscription.objects.create_subscription(
+                    plan_name = subs_attr['plan_name'][0],
+                    user = request.user,
+                    group_type = None,
+                    period = subs_attr['period'],
+                    payment_id = 0,
+                )
+    if subscribed:
+        subject = 'Algonauts Plan Subscription Link'
+        message = 'This is the link for subscription for group : ' + ABSOLUTE_URL_HOME + users.functions.generate_group_add_link(group)
+        subscriptions.functions.send_email(subscribed.user_group_id, recepient, subject, message)
+    return HttpResponseRedirect(redirect_to='/user/profile/info')
     
+def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
+    recepient = [user.email]
+    recepient.extend(recepients)
+    subscribed = Subscription.objects.create_subscription(
+                    user = user,
+                    group_type = group_type,
+                    plan_type = plan_type,
+                    plan_name = plan_name,
+                    period = period,
+                    payment_id = payment_id,
+                )
+    if subscribed:
+        subscriptions.functions.send_email(subscribed.user_group_id, recepients)
+    return subscribed
 
-    u_gid = None
-    for i in range(user_all_groups.count()):
-        
-        if user_all_groups[i].user_group_id.user_group_type_id == user_plan.user_group_type_id:
-            u_gid = user_all_groups[i].user_group_id
-            break
-    
-    
-    # saving all the stuff 
 
-    Subscription.objects.create(
-        user_group_id = u_gid,
-        plan_id = user_plan,
-        subscription_start = datetime.datetime.now(),
-        subscription_end = datetime.datetime.now() + datetime.timedelta(days=1),
-        subscription_active = True,
-        payment_id = 0, 
-        trial_subscription_start = datetime.datetime.now(),
-        trial_subscription_end = datetime.datetime.now() + datetime.timedelta(days=1)
-    ).save()
-
-    return HttpResponse(u_gid)
 
 
 

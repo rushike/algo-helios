@@ -1,217 +1,192 @@
 {% extends "users/base.html" %}
 
 {% block profile_content %}
-    <div class="container">
-        <div class="row my-2">
-            <div class="col-lg-8 order-lg-2">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a href="" data-target="#profile" data-toggle="tab" class="nav-link active">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" data-target="#messages" data-toggle="tab" class="nav-link">Messages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="" data-target="#edit" data-toggle="tab" class="nav-link">Edit</a>
-                    </li>
-                </ul>
-                <div class="tab-content py-4">
-                    <div class="tab-pane active" id="profile">
-                        <h5 class="mb-3">User Profile</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>About</h6>
-                                <p>
-                                    Web Designer, UI/UX Engineer
-                                </p>
-                                <h6>Hobbies</h6>
-                                <p>
-                                    Indie music, skiing and hiking. I love the great outdoors.
-                                </p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Recent badges</h6>
-                                <a href="#" class="badge badge-dark badge-pill">html5</a>
-                                <a href="#" class="badge badge-dark badge-pill">react</a>
-                                <a href="#" class="badge badge-dark badge-pill">codeply</a>
-                                <a href="#" class="badge badge-dark badge-pill">angularjs</a>
-                                <a href="#" class="badge badge-dark badge-pill">css3</a>
-                                <a href="#" class="badge badge-dark badge-pill">jquery</a>
-                                <a href="#" class="badge badge-dark badge-pill">bootstrap</a>
-                                <a href="#" class="badge badge-dark badge-pill">responsive-design</a>
-                                <hr>
-                                <span class="badge badge-primary"><i class="fa fa-user"></i> 900 Followers</span>
-                                <span class="badge badge-success"><i class="fa fa-cog"></i> 43 Forks</span>
-                                <span class="badge badge-danger"><i class="fa fa-eye"></i> 245 Views</span>
-                            </div>
-                            <div class="col-md-12">
-                                <h5 class="mt-2"><span class="fa fa-clock-o ion-clock float-right"></span> Recent Activity</h5>
-                                <table class="table table-sm table-hover table-striped">
-                                    <tbody>                                    
-                                        <tr>
-                                            <td>
-                                                <strong>Abby</strong> joined ACME Project Team in <strong>`Collaboration`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Gary</strong> deleted My Board1 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Kensington</strong> deleted MyBoard3 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>John</strong> deleted My Board1 in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Skell</strong> deleted his post Look at Why this is.. in <strong>`Discussions`</strong>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!--/row-->
-                    </div>
-                    <div class="tab-pane" id="messages">
-                        <div class="alert alert-info alert-dismissable">
-                            <a class="panel-close close" data-dismiss="alert">×</a> This is an <strong>.alert</strong>. Use this to show important messages to the user.
-                        </div>
-                        <table class="table table-hover table-striped">
-                            <tbody>                                    
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">3 hrs ago</span> Here is your a link to the latest summary report from the..
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">Yesterday</span> There has been a request on your account since that was..
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/10</span> Porttitor vitae ultrices quis, dapibus id dolor. Morbi venenatis lacinia rhoncus. 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/4</span> Vestibulum tincidunt ullamcorper eros eget luctus. 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                    <span class="float-right font-weight-bold">9/4</span> Maxamillion ais the fix for tibulum tincidunt ullamcorper eros. 
-                                    </td>
-                                </tr>
-                            </tbody> 
-                        </table>
-                    </div>
-                    <div class="tab-pane" id="edit">
-                        <form role="form">
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">First name</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="Jane">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Last name</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="Bishop">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Email</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="email" value="email@gmail.com">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Company</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Website</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="url" value="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Address</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="" placeholder="Street">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-6">
-                                    <input class="form-control" type="text" value="" placeholder="City">
-                                </div>
-                                <div class="col-lg-3">
-                                    <input class="form-control" type="text" value="" placeholder="State">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Time Zone</label>
-                                <div class="col-lg-9">
-                                    <select id="user_time_zone" class="form-control" size="0">
-                                        <option value="Hawaii">(GMT-10:00) Hawaii</option>
-                                        <option value="Alaska">(GMT-09:00) Alaska</option>
-                                        <option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
-                                        <option value="Arizona">(GMT-07:00) Arizona</option>
-                                        <option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
-                                        <option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>
-                                        <option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
-                                        <option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Username</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="text" value="janeuser">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" value="11111122333">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label">Confirm password</label>
-                                <div class="col-lg-9">
-                                    <input class="form-control" type="password" value="11111122333">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-3 col-form-label form-control-label"></label>
-                                <div class="col-lg-9">
-                                    <input type="reset" class="btn btn-secondary" value="Cancel">
-                                    <input type="button" class="btn btn-primary" value="Save Changes">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+
+<link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+<div class="container mb-5">
+<br>
+<h3>DashBoard</h3>
+
+	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
+		<strong>Check Your Email ! Click On Verify Me</strong>
+		<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+
+  
+  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link text-dark active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link text-dark" id="MyOrders-tab" data-toggle="tab" href="#MyOrders" role="tab" aria-controls="MyOrders" aria-selected="false">My Orders</a>
+	</li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+		<div class="row">
+			<div class="col-md-10">
+				<div class="flush-left">
+						<div class="card rounded">
+							<div class="card-body p-2">
+								<ul class="list-group list-group-flush">
+									<li class="list-group-item"><b>Name : </b>{{ user.first_name }} {{user.last_name}} </li>
+									<li class="list-group-item"><b>Email : </b>{{ user.email }} </li>
+									<li class="list-group-item"><b>Credits :</b> <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
+									<li class="list-group-item"><b>Last Login : </b>{{ user.last_login }}</li>
+									<li class="list-group-item"><b>Your Referral Code : </b>
+									<span class="badge badge-pill badge-dark p-2"> {{ user.referral_code }} </span>
+										<div class="input-group input-group-sm w-75 mx-auto">
+											<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
+											<div class="input-group-append">
+												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="copyTextFunction()">copy</span>
+											</div><br>
+										</div>
+										<small>Share link to avail 30 Credits (Applicable only Once)</small>
+									</li>
+									{% if not if_referred %}
+										<li class="list-group-item">
+										<form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
+											{% csrf_token %}
+											<div class="form-group">
+												<label for=""><b>Enter Referal Code</b></label>
+												<input type="text" id="" maxlength="6" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline">
+												<button class="btn btn-dark btn-sm mt-1" type="submit">Ok</button>
+											</div>
+											</form>
+										</li>
+									{% endif %}
+								</ul>
+							</div> 
+						</div>
+				</div>
+			</div>
+		</div> 
+	</div> <!-- profile tab ends-->
+    <!-- ------------------------------------------------------------------------------------------ -->
+    
+    <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
+	  
+		<h3 class="mt-5">Personal Plans</h3>
+      		{% if iplans %}
+      			<div class="container mt-5">
+          			<div class="row">
+          				{% for iplan in iplans %}
+              				<div class="mb-3 col-md-4">
+		
+                				<div class="card shadow-sm">     
+                  					<div class="card-header">
+                    					<h4 class="my-0 font-weight-normal">{{iplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{iplan.subscription_type_id__type_name}}</span><br></h4>
+									</div>
+									  
+                  					<div class="card-body">
+											{% if iplan.subscription_type_id__type_name == "Trial" %}
+											<p class="lead"> Subscribe With the following Plan</p>
+											<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+										  {% elif iplan.subscription_type_id__type_name == "Monthly" %}
+											<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+										  {% else %}
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+										  {% endif %}
+											<ul class="list-group mb-4">
+											  <li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ iplan.subscription_start }}</li>
+											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.subscription_end }}</li>
+											</ul>
+								  
+											{% if iplan.subscription_type_id__type_name == "Trial" %}
+											  <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
+											{% else %}
+											  <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
+											{% endif %}
+                  					</div>
+								</div>
+								
+              				</div>
+          				{% endfor %}
+		  			</div>
+      			</div>
+			{% else %}
+				<h6>No Personal Plans Yet</h6>
+			{% endif %}
+
+      <!-- ------------------------------- -->
+      <h3>Group Plans</h3>
+      
+      {% if gplans %}
+      <div class="container mt-5">
+          <div class="row">
+		  {% for gplan in gplans %}
+              <div class="mb-3 col-md-4">
+                <div class="card shadow-sm">     
+                  <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
+                  </div>
+                  <div class="card-body">
+                    {% if gplan.subscription_type_id__type_name == "Trial" %}
+                      <p class="lead"> Subscribe With the following Plan</p>
+                      <p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+                    {% elif gplan.subscription_type_id__type_name == "Monthly" %}
+                      <p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+                    {% else %}
+                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+                    {% endif %}
+                      <ul class="list-group mb-4">
+						<li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ gplan.subscription_start }}</li>
+						<li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ gplan.subscription_end }}</li>
+                      </ul>
+            
+                      {% if gplan.subscription_type_id__type_name == "Trial" %}
+                        <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
+                      {% else %}
+                        <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
+                      {% endif %}
+                      
+                  </div>
                 </div>
-            </div>
-            <div class="col-lg-4 order-lg-1 text-center">
-                <img src="//placehold.it/150" class="mx-auto img-fluid img-circle d-block" alt="avatar">
-                <h6 class="mt-2">Upload a different photo</h6>
-                <label class="custom-file">
-                    <input type="file" id="file" class="custom-file-input">
-                    <span class="custom-file-control">Choose file</span>
-                </label>
-            </div>
-        </div>
-    </div>
+              </div>
+          {% endfor %}
+          </div>
+      {% else %}
+        <h6>No Group Plans Yet</h6>
+	
+		{% endif %}  
+		</div> <!-- Plan tab ends-->
+		<!-- ------------------------------------------------------------------------------------------ -->
+
+	  <div class="tab-pane fade mt-5" id="MyOrders" role="tabpanel" aria-labelledby="MyOrders-tab">
+			<h3>Invoice</h3><hr>
+			
+
+	  </div>
+
+	</div> <!-- Tab Content ends -->
+  </div> <!-- Container ends -->
+</div> 
+
+<script type="text/javascript">
+
+$('.alertx').alert()
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
+
+</script>
+
+<script type="text/javascript">
+  function copyTextFunction() {
+  var copyText = document.getElementById("myInput");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("Copied the text: " + copyText.value);
+}
+</script>
+
 {% endblock %}

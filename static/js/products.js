@@ -2,9 +2,7 @@ var url=document.URL;
 var stuff = url.split('/');
 var id = stuff[stuff.length-1];
 var id=id.substring(1);
-console.log(id);
 var nav = id + "Nav";
-console.log(nav);
 
 document.addEventListener("load",findActive(id,nav));
 
