@@ -34,7 +34,7 @@ class PlanManager(models.Manager):
                                 trial_applicable = trial_applicable,
                             )
         plan_type.save(using = self._db)
-    pass
+
 
 class Plan(models.Model):
     plan_name = models.CharField(max_length=50)
@@ -52,7 +52,7 @@ class Plan(models.Model):
         unique_together = ('plan_name', 'user_group_type_id', 'plan_type_id') 
     @staticmethod
     def update_trial_applicable_to_default():
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(pytz.timezone('UTC'))
         active_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now)
         for plan in active_plans:
             plan.trial_applicable = plan.user_group_type_id.eligible_for_trial and plan.plan_type_id.trial_applicable

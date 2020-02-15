@@ -105,8 +105,8 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 
 class UserGroupTypeManager(models.Manager):
 	def create_user_group_type(self):
-		pass
-	pass
+		return
+
 
 
 class UserGroupType(models.Model):
@@ -223,10 +223,8 @@ class UserGroupMapping(models.Model):
 
 	@property
 	def is_present(self):
-		if datetime.datetime.now > self.time_removed : 
-			return True
-		return False
-
+		return datetime.datetime.now > self.time_removed  
+			
 	@property
 	def get_user_group_type(self):
 		return self.user_group_id.user_group_type_id
@@ -250,12 +248,9 @@ def create_individual_user_group(sender, instance, **kwargs):
 	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, admin = instance)
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, group_admin = True)
-	return
 
 def create_usergrou_mapping(sender, instance, **kwargs):
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, group_admin = True)
-	return
-
 def active_referral_offer_checks(sender, instance, **kwargs):
 	# ReferralOffer.
 	offer_active = instance.offer_active

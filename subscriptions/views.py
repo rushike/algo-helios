@@ -8,10 +8,6 @@ import subscriptions.functions
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
 
-def plans2(request):
-    context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : True}
-    return render(request, 'subscriptions/plans2.html', context = context)
-
 def plans(request):
     POST = request.session.get('order_details_post')
     if 'order_details_post' in request.session: del request.session['order_details_post']
@@ -22,12 +18,11 @@ def plans(request):
 def order_details(request):
     subs_attr1 = dict(request.GET.lists())
     POST = dict(request.POST.lists())
-    # POST = dict(request.POST.lists())
     group_type = POST['groupcode'][0]
     plan_type = POST['plancode'][0]
     plan_name = plan_type
-    if 'radio' in POST:
-        plan_name = POST['radio'][0]
+    if 'plan_name' in POST:
+        plan_name = POST['plan_name'][0]
     period = POST['period'][0]
 
     POST = {
@@ -36,10 +31,7 @@ def order_details(request):
         'plan_name' : plan_name,
         'period' : period,
         'alert' : False
-    }
-    # raise EnvironmentError
-    
-    
+    }    
     request.session['order_details_post'] = POST
     return HttpResponseRedirect("/subscriptions/orders")
 
@@ -55,8 +47,6 @@ def secure_order_details(request):
         request.session['order_details_post'] = POST
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
-
-    
     request.session['order_details_post'] = POST
     return render(request, 'subscriptions/order_details.html', context=POST)
 
@@ -139,8 +129,3 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
         message = "You have successfully subscribed to algonauts plan : " + str(plan_name)
         subscriptions.functions.send_email(subscribed.user_group_id, recepients, subject, message)
     return subscribed
-
-
-
-
-

@@ -61,8 +61,7 @@ def get_context_for_plans(user=None):
             for k, plan in enumerate(plans):
                 plan_id = str(plan.id)
                 products = get_all_products_in_plan(plan)
-                context[i][0][j][0].append([list(products), plan])
-                pass 
+                context[i][0][j][0].append([list(products), plan]) 
     return context
 
 def can_subscribe(user, group_type, plan_type, plan_name):
@@ -98,11 +97,14 @@ def already_had_trial(user, group_type, plan_type, plan_name):
 def send_subscription_link(group, recepients, to = None):
     threading.Thread(target=send_mail_async, args=(group, recepients,)).start()
 
+def get_order_details(group_type, plan_type, plan_name, period):
+    return
+
 def send_email(group, recepients, subject, message, to = None):
     threading.Thread(target=send_mail_async, args=(group, recepients,subject, message)).start()
 
 def send_mail_async(group, recepients, subject, message):
-    if not isinstance(recepients, list) : return send_email(group, [recepients], "", "") 
+    if not isinstance(recepients, list) : return send_email(group, [recepients], subject, message) 
     start = time.time()
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
