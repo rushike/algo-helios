@@ -103,22 +103,34 @@
   
     <div class="collapse navbar-collapse text-center" id="navbarNav" style="font-size:16px;">
       <ul class="nav navbar-nav ml-auto justify-content-between full-width" style="font-size:1.05rem;">
-
+        
+            <li class="nav-item">
+                <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'blog' %}">Blog</a>
+            </li>
+            <li class="nav-item">
+            <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+            </li>
+        {% if urls %}
+            <li class="nav-item">
+            <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+            </li>
+            <li class="nav-item">
+            <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+            </li>
+            <li class="nav-item">
+            <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
+            </li>
+        {% else %}
         <li class="nav-item">
-            <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'home' %}">Blog</a>
-          </li>
-        <li class="nav-item">
-          <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+        <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="/aboutus">About Us</a>
         </li>
         <li class="nav-item">
-          <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+        <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="/products">Products</a>
         </li>
         <li class="nav-item">
-          <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+        <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
         </li>
-        <li class="nav-item">
-          <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
-        </li>
+        {% endif %}
             {% if user.is_anonymous %}
             <li class="nav-item">        
                 <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>

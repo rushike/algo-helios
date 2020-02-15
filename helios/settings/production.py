@@ -7,6 +7,7 @@ ALLOWED_HOSTS = [
     'algonauts.in',
 ]
 
+ABSOLUTE_URL_HOME = "https://dev.algonauts.in"
 
 
 SECURE_SSL_REDIRECT = True
