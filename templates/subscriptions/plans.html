@@ -47,17 +47,17 @@
 					</div>
 					
 					<script>
-						$(function () {
-						$('#myList a:last-child').tab('show')
-						})
+						// $(function () {
+						// $('#myList a:last-child').tab('show')
+						// })
 					</script>
 				</div>
         </div>
 
 	</div>
 	
-	<div class="tab-content" id = "pricing-page">
-		<div class="tab-pane active" id="plans" role="tabpanel">
+	<!-- <div class="tab-content" id = "pricing-page">
+		<div class="tab-pane active" id="plans" role="tabpanel"> -->
 
 			<div class="row mt-4 mb-4">
 				<div class="col-md-12">
@@ -69,7 +69,10 @@
 							<script>
 								$(document).ready(() => {
 									var active = "#head-{{group_type.0.1}}";
-									$("#{{details.0.1}}").addClass("active")
+									
+									$("#{{details.0.1}}").addClass("show active")  // adding class to show first element
+									$("#head-{{details.0.1}}").addClass("active")  // adding class to active first element head
+
 									$("#group-header").click(()=>{
 										$("#group-header").css({"border-style": "none", "border-color": DARK_BLUE})
 		
@@ -78,7 +81,7 @@
 								});
 							</script>
 							{% for group_type in details %}	
-								<div id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  border-primary shadow-lg text-light" data-toggle="pill"  href="#{{group_type.1}}" role="tab" aria-controls="pills-{{group_type.1}}" aria-selected="true"><span class="font-weight-bold text-primary">{{ group_type.1.max_members }}<span></div>
+								<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  border-primary shadow-lg text-light " data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true"><span class="font-weight-bold text-primary">{{ group_type.1.max_members }}<span></a>
 								<!-- <div class="display-4"> {{group_type.1}} </div> -->
 								<script>
 									$(document).ready(() => {
@@ -88,6 +91,7 @@
 											var current_clicked_id = "#head-{{ group_type.1 }}"
 											if(active != "#head-{{ group_type.1 }}"){
 												// $(active).css("background-color", "white");
+												$("#head-{{ group_type.1 }}").fadeIn("slow");
 												$("#head-{{ group_type.1 }}").css("background-color", "#daedf4")
 												$(active).css("background-color", "white");
 												active =  "#head-{{ group_type.1 }}"
@@ -156,7 +160,7 @@
 		
 					<div class="tab-content" id="pills-tabContent">                
 					{% for group_type in details %}
-					<div class="tab-pane fade show" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
+					<div class="tab-pane" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
 						<!-- <div class="display-1">{{group_type.1}}</div> -->
 						<div class="row">
 							{% for plan_type in group_type.0 %}
@@ -277,13 +281,13 @@
 				</div>
 				</div>
 			</div>
-		</div>
+		<!-- </div> -->
 		<div class="tab-pane" id="services" role="tabpanel">
 
 		</div>
 		<!-- <div class="tab-pane" id="messages" role="tabpanel">...</div>
 		<div class="tab-pane" id="settings" role="tabpanel">...</div> -->
-	</div>
+	<!-- </div> -->
 
 	
 

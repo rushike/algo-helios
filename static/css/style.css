@@ -13,6 +13,10 @@
     font-size: large;
 }
 
+.light{
+    font-weight: 500;
+}
+
 .content-para{
     font-family: "Lato, sans-serif";
     font-weight: 400;

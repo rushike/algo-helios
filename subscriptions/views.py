@@ -7,6 +7,8 @@ import users.functions
 import subscriptions.functions 
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
+from helios.settings import ABSOLUTE_URL_HOME
+
 def plans2(request):
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : True}
     return render(request, 'subscriptions/plans2.html', context = context)
@@ -18,7 +20,6 @@ def plans(request):
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
     return render(request, 'subscriptions/plans.html', context=context)
 
-@login_required(login_url='/accounts/login/')
 def order_details(request):
     subs_attr1 = dict(request.GET.lists())
     POST = dict(request.POST.lists())
@@ -38,22 +39,26 @@ def order_details(request):
         'alert' : False
     }
     # raise EnvironmentError
+    
+    
+    request.session['order_details_post'] = POST
+    return HttpResponseRedirect("/subscriptions/orders")
+
+@login_required(login_url='/accounts/login/')
+def secure_order_details(request):
+    POST = request.session.get('order_details_post')
+    group_type, plan_type, plan_name = POST['group_type'], POST['plan_type'], POST['plan_name']
     if not subscriptions.functions.can_subscribe(request.user, group_type, plan_type, plan_name):
         POST["alert"] = True
         request.session['order_details_post'] = POST
-        # raise EnvironmentError
         return HttpResponseRedirect(redirect_to='/subscriptions/plans')
     if subscriptions.functions.is_trial_applicable(group_type = group_type, plan_type = plan_type, plan_name = plan_type):
         request.session['order_details_post'] = POST
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
-            # request.session['order_details_post'] = request.POST
-            # raise EnvironmentError
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
-        # return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
-    
+
     
     request.session['order_details_post'] = POST
-
     return render(request, 'subscriptions/order_details.html', context=POST)
 
 
@@ -129,7 +134,9 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
                     payment_id = payment_id,
                 )
     if subscribed:
-        subscriptions.functions.send_email(subscribed.user_group_id, recepients)
+        subject = "Regarding Algonauts Subscription"
+        message = "You have successfully subscribed to algonauts plan : " + str(plan_name)
+        subscriptions.functions.send_email(subscribed.user_group_id, recepients, subject, message)
     return subscribed
 
 

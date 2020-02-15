@@ -174,77 +174,81 @@
 
             <div class="col-md-3 offset-sm-1 ">
                 <div class="row">
-                    <div class="col-md-12 justify-content-center">
-                        <div class="p-4">    
+                    <div class="col-md-8    ">
+                        <div class="row p-4 d-flex justify-content-center ">    
                             <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" >
                         </div>
-                        <div class="pl-4">
-                            <span>We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
+                        <div class="row pl-4 d-flex justify-content-center justify-content-md-start">
+                            <span class="text-justify">We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
                         </div>
+                        <div class="p-3"></div>
                     </div>
                 </div>
     
             </div>
-            <div class="col-md-4 p-1">
+            <div class="col-md-5 p-1">
                 <div class="row">
                     <div class="col-md-4 ">
-                        <div class="row content-heading font-weight-bold pb-2">
+                        <div class="row content-heading font-weight-bold pb-2 d-flex justify-content-center justify-content-md-start">
                             <span>Navigation</span>
                         </div>
             
-                        <div class="row p-1">
-                            <span>What we do ?</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#whatwedocont'">
+                            <span class="whatwedoi">What we do ?</span>
                         </div>
-                        <div class="row p-1">
-                            <span>How it works ?</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#howwedocont'">
+                            <span class="howwedoi">How it works ?</span>
                         </div>
-                        <div class="row p-1">
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
                             <span>Pricing</span>
                         </div>
+                        <div class="p-2"></div>
                     </div>
                     <div class="col-md-4">
-                        <div class="row content-heading pb-2" style="font-size: large;" >
+                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" >
                             <span>Resources</span>
                         </div>
-                        <div class="row p-1">
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start">
                             <span>Support Center</span>
                         </div>
-                        <div class="row p-1">
+                        <!-- <div class="row p-1 d-flex justify-content-center justify-content-md-start">
                             <span>FAQ's</span>
-                        </div>
-                        <div class="row p-1">
+                        </div> -->
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start">
                             <span>Testimonials</span>
                         </div>
+                        <div class="p-2"></div>
                     </div>
                     
                     <div class="col-md-4">
-                        <div class="row content-heading pb-2" style="font-size: large;">
+                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" onclick="location.href='/accounts/login/'">
                             <span>Account</span>
                         </div>
-                        <div class="row p-1">
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/user/profile/info'">
                             <span>Manage Your Account</span>
                         </div>
-                        <div class="row p-1">
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
                             <span>Start a free trial</span>
                         </div>
-                        <div class="row p-1">
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/accounts/signup'">
                             <span>Sign up</span>
                         </div>
+                        <div class="p-2"></div>
                     </div>
                 </div>
             </div>
             
             
             <div class="col-md-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class=" row text-right content-heading pr-2 pl-2">
+                <div class="row ">
+                    <div class="col-md-12 ">
+                        <div class=" row content-heading pr-2 pl-2 d-flex justify-content-center justify-content-md-start">
                             <span>Contact us</span>
                         </div>	
-                        <div class="row text-right x-large pr-2 pl-2" >
+                        <div class="row  x-large pr-2 pl-2 d-flex justify-content-center justify-content-md-start" >
                             <span >+91 68768 86698</span>
                         </div>
-                        <div class="text-right content-heading row p-2">
+                        <div class="row content-heading light row p-2 d-flex justify-content-center justify-content-md-start">
                             <span>help@algonauts.in</span>
                         </div>
                         
@@ -254,7 +258,7 @@
                 </div>
                 
 
-                <div class="row " style="text-align:center; font-size:2.5rem;">
+                <div class="row d-flex justify-content-center justify-content-md-start" style="text-align:center; font-size:2.2rem;">
                     <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
                     <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
                     <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
@@ -336,6 +340,21 @@
                     });
                 }
             })
+        });
+
+
+        $(document).ready(function () {
+            $(".whatwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#whatwedocont").offset().top - 80
+                }, 800);
+            });
+
+            $(".howwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#howwedocont").offset().top - 80
+                }, 800);
+            });
         });
     </script>
     <script src="{% static 'js/chatbot.js' %}"></script>
