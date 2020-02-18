@@ -201,7 +201,7 @@ class UserGroupMappingManager(models.Manager):
 		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
 		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
 		if unq: return # allow one user to be admin of only one user group of particular type
-		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
+		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members * user_group_id.multiplier # checks the maximum number allowed by particular group, includes multiplier in it
 		if mzx < mems: return # do not add more than max number specified
 		mapper = self.create(
 				user_group_id = user_group_id, 

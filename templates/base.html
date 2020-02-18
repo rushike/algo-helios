@@ -17,8 +17,8 @@
     {% block css_imports %}
     {% endblock %}
 
-    
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" >
     
     <link rel="stylesheet" type="text/css" href="/static/css/index.css">
 
@@ -29,6 +29,7 @@
     <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    
 
 
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.9"></script>
@@ -40,7 +41,7 @@
     <script src="https://kit.fontawesome.com/a26aa1e038.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
 
     <script src="{% static 'js/accordion.js' %}"></script>
     <script src="{% static 'js/colors.js' %}"></script>
@@ -68,7 +69,7 @@
         .fa-q:hover{
             color:#B92B27;
         }
-        
+
         #page-contentx {
         flex: 1 0 auto;
         }
@@ -76,6 +77,13 @@
         #sticky-footerx {
         flex-shrink: none;
         }
+        
+        body{
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+    
 
     </style>
 </head>
@@ -85,7 +93,7 @@
 <mybot></mybot>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="#"></a>
     <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px" height="auto" alt="image"></a>
   
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,28 +106,32 @@
             <li class="nav-item">
                 <a  class="p-2 nav-link" style="cursor: pointer;" href="{% url 'blog' %}">Blog</a>
             </li>
-            <li class="nav-item">
-            <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
-            </li>
+            
         {% if urls %}
+            <li class="nav-item">
+                <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+            </li>
             <li class="nav-item">
             <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
             <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
-            </li>
+            </li> -->
             <li class="nav-item">
-            <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
+            <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
             </li>
         {% else %}
         <li class="nav-item">
-        <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="/aboutus">About Us</a>
+            <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="/whatwedo/">What We Do?</a>
         </li>
         <li class="nav-item">
-        <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="/products">Products</a>
+        <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="/aboutus/">About Us</a>
         </li>
+        <!-- <li class="nav-item">
+        <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="/products/">Products</a>
+        </li> -->
         <li class="nav-item">
-        <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Pricing</a>
+        <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
         </li>
         {% endif %}
             {% if user.is_anonymous %}
@@ -153,21 +165,26 @@
                 </li>
             {% endif %}
       </ul>
-  </div>
-  </nav>
+    </div>
+    </nav>
 
+    <div class="mb-5">
+        
+    </div>
+    <div class="mb-5">
+    
+    </div>
 
     {% block content %}
     {% endblock content%}
 
     <footer  style="background-image: radial-gradient( rgb(66, 66, 66), rgb(33, 33, 33), rgb(0, 0, 0)); color: white;" >
         <div class="row p-4" >
-
             <div class="col-md-3 offset-sm-1 ">
                 <div class="row">
                     <div class="col-md-8    ">
                         <div class="row p-4 d-flex justify-content-center ">    
-                            <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" >
+                            <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" />
                         </div>
                         <div class="row pl-4 d-flex justify-content-center justify-content-md-start">
                             <span class="text-justify">We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
@@ -181,48 +198,48 @@
                 <div class="row">
                     <div class="col-md-4 ">
                         <div class="row content-heading font-weight-bold pb-2 d-flex justify-content-center justify-content-md-start">
-                            <span>Navigation</span>
+                            <a> Navigation</a>
                         </div>
             
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#whatwedocont'">
-                            <span class="whatwedoi">What we do ?</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a  class = "text-white"class="whatwedoi" href='/whatwedo/'>What we do ?</a>
                         </div>
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/#howwedocont'">
-                            <span class="howwedoi">How it works ?</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a class = "text-white" class="howwedoi" href='/aboutus/'>Abouts us</a>
                         </div>
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
-                            <span>Pricing</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a class = "text-white" href='/subscriptions/plans'>Pricing</a>
                         </div>
                         <div class="p-2"></div>
                     </div>
                     <div class="col-md-4">
                         <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" >
-                            <span>Resources</span>
+                            <a>Resources</a>
                         </div>
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <span>Support Center</span>
+                            <a>Support Center</a>
                         </div>
                         <!-- <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <span>FAQ's</span>
+                            <a>FAQ's</a>
                         </div> -->
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <span>Testimonials</span>
+                            <a>Testimonials</a>
                         </div>
                         <div class="p-2"></div>
                     </div>
                     
                     <div class="col-md-4">
-                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" onclick="location.href='/accounts/login/'">
-                            <span>Account</span>
+                        <div class="row content-heading pb-2 d-flex justify-content-center justify-content-md-start" style="font-size: large;" >
+                            <a>Account</a>
                         </div>
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/user/profile/info'">
-                            <span>Manage Your Account</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a class = "text-white" href='/user/profile/info'>Manage Your Account</a>
                         </div>
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/subscriptions/plans'">
-                            <span>Start a free trial</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a class = "text-white" href='/subscriptions/plans'>Start a free trial</a>
                         </div>
-                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" onclick="location.href='/accounts/signup'">
-                            <span>Sign up</span>
+                        <div class="row p-1 d-flex justify-content-center justify-content-md-start" >
+                            <a class = "text-white" href='/accounts/signup'>Sign up</a>
                         </div>
                         <div class="p-2"></div>
                     </div>
@@ -237,10 +254,10 @@
                             <span>Contact us</span>
                         </div>	
                         <div class="row  x-large pr-2 pl-2 d-flex justify-content-center justify-content-md-start" >
-                            <span >+91 68768 86698</span>
+                            <span >+91 99306 86822</span>
                         </div>
                         <div class="row content-heading light row p-2 d-flex justify-content-center justify-content-md-start">
-                            <span>help@algonauts.in</span>
+                            <a class ="text-white" href = "mailto:help@algonauts.in?subject=Query&body=">help@algonauts.in</a>
                         </div>
                         
 
@@ -250,7 +267,7 @@
                 
 
                 <div class="row d-flex justify-content-center justify-content-md-start" style="text-align:center; font-size:2.2rem;">
-                    <a href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
+                    <a class = "text-white" href="https://www.facebook.com/Algonauts-Technologies-106856034159454/"><i class="fab fa-facebook-f fa-f"></i></a>
                     <a href="https://twitter.com/AlgonautsT"><i class="fab fa-twitter fa-t"></i></a>
                     <a href="https://www.linkedin.com/in/algonauts-technologies/"><i class="fab fa-linkedin-in fa-l"></i></a>
                     <a href="https://www.quora.com/profile/Algonauts-Technologies-1"><i class="fab fa-quora fa-q"></i></a>
@@ -316,6 +333,7 @@
 
         $(document).ready(function () {
             $("#chat-input").css({"margin-top":"1.0rem"});
+            $("#send-img").addClass("fa fa-paper-plane-o")
         });
 
 
