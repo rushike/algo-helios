@@ -244,7 +244,7 @@ class UserFeedback(models.Model):
   
 # Code to add permission to group 
 def create_individual_user_group(sender, instance, **kwargs):
-	indiv = UserGroupType.objects.get_or_create(type_name__iexact='individual')[0]
+	indiv = UserGroupType.objects.get_or_create(type_name='individual')[0]
 	group = UserGroup.objects.create_user_group(user_group_type_id=indiv, admin = instance)
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, group_admin = True)
