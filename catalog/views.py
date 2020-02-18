@@ -24,6 +24,10 @@ def index_view(request):
                     "products" : "/products",
                     "pricing" : "/subscriptions/plans",
                 }}
+    # if "REDIRECT_URL" in request.sessions:
+    URL = request.session.get("REDIRECT_URL")
+    if URL : 
+       return HttpResponseRedirect(URL)
     return render(request, "index.html", context=context)
 
 

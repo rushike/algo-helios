@@ -13,6 +13,7 @@ def plans(request):
     if 'order_details_post' in request.session: del request.session['order_details_post']
     alert = POST['alert']  if POST else False
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
+    # raise EnvironmentError
     return render(request, 'subscriptions/plans.html', context=context)
 
 def order_details(request):

@@ -416,6 +416,14 @@ nav{
     font-size:1.3vmax
 }
 
+.productsb-li{
+    color: #848484;
+    text-align:justify;
+    font-family: 'Lato', sans-serif !important;
+    margin: 1.5vmax 0vmax;
+    font-size:1.3vmax;
+}
+
 .productsb .productsbox .content .col-md-4{
     margin: 3vmax 0vmax
 }

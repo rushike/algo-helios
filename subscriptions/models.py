@@ -37,7 +37,7 @@ class PlanManager(models.Manager):
 
 
 class Plan(models.Model):
-    plan_name = models.CharField(max_length=50)
+    plan_name = models.CharField(max_length=40)
     user_group_type_id = models.ForeignKey(UserGroupType, on_delete=models.CASCADE)
     plan_type_id = models.ForeignKey(PlanType, on_delete=models.CASCADE)
     price_per_month = models.PositiveIntegerField()
@@ -92,7 +92,6 @@ class SubscriptionType(models.Model):
         
 
 class SubscriptionManager(models.Manager):
-
     def create_subscription(self, user, group_type, plan_type, plan_name, period, payment_id):
         # user_plan is an array type
         user_group_type_id = UserGroupType.objects.filter(type_name = group_type).first() # group type is string 
@@ -151,7 +150,6 @@ class Subscription(models.Model):
     def __str__(self):
         return str(self.user_group_id)
 
-
 class PlanOfferMap(models.Model):
     offer_id = models.ForeignKey( Offer, on_delete=models.CASCADE)
     plan_id = models.ForeignKey( Plan, on_delete=models.CASCADE)
@@ -160,6 +158,10 @@ class PlanOfferMap(models.Model):
     def __str__(self):
         return str(self.offer_id)
 
+
+class PaymentManager(models.Manager):
+    def create_payment_entry(self):
+        pass
 
 class Payment(models.Model):
     payment_ref = models.CharField(max_length=256)

@@ -1,4 +1,4 @@
-const LIGHT_BLUE = "#daedf4"
+const LIGHT_BLUE = "#77BBFF"
 
 const DARK_BLUE = "#1a66ff"
 

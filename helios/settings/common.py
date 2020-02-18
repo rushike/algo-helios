@@ -38,12 +38,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook', 
     'allauth.socialaccount.providers.google', 
     'django_extensions',
+    'django_crontab',
+    'crispy_forms',
+
     'catalog',
     'users',
     'blog',
-    'crispy_forms',
-    'django_crontab',
-    
     'products',
     'subscriptions'
     ]

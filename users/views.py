@@ -1,6 +1,8 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView 
 from django.contrib.auth.decorators import login_required
+from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
 import users
 import users.functions 
 
@@ -44,3 +46,9 @@ def register_feedback(request):
     fbdata = dict(request.POST)
     users.functions.add_feedback(request.user, fbdata['product-name'][0], fbdata['feedback-message'][0])
     return HttpResponseRedirect('/user/profile/info')
+
+
+@receiver(user_signed_up)
+def redirect_after_signup(request, user, **kwargs):
+    request.session["REDIRECT_URL"] = "/subscriptions/plans"
+    return HttpResponseRedirect("/products/")

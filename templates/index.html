@@ -8,14 +8,15 @@
 {% block content %}
 
 
-<!--Navigation Bar Starts-->
+<style>
+    .productsbox-li{
+        color: #848484;
+        text-align:justify;
+        font-family: 'Lato', sans-serif !important;
+        font-size:1.3vmax;
+    }
 
-  
-
-
-
-
-<!--Navigation Bar Ends-->
+</style>
 
 
 <!--Landing Page Banner Starts-->
@@ -245,7 +246,7 @@
         <div class="col-md-6 productsbox">
             <div class="row content">
                 <div class="col-md-8">
-                    <h3>Calls Generator</h3>
+                    <h3>Mercury</h3>
                     <p>Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
                         live market</p>
                     <div class="knowmore">
@@ -265,9 +266,16 @@
         <div class="col-md-6 productsbox">
             <div class="row content">
                 <div class="col-md-8">
-                    <h3>Portfolio Manager</h3>
-                    <p>Builds, manages and trades portfolios in real-time using the combination best suited to capital
-                        invested</p>
+                    <h3>Services</h3>
+                    <!-- <p>Builds, manages and trades portfolios in real-time using the combination best suited to capital
+                        invested</p> -->
+                    <ul class="list-group list-group-flush ml-4">
+                        <li class="productsbox-li">Automation</li>
+                        <li class="productsbox-li">Backtesting</li>
+                        <li class="productsbox-li">End to end Algo Development</li>
+                        <li class="productsbox-li">Data Analytics</li>
+                        <li class="productsbox-li">Custom Strategies</li>
+                        </ul>
                     <div class="knowmore">
                         <a href="{% url 'products' %}#portfolio" title="Click to know more">
                             <p>Know More&nbsp;&nbsp;</p>
