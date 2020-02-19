@@ -15,8 +15,7 @@ Allowed Host for sites
 """
 ALLOWED_HOSTS = [
     'localhost',
-    'dev.algonauts.in',
-    'algonauts.in',
+    '127.0.0.1',
 ]
 
 """
@@ -27,7 +26,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'algonauts',
         'USER': 'algonauts',
-        'PASSWORD': 'okokok99',
+        'PASSWORD': 'algonauts@123',
         'HOST': 'localhost',
         'PORT': '5432',
     }

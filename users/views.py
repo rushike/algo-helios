@@ -1,10 +1,10 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
-from django.views.generic import TemplateView 
 from django.contrib.auth.decorators import login_required
 from django.dispatch import receiver
 from allauth.account.signals import user_signed_up
 import users
 import users.functions, subscriptions.functions
+
 
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
@@ -32,12 +32,14 @@ def profile_page(request):
             }
     return render(request, 'users/profile.html', context= context)
 
+
 @login_required(login_url = '/accounts/login/')
 def add_referral_credits(request, referral_code):
     logged_user = request.user._wrapped if hasattr(request.user,'_wrapped') else request.user
     users.functions.add_referral_credits(logged_user, referral_code=referral_code)
     return HttpResponseRedirect('/user/profile/info')
-    
+
+
 @login_required(login_url = '/accounts/login/')    
 def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>md5_hash(admin_email)
     can_add = users.functions.validate_group_add_url_slug(group_id, hash_) # checks if link is validated and with right credentials
@@ -47,13 +49,16 @@ def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>m
         return HttpResponse("<h1>You might be already present in Group</h1>")
     return HttpResponse("<h1>Link Invalidate</h1>")
 
+
 @login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):
     return HttpResponseRedirect('/user/refer/code=' + str(referral_code))
 
+
 @login_required(login_url = '/accounts/login/')
 def get_feedback(request):
     return render(request,'users/feedback.html')
+
 
 def register_feedback(request):
     fbdata = dict(request.POST)
