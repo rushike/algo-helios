@@ -20,18 +20,23 @@ def get_all_products_in_plan(plan_id:Plan):
     etc = PlanProductMap.objects.filter(plan_id = plan_id).values('product_id')
     return Product.objects.filter(id__in = etc)
 
+def get_all_products_in_plans(plans): 
+    if not isinstance(plans, Iterable): return get_product_family_of_products([plans])
+    if len(plans) != 0 and type(plans[0]) == Product:
+        plans = [plan.id for plan in plans]
+    etc = PlanProductMap.objects.filter(plan_id__in = plans).values('product_id')
+    return Product.objects.filter(id__in = etc)
+
 def get_product_family_of_products(products : list):
     if not isinstance(products, Iterable): return get_product_family_of_products([products])
-    if len(products) != 0:
-        if type(products[0]) == Product:
+    if len(products) != 0 and type(products[0]) == Product:
             products = [product.id for product in products]
     prod_fam = Product.objects.filter(id__in = products).values('product_family_id')
     return ProductFamily.objects.filter(id__in = prod_fam)
 
 def get_plan_type_of_plans(plans): 
     if not isinstance(plans, Iterable) : return get_plan_type_of_plans([plans])
-    if len(plans) != 0:
-        if type(plans[0]) == Plan:
+    if len(plans) != 0 and type(plans[0]) == Plan:
             plans = [plan.id for plan in plans]
 
     plan_typ = Plan.objects.filter(id__in = plans).values('plan_type_id')

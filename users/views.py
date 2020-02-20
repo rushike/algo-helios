@@ -11,14 +11,8 @@ def profile_page(request):
     iplans, gplans = users.functions.get_user_subs_plans(request.user.id) # return objects of type : Subscriptions
     referral_link = request.build_absolute_uri(users.functions.generate_referral_user_add_link(request.user))
     if_referred = users.functions.if_referred(request.user)
-    # all_plans = subscriptions.functions.get_all_active_plans()
     iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"))
     gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"))
-    premium_plans = subscriptions.functions.get_all_plans_xxx_type(plan_type="Premium")
-    individual_plans = subscriptions.functions.get_all_plans_xxx_group(group_type="individual")
-    group_plans = subscriptions.functions.get_all_plans_xxx_group(group_type="individual", exclude = True)
-    # unsubscribed_iplans = individual_plans.difference(iplans_objs).intersection(premium_plans)
-    # unsubscribed_gplans = group_plans.difference(gplans_objs).intersection(premium_plans)
     iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs)
     gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs)
     iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in iplans_objs]

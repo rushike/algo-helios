@@ -54,6 +54,7 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
     return False
 
 def get_user_subs_plans(user):
+    user = user._wrapped if hasattr(user,'_wrapped') else user
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     now = datetime.datetime.now(pytz.timezone('UTC'))
     iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
@@ -73,12 +74,13 @@ def get_user_subs_plans(user):
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
+    user = user._wrapped if hasattr(user,'_wrapped') else user
     iplan, gplan = get_user_subs_plans(user)
-    iproducts = PlanProductMap.objects.filter(plan_id__in = iplan)
-    gproducts = PlanProductMap.objects.filter(plan_id__in = gplan)
-    ig_products = list(iproducts)
-    ig_products.extend(gproducts)
-    return ig_products
+    plans = list(iplan.values('plan_id'))
+    plans.extend(gplan.values('plan_id'))
+    plans = [plan['plan_id'] for plan in plans]
+    products = subscriptions.functions.get_all_products_in_plans(plans)
+    return products
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)

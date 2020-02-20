@@ -9,9 +9,7 @@ def define(val=None):
 @register.filter(name='_replace')
 def _replace(val=None, args = " "):
   args = args.split("??")
-  ini = args[0]
-  aft = args[1]
-  return val.replace(ini, aft)
+  return val.replace(args[0], args[1])
 
 @register.filter(name='_split')
 def _split(val="None", args = " "):

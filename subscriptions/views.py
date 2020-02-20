@@ -4,6 +4,7 @@ from django.db.models import query
 from django.contrib.auth.decorators import login_required
 import datetime, pytz, re
 import users.functions 
+from helios.settings import EMAIL_HOST_USER
 import subscriptions.functions 
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 
@@ -20,7 +21,7 @@ def neft_details(request):
     POST = dict(request.POST.lists())
     if not POST: 
         POST = request.session.get('order_details_post')
-        # if 'order_details_post' in request.session: del request.session['order_details_post']
+        if 'order_details_post' in request.session: del request.session['order_details_post']
     plan = subscriptions.functions.get_plan(POST['plan_type'], POST['plan_name'], POST['group_type'])
     POST["amount"] = plan.price_per_month if POST['period'].lower() == 'monthly' else plan.price_per_year
 
@@ -33,7 +34,7 @@ def send_neft_details(request):
     post = dict(request.POST.lists())
     payment_ref = post['payment-ref'][0]   
     if 'order_details_post' in request.session: del request.session['order_details_post']
-    recepient = ["rushike.ab1@gmail.com"]
+    recepient = [EMAIL_HOST_USER]
     subject = "Get the plan"
     mail_body  = "'Name : " + request.user.first_name + " " + request.user.last_name + "\n" +\
                 "Email : " + request.user.email+ "\n" +\
@@ -77,7 +78,6 @@ def secure_order_details(request):
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
     request.session['order_details_post'] = POST
-    # raise EnvironmentError
     return render(request, 'subscriptions/neft_details.html', context=POST)
 
 
