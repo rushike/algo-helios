@@ -8,5 +8,5 @@ sudo sed -i "s/HELIOS_POSTGRES_USER/${HELIOS_POSTGRES_USER}/" /var/www/algonauts
 sudo sed -i "s/HELIOS_POSTGRES_PASSWORD/${HELIOS_POSTGRES_PASSWORD}/" /var/www/algonauts.in/helios/helios/settings/common.py
 sudo sed -i "s/HELIOS_POSTGRES_HOST/${HELIOS_POSTGRES_HOST}/" /var/www/algonauts.in/helios/helios/settings/common.py
 sudo /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py migrate
-sudo /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py loaddata init_data.json
+sudo /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py loaddata /var/www/algonauts.in/helios/init_data.json
 sudo service apache2 restart
