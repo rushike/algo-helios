@@ -1,6 +1,7 @@
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral, UserFeedback
 from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
+from allauth.account.admin import EmailAddress
 import pytz, datetime
 from hashlib import md5
 import subscriptions.functions
@@ -10,6 +11,14 @@ def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(sel
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
     return mapper
+
+def user_is_verified(user):
+    user = user._wrapped if hasattr(user,'_wrapped') else user
+    if type(user) == AlgonautsUser:
+        user = user.email
+    if type(user) == int:
+        user = AlgonautsUser.objects.get(id = user).email
+    return EmailAddress.objects.get(email = user).verified
 
 def get_all_standard_groups():
     """
@@ -45,6 +54,7 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
     return False
 
 def get_user_subs_plans(user):
+    user = user._wrapped if hasattr(user,'_wrapped') else user
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     now = datetime.datetime.now(pytz.timezone('UTC'))
     iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
@@ -64,12 +74,13 @@ def get_user_subs_plans(user):
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
+    user = user._wrapped if hasattr(user,'_wrapped') else user
     iplan, gplan = get_user_subs_plans(user)
-    iproducts = PlanProductMap.objects.filter(plan_id__in = iplan)
-    gproducts = PlanProductMap.objects.filter(plan_id__in = gplan)
-    ig_products = list(iproducts)
-    ig_products.extend(gproducts)
-    return ig_products
+    plans = list(iplan.values('plan_id'))
+    plans.extend(gplan.values('plan_id'))
+    plans = [plan['plan_id'] for plan in plans]
+    products = subscriptions.functions.get_all_products_in_plans(plans)
+    return products
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -109,11 +120,11 @@ def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
     return ref
 
-def add_feedback(user, product, message):
+def add_feedback(user, subject, product, message):
     recepient = [user.email, EMAIL_HOST_USER]
-    subject = product + "Feedback"
+    subject = subject + " for " + product
     message = "Thank You We have received your Feedback \n" + message
     subscriptions.functions.send_email(user.email, recepient, subject, message)
-    UserFeedback.objects.create(email=user, category_name = product, feedback_message=message).save()
+    UserFeedback.objects.create(email=user, subject = subject, category_name = product, feedback_message=message).save()
 
 

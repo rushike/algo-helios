@@ -1,0 +1,35 @@
+[
+    {"model": "sites.site", "pk": 1, "fields": 
+        {"domain": "https://localhost:8000", "name": "https://localhost:8000"}
+    }, 
+    {"model": "users.algonautsuser", "pk": 1, "fields": 
+        {"password": "pbkdf2_sha256$180000$kLz0WBCzTcsL$FH3/CIdIA0WAyxeNJQTf97frCvyIz0sVZl7uh32lgGM=", "first_name": "", "last_name": "", "email": "admin@gmail.com", "contact_no": "", "is_staff": true, "is_superuser": true, "is_active": true, "last_login": "2020-02-18T12:02:31.196Z", "date_joined": "2020-02-18T11:56:13.702Z", "algo_credits": 0, "referral_code": "98qm7B9n", "groups": [], "user_permissions": []}
+    },
+    {"model": "users.algonautsuser", "pk": 11, "fields": 
+        {"password": "pbkdf2_sha256$180000$Uwrog0f1ejlP$tTxT5wN8F8jdZ6H0cw9hOIgUZqLRC1169fqkEFWkfGs=", "first_name": "", "last_name": "", "email": "admin@algonauts.in", "contact_no": "", "is_staff": true, "is_superuser": true, "is_active": true, "last_login": "2020-02-20T08:31:13.383Z", "date_joined": "2020-02-20T08:31:13.480Z", "algo_credits": 0, "referral_code": "bs3ru337", "groups": [], "user_permissions": []
+    }, 
+    {"model": "users.usergrouptype", "pk": 5, "fields": 
+        {"type_name": "individual", "max_members": 1, "min_members": 1, "standard_group": true, "eligible_for_trial": true}
+    }, 
+    {"model": "users.usergrouptype", "pk": 6, "fields": 
+        {"type_name": "enterprise", "max_members": 100, "min_members": 1, "standard_group": true, "eligible_for_trial": false}
+    }, 
+    {"model": "users.usergrouptype", "pk": 7, "fields": 
+        {"type_name": "start10", "max_members": 10, "min_members": 1, "standard_group": true, "eligible_for_trial": false}
+    }, 
+    {"model": "users.usergrouptype", "pk": 8, "fields": 
+        {"type_name": "Best20", "max_members": 20, "min_members": 1, "standard_group": true, "eligible_for_trial": false}
+    }, 
+    {"model": "users.usergroup", "pk": 3, "fields": 
+        {"user_group_type_id": 5, "registration_time": "2020-02-18T12:02:31.206Z", "admin": 1, "multiplier": 1}
+    }, 
+    {"model": "users.usergroupmapping", "pk": 3, "fields": 
+        {"user_group_id": 3, "user_profile_id": 1, "time_added": "2020-02-18T12:02:31.215Z", "time_removed": "2030-02-05T12:02:31.213Z", "group_admin": true}
+    }, 
+    {"model": "socialaccount.socialapp", "pk": 1, "fields": 
+        {"provider": "facebook", "name": "Facebook", "client_id": "55bee592e13a3c3631e54d9294bb9734", "secret": "55bee592e13a3c3631e54d9294bb9734", "key": "", "sites": [1]}
+    }, 
+    {"model": "socialaccount.socialapp", "pk": 2, "fields": 
+        {"provider": "google", "name": "Google", "client_id": "1058548349981-hsha8q8liui5b9q96kqjopub3b794jti.apps.googleusercontent.com", "secret": "ZJNlLHUr0FzCksqukrBu_Z0F", "key": "", "sites": [1]}
+    }
+]

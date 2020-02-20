@@ -237,6 +237,7 @@ class UserFeedback(models.Model):
 	email = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE)
 	feedback_message = models.CharField(max_length=1024)
 	category_name = models.CharField(max_length=20)
+	subject = models.CharField(max_length= 128)
 
 	def __str__(self):
 		return self.category_name

@@ -1,6 +1,6 @@
 {% extends 'subscriptions/base.html' %}
 {% load define_action %}
-{% load split %}
+
 <!-- {% load static %} -->
 
 {% block css_imports %}
@@ -9,6 +9,10 @@
 {% block js_imports %}	
 	<!-- <script src="{% static '/js/plans.js' %}" type="text/javascript"></script> -->
 {% endblock %}
+
+<style>
+
+</style>
 
 {% block subscriptions_content %}
 
@@ -148,9 +152,9 @@
 										<div class="col-md-5 offset-sm-1">     
 											<form method = "POST" action="/subscriptions/order-details"> 
 												{% csrf_token %}        
-												<div class="card rounded shadow mt-3 rounded  border-light ">
+												<div class="card rounded shadow mt-3 rounded  border-light" style="min-height: 33rem;">
 													{% if plan_type.1|upper == "PREMIUM" %}
-														<span class = "star-premium text-right"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-2x"><br><br></span></span></span>
+														<span class = "star-premium text-right"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white-fr"><br><br></span></span></span>
 													{% else %}
 														<span class = "star-premium text-right"><span class=""><span class=""><br><br></span></span></span>
 													{% endif %}
@@ -184,6 +188,19 @@
 																				{{plan.0.0.product_name | _split:'1??#' }}
 																			</label>
 																		</div>
+																		<script>
+																			$(document).ready(()=>{
+																				$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				}, function(){
+																					console.log("{{group_type.1}}-{{plan.0.0.product_name}}")
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				});
+																				$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				});
+																			});
+																		</script>
 																{% elif plan_type.1.products_count == 0 %} 
 																		{% for product in plan.0 %}
 																			<div class="form-check list-group-item pl-5">
@@ -192,6 +209,19 @@
 																					{{product.product_name | _split:"1??#"}}
 																				</label>
 																			</div>
+																			<script>
+																				$(document).ready(()=>{
+																					$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
+																						$('input[name="planname"]').val("{{product.product_name}}");
+																					}, function(){
+																						console.log("{{group_type.1}}-{{product.product_name}}")
+																						$('input[name="planname"]').val("{{product.product_name}}");
+																					});
+																					$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
+																						$('input[name="planname"]').val("{{product.product_name}}");
+																					});
+																				});
+																			</script>
 																		{% endfor %}
 																{% endif %}
 															{% endfor %}
@@ -212,6 +242,7 @@
 												</div>
 												<input class="periodcode" name = "period" value=""hidden></input>
 												<input class="plancode" name= "plancode" value="" hidden></input>
+												<input class="planname" name= "planname" value="" hidden></input>
 												<input class="groupcode" name= "groupcode" value="" hidden required></input>
 												
 											</form>
@@ -251,38 +282,63 @@
 			
 		</div>
 		<div class="tab-pane" id="services" role="tabpanel">
-			<div class="row">
+			<div class="row mt-1 mt-1">
 				<div class="col-md-12">
-					<div class="x-large text-dark card">
-						Automation :
+					<div class="card">
+						<div class="x-large dark-blue card-header rounded">
+							Automation :
+						</div>
+						<div class="card-body">
+
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-md-12">
-					<div class="x-large text-dark card">
-						Backtesting :
+					<div class="card">
+						<div class="x-large dark-blue card-header rounded">
+							Backtesting :
+						</div>
+						<div class="card-body">
+
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-md-12">
-					<div class="x-large text-dark card">
-						End to end Algo Development :
+					<div class="card">
+						<div class="x-large dark-blue card-header rounded">
+							Algorithm Development :
+						</div>
+						<div class="card-body">
+
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-md-12">
-					<div class="x-large text-dark card">
-						Data Analytics :
+					<div class="card">
+						<div class="x-large dark-blue card-header rounded">
+							Data Analytics :
+						</div>
+						<div class="card-body">
+
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row mt-4">
 				<div class="col-md-12">
-					<div class="x-large text-dark card">
-						Custom Strategies :
+					<div class="card">
+						<div class="x-large dark-blue card-header rounded">
+							Custom Strategies :
+						</div>
+						<div class="card-body">
+
+						</div>
 					</div>
 				</div>
 			</div>
@@ -310,13 +366,13 @@
 				$("#plans").addClass("active")
 				$("#ah-center").addClass("xx-large border-primary border-bottom")
 				$("#ah-center").removeClass("x-large")
-				// $("#ah-center-a").addClass("font-weight-bold text-primary")
+				$("#ah-center-a").addClass("font-weight-bold dark-blue")
 				$("#ah-center-a").removeClass("link-unstyled text-dark")
 				$("#services").removeClass("active")
 				$("#ah-right").removeClass("xx-large border-primary border-bottom")
 				$("#ah-right").addClass("x-large")
-				$("#ah-right-a").addClass("link-unstyled text-dark")
-				// $("#ah-right-a").removeClass("font-weight-bold text-primary")
+				$("#ah-right-a").addClass("link-unstyled text-dark ")
+				$("#ah-right-a").removeClass("font-weight-bold dark_blue")
 
 			});
 
@@ -325,12 +381,12 @@
 				$("#ah-center").removeClass("xx-large border-primary border-bottom")
 				$("#ah-center").addClass("x-large")
 				$("#ah-center-a").addClass("link-unstyled text-dark")
-				// $("#ah-center-a").removeClass("font-weight-bold text-primary")
+				$("#ah-center-a").removeClass("font-weight-bold dark_blue")
 				$("#services").addClass("active")
 				$("#ah-right").addClass("xx-large border-primary border-bottom")
 				$("#ah-right").removeClass("x-large")
 				
-				// $("#ah-right-a").addClass("font-weight-bold text-primary")
+				$("#ah-right-a").addClass("font-weight-bold dark_blue")
 				$("#ah-right-a").removeClass("link-unstyled text-dark")
 			});
 			// var a = document.getElementById("#ah-center-a")

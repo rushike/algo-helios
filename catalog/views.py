@@ -26,6 +26,7 @@ def index_view(request):
                 }}
     # if "REDIRECT_URL" in request.sessions:
     URL = request.session.get("REDIRECT_URL")
+    if 'REDIRECT_URL' in request.session: del request.session['REDIRECT_URL']
     if URL : 
        return HttpResponseRedirect(URL)
     return render(request, "index.html", context=context)

@@ -3,6 +3,7 @@
 
 {% block css_imports %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -15,6 +16,7 @@
         font-family: 'Lato', sans-serif !important;
         font-size:1.3vmax;
     }
+    
 
 </style>
 
@@ -44,6 +46,7 @@
     </div>
     <div class="row container-fluid" style="padding-top:2%;">
         <div data-aos="fade-up" data-aos-duration="1000" class="col-md-6">
+            
             <ul>
 
                 <li>Develop and provide algorithms for trading financial markets using Technical Analysis</li>
@@ -68,7 +71,7 @@
 
 
 <div class="container-fluid hwd">
-    <div class="container hwdcontainer" id="howwedocont">
+    <div class="container-fluid hwdcontainer" id="howwedocont">
         <div class="hwdheading">
             <p data-aos="fade-up">How We Do It ?</p>
             <hr data-aos="fade-up" class="classichr">
@@ -244,13 +247,13 @@
 
     <div data-aos="fade-up" data-aos-duration="1000" class="row productsb">
         <div class="col-md-6 productsbox">
-            <div class="row content">
-                <div class="col-md-8">
-                    <h3>Mercury</h3>
-                    <p>Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
+            <div class="row content ">
+                <div class="col-md-8 ">
+                    <div class="x-large light dark-gray">Mercury</div>
+                    <p class="content-para">Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
                         live market</p>
                     <div class="knowmore">
-                        <a href="{% url 'products' %}#callsgen" title="Click to know more">
+                        <a href="{% url 'plans_page' %}" title="Click to know more">
                             <p>Know More&nbsp;&nbsp;</p>
                         </a>
                     </div>
@@ -266,18 +269,20 @@
         <div class="col-md-6 productsbox">
             <div class="row content">
                 <div class="col-md-8">
-                    <h3>Services</h3>
+                    <div class="x-large light dark-gray" >Services</div>
                     <!-- <p>Builds, manages and trades portfolios in real-time using the combination best suited to capital
                         invested</p> -->
-                    <ul class="list-group list-group-flush ml-4">
-                        <li class="productsbox-li">Automation</li>
-                        <li class="productsbox-li">Backtesting</li>
-                        <li class="productsbox-li">End to end Algo Development</li>
-                        <li class="productsbox-li">Data Analytics</li>
-                        <li class="productsbox-li">Custom Strategies</li>
+                        <p>
+                        <ul class="content-para mt-4 ml-4 light-gray">
+                        <li >Automation</li>
+                        <li >Backtesting</li>
+                        <li >Algo Development</li>
+                        <li >Data Analytics</li>
+                        <li >Custom Strategies</li>
                         </ul>
-                    <div class="knowmore">
-                        <a href="{% url 'products' %}#portfolio" title="Click to know more">
+                        </p>
+                    <div class="knowmore mt-5 mb-2">
+                        <a href="{% url 'plans_page' %}" title="Click to know more">
                             <p>Know More&nbsp;&nbsp;</p>
                         </a>
                     </div>

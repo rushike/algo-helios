@@ -9,7 +9,6 @@
 }
 
 .content-heading{
-    font-weight: 700;
     font-size: large;
 }
 
@@ -18,8 +17,43 @@
 }
 
 .content-para{
-    font-family: "Lato, sans-serif";
-    font-weight: 400;
     font-size: 20px;   
 }
+.content-para-sm{
+    font-size: 19px;   
+}
 
+.disabled-look{
+    color: rgb(102, 102, 102);
+}
+
+.dark-blue{
+    color : #23527c
+}
+
+.light-blue{
+    color : #7DDCFF;
+}
+.background-light-blue{
+    background-color : #7DDCFF;
+}
+
+.light-border-bottom{
+    border-bottom: #7DDCFF;
+    border-width: thick;
+}
+
+.border-solid{
+    border-width: thick;
+}
+.white-fr{
+    color: white;
+}
+
+.light-gray{
+    color : #848484
+}
+
+.dark-gray{
+    color:#515151;
+}
