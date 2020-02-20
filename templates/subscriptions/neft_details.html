@@ -1,0 +1,169 @@
+{% extends 'subscriptions/base.html' %}
+{% load define_action %}
+{% block subscriptions_content %}
+<br>
+<br>
+
+    <!-- 
+        Company Name : Algonauts Technologies Private Limited
+        Bank Name    : Kotak Mahindra Bank, Mulund East
+        IFSC Code    : KKBK0001432
+        Account No   : 3713222189
+        Account Type : Current Account  
+
+     -->
+
+<div class="container mt-5">
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-7 card ">
+            
+                <div class="row justify-content-center card-header">
+                    <div class="x-large text-center">
+                        <span class="text-center">
+                            Order Details
+                        </span>
+                        <span class="x-large text-right">
+                            {{details}}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row card-title">
+                        <div class="col-md-6 font-weight-bold content-para">
+                            Plan
+                        </div>
+                        <div class="col-md-6 content-para ">
+                            {{order_details.plan_name | _replace:"#??-"}}
+                        </div>
+                    </div>
+                    
+                    <div class="row card-title">
+                        <div class="col-md-6 font-weight-bold content-para">
+                            Plan Type
+                        </div>
+                        <div class="col-md-6 content-para ">
+                            {{order_details.plan_type | _replace:"#??-" | title}}
+                        </div>
+                    </div>
+                    
+                    <div class="row card-title">
+                        <div class="col-md-6 font-weight-bold content-para">
+                           Period
+                        </div>
+                        <div class="col-md-6 content-para ">
+                            {{order_details.period | title}}
+                        </div>
+                    </div>
+                    
+                    <div class="row card-title">
+                        <div class="col-md-6 font-weight-bold content-para">
+                            Amount
+                        </div>
+                        <div class="col-md-6 content-para ">
+                            {{order_details.amount }}
+                        </div>
+                    </div>
+                    
+                </div>
+            
+        </div>
+    </div>
+
+    <div class="row  justify-content-center ">
+        <div class="col-md-7 card rounded">
+            <div class="row card-header  justify-content-center">
+                <div class="col-md-12 x-large text-center"> NEFT DETAILS </div>
+            </div>
+            <div class="row p-2 border-bottom">
+                <div class="col-md-4 content-heading" >
+                    <span class="font-weight-bold font-weight-bold">Company Name</span>
+                </div>
+                <div class="col-md-8 ">
+                    <span class="dark-blue content-heading">Algonauts Technologies Private Limited</span>
+                </div>
+            </div>
+            <div class="row p-2 border-bottom ">
+                <div class="col-md-4">
+                    <span class="font-weight-bold content-heading">Address</span>
+                </div>
+                <div class="col-md-8 content-para">
+                    <span class="">
+                        20, 2nd Floor, SP-TBI,
+                        RPI Building, Next to Bhavans College Main Gate,
+                        Munshi Nagar, Andheri West, Mumbai 400053
+                    </span>
+                </div>
+            </div>
+            <div class="row p-2 border-bottom">
+                <div class="col-md-4">
+                    <span class="font-weight-bold content-heading">Bank Name</span>
+                </div>
+                <div class="col-md-8 content-para">
+                    <span class="">Kotak Mahindra Bank, Mulund East </span>
+                </div>
+            </div>
+            <div class="row p-2 border-bottom">
+                <div class="col-md-4">
+                    <span class="font-weight-bold content-heading">IFSC Code</span>
+                </div>
+                <div class="col-md-8 content-para">
+                    <span class="">KKBK0001432</span>
+                </div>
+            </div>
+            <div class="row p-2 border-bottom">
+                <div class="col-md-4">
+                    <span class="font-weight-bold content-heading">Account Number</span>
+                </div>
+                <div class="col-md-8 content-para">
+                    <span class="">3713222189</span>
+                </div>
+            </div>
+            <div class="row p-2 border-bottom">
+                <div class="col-md-4">
+                    <span class="font-weight-bold content-heading">Account Type</span>
+                </div>
+                <div class="col-md-8 content-para">
+                    <span class="">Current Account</span>
+                </div>
+            </div>
+        </div>
+    
+    
+    </div>
+
+    <div class="row  mt-5 justify-content-center">
+        <div class="col-md-7 card justify-content-center">
+            <div class="row justify-content-center">
+                <div class="col-md-12 content-para ">
+                    Subscribe to above plan by paying amount and sending reference to our sales team 
+                    <b >sales@algonauts.in</b>
+                </div>
+                <div class="row mt-3 justify-content-center">
+                    
+                    <div class="col-md-12">
+                        <li class="list-group-item ">
+                            <form  method="POST" action="{% url 'send_neft_details' %}" class="form-inline">
+                                {% csrf_token %}
+                                <div class="form-group text-center justify-content-center">
+                                    <label for=""><b>Payment Reference Code</b></label>
+                                    <input type="text" id=""  class="mt-1 form-control mx-sm-3" name = 'payment-ref' aria-describedby="passwordHelpInline" placeholder="Reference Code">
+                                    <button class="btn btn-dark btn-sm mt-1" type="submit">Send Mail</button>
+                                </div>
+                                </form>
+                        </li>
+                    </div>
+                </div>
+                    
+            </div>
+        </div>    
+                
+    </div>
+
+    
+
+</div>
+    
+<br>
+<br>
+
+{% endblock %}

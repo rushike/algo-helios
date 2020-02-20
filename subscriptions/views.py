@@ -13,19 +13,47 @@ def plans(request):
     if 'order_details_post' in request.session: del request.session['order_details_post']
     alert = POST['alert']  if POST else False
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
-    # raise EnvironmentError
     return render(request, 'subscriptions/plans.html', context=context)
+
+@login_required(login_url='/accounts/login/')
+def neft_details(request):
+    POST = dict(request.POST.lists())
+    if not POST: 
+        POST = request.session.get('order_details_post')
+        # if 'order_details_post' in request.session: del request.session['order_details_post']
+    plan = subscriptions.functions.get_plan(POST['plan_type'], POST['plan_name'], POST['group_type'])
+    POST["amount"] = plan.price_per_month if POST['period'].lower() == 'monthly' else plan.price_per_year
+
+    request.session['order_details_post'] = POST
+    context = {'order_details' : POST, }
+    return render(request, 'subscriptions/neft_details.html', context=context)
+
+def send_neft_details(request):
+    POST = request.session.get('order_details_post')
+    post = dict(request.POST.lists())
+    payment_ref = post['payment-ref'][0]   
+    if 'order_details_post' in request.session: del request.session['order_details_post']
+    recepient = ["rushike.ab1@gmail.com"]
+    subject = "Get the plan"
+    mail_body  = "'Name : " + request.user.first_name + " " + request.user.last_name + "\n" +\
+                "Email : " + request.user.email+ "\n" +\
+                "Plan Name : " + POST['plan_name'] + " Period :  " + POST['period'].title() +"\n" +\
+                "Billing Amount : " + str(POST['amount']) +"\n" +\
+                "Payment Reference : '" + str(payment_ref)
+
+    subscriptions.functions.send_email(request.user.email, recepient, subject, mail_body)
+    return HttpResponseRedirect(redirect_to=  "/user/profile/info")
 
 def order_details(request):
     subs_attr1 = dict(request.GET.lists())
     POST = dict(request.POST.lists())
     group_type = POST['groupcode'][0]
     plan_type = POST['plancode'][0]
-    plan_name = plan_type
+    plan_name = POST['planname'][0]
     if 'plan_name' in POST:
         plan_name = POST['plan_name'][0]
     period = POST['period'][0]
-
+    
     POST = {
         'group_type' : group_type,
         'plan_type' : plan_type,
@@ -49,7 +77,8 @@ def secure_order_details(request):
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
     request.session['order_details_post'] = POST
-    return render(request, 'subscriptions/order_details.html', context=POST)
+    # raise EnvironmentError
+    return render(request, 'subscriptions/neft_details.html', context=POST)
 
 
 
@@ -57,7 +86,8 @@ def secure_order_details(request):
 def subscribe(request): 
     subs_attr = dict(request.POST.lists())
     POST = request.session.get('order_details_post')
-    if not POST : return 
+
+    if not POST : return HttpResponseRedirect(redirect_to='/subscriptions/plans')
 
     if 'order_details_post' in request.session: del request.session['order_details_post']
     group_type = POST['group_type']

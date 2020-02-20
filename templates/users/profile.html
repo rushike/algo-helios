@@ -1,8 +1,9 @@
 {% extends "users/base.html" %}
-
+{% load define_action %}
 {% block profile_content %}
 
 <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
+<link rel="stylesheet" type="text/css" href="/static/css/style.css">
 <div class="container mb-5">
 <br>
 <br>
@@ -10,7 +11,7 @@
 <br>
 <br>
 <!-- <h3>DashBoard</h3> -->
-{% if not user.is_verified %}
+{% if not is_verified %}
 	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
 	<strong>Check Your Email ! Click On Verify Me</strong>
 	<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
@@ -26,12 +27,12 @@
     <li class="nav-item">
       <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
 	</li>
-	<li class="nav-item">
+	<!-- <li class="nav-item">
 		<a class="nav-link text-dark" id="MyOrders-tab" data-toggle="tab" href="#MyOrders" role="tab" aria-controls="MyOrders" aria-selected="false">My Orders</a>
-	</li>
+	</li> -->
   </ul>
 
-  <div class="tab-content" id="myTabContent">
+  <div class="tab-content" id="myTabContent" style="min-height: 30rem;">
     <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 		<div class="row">
 			<div class="col-md-12">
@@ -75,61 +76,87 @@
     <!-- ------------------------------------------------------------------------------------------ -->
     
     <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
-	  
-		<h3 class="mt-5">Personal Plans</h3>
+		<div class="container mt-5">
+		<!-- <h3 class="mt-5">Personal Plans</h3> -->
       		{% if iplans %}
-      			<div class="container mt-5">
           			<div class="row">
           				{% for iplan in iplans %}
-              				<div class="mb-3 col-md-4">
+              				<div class="mb-3 col-md-5 offset-md-1">
 								
-                				<div class="card shadow-sm">     
+                				<div class="card h-100 border-dark shadow-sm">     
                   					<div class="card-header">
-                    					<h4 class="my-0 font-weight-normal">{{iplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{iplan.subscription_type_id__type_name}}</span><br></h4>
+                    					<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 									</div>
 									  
-                  					<div class="card-body">
-											{% if iplan.subscription_type_id__type_name == "Trial" %}
+                  					<div class="card-body flex-column">
+											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
 											<p class="lead"> Subscribe With the following Plan</p>
-											<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-										  {% elif iplan.subscription_type_id__type_name == "Monthly" %}
-											<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{iplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+											<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+										  {% elif iplan.0.subscription_type_id__type_name == "Monthly" %}
+											<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
 										  {% else %}
-											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
 										  {% endif %}
 											<ul class="list-group mb-4">
-											  <li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ iplan.subscription_start }}</li>
-											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.subscription_end }}</li>
+											  <li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ iplan.0.subscription_start }}</li>
+											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.0.subscription_end }}</li>
 											</ul>
-								  
-											{% if iplan.subscription_type_id__type_name == "Trial" %}
-											  <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-											{% else %}
-											  <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-											{% endif %}
-                  					</div>
+									</div>
+									<div class="mt-1 p-4">
+										{% if iplan.0.subscription_type_id__type_name == "Trial" %}
+											<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
+										{% else %}
+											<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
+										{% endif %}
+									</div>
+											
 								</div>
 								
               				</div>
           				{% endfor %}
 		  			</div>
-      			</div>
+      			
 			{% else %}
-				<h6>No Personal Plans Yet</h6>
+				<!-- <h6>No Personal Plans Yet</h6> -->
 			{% endif %}
+			<!-- <form action="/subscriptions/order-details">
+				<div class="row">
+					{% for uniplan in unsubscribed_iplans %}
+						<div class="mb-3 col-md-4">
+							<div class="card shadow-sm disabled-look" style="color:rgb(102, 102, 102);" style="height: auto;">     
+							<div class="card-header">
+								<h4 class="my-0 font-weight-normal disabled-look" style="color:rgb(102, 102, 102);">{{uniplan.plan_name  | _replace:"#??-"}}<br></h4>
+							</div>
+							<div class="card-body disabled-look" style="color:rgb(102, 102, 102);">
+								
+								<p class="lead disabled-look" style="color:rgb(102, 102, 102);"> Subscribe With the following Plan</p>
+								<p class="card-title pricing-card-title text-weight-bold disabled-look" style="color:rgb(102, 102, 102);"> <b> Monthly Price : ₹</b> {{uniplan.price_per_month}} <small class="text-muted">/ mo</small></p>
+								<p class="card-title pricing-card-title disabled-look" style="color:rgb(102, 102, 102);"><b>Yearly Price : ₹ </b>{{uniplan.price_per_year}}<small class="text-muted">/ yr</small></p>
+								
+								<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
+								
+								
+							</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</form> -->
+		</div>
 
       <!-- ------------------------------- -->
-      <h3>Group Plans</h3>
       
-      {% if gplans %}
-      <div class="container mt-5">
-          <div class="row">
+      	<div class="container mt-5">
+		
+		{% if gplans %}
+		<h3>Group Plans</h3>	
+			<div class="row">
 		  {% for gplan in gplans %}
               <div class="mb-3 col-md-4">
-                <div class="card shadow-sm">     
+                <div class="card border-dark shadow-sm">     
                   <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
+                    <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name | _replace:"#??-"}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
                   </div>
                   <div class="card-body">
                     {% if gplan.subscription_type_id__type_name == "Trial" %}
@@ -155,20 +182,51 @@
                   </div>
                 </div>
               </div>
-          {% endfor %}
+		  {% endfor %}
+
           </div>
       {% else %}
-        <h6>No Group Plans Yet</h6>
+        <!-- <h6>No Group Plans Yet</h6> -->
 	
-		{% endif %}  
+		{% endif %}
+		<!-- <form method="POST" action="/subscriptions/order-details">
+			<div class="row">
+				{% for ungplan in unsubscribed_gplans %}
+					<div class="mb-3 col-md-4">
+						<div class="card shadow-sm disabled-look" style="color:rgb(102, 102, 102);" style="height: auto;">     
+						<div class="card-header">
+							<h4 class="my-0 font-weight-normal disabled-look" style="color:rgb(102, 102, 102);">{{ungplan.plan_name  | _replace:"#??-"}}<br></h4>
+						</div>
+						<div class="card-body disabled-look" style="color:rgb(102, 102, 102);">
+							
+							<p class="lead disabled-look" style="color:rgb(102, 102, 102);"> Subscribe With the following Plan</p>
+							<p class="card-title pricing-card-title text-weight-bold disabled-look" style="color:rgb(102, 102, 102);"> <b> Monthly Price : ₹</b> {{ungplan.price_per_month}} <small class="text-muted">/ mo</small></p>
+							<p class="card-title pricing-card-title disabled-look" style="color:rgb(102, 102, 102);"><b>Yearly Price : ₹ </b>{{ungplan.price_per_year}}<small class="text-muted">/ yr</small></p>
+							
+							<button type="button" class="btn btn-block btn-outline-primary" >Subscribe</button>
+							
+							
+						</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</form> -->
+		{% if not gplan and not iplans %}
+			<div>
+				<div class="alert alert-secondary" role="alert">
+					<h4 class="alert-heading">Not Subscribed to any of plans</h4>
+					<p class="content-para-sm">To know more about our products or plans and subscribe visit &nbsp;&nbsp;<a href="/subscriptions/plans" class="alert-link content-heading">Plans</a>.</p>
+					<p class="content-para-sm">Our you can contact to our sales department at &nbsp;&nbsp; <a href="mailto:sales@algonauts.in?subject=Want to Know about product features&body=" class="alert-link content-heading">sales@algonauts.in</a>.</p>
+
+					<hr>
+				</div>
+			</div>
+		{% endif %}
+
 		</div> <!-- Plan tab ends-->
 		<!-- ------------------------------------------------------------------------------------------ -->
 
-	  <!-- <div class="tab-pane fade mt-5" id="MyOrders" role="tabpanel" aria-labelledby="MyOrders-tab">
-			<h3>Invoice</h3><hr>
-			
-
-	  </div> -->
 
 	</div> <!-- Tab Content ends -->
   </div> <!-- Container ends -->

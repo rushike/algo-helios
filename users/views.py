@@ -4,19 +4,45 @@ from django.contrib.auth.decorators import login_required
 from django.dispatch import receiver
 from allauth.account.signals import user_signed_up
 import users
-import users.functions 
+import users.functions, subscriptions.functions
 
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
-    iplans, gplans = users.functions.get_user_subs_plans(request.user.id)    
+    iplans, gplans = users.functions.get_user_subs_plans(request.user.id) # return objects of type : Subscriptions
     referral_link = request.build_absolute_uri(users.functions.generate_referral_user_add_link(request.user))
     if_referred = users.functions.if_referred(request.user)
+    # all_plans = subscriptions.functions.get_all_active_plans()
+    iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"))
+    gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"))
+    premium_plans = subscriptions.functions.get_all_plans_xxx_type(plan_type="Premium")
+    individual_plans = subscriptions.functions.get_all_plans_xxx_group(group_type="individual")
+    group_plans = subscriptions.functions.get_all_plans_xxx_group(group_type="individual", exclude = True)
+    # unsubscribed_iplans = individual_plans.difference(iplans_objs).intersection(premium_plans)
+    # unsubscribed_gplans = group_plans.difference(gplans_objs).intersection(premium_plans)
+    iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs)
+    gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs)
+    iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in iplans_objs]
+    iproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in iprod)[0] for iprod in iproduct_list]
+
+    gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in gplans_objs]
+    gproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in gprod)[0] for gprod in gproduct_list]
+    
+    iiplans = [[iplans[i], iplans_type[i], iproduct_family[i]] for i in range(len(iplans))]
+    ggplans = [[gplans[i], gplans_type[i], gproduct_family[i]] for i in range(len(gplans))]
     context = {
-                'iplans':iplans, 
-                'gplans' : gplans,
+                'iplans':iiplans, 
+                'gplans' : ggplans,
+                'iplan_type' : iplans_type,
+                'gplan_type' : gplans_type,
+                'iproduct_list' : iproduct_list,
+                'iproduct_family' : iproduct_family,
+                'gproduct_list' : gproduct_list,
+                'gproduct_family' : gproduct_family,
                 'referral_link' : referral_link,
                 'if_referred' : if_referred,
+                'is_verified' : users.functions.user_is_verified(request.user)
             }
+   
     return render(request, 'users/profile.html', context= context)
 
 @login_required(login_url = '/accounts/login/')
@@ -44,7 +70,9 @@ def get_feedback(request):
 
 def register_feedback(request):
     fbdata = dict(request.POST)
-    users.functions.add_feedback(request.user, fbdata['product-name'][0], fbdata['feedback-message'][0])
+
+    users.functions.add_feedback(request.user, fbdata["subject"][0], fbdata['product-name'][0], fbdata['feedback-message'][0])
+    
     return HttpResponseRedirect('/user/profile/info')
 
 

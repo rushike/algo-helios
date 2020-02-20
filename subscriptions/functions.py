@@ -1,9 +1,10 @@
 from django.core.mail import send_mass_mail, send_mail
 import threading
 import time, datetime, pytz
+from collections import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
 from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType
-from products.models import Product, ProductCategory, PlanProductMap
+from products.models import Product, ProductCategory, PlanProductMap, ProductFamily
 from helios.settings import EMAIL_HOST_USER
 import users.functions
 import jinja2
@@ -12,9 +13,30 @@ def get_all_plan_type():
     return PlanType.objects.all().order_by('type_name')
 
 def get_all_products_in_plan(plan_id:Plan):
-    plan_id = plan_id if type(plan_id) == Plan else Plan.objects.get(id = plan_id)
+    if type(plan_id) == str:
+        now = datetime.datetime.now(pytz.timezone('UTC'))
+        plan_id = Plan.objects.filter(plan_name = plan_id, entry_time__lt = now, expiry_time__gt = now).last()
+    else : plan_id = plan_id if type(plan_id) == Plan else Plan.objects.get(id = plan_id)
     etc = PlanProductMap.objects.filter(plan_id = plan_id).values('product_id')
     return Product.objects.filter(id__in = etc)
+
+def get_product_family_of_products(products : list):
+    if not isinstance(products, Iterable): return get_product_family_of_products([products])
+    if len(products) != 0:
+        if type(products[0]) == Product:
+            products = [product.id for product in products]
+    prod_fam = Product.objects.filter(id__in = products).values('product_family_id')
+    return ProductFamily.objects.filter(id__in = prod_fam)
+
+def get_plan_type_of_plans(plans): 
+    if not isinstance(plans, Iterable) : return get_plan_type_of_plans([plans])
+    if len(plans) != 0:
+        if type(plans[0]) == Plan:
+            plans = [plan.id for plan in plans]
+
+    plan_typ = Plan.objects.filter(id__in = plans).values('plan_type_id')
+    return PlanType.objects.filter(id__in = plan_typ)
+
 
 def get_group_plans():
     now = datetime.datetime.now(pytz.timezone('UTC'))
@@ -27,24 +49,38 @@ def is_group_plan(plan_id):
     x = get_group_plans().filter(id = plan_id).exists()
     return x
 
-def get_all_plans_xxx_type(plan_type:PlanType):
+def get_plan(plan_type, plan_name, group_type):
+    group_type = UserGroupType.objects.filter(type_name__iexact = group_type)
+    return Plan.objects.get(plan_name__iexact = plan_name, user_group_type_id__in = group_type)
+
+def get_all_plans_from_ids(plans_ids:list):
+    return Plan.objects.filter(id__in = plans_ids)
+
+def get_all_active_plans():
+    now = datetime.datetime.now(pytz.timezone('UTC'))
+    return Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now)
+
+def get_all_plans_xxx_type(plan_type:PlanType, exclude = False):
     try:
         if type(plan_type) == str:
-            plan_type = PlanType.objects.filter(type_name = plan_type)[0]
+            plan_type = PlanType.objects.filter(type_name__iexact = plan_type)[0]
         if type(plan_type) == int:
             plan_type = PlanType.objects.filter(id = plan_type)[0] 
     except IndexError:
         return
+    if exclude: return Plan.objects.exclude(plan_type_id = plan_type)
     return Plan.objects.filter(plan_type_id = plan_type)
 
-def get_all_plans_xxx_group(group_type:UserGroupType):
+def get_all_plans_xxx_group(group_type:UserGroupType, exclude = False):
     try:
         if type(group_type) == int:
             group_type = UserGroupType.objects.filter(id = group_type)[0]
         if type(group_type) == str:
-            group_type = UserGroupType.objects.filter(type_name = group_type)[0]
+            group_type = UserGroupType.objects.filter(type_name__iexact = group_type)[0]
     except IndexError: 
         return
+    if exclude :
+        return Plan.objects.exclude(user_group_type_id = group_type)
     return Plan.objects.filter(user_group_type_id = group_type)
 
 def get_context_for_plans(user=None):
