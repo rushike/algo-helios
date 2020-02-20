@@ -32,12 +32,6 @@ def profile_page(request):
     context = {
                 'iplans':iiplans, 
                 'gplans' : ggplans,
-                'iplan_type' : iplans_type,
-                'gplan_type' : gplans_type,
-                'iproduct_list' : iproduct_list,
-                'iproduct_family' : iproduct_family,
-                'gproduct_list' : gproduct_list,
-                'gproduct_family' : gproduct_family,
                 'referral_link' : referral_link,
                 'if_referred' : if_referred,
                 'is_verified' : users.functions.user_is_verified(request.user)
