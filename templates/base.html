@@ -1,4 +1,5 @@
 {% load static %}
+{% load define_action %}
 
 <!DOCTYPE html>
 <html>
@@ -9,7 +10,7 @@
     <meta name="google-site-verification" content="FV4auFZ7htxbNwQnweEaYCJ3C4bNcPx3R5JC2H5-gZA" />
     <title>Algonauts Technologies</title>
     <link rel="icon" href="{% static 'algonauts.png' %}" type="image/gif" sizes="16x16">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
 
     <meta name="description" content="Algonauts is an Algo Trading firm that automates the trading decisions and systems. Trading strategies built on statistical and mathematical models to generate superior returns.">
     <meta name="keywords" content="Trading,Algo,Automate,India,Market,Stock">
@@ -21,11 +22,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" >
     
     <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Lato|Patua+One|Ramabhadra|Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato|Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Arimo:700|Mukta&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Heebo&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" rel="stylesheet">
@@ -53,38 +55,11 @@
     {% endblock %}
 
     <style>
-        .fab{
-            color:white;
-            margin-left:1.5rem;
-            margin-right:1.5rem;
-        }
-        .fa-f:hover{
-            color:#3B5998;
-        }
-        .fa-t:hover{
-            color:#1DA1F2;
-        }
-        .fa-l:hover{
-            color:#0073B0;
-        }
-        .fa-q:hover{
-            color:#B92B27;
-        }
-
-        #page-contentx {
-        flex: 1 0 auto;
-        }
-
-        #sticky-footerx {
-        flex-shrink: none;
-        }
         
-        body{
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-        }
-    
+
+
+
+
 
     </style>
 </head>
@@ -93,7 +68,7 @@
 
 <mybot></mybot>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5">
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top mb-5 font-weight-bold">
     <a class="navbar-brand" href="/"></a>
     <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px" height="auto" alt="image"></a>
   
@@ -110,40 +85,59 @@
             
         {% if urls %}
             <li class="nav-item">
-                <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+                <a id="whatwedoicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
             </li>
             <li class="nav-item">
-            <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+            <a id="aboutusicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+            </li>
+            <li class="nav-item">
+            <a id="productsicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
             </li>
             <!-- <li class="nav-item">
-            <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+            <a id="pricingicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
             </li> -->
-            <li class="nav-item">
-            <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
-            </li>
         {% else %}
         <li class="nav-item">
-            <a id="whatwedoicon" class="p-2 nav-link" style="cursor: pointer;" href="/whatwedo/">What We Do?</a>
+            <a id="whatwedoicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/whatwedo/">What We Do?</a>
         </li>
         <li class="nav-item">
-        <a id="aboutusicon" class="p-2 nav-link" style="cursor: pointer;" href="/aboutus/">About Us</a>
+        <a id="aboutusicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/aboutus/">About Us</a>
         </li>
         <!-- <li class="nav-item">
-        <a id="productsicon" class="p-2 nav-link" style="cursor: pointer;" href="/products/">Products</a>
+        <a id="productsicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/products/">Products</a>
         </li> -->
         <li class="nav-item">
-        <a id="pricingicon" class="p-2 nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
+        <a id="pricingicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
         </li>
         {% endif %}
             {% if user.is_anonymous %}
             <li class="nav-item">        
-                <a type="button" class="p-2 nav-link" onclick="location.href = '/accounts/login'" >Login</a>
+                <a class="p-2 navbar-all nav-link" href = '/accounts/login'>Login</a>
             </li>
                 
             {% else %}
-            <li>
+            <li class="nav-item dropdown"  >
+                <a class="nav-link dropdown-toggle dark-gray" id="login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.first_name}} </a>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="login">
+                    <li class="dropdown-item" href="/user/profile/info"><a class = "link-unstyled dark-gray" href="{% url 'u_profile_page' %}">Dashboard</a></li>
+                    <li class="dropdown-item" href="#"><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
+                    <li class="dropdown-item" href="#">
+                        <a href="#">
+                            <form method="post" id = "logout" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                {% if redirect_field_value %}>
+                                    <input  name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"hidden/>    
+                                {% endif %}
+                                <button id = "logout-btn" class="btn" type="submit" >Sign Out</button>
+                            </form>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- <li>
                     <div class="pl-2 dropdown">
-                        <a class="btn btn-outline-dark dropdown-toggle" href="#" 
+                        <a class="btn btn-link dropdown-toggle" href="#" 
                         role="button" id="dropdownMenuLink" data-toggle="dropdown" 
                         aria-haspopup="true" aria-expanded="false">
                         <img src="{{ user.get_avatar_url }}"/>
@@ -163,7 +157,7 @@
                             </form>
                         </div>
                     </div>
-                </li>
+                </li> -->
             {% endif %}
       </ul>
     </div>
@@ -186,7 +180,7 @@
                 <div class="row">
                     <div class="col-md-8    ">
                         <div class="row p-4 d-flex justify-content-center ">    
-                            <img  src="{% static 'algonautsw.png' %}" style="width: 10vh;" />
+                            <img  src="{% static 'algonautsw.png' %}" width= "90vh" height="auto" />
                         </div>
                         <div class="row pl-4 d-flex justify-content-center justify-content-md-start">
                             <span class="text-justify">We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>

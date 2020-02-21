@@ -14,10 +14,10 @@ def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(sel
 
 def user_is_verified(user):
     user = user._wrapped if hasattr(user,'_wrapped') else user
-    if type(user) == AlgonautsUser:
-        user = user.email
     if type(user) == int:
-        user = AlgonautsUser.objects.get(id = user).email
+        user = AlgonautsUser.objects.get(id = user)
+    if user.is_superuser: return True
+    user = user.email
     return EmailAddress.objects.get(email = user).verified
 
 def get_all_standard_groups():

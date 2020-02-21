@@ -16,15 +16,15 @@
 
 {% block subscriptions_content %}
 
-<div class="container-fluid mb-4 mt-4 tabbable boxed parentTabs" style="padding-top: 120px;">
-    <div class="row mb-4">
+<div class="container-fluid mb-4  tabbable boxed parentTabs" style="padding-top: 120px;">
+    <div class="row ">
         <div class="col text-center">
 
 				<div class="header text-center ">
 					<div class="row justify-content-center" id="alg-plans-head" role="tablist">
 						
 						<!-- <div id = "ah-left" class="col-md-2 mt-3" ><a id = "ah-left-a" class=" link-unstyled text-dark" role="tab" aria-controls="services" aria-selected="true"></a><br></div> -->
-						<div id = "ah-center" class="col-md-3 xx-large  border-primary border-bottom"      aria-selected="true"><a id = "ah-center-a" href='#plans' class="font-weight-bold text-primary" role="tab" aria-controls="head">MERCURY</a></div>
+						<div id = "ah-center" class="col-md-3 xx-large  border-primary border-bottom"      aria-selected="true"><a id = "ah-center-a" href='#plans' class="font-weight-bold dark-blue" role="tab" aria-controls="head">MERCURY</a></div>
 						<div id = "ah-right" class="col-md-3  x-large"><a id = "ah-right-a" class="link-unstyled text-dark" role="tab"  href="#services" aria-controls="services" aria-selected="true">SERVICES</a><br></div>
 						
 					</div>
@@ -36,7 +36,7 @@
 	<div class="tab-content" id = "pricing-page">
 		<div class="tab-pane active" id="plans" role="tabpanel">
 			<div class="tabbable">
-				<div class="row mt-4 mb-4">
+				<div class="row mt-4 ">
 					<div class="col-md-12">
 						<div class="text-dar font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
 						<div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
@@ -57,8 +57,8 @@
 									});
 								</script>
 								{% for group_type in details %}	
-									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  border-primary shadow-lg text-light " data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
-										<span class="font-weight-bold text-primary pl-2 pr-2">{{ group_type.1.max_members }}<span>
+									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  dark-blue shadow-lg text-light " style="border-color:#23527c" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
+										<span class="font-weight-bold dark-blue pl-2 pr-2">{{ group_type.1.max_members }}<span>
 									</a>
 									<script>
 										$(document).ready(() => {
@@ -152,7 +152,7 @@
 										<div class="col-md-5 offset-sm-1">     
 											<form method = "POST" action="/subscriptions/order-details"> 
 												{% csrf_token %}        
-												<div class="card rounded shadow mt-3 rounded  border-light" style="min-height: 33rem;">
+												<div class="card border rounded shadow mt-3 border-light border" style="min-height: 33rem; border-radius: 40px;">
 													{% if plan_type.1|upper == "PREMIUM" %}
 														<span class = "star-premium text-right"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white-fr"><br><br></span></span></span>
 													{% else %}
@@ -176,7 +176,7 @@
 														</div>
 													</a>
 									
-													<div class="card-body text-dark">
+													<div class="card-body text-dark ">
 				
 														<ul class="font-weight-bold list-group mr-5 ml-5">
 															{% for plan in plan_type.0 %}
@@ -227,7 +227,7 @@
 															{% endfor %}
 														</ul>
 													</div>
-													<div class="border-light m-4" class = "plancode-div" id = "{{group_type.1}}-{{plan_type.1}}">
+													<div class="border-light mb-3" class = "plancode-div" id = "{{group_type.1}}-{{plan_type.1}}">
 														<div class="row justify-content-center">
 															<div class="">
 																{% if group_type.1.eligible_for_trial and plan_type.1.trial_applicable %}
@@ -282,7 +282,7 @@
 			
 		</div>
 		<div class="tab-pane" id="services" role="tabpanel">
-			<div class="row mt-1 mt-1">
+			<div class="row mt-3 mt-1">
 				<div class="col-md-12">
 					<div class="card">
 						<div class="x-large dark-blue card-header rounded">
@@ -372,7 +372,7 @@
 				$("#ah-right").removeClass("xx-large border-primary border-bottom")
 				$("#ah-right").addClass("x-large")
 				$("#ah-right-a").addClass("link-unstyled text-dark ")
-				$("#ah-right-a").removeClass("font-weight-bold dark_blue")
+				$("#ah-right-a").removeClass("font-weight-bold dark-blue")
 
 			});
 
@@ -381,12 +381,12 @@
 				$("#ah-center").removeClass("xx-large border-primary border-bottom")
 				$("#ah-center").addClass("x-large")
 				$("#ah-center-a").addClass("link-unstyled text-dark")
-				$("#ah-center-a").removeClass("font-weight-bold dark_blue")
+				$("#ah-center-a").removeClass("font-weight-bold dark-blue")
 				$("#services").addClass("active")
 				$("#ah-right").addClass("xx-large border-primary border-bottom")
 				$("#ah-right").removeClass("x-large")
 				
-				$("#ah-right-a").addClass("font-weight-bold dark_blue")
+				$("#ah-right-a").addClass("font-weight-bold dark-blue")
 				$("#ah-right-a").removeClass("link-unstyled text-dark")
 			});
 			// var a = document.getElementById("#ah-center-a")
