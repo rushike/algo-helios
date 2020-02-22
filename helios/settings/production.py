@@ -29,14 +29,14 @@ LOGGING = {
         'applogfile': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/www/algonauts.in/log/helios.log',
+            'filename': 'helios.log',
             'maxBytes': 1024*1024*15,  # 15MB
             'backupCount': 10,
         },
         'workerlogfile': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/www/algonauts.in/log/worker.log',
+            'filename': 'worker.log',
             'maxBytes': 1024*1024*15,  # 15MB
             'backupCount': 10,
         },
