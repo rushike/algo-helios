@@ -26,10 +26,19 @@ LOGGING = {
         }
     },
     'handlers': {
-        'file': {
+        'applogfile': {
             'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/www/algonauts.in/log/helios.log',
+            'maxBytes': 1024*1024*15,  # 15MB
+            'backupCount': 10,
+        },
+        'workerlogfile': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/www/algonauts.in/log/worker.log',
+            'maxBytes': 1024*1024*15,  # 15MB
+            'backupCount': 10,
         },
         'console': {
             'level': 'INFO',
@@ -45,12 +54,12 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['applogfile', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'worker': {
-            'handlers': ['file', 'mail_admins'],
+            'handlers': ['workerlogfile', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
