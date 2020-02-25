@@ -62,7 +62,7 @@ class OrderAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, 
         {
-            'fields': ('razorpay_order_id', 'user_group_id', 'order_amount', 'razorpay_payment_id')
+            'fields': ('razorpay_order_id', 'user_group_id', 'order_amount', 'razorpay_payment_id', 'notes')
         }),
     )
     
