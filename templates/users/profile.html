@@ -87,7 +87,7 @@
 								
                 				<div class="card h-100 border-dark shadow-sm">     
                   					<div class="card-header">
-                    					<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+                    					<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 									</div>
 									  
                   					<div class="card-body flex-column">
@@ -131,40 +131,43 @@
 		
 		{% if gplans %}
 		<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Group Plans</h3></div>	  			
-			<div class="row">
-		  {% for gplan in gplans %}
-              <div class="mb-3 col-md-4">
-                <div class="card border-dark shadow-sm">     
-                  <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{gplan.plan_id__plan_name | _replace:"#??-"}} <span class="badge badge-pill badge-warning">{{gplan.subscription_type_id__type_name}}</span><br></h4>
-                  </div>
-                  <div class="card-body">
-                    {% if gplan.subscription_type_id__type_name == "Trial" %}
-                      <p class="lead"> Subscribe With the following Plan</p>
-                      <p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-                    {% elif gplan.subscription_type_id__type_name == "Monthly" %}
-                      <p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{gplan.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-                    {% else %}
-                      <p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-                    {% endif %}
-                      <ul class="list-group mb-4">
-						<li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ gplan.subscription_start }}</li>
-						<li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ gplan.subscription_end }}</li>
-                      </ul>
-            
-                      {% if gplan.subscription_type_id__type_name == "Trial" %}
-                        <button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-                      {% else %}
-                        <button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-                      {% endif %}
-                      
-                  </div>
-                </div>
-              </div>
-		  {% endfor %}
-
-          </div>
+			<div class="row mt-3">
+				{% for gplan in gplans %}
+					<div class="mb-3 col-md-5 offset-md-1">
+					
+					<div class="card h-100 border-dark shadow-sm">     
+							<div class="card-header">
+							<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span><br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+						</div>
+							
+							<div class="card-body flex-column">
+								{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+								<p class="lead"> Subscribe With the following Plan</p>
+								<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+								<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+								{% elif gplan.0.subscription_type_id__type_name == "Monthly" %}
+								<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
+								{% else %}
+								<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
+								{% endif %}
+								<ul class="list-group mb-4">
+									<li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ gplan.0.subscription_start }}</li>
+									<li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ gplan.0.subscription_end }}</li>
+								</ul>
+						</div>
+						<div class="mt-1 p-4">
+							{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+								<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
+							{% else %}
+								<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
+							{% endif %}
+						</div>
+								
+					</div>
+					
+					</div>
+				{% endfor %}
+			</div>
       {% else %}
         <!-- <h6>No Group Plans Yet</h6> -->
 	

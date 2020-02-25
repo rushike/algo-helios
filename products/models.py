@@ -62,10 +62,10 @@ def create_individual_plan(sender, instance, **kwargs):
     gGroupType = UserGroupType.objects.get(type_name__iexact = 'enterprise')
     #atomatically creating individual plan for particlar product register
     iplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['i', str(instance.product_name)]), user_group_type_id = iGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = iplan, product_id= instance)
     gplan, _ = Plan.objects.get_or_create(plan_name = '_'.join(['g', str(instance.product_name)]), user_group_type_id = gGroupType, price_per_month = 0, \
-             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.datetime.now(pytz.timezone('UTC')))
+             price_per_year = 0, entry_time = datetime.datetime.now(pytz.timezone('UTC')), expiry_time = datetime.timedelta(weeks=52 * 10) + datetime.datetime.now(pytz.timezone('UTC')))
     pp_map, _ = PlanProductMap.objects.get_or_create(plan_id = gplan, product_id= instance)
 
 
@@ -80,7 +80,7 @@ def create_standard_plans(sender, instance, **kwargs):
     for group_t in group_types:
         plan_exists = Plan.objects.filter(plan_name = product_name, plan_type_id = BASIC, user_group_type_id = group_t).exists()
         if not plan_exists:
-            plan, created= Plan.objects.get_or_create(
+            plan, created= Plan.objects.get_or_create_plan(
                             plan_name = product_name, 
                             user_group_type_id = group_t, 
                             plan_type_id = BASIC, 
@@ -101,7 +101,7 @@ def create_standard_plans(sender, instance, **kwargs):
     for group_t in group_types:
         plan_exists = Plan.objects.filter(plan_type_id = PREMIUM, user_group_type_id = group_t).exists()
         if not plan_exists:
-            plan, created = Plan.objects.get_or_create(
+            plan, created = Plan.objects.get_or_create_plan(
                             plan_name = product_name.split("#")[0], 
                             user_group_type_id = group_t, 
                             plan_type_id = PREMIUM, 

@@ -111,15 +111,15 @@ def payment_success(request):
     verifying_dict = {
         'razorpay_order_id' : request.POST.get('razorpay_order_id'),
         'razorpay_payment_id' : request.POST.get('razorpay_payment_id'),
-        'razorpay_signature' : None#request.POST.get('razorpay_signature'),
+        'razorpay_signature' : request.POST.get('razorpay_signature'),
     }
     try :
         client.utility.verify_payment_signature(verifying_dict)
     except SignatureVerificationError:
         #payment not verified sucessfully
-        pass
+        return HttpResponseRedirect(redirect_to="/subscriptions/plans")
     request.session['order_details_post'] = POST
-    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id')})
+    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'),})
     
     return HttpResponseRedirect('/subscriptions/subscribe')
 
@@ -153,6 +153,7 @@ def subscribe(request):
     period = POST['period']
 
     order_id = POST.get('order_id')
+    payment_id = POST.get('payment_id')
     
     recepients = []
     if 'group_emails' in POST:    
@@ -161,7 +162,7 @@ def subscribe(request):
     
     subscription_id = subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type ,   \
                     plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
-    subscriptions.functions.register_payment(order_id, subscription_id)
+    subscriptions.functions.register_payment(order_id, payment_id,subscription_id)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
 
 @login_required(login_url='/accounts/login/') 

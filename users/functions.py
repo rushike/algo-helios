@@ -45,8 +45,8 @@ def get_group_of_user(user, plan):
     groups = get_all_groups_of_user(user).values('user_group_type_id')
     plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
     group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
-    etc = UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
-    return etc
+    return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
+    
 def validate_group_add_url_slug(group_id:int, hash_:str):
     group = UserGroup.objects.get(id = group_id)
     if md5(str(group.admin.email).encode()).hexdigest() == hash_:
@@ -67,7 +67,7 @@ def get_user_subs_plans(user):
     # filter out all groups of profile with non individual group type 
     
     plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
+        .values('plan_id', 'plan_id__user_group_type_id__max_members' ,'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)

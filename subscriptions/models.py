@@ -17,6 +17,8 @@ class PlanType(models.Model):
 
 class PlanManager(models.Manager):
     def create_plan(self,plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable = None):
+        exists = Plan.objects.filter(plan_name = plan_name, user_group_type_id = user_group_type_id, plan_type_id = plan_type_id)
+        if exists.exists(): return exists
         if type(user_group_type_id) == int and type(plan_type_id) == int:
             user_group_type_id = UserGroupType.objects.get(id = user_group_type_id)
             plan_type_id = PlanType.objects.get(id = plan_type_id) 
@@ -34,7 +36,10 @@ class PlanManager(models.Manager):
                                 trial_applicable = trial_applicable,
                             )
         plan_type.save(using = self._db)
-
+    def get_or_create_plan(self,plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable = None ):
+        exists = Plan.objects.filter(plan_name = plan_name, user_group_type_id = user_group_type_id, plan_type_id = plan_type_id)
+        if exists.exists(): return exists
+        return self.create_plan(plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable)
 
 class Plan(models.Model):
     plan_name = models.CharField(max_length=40)
