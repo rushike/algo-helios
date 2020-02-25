@@ -246,49 +246,58 @@
 
 
     <div data-aos="fade-up" data-aos-duration="1000" class="row productsb">
-        <div class="col-md-6 productsbox">
+        <div class="col-md-6 col-sm-12 productsbox">
             <div class="row content h-100">
-                <div class="col-md-8 ">
-                    <div class="x-large light dark-gray">Mercury</div>
-                    <p class="content-para">Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
-                        live market</p>
-                    <div class="knowmore">
-                        <a href="{% url 'plans_page' %}" title="Click to know more">
-                            <p>Know More&nbsp;&nbsp;</p>
-                        </a>
+                <div class="col-md-12">
+                    <div class="xx-large light dark-gray">Mercury</div>
+                    <div class="row">
+                        <div class=" col-md-8 content-para card-body flex-column "><p>Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
+                            live market</p>
+                        </div>
+                            <div class="col-md-4">
+                                <div class="row"><img src="{% static 'products/callgen.png' %}"></div>
+                                
+                                
+                            </div>
                     </div>
+                    
+                    <div class="knowmore pt-5">
+                            <a href="{% url 'plans_page' %}" title="Click to know more">
+                                <p>Know More&nbsp;&nbsp;</p>
+                            </a>      
+                    </div>  
                 </div>
-                <div class="col-md-4">
-                    <img src="{% static 'products/callgen.png' %}">
-                </div>
-
 
             </div>
         </div>
 
-        <div class="col-md-6 productsbox">
+        <div class="col-md-6 col-sm-12 productsbox">
             <div class="row content h-100">
-                <div class="col-md-8">
-                    <div class="x-large light dark-gray" >Services</div>
-                    <!-- <p>Builds, manages and trades portfolios in real-time using the combination best suited to capital
-                        invested</p> -->
-                        <p>
-                        <ul class="content-para mt-4 ml-4 light-gray">
-                        <li >Automation</li>
-                        <li >Backtesting</li>
-                        <li >Algo Development</li>
-                        <li >Data Analytics</li>
-                        <li >Custom Strategies</li>
-                        </ul>
-                        </p>
-                    <div class="knowmore mt-5 mb-2">
+                <div class="col-md-12 ">
+                    <div class="xx-large light dark-gray" >Services</div>
+                        <div class="row">
+                            <div class="col-md-8 card-body flex-column">
+                                <p>
+                                    <ul class="content-para list-group list-group-flush mt-4 ml-2 light-gray flex-column">
+                                    <li class="list-group-item p-1 border-0"  >&#8226   Automation</li>
+                                    <li class="list-group-item p-1 border-0"  >&#8226   Backtesting</li>
+                                    <li class="list-group-item p-1 border-0"  >&#8226   Algo Development</li>
+                                    <li class="list-group-item p-1 border-0"  >&#8226   Data Analytics</li>
+                                    <li class="list-group-item p-1 border-0"  >&#8226   Custom Strategies</li>
+                                    </ul>
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row"><img src="{% static 'products/portfoliomanager.png' %}"></div>
+                                
+                            </div>
+                        </div>
+                            
+                    <div class="knowmore md-1">
                         <a href="{% url 'plans_page' %}" title="Click to know more">
                             <p>Know More&nbsp;&nbsp;</p>
                         </a>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <img src="{% static 'products/portfoliomanager.png' %}">
                 </div>
             </div>
         </div>

@@ -3,7 +3,6 @@
 
 /* General */
 body {
-  font-family: 'Open Sans', sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
@@ -87,7 +86,7 @@ input:focus{
 .foo-txt {
   font-size: 15px;
   font-weight: 400;
-  font-family: 'Satisfy', cursive;
+  font-family: 'Satisfy';
   text-shadow: none;
   color: #272727;
 }

@@ -29,7 +29,6 @@ nav{
 .navbar-collapse{
     padding-top: 25px;
     transition: padding-top 0.2s;
-    font-family: 'Patua One', cursive;
 }
 
 .navbar-inverse .navbar-collapse{

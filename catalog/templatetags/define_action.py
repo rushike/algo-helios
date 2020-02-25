@@ -18,3 +18,10 @@ def _split(val="None", args = " "):
   char = args[1]
   return val.split(char)[index]
 
+@register.filter(name='_space')
+def _space(val="None", args = 10):
+  le = len(val)
+  half = int((args - le) / 2)
+ 
+  return (" " * half) + val + (" " * half) + " -"
+

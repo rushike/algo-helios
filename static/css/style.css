@@ -28,7 +28,7 @@
 }
 
 .dark-blue{
-    color : #23527c
+    color : #004B96;
 }
 
 .light-blue{
@@ -52,6 +52,10 @@
 
 .light-gray{
     color : #848484
+}
+
+.light-gray-bg{
+    background-color : #848484
 }
 
 .dark-gray{
