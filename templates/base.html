@@ -135,29 +135,6 @@
                 </ul>
             </li>
 
-            <!-- <li>
-                    <div class="pl-2 dropdown">
-                        <a class="btn btn-link dropdown-toggle" href="#" 
-                        role="button" id="dropdownMenuLink" data-toggle="dropdown" 
-                        aria-haspopup="true" aria-expanded="false">
-                        <img src="{{ user.get_avatar_url }}"/>
-                        {{user.first_name}}
-                        </a>
-                        
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                            
-                            <button class="btn btn-sm dropdown-item" onclick="location.href ='/user/profile/info' ">Dashboard</button>
-                            <button class="btn btn-sm dropdown-item" onclick="location.href ='/user/feedback' ">Feedback</button>
-                            <form method="post" action="{% url 'account_logout' %}">
-                                {% csrf_token %}
-                                {% if redirect_field_value %}>
-                                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>    
-                                {% endif %}
-                                <button class="btn btn-sm dropdown-item" type="submit" onclick="myfun">LogOut</button>
-                            </form>
-                        </div>
-                    </div>
-                </li> -->
             {% endif %}
       </ul>
     </div>
@@ -215,9 +192,6 @@
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
                             <a>Support Center</a>
                         </div>
-                        <!-- <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <a>FAQ's</a>
-                        </div> -->
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
                             <a>Testimonials</a>
                         </div>
