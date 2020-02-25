@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_crontab',
     'crispy_forms',
-
     'catalog',
     'users',
     'blog',
