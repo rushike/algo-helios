@@ -34,6 +34,7 @@ def neft_details(request):
 
     return render(request, 'subscriptions/neft_details.html', context=context)
 
+@login_required(login_url="/account/login/")
 def send_neft_details(request):
     POST = request.session.get('order_details_post')
     post = dict(request.POST.lists())
