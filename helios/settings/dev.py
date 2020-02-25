@@ -18,6 +18,35 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file_1': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+        'file_2': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'worker.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file_1'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'worker': {
+            'handlers': ['file_2'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 CRONJOBS = [
     ('*/1 * * * *', 'subscriptions.cron.check_data_consistency')
 ]
