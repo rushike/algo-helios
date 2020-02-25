@@ -158,6 +158,21 @@ class PlanOfferMap(models.Model):
     def __str__(self):
         return str(self.offer_id)
 
+class Order(models.Model):
+    razorpay_order_id = models.CharField(max_length=1024)
+    user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE, null = True, default = None)
+    order_time = models.DateTimeField(auto_now=True)
+    order_amount = models.IntegerField()
+    order_currency = models.CharField(max_length=16)
+    order_receipt = models.CharField(max_length=1024)
+    notes = models.CharField(max_length=1024)
+    razorpay_payment_id = models.CharField(max_length=1024, null = True, default = None)
+    offer_id = models.CharField(max_length=128, null = True, default = None)
+
+    class Meta:
+        unique_together = ("razorpay_order_id",)
+    def __str__(self):
+        return str(self.razorpay_order_id)
 
 class PaymentManager(models.Manager):
     def create_payment_entry(self):
@@ -165,7 +180,8 @@ class PaymentManager(models.Manager):
 
 class Payment(models.Model):
     payment_ref = models.CharField(max_length=256)
+    order_id = models.ForeignKey(Order, on_delete = models.CASCADE, null = True, default = None)
     payment_time = models.DateTimeField(auto_now=True)
-    subscription_id = models.ForeignKey(Subscription, on_delete=models.CASCADE)
-    user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
+    subscription_id = models.ForeignKey(Subscription, on_delete = models.CASCADE)
+    user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE)
     amount = models.IntegerField()
