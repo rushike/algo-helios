@@ -229,13 +229,26 @@ mybot .resultDiv .userEnteredText:before {
   margin-top: -12px;
 }
 
-mybot .profile_div {
-  position: fixed;
-  bottom: 0;
-  right: 10px;
-  width: 240px;
-  cursor: pointer;
-  z-index:10000;
+@media(min-width:450px){
+	mybot .profile_div {
+		position: fixed;
+		bottom: 0;
+		right: 10px;
+		width: 240px;
+		cursor: pointer;
+		z-index:10000;
+	}
+}
+
+@media(max-width:450px){
+	mybot .profile_div {
+		position: fixed;
+		bottom: 0;
+		right: 10px;
+		width: 11vh;
+		cursor: pointer;
+		z-index:10000;
+	}
 }
 
 mybot .img-profile {
