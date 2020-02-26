@@ -75,7 +75,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 
 EMAIL_HOST_USER = 'algonauts.tech@gmail.com'
-EMAIL_HOST_PASSWORD = 'algonauts@123'
+EMAIL_HOST_PASSWORD = 'duvesiehbsekfbky'
 
 EMAIL_USE_TLS = True
 

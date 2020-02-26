@@ -3,7 +3,7 @@ import threading
 import time, datetime, pytz
 from collections import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
-from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType, Order, Payment
+from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap, ProductFamily
 from helios.settings import EMAIL_HOST_USER
 import users.functions
@@ -151,31 +151,4 @@ def send_mail_async(group, recepients, subject, message):
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
 
 
-def register_order(user_group_id, razorpay_order):
-    Order.objects.create(
-        user_group_id = user_group_id,
-        order_amount = razorpay_order['amount'],
-        order_currency = razorpay_order['currency'],
-        order_receipt = razorpay_order['receipt'],
-        notes = str(razorpay_order['notes']),
-        razorpay_order_id = razorpay_order['id'],
-        razorpay_payment_id = "---"
-    )
-
-def register_payment(order_id, subscription_id):
-    if type(order_id) == str:
-        order_id = get_order_instance(order_id)
-    if type(subscription_id) == int: 
-        subscription_id = Subscription.objects.get(id = subscription_id)
-    payment = Payment.objects.create(
-        payment_ref = "",
-        order_id = order_id,
-        subscription_id = subscription_id,
-        user_group_id = order_id.user_group_id,
-        amount = order_id.amount,    
-    )
-    return payment
-
-def get_order_instance(order_id):
-    return Order.objects.get(razorpay_payment_id = order_id)
 
