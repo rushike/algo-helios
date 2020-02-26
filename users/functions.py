@@ -42,10 +42,10 @@ def get_group_of_user(user, plan):
         user {AlgonautsUser, str} -- 
         plan {Plan, str} -- 
     """
-    groups = get_all_groups_of_user(user)
-    plan = Plan.objects.filter(plan_name = plan).order_by("-expiry_time").last()
-    group_id = Plan.objects.filter(group_id__in = groups, id = plan.id).values("user_group_id").last()
-    return group_id
+    groups = get_all_groups_of_user(user).values('user_group_type_id')
+    plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
+    group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
+    return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
     
 def validate_group_add_url_slug(group_id:int, hash_:str):
     group = UserGroup.objects.get(id = group_id)
@@ -67,7 +67,7 @@ def get_user_subs_plans(user):
     # filter out all groups of profile with non individual group type 
     
     plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
+        .values('plan_id', 'plan_id__user_group_type_id__max_members' ,'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
@@ -88,9 +88,10 @@ def get_all_users_in_group(group_id):
     return users
     
 def get_all_groups_of_user(user_id):
+    user_id = user_id._wrapped if hasattr(user_id,'_wrapped') else user_id
     user = user_id if type(user_id) == AlgonautsUser else UserGroup.objects.get(id = user_id)
-    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
-    return groups
+    groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))).values('user_group_id')
+    return UserGroup.objects.filter(id__in = groups)
 
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)

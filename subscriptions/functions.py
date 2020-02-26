@@ -34,12 +34,14 @@ def get_product_family_of_products(products : list):
     prod_fam = Product.objects.filter(id__in = products).values('product_family_id')
     return ProductFamily.objects.filter(id__in = prod_fam)
 
-def get_plan_type_of_plans(plans): 
+def get_plan_type_of_plans(plans, nobjects = True): 
     if not isinstance(plans, Iterable) : return get_plan_type_of_plans([plans])
     if len(plans) != 0 and type(plans[0]) == Plan:
             plans = [plan.id for plan in plans]
 
     plan_typ = Plan.objects.filter(id__in = plans).values('plan_type_id')
+    if nobjects:
+        return [PlanType.objects.get(id = pt['plan_type_id']) for pt in plan_typ]
     return PlanType.objects.filter(id__in = plan_typ)
 
 
@@ -162,7 +164,7 @@ def register_order(user_group_id, razorpay_order):
         razorpay_payment_id = "---"
     )
 
-def register_payment(order_id, subscription_id):
+def register_payment(order_id, payment_id, subscription_id):
     if type(order_id) == str:
         order_id = get_order_instance(order_id)
     if type(subscription_id) == int: 
@@ -172,10 +174,18 @@ def register_payment(order_id, subscription_id):
         order_id = order_id,
         subscription_id = subscription_id,
         user_group_id = order_id.user_group_id,
-        amount = order_id.amount,    
+        amount = order_id.order_amount,    
     )
+    Order.objects.filter(razorpay_order_id = order_id.razorpay_order_id).update(razorpay_payment_id = payment_id)
     return payment
 
 def get_order_instance(order_id):
-    return Order.objects.get(razorpay_payment_id = order_id)
+    return Order.objects.get(razorpay_order_id = order_id)
 
+
+# payment_ref = models.CharField(max_length=256)
+# order_id = models.ForeignKey(Order, on_delete = models.CASCADE, null = True, default = None)
+# payment_time = models.DateTimeField(auto_now=True)
+# subscription_id = models.ForeignKey(Subscription, on_delete = models.CASCADE)
+# user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE)
+# amount = models.IntegerField()

@@ -16,7 +16,8 @@
 <div class="container mt-5">
     <div class="row mb-4 justify-content-center">
         <div class="col-md-7 card ">
-            
+            <form method="POST" action="{% url 'create_order' %}">
+                {% csrf_token %}
                 <div class="row justify-content-center card-header">
                     <div class="x-large text-center">
                         <span class="text-center">
@@ -24,6 +25,7 @@
                         </span>
                         <span class="x-large text-right">
                             {{details}}
+                            <input type="text" hidden></input>
                         </span>
                     </div>
                 </div>
@@ -34,6 +36,7 @@
                         </div>
                         <div class="col-md-6 content-para ">
                             {{order_details.plan_name | _replace:"#??-"}}
+                            <input type="text" hidden></input>
                         </div>
                     </div>
                     
@@ -43,6 +46,7 @@
                         </div>
                         <div class="col-md-6 content-para ">
                             {{order_details.plan_type | _replace:"#??-" | title}}
+                            <input type="text" hidden></input>
                         </div>
                     </div>
                     
@@ -52,6 +56,7 @@
                         </div>
                         <div class="col-md-6 content-para ">
                             {{order_details.period | title}}
+                            <input type="text" hidden></input>
                         </div>
                     </div>
                     
@@ -61,14 +66,25 @@
                         </div>
                         <div class="col-md-6 content-para ">
                             {{order_details.amount }}
+                            <input type="text" hidden></input>
                         </div>
+                    </div>
+                    <div class="row ">
+                        <button class="btn btn-success btn-lg btn-block" type="submit">
+                            <span href=""  role="button" class="link-unstyled white-fr">Pay Online</a>
+                        </button>
+                        
                     </div>
                     
                 </div>
-            
+            </form>
         </div>
     </div>
-
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-7 text-center">
+            <span class="xx-large dark-gray"> OR</span>
+        </div>
+    </div>
     <div class="row  justify-content-center ">
         <div class="col-md-7 card rounded">
             <div class="row card-header  justify-content-center">
@@ -126,6 +142,7 @@
                     <span class="">Current Account</span>
                 </div>
             </div>
+            
         </div>
     
     

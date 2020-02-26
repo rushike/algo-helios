@@ -30,7 +30,6 @@ def profile_page(request):
                 'if_referred' : if_referred,
                 'is_verified' : users.functions.user_is_verified(request.user)
             }
-   
     return render(request, 'users/profile.html', context= context)
 
 @login_required(login_url = '/accounts/login/')

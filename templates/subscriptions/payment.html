@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load define_action %}
+
+{% block js_imports %}
+
+
+{% endblock %}
+
+{% block content %}
+<div style="min-height: 35rem">
+    <input type="text"hidden>
+</div>
+<form action="/subscriptions/payment/success" method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        data-key="{{razorpay_key}}" 
+        data-amount="{{amount}}"
+        data-currency="{{currency}}"
+        data-order_id="{{order_id}}"
+        data-buttontext="Pay Online"
+        data-name="Algonauts"
+        data-description="{{plan_details}}"
+        data-image="{% static 'algonauts.png' %}"
+        data-prefill.name="{{name}}"
+        data-prefill.email="{{email}}"
+        data-prefill.contact="{{contact}}"
+        data-theme.color= "#7DDCFF"
+    >
+</script>
+    <input type="hidden" custom="Hidden Element" name="hidden">
+</form>
+
+<script>
+    document.getElementsByClassName("razorpay-payment-button")[0].click()
+    $(".razorpay-payment-button").attr('type', 'hidden')
+    $("#logo1").css({"background-color" : "rgba(255, 115, 220,1.0)"})
+    $("#modal-close").click(()=>{
+        $(window).attr('location','/subscriptions/plans')    
+    });
+</script>
+
+{% endblock content%}
