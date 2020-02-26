@@ -6,3 +6,10 @@
 #ah-left, #ah-right {
     font-family: Helvetica;
 }
+.plan-cards{
+    border: 5px solid cornflowerblue;
+}
+.plan-cards:hover{
+    border: black;
+    border-width: 5px;
+}

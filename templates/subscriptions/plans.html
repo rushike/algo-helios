@@ -152,11 +152,12 @@
 										<div class="col-md-5 offset-sm-1">     
 											<form method = "POST" action="/subscriptions/order-details"> 
 												{% csrf_token %}        
-												<div class="card border rounded shadow mt-3 border-light border" style="min-height: 33rem; border-radius: 40px;">
+												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">
+													
 													{% if plan_type.1|upper == "PREMIUM" %}
-														<span class = "star-premium text-right"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white-fr"><br><br></span></span></span>
+														<span class = "star-premium text-right" style="position: absolute; top:0px; right: 8px;"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white-fr"><br><br></span></span></span>
 													{% else %}
-														<span class = "star-premium text-right"><span class=""><span class=""><br><br></span></span></span>
+					
 													{% endif %}
 													<a href="#ibasic"> 
 														<div class="text-center pt-4 pb-0 text-dark">
