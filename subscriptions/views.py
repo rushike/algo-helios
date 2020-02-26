@@ -219,5 +219,5 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
     if subscribed:
         subject = "Regarding Algonauts Subscription"
         message = "You have successfully subscribed to algonauts plan : " + str(plan_name)
-        subscriptions.functions.send_email(subscribed.user_group_id, recepients, subject, message)
+        subscriptions.functions.send_email(user, recepients, subject, message)
     return subscribed

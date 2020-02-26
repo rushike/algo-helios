@@ -35,6 +35,9 @@ def generate_group_add_link(group_id:UserGroup):
     link = 'user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
+def get_user_group(group_id):
+    return group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
+
 def get_group_of_user(user, plan):
     """
     Returns group object of user subscribe with plan

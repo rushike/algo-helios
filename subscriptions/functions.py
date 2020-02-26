@@ -3,7 +3,7 @@ import threading
 import time, datetime, pytz
 from collections import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
-from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType
+from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType, Order, Payment
 from products.models import Product, ProductCategory, PlanProductMap, ProductFamily
 from helios.settings import EMAIL_HOST_USER
 import users.functions
@@ -143,12 +143,11 @@ def send_subscription_link(group, recepients, to = None):
 def get_order_details(group_type, plan_type, plan_name, period):
     return
 
-def send_email(group, recepients, subject, message, to = None):
-    threading.Thread(target=send_mail_async, args=(group, recepients,subject, message)).start()
+def send_email(user, recepients, subject, message, to = None):
+    if not isinstance(recepients, list) : return send_email(user, [recepients], subject, message) 
+    threading.Thread(target=send_mail_async, args=(user, recepients,subject, message)).start()
 
-def send_mail_async(group, recepients, subject, message):
-    if not isinstance(recepients, list) : return send_email(group, [recepients], subject, message) 
-    start = time.time()
+def send_mail_async(user, recepients, subject, message):
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
 
