@@ -37,31 +37,31 @@
 
 
 
-<div id="whatwedocont">
+<div id="whatwedocont" class="container" >
 <!--What we do banner starts-->
-<div class="container whatwedo">
-    <div style="margin:0% auto;" class="wwd-heading container">
-    <h3 data-aos="fade-up">What We Do ?</h3>
-    <hr data-aos="fade-up" class="classichr" style="margin:1vw 45%">
-    </div>
-    <div class="row container-fluid" style="padding-top:2%;">
-        <div data-aos="fade-up" data-aos-duration="1000" class="col-md-6">
-            
-            <ul>
+    <div class="container whatwedo" style="max-width: 1350px;">
+        <div style="margin:0% auto;" class="wwd-heading container">
+        <h3 data-aos="fade-up">What We Do ?</h3>
+        <hr data-aos="fade-up" class="classichr" style="margin:1vw 45%">
+        </div>
+        <div class="row container-fluid" style="padding-top:2%;">
+            <div data-aos="fade-up" data-aos-duration="1000" class="col-md-6">
+                
+                <ul>
 
-                <li>Develop and provide algorithms for trading financial markets using Technical Analysis</li>
-                <li>Generate Buy/Sell calls using complex formulas developed with expertise and skills</li>
-                <li>Build automated trading systems to seamlessly execute the trades</li>
-                <li>Rigorously back-test to improve accuracy, optimize the strategy and minimize errors</li>
-                <li>Employ advanced analysis to enhance performance and make good consistent returns</li>
-                <li>Strengthen ROCE by adapting better capital management techniques</li>
-            </ul>
-        </div>
-        <div data-aos="fade-up" data-aos-duration="1000" class="col-md-6 text-center">
-            <img src="{% static 'whatwedo.png' %}" width="82%" height="auto">
+                    <li>Develop and provide algorithms for trading financial markets using Technical Analysis</li>
+                    <li>Generate Buy/Sell calls using complex formulas developed with expertise and skills</li>
+                    <li>Build automated trading systems to seamlessly execute the trades</li>
+                    <li>Rigorously back-test to improve accuracy, optimize the strategy and minimize errors</li>
+                    <li>Employ advanced analysis to enhance performance and make good consistent returns</li>
+                    <li>Strengthen ROCE by adapting better capital management techniques</li>
+                </ul>
+            </div>
+            <div data-aos="fade-up" data-aos-duration="1000" class="col-md-6 text-center">
+                <img src="{% static 'whatwedo.png' %}" width="82%" height="auto">
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <!--What we do banner ends-->
@@ -71,7 +71,7 @@
 
 
 <div class="container-fluid hwd">
-    <div class="container hwdcontainer" id="howwedocont">
+    <div class="container hwdcontainer" id="howwedocont" style="max-width: 1350px;">
         <div class="hwdheading">
             <p data-aos="fade-up">How We Do It ?</p>
             <hr data-aos="fade-up" class="classichr">
@@ -245,13 +245,13 @@
     </div>
 
 
-    <div data-aos="fade-up" data-aos-duration="1000" class="row productsb">
+    <div data-aos="fade-up" data-aos-duration="1000" class="row productsb" >
         <div class="col-md-6 col-sm-12 productsbox">
             <div class="row content h-100">
                 <div class="col-md-12">
                     <div class="xx-large light dark-gray">Mercury</div>
                     <div class="row">
-                        <div class=" col-md-8 content-para card-body flex-column "><p>Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
+                        <div class=" col-md-8 content-heading card-body flex-column"><p class="productbox-para">Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
                             live market</p>
                         </div>
                             <div class="col-md-4">
@@ -263,7 +263,7 @@
                     
                     <div class="knowmore pt-5">
                             <a href="{% url 'plans_page' %}" title="Click to know more">
-                                <p>Know More&nbsp;&nbsp;</p>
+                                <p class="productbox-para">Know More&nbsp;&nbsp;</p>
                             </a>      
                     </div>  
                 </div>
@@ -278,12 +278,12 @@
                         <div class="row">
                             <div class="col-md-8 card-body flex-column">
                                 <p>
-                                    <ul class="content-para list-group list-group-flush mt-4 ml-2 light-gray flex-column">
-                                    <li class="list-group-item p-1 border-0"  >&#8226   Automation</li>
-                                    <li class="list-group-item p-1 border-0"  >&#8226   Backtesting</li>
-                                    <li class="list-group-item p-1 border-0"  >&#8226   Algo Development</li>
-                                    <li class="list-group-item p-1 border-0"  >&#8226   Data Analytics</li>
-                                    <li class="list-group-item p-1 border-0"  >&#8226   Custom Strategies</li>
+                                    <ul class="content-para list-group list-group-flush mt-4 ml-2 light-gray  flex-column">
+                                    <li class="list-group-item p-1 border-0 productbox-para "  >&#8226   Automation</li>
+                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Backtesting</li>
+                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Algo Development</li>
+                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Data Analytics</li>
+                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Custom Strategies</li>
                                     </ul>
                                 </p>
                             </div>
@@ -295,7 +295,7 @@
                             
                     <div class="knowmore md-1">
                         <a href="{% url 'plans_page' %}" title="Click to know more">
-                            <p>Know More&nbsp;&nbsp;</p>
+                            <p class="productbox-para">Know More&nbsp;&nbsp;</p>
                         </a>
                     </div>
                 </div>

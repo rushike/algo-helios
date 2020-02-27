@@ -186,7 +186,7 @@ class Referral(models.Model):
 	referred_to = models.ForeignKey(AlgonautsUser, on_delete=models.CASCADE, related_name='r_reffered_to') 
 	referral_time = models.DateTimeField()
 	referral_offer_id = models.ForeignKey(ReferralOffer, on_delete=models.CASCADE, related_name="r_referral_offer_id")
-	
+	credits_granted = models.BooleanField(default = False)
 	class Meta:
 		unique_together = ('referred_to',)
 

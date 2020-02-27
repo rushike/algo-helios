@@ -161,7 +161,7 @@ def subscribe(request):
         email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
         recepients.extend(email_list)
     
-    subscription_id = subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type ,   \
+    subscription_id = subscribe_common(request = request, user = request.user, group_type = group_type, plan_type= plan_type ,   \
                     plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
     subscriptions.functions.register_payment(order_id, payment_id,subscription_id)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
@@ -180,6 +180,7 @@ def plan_overview(request, slug):
                 'is_group_plan' : is_group_plan,
             }
     return render(request, 'subscriptions/plan_overview.html',context=context)
+
 
 @login_required(login_url='/accounts/login/')
 def plan_subscribe(request):
@@ -205,9 +206,9 @@ def plan_subscribe(request):
     return HttpResponseRedirect(redirect_to='/user/profile/info')
     
 
-def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
+def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]
-    recepient.extend(recepients)
+    recepients.extend(recepient)
     subscribed = Subscription.objects.create_subscription(
                     user = user,
                     group_type = group_type,
@@ -217,7 +218,8 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
                     payment_id = payment_id,
                 )
     if subscribed:
+        group_add_link = request.build_absolute_uri(users.functions.generate_group_add_link(subscribed.user_group_id))
         subject = "Regarding Algonauts Subscription"
-        message = "You have successfully subscribed to algonauts plan : " + str(plan_name)
+        message = "You have successfully subscribed to algonauts plan : " + str(plan_name) + "\n" + group_add_link
         subscriptions.functions.send_email(user, recepients, subject, message)
     return subscribed

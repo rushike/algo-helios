@@ -7,15 +7,24 @@ from hashlib import md5
 import subscriptions.functions
 from helios.settings import EMAIL_HOST_USER
 
+def get_user_object(user):
+    if hasattr(user,'_wrapped') :
+        if user._wrapped.__class__ == object:
+            user._setup()
+            return None
+        user = user._wrapped 
+    if type(user) == str:
+        user = AlgonautsUser.objects.get(email = user)
+    else : user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
+    return user
+
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
     return mapper
 
 def user_is_verified(user):
-    user = user._wrapped if hasattr(user,'_wrapped') else user
-    if type(user) == int:
-        user = AlgonautsUser.objects.get(id = user)
+    user = get_user_object(user)
     if user.is_superuser: return True
     user = user.email
     return EmailAddress.objects.get(email = user).verified
@@ -32,7 +41,7 @@ def generate_group_add_link(group_id:UserGroup):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     admin = group.admin.email
     id_ = group.id
-    link = 'user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
+    link = '/user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
 def get_user_group(group_id):
@@ -45,6 +54,7 @@ def get_group_of_user(user, plan):
         user {AlgonautsUser, str} -- 
         plan {Plan, str} -- 
     """
+    user = get_user_object(user)
     groups = get_all_groups_of_user(user).values('user_group_type_id')
     plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
     group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
@@ -57,8 +67,7 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
     return False
 
 def get_user_subs_plans(user):
-    user = user._wrapped if hasattr(user,'_wrapped') else user
-    user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
+    user = get_user_object(user)
     now = datetime.datetime.now(pytz.timezone('UTC'))
     iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(min_members = 1, max_members = 1) # get rest group types available from model
@@ -77,7 +86,7 @@ def get_user_subs_plans(user):
     return indivdual_plans, group_plans
 
 def get_user_subs_product(user):
-    user = user._wrapped if hasattr(user,'_wrapped') else user
+    user = get_user_object(user)
     iplan, gplan = get_user_subs_plans(user)
     plans = list(iplan.values('plan_id'))
     plans.extend(gplan.values('plan_id'))
@@ -117,7 +126,7 @@ def add_referral_credits(self_uid, referral_code):
     return ref, True
 
 def generate_referral_user_add_link(user:AlgonautsUser):
-    link = 'user/refer/user=' + user.referral_code
+    link = '/user/refer/user=' + user.referral_code
     return link
 
 def if_referred(user:AlgonautsUser):
@@ -125,6 +134,7 @@ def if_referred(user:AlgonautsUser):
     return ref
 
 def add_feedback(user, subject, product, message):
+    user = get_user_object(user)
     recepient = [user.email, EMAIL_HOST_USER]
     subject = subject + " for " + product
     message = "Thank You We have received your Feedback \n" + message

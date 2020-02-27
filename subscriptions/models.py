@@ -35,11 +35,14 @@ class PlanManager(models.Manager):
                                 expiry_time = expiry_time,
                                 trial_applicable = trial_applicable,
                             )
+    
         plan_type.save(using = self._db)
-    def get_or_create_plan(self,plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable = None ):
+        return plan_type
+        
+    def get_or_create_plan(self,plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable = None, is_active = False ):
         exists = Plan.objects.filter(plan_name = plan_name, user_group_type_id = user_group_type_id, plan_type_id = plan_type_id)
         if exists.exists(): return exists
-        return self.create_plan(plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable)
+        return self.create_plan(plan_name, user_group_type_id, plan_type_id, price_per_month, price_per_year, entry_time, expiry_time, trial_applicable), True
 
 class Plan(models.Model):
     plan_name = models.CharField(max_length=40)
@@ -51,7 +54,7 @@ class Plan(models.Model):
     expiry_time = models.DateTimeField()
     is_active = models.BooleanField(default=False)
     trial_applicable = models.BooleanField(default= False)
-    objects = models.Manager()
+    objects = PlanManager()
     
     class Meta:
         unique_together = ('plan_name', 'user_group_type_id', 'plan_type_id') 

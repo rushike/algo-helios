@@ -72,16 +72,6 @@ class OrderAdmin(admin.ModelAdmin):
     ordering = ('razorpay_order_id', 'user_group_id', 'order_amount', 'razorpay_payment_id')
 
 
-# razorpay_order_id = models.CharField(max_length=1024)
-# user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE, null = True, default = None)
-# order_time = models.DateTimeField(auto_now=True)
-# order_amount = models.IntegerField()
-# order_currency = models.CharField(max_length=16)
-# order_receipt = models.CharField(max_length=1024)
-# notes = models.CharField(max_length=1024)
-# razorpay_payment_id = models.CharField(max_length=1024, null = True, default = None)
-# offer_id = models.CharField(max_length=128, null = True, default = None)
-
 admin.site.register(Subscription,SubscriptionAdmin)
 admin.site.register(Plan, PlanAdmin)
 admin.site.register(Offer)
