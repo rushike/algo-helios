@@ -232,7 +232,7 @@ nav{
 
 .knowmore p
 {
-    font-size:15px;
+    font-size:24px;
     color:#004B96 !important;
     font-family:'Lato', sans-serif !important;
     font-weight: bold;
@@ -384,7 +384,7 @@ nav{
 }
 
 .productsb{
-    padding: 3% 15%;
+    padding: 1% 10%;
 }
 
 .productsb .productsbox{
@@ -429,6 +429,10 @@ nav{
 
 .productsb .productsbox .content .col-md-4 img{
     width:80%;
+}
+
+.productbox-para{
+    font-size: 24px;
 }
 
 @media only screen and (max-width:786px){

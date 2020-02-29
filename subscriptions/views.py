@@ -120,7 +120,7 @@ def payment_success(request):
         #payment not verified sucessfully
         return HttpResponseRedirect(redirect_to="/subscriptions/plans")
     request.session['order_details_post'] = POST
-    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'),})
+    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'), 'signature' : request.POST.get('signature')})
     
     return HttpResponseRedirect('/subscriptions/subscribe')
 
@@ -155,15 +155,17 @@ def subscribe(request):
 
     order_id = POST.get('order_id')
     payment_id = POST.get('payment_id')
-    
+    signature = POST.get('signature')
+
+    payment = subscriptions.functions.register_payment(order_id, payment_id, signature)
     recepients = []
     if 'group_emails' in POST:    
         email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
         recepients.extend(email_list)
     
-    subscription_id = subscribe_common(user = request.user, group_type = group_type, plan_type= plan_type ,   \
-                    plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
-    subscriptions.functions.register_payment(order_id, payment_id,subscription_id)
+    subscription_id = subscribe_common(request = request, user = request.user, group_type = group_type, plan_type= plan_type ,   \
+                    plan_name= plan_name, period= period, payment_id = payment, recepients=recepients)
+    
     return HttpResponseRedirect(redirect_to='/user/profile/info')
 
 @login_required(login_url='/accounts/login/') 
@@ -180,6 +182,7 @@ def plan_overview(request, slug):
                 'is_group_plan' : is_group_plan,
             }
     return render(request, 'subscriptions/plan_overview.html',context=context)
+
 
 @login_required(login_url='/accounts/login/')
 def plan_subscribe(request):
@@ -205,9 +208,9 @@ def plan_subscribe(request):
     return HttpResponseRedirect(redirect_to='/user/profile/info')
     
 
-async def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
+def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]
-    recepient.extend(recepients)
+    recepients.extend(recepient)
     subscribed = Subscription.objects.create_subscription(
                     user = user,
                     group_type = group_type,
@@ -225,7 +228,8 @@ async def subscribe_common(user, group_type, plan_type, plan_name, period, payme
     #                 payment_id = payment_id,
     #             )
     if subscribed:
+        group_add_link = request.build_absolute_uri(users.functions.generate_group_add_link(subscribed.user_group_id))
         subject = "Regarding Algonauts Subscription"
-        message = "You have successfully subscribed to algonauts plan : " + str(plan_name)
-        subscriptions.functions.send_email(subscribed.user_group_id, recepients, subject, message)
+        message = "You have successfully subscribed to algonauts plan : " + str(plan_name) + "\n" + group_add_link
+        subscriptions.functions.send_email(user, recepients, subject, message)
     return subscribed

@@ -213,13 +213,13 @@
 																			<script>
 																				$(document).ready(()=>{
 																					$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					}, function(){
 																						console.log("{{group_type.1}}-{{product.product_name}}")
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					});
 																					$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					});
 																				});
 																			</script>

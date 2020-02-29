@@ -94,6 +94,7 @@ def get_all_plans_xxx_group(group_type:UserGroupType, exclude = False):
     return Plan.objects.filter(user_group_type_id = group_type)
 
 def get_context_for_plans(user=None):
+    user = users.functions.get_user_object(user)
     context = []
     plan_types = get_all_plan_type()
     user_groups = users.functions.get_all_standard_groups()
@@ -112,6 +113,7 @@ def get_context_for_plans(user=None):
 
 def can_subscribe(user, group_type, plan_type, plan_name):
     # Guy having premium paid subscription should not able to subscribe other non premium plans
+    user = users.functions.get_user_object(user)
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
     group_type_id = UserGroupType.objects.filter(type_name = group_type).last()
     plan_type_id = PlanType.objects.filter(type_name = plan_type).last()
@@ -131,6 +133,7 @@ def is_trial_applicable(group_type, plan_type, plan_name):
     return plan_type_id.trial_applicable and group_type_id.eligible_for_trial 
 
 def already_had_trial(user, group_type, plan_type, plan_name):
+    user = users.functions.get_user_object(user)
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
     group_type_id = UserGroupType.objects.filter(type_name = group_type).last()
     plan_type_id = PlanType.objects.filter(type_name = plan_type).last()
@@ -146,12 +149,12 @@ def send_subscription_link(group, recepients, to = None):
 def get_order_details(group_type, plan_type, plan_name, period):
     return
 
-def send_email(group, recepients, subject, message, to = None):
-    threading.Thread(target=send_mail_async, args=(group, recepients,subject, message)).start()
+def send_email(user, recepients, subject, message, to = None):
+    if not isinstance(recepients, list) : return send_email(user, [recepients], subject, message) 
+    threading.Thread(target=send_mail_async, args=(user, recepients,subject, message)).start()
 
-def send_mail_async(group, recepients, subject, message):
-    if not isinstance(recepients, list) : return send_email(group, [recepients], subject, message) 
-    start = time.time()
+def send_mail_async(user, recepients, subject, message):
+    user = users.functions.get_user_object(user)
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
 
@@ -167,16 +170,15 @@ def register_order(user_group_id, razorpay_order):
         razorpay_payment_id = "---"
     )
 
-def register_payment(order_id, payment_id, subscription_id):
+def register_payment(order_id, payment_id, signature):
     if type(order_id) == str:
         order_id = get_order_instance(order_id)
-    if type(subscription_id) == int: 
-        subscription_id = Subscription.objects.get(id = subscription_id)
+    if not order_id : return None
     payment = Payment.objects.create(
-        payment_ref = "",
+        payment_ref = payment_id,
         order_id = order_id,
-        subscription_id = subscription_id,
         user_group_id = order_id.user_group_id,
+        signature = signature,
         amount = order_id.order_amount,    
     )
     Order.objects.filter(razorpay_order_id = order_id.razorpay_order_id).update(razorpay_payment_id = payment_id)

@@ -5,6 +5,9 @@ from allauth.account.signals import user_signed_up, user_logged_in
 import users
 import users.functions, subscriptions.functions
 
+def remove_hash_from_product(product):
+    if '#' in product.product_name: return product.product_name.split('#')[1]
+    return product.product_name
 
 @login_required(login_url = '/accounts/login/')
 def profile_page(request):
@@ -21,8 +24,8 @@ def profile_page(request):
     gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in gplans_objs]
     gproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in gprod)[0] for gprod in gproduct_list]
     
-    iiplans = [[iplans[i], iplans_type[i], iproduct_family[i]] for i in range(len(iplans))]
-    ggplans = [[gplans[i], gplans_type[i], gproduct_family[i]] for i in range(len(gplans))]
+    iiplans = [[iplans[i], iplans_type[i], iproduct_family[i], remove_hash_from_product(iproduct_list[i][0])] for i in range(len(iplans))]
+    ggplans = [[gplans[i], gplans_type[i], gproduct_family[i], remove_hash_from_product(gproduct_list[i][0])] for i in range(len(gplans))]
     context = {
                 'iplans':iiplans, 
                 'gplans' : ggplans,

@@ -9,7 +9,7 @@
         {"password": "pbkdf2_sha256$180000$Uwrog0f1ejlP$tTxT5wN8F8jdZ6H0cw9hOIgUZqLRC1169fqkEFWkfGs=", "first_name": "", "last_name": "", "email": "admin@algonauts.in", "contact_no": "", "is_staff": true, "is_superuser": true, "is_active": true, "last_login": "2020-02-20T08:31:13.383Z", "date_joined": "2020-02-20T08:31:13.480Z", "algo_credits": 0, "referral_code": "bs3ru337", "groups": [], "user_permissions": []}
     }, 
     {"model": "socialaccount.socialapp", "pk": 1, "fields": 
-        {"provider": "facebook", "name": "Facebook", "client_id": "55bee592e13a3c3631e54d9294bb9734", "secret": "55bee592e13a3c3631e54d9294bb9734", "key": "", "sites": [1]}
+        {"provider": "facebook", "name": "Facebook", "client_id": "476644213022197", "secret": "55bee592e13a3c3631e54d9294bb9734", "key": "", "sites": [1]}
     }, 
     {"model": "socialaccount.socialapp", "pk": 2, "fields": 
         {"provider": "google", "name": "Google", "client_id": "1058548349981-hsha8q8liui5b9q96kqjopub3b794jti.apps.googleusercontent.com", "secret": "ZJNlLHUr0FzCksqukrBu_Z0F", "key": "", "sites": [1]}

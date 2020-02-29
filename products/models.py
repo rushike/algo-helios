@@ -89,7 +89,6 @@ def create_standard_plans(sender, instance, **kwargs):
                             entry_time = now,
                             expiry_time = end_date,
                             is_active = False,
-                            trial_applicable = True 
                             )
         plan = Plan.objects.get(plan_name = product_name, plan_type_id = BASIC, user_group_type_id = group_t)
         PlanProductMap.objects.create(
@@ -109,8 +108,7 @@ def create_standard_plans(sender, instance, **kwargs):
                             price_per_year = 0,
                             entry_time = now,
                             expiry_time = end_date,
-                            is_active = False,
-                            trial_applicable = True 
+                            is_active = False,                            
                             )
         plan = Plan.objects.get(plan_name = product_name.split("#")[0], plan_type_id = PREMIUM, user_group_type_id = group_t)
         PlanProductMap.objects.create(
