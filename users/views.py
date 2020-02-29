@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.dispatch import receiver
-from allauth.account.signals import user_signed_up
+from allauth.account.signals import user_signed_up, user_logged_in
 import users
 import users.functions, subscriptions.functions
 
@@ -72,3 +72,9 @@ def register_feedback(request):
 def redirect_after_signup(request, user, **kwargs):
     request.session["REDIRECT_URL"] = "/subscriptions/plans"
     return HttpResponseRedirect("/products/")
+
+# @receiver(user_logged_in)
+# def store_user_logged_in_session(request, user, **kwargs):
+#     request.session["REDIRECT_URL"] = "/subscriptions/plans"
+#     request.session["email"] = request.user.email
+    

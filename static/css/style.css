@@ -30,6 +30,9 @@
 .dark-blue{
     color : #004B96;
 }
+.dark-blue-bg{
+    background-color : #004B96;
+}
 
 .light-blue{
     color : #7DDCFF;
@@ -46,8 +49,11 @@
 .border-solid{
     border-width: thick;
 }
-.white-fr{
+.white{
     color: white;
+}
+.white-bg{
+    background-color: white;
 }
 
 .light-gray{
@@ -60,4 +66,9 @@
 
 .dark-gray{
     color:#515151;
+}
+
+
+.rounded-large{
+    border-radius: 40px;
 }

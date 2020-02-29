@@ -1,10 +1,10 @@
 import logging
 import threading
-from users.functions import get_user_subs_product
+import users.functions
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing CONSUMER MANAGER on thread {threading.get_ident()}')
-
+console_logger = logging.getLogger('')
 
 class Singleton(type):
     _instances = {}
@@ -45,8 +45,12 @@ class ConsumerManager(metaclass=Singleton):
 
     @staticmethod
     def get_eligible_groups(user):
-        return get_user_subs_product(user)
-
+        console_logger.info("user logged in ==> " + user.email)
+        results = {}
+        threading.Thread(target = users.functions.get_user_subs_product, args=(user), kwargs = {"results" : results} )
+        console_logger.info("subscribed products are ==> " + str(results) )
+        return 
+        
     @staticmethod
     def get_mapped_group(portfolio_id):
         return portfolio_id

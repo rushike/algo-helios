@@ -136,7 +136,6 @@ class SubscriptionManager(models.Manager):
                         payment_id = payment_id, 
                         is_trial = is_trial)
         subscription.save(using=self._db)
-
         return subscription
 
 

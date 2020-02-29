@@ -1,0 +1,1064 @@
+{% extends 'worker/base.html' %}   
+{% load static %}
+
+<!-- <!DOCTYPE html> -->
+<!-- <html> -->
+
+<!-- <head> -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-155866777-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-155866777-1');
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="vapid-key" content="{{ vapid_key }}">
+    <meta name="active-tab" content="{{ active_tab }}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/ws.css' %}?version=1">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.12.0/css/bootstrap-tour.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+
+    <link href="https://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.rawgit.com/davidstutz/bootstrap-multiselect/master/dist/js/bootstrap-multiselect.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tour/0.12.0/js/bootstrap-tour.min.js" type="text/javascript"></script>
+    <!-- Include the plugin // -->
+    <script src="https://kite.trade/publisher.js?v=3"></script>
+    <script src="{% static 'js/ws.js' %}?version=1"></script>
+
+    <title>Algonauts Calls</title>
+<!-- </head> -->
+
+{% block mercury %}
+    <script>
+    var data_table = `  <div id="table-wrapper" class="tab-content">
+                            <div class="row table_details">
+                                <div class="col-md-2 col-xs-12">
+                                    <input type="text" id="{}_search" class="search form-control"
+                                        placeholder="Search . . . " style="border-radius: 20px;">
+                                </div>
+                                <div class="col-md-2 col-xs-6 count_display">
+                                    <label class="param">Total Calls </label>
+                                    <label class="value" id="{}_total_count">0</label>
+                                </div>
+                                <div class="col-md-2 col-xs-6 count_display">
+                                    <label class="param">Hits </label>
+                                    <label class="value" id="{}_hit_count">0</label>
+                                </div>
+                                <div class="col-md-2 col-xs-6 count_display">
+                                    <a href="#" data-toggle="tooltip" data-placement="top"
+                                        title="Partially Successful Calls, Hitting 60% of Target">
+                                        <label class="param">Partial Hits </label>
+                                        <label class="value" id="{}_partial_hit_count">0</label>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 col-xs-6 count_display">
+                                    <label class="param">Miss </label>
+                                    <label class="value" id="{}_miss_count">0</label>
+                                </div>
+
+                                <div class="col-md-4s btn-group btn-group-lg pull-right">
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
+                                        <button class="btn filter" data-toggle="modal" data-target="#{}_filter_modal">
+                                            <small><span class="glyphicon glyphicon-filter"></span></small>
+                                        </button>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
+                                        <button class="btn download" onclick='exportTableToCSV("{}")'>
+                                            <small><span class="glyphicon glyphicon-download-alt"></span></small>
+                                        </button>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
+                                        <button class="btn refresh" onclick="location.reload()" title="Refresh">
+                                            <small><span class="glyphicon glyphicon-refresh"></span></small>
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <hr style="margin-top: 10px; margin-bottom: 5px; border-top: 1px solid #ddd">
+
+                            <!-- Modal -->
+                            <div id="{}_filter_modal" class="modal" role="dialog">
+                              <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title" style="text-align: center;">Filter</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form action="/data/applyfilters/" method="post" style="text-align: left;" id="{}_filter_form">
+                                      {% csrf_token %}
+                                      <div class="form-group">
+                                        <label>Tickers</label>
+                                        <select name="tickers" class="tickers_filter" id="{}_tickers_filter" multiple="multiple">
+                                            <option value"">NIFTY 50</option>
+                                            <option value"">NIFTY BANK</option>
+                                            <option value"">ADANIPORTS</option>
+                                            <option value"">ASIANPAINT</option>
+                                            <option value"">AXISBANK</option>
+                                            <option value"">BAJAJ-AUTO</option>
+                                            <option value"">BAJFINANCE</option>
+                                            <option value"">BAJAJFINSV</option>
+                                            <option value"">BPCL</option>
+                                            <option value"">BHARTIARTL</option>
+                                            <option value"">INFRATEL</option>
+                                            <option value"">BRITANNIA</option>
+                                            <option value"">CIPLA</option>
+                                            <option value"">COALINDIA</option>
+                                            <option value"">DRREDDY</option>
+                                            <option value"">EICHERMOT</option>
+                                            <option value"">GAIL</option>
+                                            <option value"">GRASIM</option>
+                                            <option value"">HCLTECH</option>
+                                            <option value"">HDFCBANK</option>
+                                            <option value"">HEROMOTOCO</option>
+                                            <option value"">HINDALCO</option>
+                                            <option value"">HINDUNILVR</option>
+                                            <option value"">HDFC</option>
+                                            <option value"">ICICIBANK</option>
+                                            <option value"">ITC</option>
+                                            <option value"">IOC</option>
+                                            <option value"">INDUSINDBK</option>
+                                            <option value"">INFY</option>
+                                            <option value"">JSWSTEEL</option>
+                                            <option value"">KOTAKBANK</option>
+                                            <option value"LT">LT</option>
+                                            <option value"M&M">M&M</option>
+                                            <option value"MARUTI">MARUTI</option>
+                                            <option value"NTPC">NTPC</option>
+                                            <option value"NESTLEIND">NESTLEIND</option>
+                                            <option value"ONGC">ONGC</option>
+                                            <option value"POWERGRID">POWERGRID</option>
+                                            <option value"RELIANCE">RELIANCE</option>
+                                            <option value"SBIN">SBIN</option>
+                                            <option value"SUNPHARMA">SUNPHARMA</option>
+                                            <option value"TCS">TCS</option>
+                                            <option value"TATAMOTORS">TATAMOTORS</option>
+                                            <option value"TATASTEEL">TATASTEEL</option>
+                                            <option value"TECHM">TECHM</option>
+                                            <option value"TITAN">TITAN</option>
+                                            <option value"UPL">UPL</option>
+                                            <option value"ULTRACEMCO">ULTRACEMCO</option>
+                                            <option value"VEDL">VEDL</option>
+                                            <option value"WIPRO">WIPRO</option>
+                                            <option value"YESBANK">YESBANK</option>
+                                            <option value"ZEEL">ZEEL</option>
+                                         </select>
+                                      </div>
+                                      <div class="form-group">
+                                        <div class="row">
+                                          <div class="col-md-6" style="padding-bottom: 15px;">
+                                            <label style="padding-right: 10px;">Side</label>
+                                             <select name="sides" class="side_filter" id="{}_side_filter" multiple="multiple">
+                                                <option value="BUY">BUY</option>
+                                                <option value="SELL">SELL</option>
+                                             </select>
+                                          </div>
+                                          <div class="col-md-6">
+                                            <label style="padding-right: 10px; color: LightGray;">Signal Time</label>
+                                             <select class="signal_time_filter" id="{}_signal_time_filter" multiple="multiple" disabled>
+                                                <option>9.30 - 10.30</option>
+                                                <option>10.30 - 11.30</option>
+                                                <option>12.30 - 12.30</option>
+                                                <option>12.30 - 01.30</option>
+                                                <option>01.30 - 02.30</option>
+                                                <option>02.30 - 03.30</option>
+                                             </select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <p>
+                                           <label for="{}_rr_range">Risk Reward Range:</label>
+                                           <input name="rr_range" class="rr_range_cls" type="text" id="{}_rr_range" style="border:0; color: #004B96; font-weight:bold;" readonly>
+                                        </p>
+                                        <div id="{}_rr_slider_range" class="rr_slider_range"></div>
+                                      </div>
+                                      <div class="form-group">
+                                        <p>
+                                           <label for="{}_profit_range">Profit % Range:</label>
+                                           <input name="pp_range" class="profit_range_cls" type="text"
+                                           id="{}_profit_range" style="border:0; color: #004B96; font-weight:bold;" readonly>
+                                        </p>
+                                        <div id="{}_profit_slider_range" class="profit_slider_range"></div>
+                                      </div>
+                                      <div class="form-group">
+                                        <button type="button" class="filter_apply btn btn-default">Apply</button>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+
+                              </div>
+                            </div>
+
+                            <table id="{}_data-table" class="table">
+                                <thead>
+                                    <tr id="t-headers">
+                                        <th>Ticker  <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <th>LTP</a></th>
+                                        <th>Signal  <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <th>Signal Time  <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <th>Signal Price  <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <th>Target Price</a></th>
+                                        <th>Stop Loss</th>
+                                        <!-- <th><b>Risk/Reward</b>  <a><i class="fa fa-fw fa-sort"/></a></th> -->
+                                        <th><a href="#" data-toggle="tooltip" data-placement="top"
+                                        title="Expected Profit with respect to LTP if entered now">Profit %</a> <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <th>Status <a><i class="fa fa-fw fa-sort"/></a></th>
+                                        <!-- <th>Action</th> -->
+                                        <!-- TODO: Display hit/miss number -->
+                                    </tr>
+                                </thead>
+                                <tbody id="{}_data-table-rows"/>
+                            </table>
+                        </div>`
+
+    String.prototype.format = function () {
+      var i = 0, args = arguments;
+      return this.replace(/{}/g, function () {
+        return typeof args[0] != 'undefined' ? args[0] : '';
+      });
+    };
+
+    $(function() {
+
+        $.ajax({
+           type: "GET",
+           url: "/data/getfilters/",
+           data: {session_id : guid()},
+           success: function(data)
+           {
+                $.each(data, function(tab_to_consider, filter_data) {
+                    tab_id = "#" + tab_to_consider
+                    $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
+                    $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
+                    $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
+                    $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
+                    $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
+                    $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
+                });
+           },
+           error: function(request, status, error)
+           {
+                alert(request.responseText);
+           }
+        });
+
+        $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
+            $("#" + value + "_content").html(data_table.format(value));
+
+            $( "#" + value + "_rr_slider_range" ).slider({
+                  range: true,
+                  min: 0,
+                  max: 5,
+                  step: 0.1,
+                  values: [1, 5],
+                  slide: function( event, ui ) {
+                   $( "#" + value + "_rr_range" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                  }
+            });
+
+            $( "#" + value + "_rr_range" ).val($( "#" + value + "_rr_slider_range" ).slider( "values", 0 ) +
+             " - " + $( "#" + value + "_rr_slider_range" ).slider( "values", 1 ) );
+
+             $( "#" + value + "_profit_slider_range" ).slider({
+                  range: true,
+                  min: 0,
+                  max: 50,
+                  step: 0.1,
+                  values: [0, 50],
+                  slide: function( event, ui ) {
+                       $( "#" + value + "_profit_range" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                  }
+            });
+
+            $( "#" + value + "_rr_slider_range" ).draggable();
+            $( "#" + value + "_profit_slider_range" ).draggable();
+
+            $( "#" + value + "_profit_range" ).val($( "#" + value + "_profit_slider_range" ).slider( "values", 0 ) +
+             " - " + $( "#" + value + "_profit_slider_range" ).slider( "values", 1 ) );
+        });
+
+        $('.tickers_filter').multiselect({
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            includeFilterClearBtn: false,
+            dropRight: true,
+            buttonWidth: '80%'
+        });
+
+        $('.side_filter').multiselect({
+            buttonWidth: '30%',
+            nonSelectedText:'None',
+            allSelectedText:'All',
+        });
+
+        $('.signal_time_filter').multiselect({
+            includeSelectAllOption: true,
+            buttonWidth: '50%',
+            allSelectedText: 'Trading session'
+        });
+
+		const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+
+        const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+            )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+        document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
+            //console.log($('.nav-tabs .active').attr("id"))
+            const table = document.getElementById($('.nav-tabs .active').attr("id") + "_data-table");
+            const tbody = table.children[1];
+            Array.from(tbody.querySelectorAll('tr:nth-child(n+1)'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(tr => tbody.appendChild(tr));
+        })));
+
+        function isTouchDevice(){
+            return true == ("ontouchstart" in window || window.DocumentTouch && document instanceof DocumentTouch);
+        }
+
+        if (isTouchDevice()===false) {
+            $('[data-toggle="tooltip"]').tooltip({
+                 'delay': { show: 1000 }, trigger: "hover"
+            });
+        }
+
+        $('.table').on('load change DOMNodeInserted', '.call_status', function(e){
+            var closest_tr = $(this).closest('tr')
+            status = closest_tr.find('td:eq(8)').html()
+            badge_template = 'active_status'
+            if (status == 'MISS') {
+                badge_template = 'miss_status'
+            } else if (status == 'HIT') {
+                badge_template = 'hit_status'
+            } else if (status == 'Inactive') {
+                badge_template = 'inactive_status'
+            } else if (status == 'Active') {
+                badge_template = 'active_status'
+            } else if (status == 'Partial HIT') {
+                badge_template = 'partialhit_status'
+            } else {
+                return
+            }
+
+            // console.log("Status is ", status)
+            new_html = `<span class="badge ` + badge_template + `">` + status + `</span>`;
+            closest_tr.find('td:eq(8)').html(new_html)
+        });
+
+        $('.table').on('click', '.trade', function(e) {
+            $('#trade_action').remove();
+            activeTab = $('.nav-tabs .active').attr("id")
+
+            if (activeTab == "intraday") {
+                $("input[name=trade_type][value='MIS']").prop("checked",true).trigger('change');
+                $("input[name=exec_type][value='bo']").prop("checked",true).trigger('change');
+                $("input[name=order_type][value='LIMIT']").prop("checked",true).trigger('change');
+            } else {
+                $("input[name=trade_type][value='CNC']").prop("checked",true).trigger('change');
+                $("input[name=exec_type][value='regular']").prop("checked",true).trigger('change');
+            }
+            var closest_tr = $(this).closest('tr')
+
+            var id = closest_tr.attr("id")
+            var ticker = closest_tr.find('td:eq(0)').html()
+            var ltp = closest_tr.find('td:eq(1)').html()
+            var signal = closest_tr.find('td:eq(2)').text()
+            var tp = closest_tr.find('td:eq(5)').html()
+            var sl = closest_tr.find('td:eq(6)').html()
+
+            $('#trade_ticker').text(ticker);
+            $('input[name=price]').val(ltp);
+            $('input[name=target_price]').val(Math.round(Math.abs(tp - ltp) * 10) / 10);
+            $('input[name=stop_loss]').val(Math.round(Math.abs(sl - ltp) * 10) / 10);
+            $('input[name=trigger_price]').val(sl);
+
+            var trade_action_btn = $('<button id="trade_action" type="button" class= "trade_action btn btn-rounded">');
+            trade_action_btn.attr("data-name", signal);
+            trade_action_btn.text(signal);
+            if (signal == "BUY") {
+                trade_action_btn.removeClass("SELL_btn");
+                $('#trade_header').removeClass("SELL_header");
+            } else {
+
+                trade_action_btn.removeClass("BUY_btn");
+                $('#trade_header').removeClass("BUY_header");
+            }
+            trade_action_btn.addClass(signal + "_btn");
+            $('#trade_header').addClass(signal + "_header");
+
+            $("#buttonView").append(trade_action_btn);
+
+            $('.trade_action').on('mousedown', function(e){
+                KiteConnect.ready(function() {
+                    // You can initialize multiple instances if you need
+                    var kite = new KiteConnect("tpisubdoz4a7cskn"); // Initialize a new Kite instance
+
+                    trade_input = {
+                        "tradingsymbol": $('#trade_ticker').text(),
+                        "exchange": "NSE",
+                        "transaction_type": $('#trade_action').text(),
+                        "order_type": $('input[name="order_type"]:checked').val(),
+                        "product": $('input[name="trade_type"]:checked').val(),
+                        "price": parseFloat($('input[name=price]').val()),
+                        "quantity": parseInt($('input[name=quantity]').val()),
+                        "variety": $('input[name="exec_type"]:checked').val(),
+                        "stoploss": parseFloat($('input[name=stop_loss]').val()),
+                        "squareoff": parseFloat($('input[name=target_price]').val()),
+                        "trailing_stoploss": parseFloat($('input[name=trailing_stop_loss]').val()),
+                        "trigger_price": parseFloat($('input[name=trigger_price]').val()),
+                        "disclosed_quantity": parseInt($('input[name=quantity]').val())
+                    }
+
+                    // Add a Bracket Order
+                    kite.add(trade_input);
+
+                    // Register an (optional) callback.
+                    kite.finished(function(status, request_token) {
+                        alert("Order Placed!! Status is " + status);
+                    });
+
+                    // Render the in-built button inside a given target
+                    kite.link("#trade_action");
+                });
+            });
+
+            $('.trade_action').on('click', function(e){
+                $('#trade_modal').modal('toggle');
+            });
+        });
+
+        $('input[name=exec_type]').on('change', function(){
+             exec_type = $('input[name=exec_type]:checked').val();
+
+             if (exec_type == "bo" || exec_type == "co") {
+                $("input[name=trade_type][value='MIS']").prop("checked",true);
+                $("input[name=trade_type]").prop('disabled', true);
+
+                if (exec_type == "bo") {
+                    $("input[name=order_type][value='LIMIT']").prop("checked",true);
+                    $("input[name=order_type]").prop('disabled', true);
+                    $("input[name=trigger_price]").prop('disabled', true);
+
+                    $("#trade_bo_params").prop('hidden', false);
+
+                    $("input[name=target_price]").prop('disabled', false);
+                    $("input[name=stop_loss]").prop('disabled', false);
+                    $("input[name=trailing_stop_loss]").prop('disabled', false);
+                } else {
+                    $("input[name=order_type][value='LIMIT']").prop("checked",true);
+                    $("input[name=order_type]").prop('disabled', false);
+
+                    $("#trade_bo_params").prop('hidden', true);
+
+                    $("input[name=trigger_price]").prop('disabled', false);
+                    $("input[name=target_price]").prop('disabled', true);
+                    $("input[name=stop_loss]").prop('disabled', true);
+                    $("input[name=trailing_stop_loss]").prop('disabled', true);
+                }
+             } else {
+                $("input[name=trade_type]").prop('disabled', false);
+                $("input[name=order_type]").prop('disabled', false);
+                $("input[name=trigger_price]").prop('disabled', true);
+
+                $("#trade_bo_params").prop('hidden', true);
+
+                $("input[name=target_price]").prop('disabled', true);
+                $("input[name=stop_loss]").prop('disabled', true);
+                $("input[name=trailing_stop_loss]").prop('disabled', true);
+             }
+        });
+
+        $('input[name=order_type]').on('change', function(){
+            order_type = $('input[name=order_type]:checked').val();
+            if (order_type == "MARKET") {
+                $("input[name=price]").prop('disabled', true);
+            } else {
+                $("input[name=price]").prop('disabled', false);
+            }
+        });
+
+        $(".search").on('keyup', function () {
+            var value = $(this).val().toLowerCase();
+            $("#" + $('.nav-tabs .active').attr("id") + "_data-table-rows tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+		});
+
+		$("input[name=quantity]").on('keyup', function () {
+            $("input[name=disclosed_quantity]").val($(this).val());
+		});
+
+		$(".filter_apply").on('click', function () {
+		    var current_tab = $('.nav-tabs .active').attr("id")
+            $.ajax({
+               type: "POST",
+               url: "/data/applyfilters/",
+               data: $('#' + current_tab + "_filter_form").serialize() + '&unique_id=' + guid() + '&call_type=' + current_tab,
+               success: function(data)
+               {
+                    console.log("Filter applied successfully!");
+                    location.reload();
+               },
+               error: function(request, status, error)
+               {
+                    alert(request.responseText);
+               }
+            });
+		});
+
+		$(".product-tabs").on('click', function () {
+            console.log($('.nav-tabs li.active a').attr("href"))
+            
+		    $("meta[name=active-tab]").attr("content", $('.nav-tabs li.active a').attr("href"));
+		});
+
+		 $('.nav-tabs a[href="#' + $('meta[name=active-tab]').attr("content") + '"]').tab('show');
+    });
+
+    // PUSH Notifications
+
+    const registerSw = async () => {
+        if ('serviceWorker' in navigator) {
+            const reg = await navigator.serviceWorker.register('sw.js');
+            initialiseState(reg)
+
+        } else {
+            console.log("Not eligible for push notifications!!")
+        }
+    };
+
+    const initialiseState = (reg) => {
+        if (!reg.showNotification) {
+            console.log('Showing notifications isn\'t supported');
+            return
+        }
+        if (Notification.permission === 'denied') {
+            console.log('You prevented us from showing notifications');
+            return
+        }
+        if (!'PushManager' in window) {
+            console.log("Push isn't allowed in your browser");
+            return
+        }
+        subscribe(reg);
+    }
+
+    function urlB64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        const outputData = outputArray.map((output, index) => rawData.charCodeAt(index));
+
+        return outputData;
+    }
+
+    const subscribe = async (reg) => {
+        const subscription = await reg.pushManager.getSubscription();
+        if (subscription) {
+            sendSubData(subscription);
+            return;
+        }
+
+        const vapidMeta = document.querySelector('meta[name="vapid-key"]');
+        const key = vapidMeta.content;
+        const options = {
+            userVisibleOnly: true,
+            // if key exists, create applicationServerKey property
+            ...(key && {applicationServerKey: urlB64ToUint8Array(key)})
+        };
+
+        const sub = await reg.pushManager.subscribe(options);
+        sendSubData(sub)
+    };
+
+    // TODOs
+    // Get all products subscribed from backend
+    // You get the list of products
+
+    const sendSubData = async (subscription) => {
+        const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
+        const data = {
+            status_type: 'subscribe',
+            subscription: subscription.toJSON(),
+            browser: browser,
+            group: 'calls_consumer',
+        };
+
+        // Subscribe based on the groups eligible
+
+        const res = await fetch('/webpush/save_information', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            credentials: "include"
+        });
+
+        handleResponse(res);
+    };
+
+    const handleResponse = (res) => {
+        console.log(res.status);
+    };
+
+    registerSw();
+    </script>
+
+    <style>
+        a:hover, a:focus{
+            text-decoration: none;
+            outline: none;
+        }
+
+        a { color: inherit; }
+
+        nav{
+            transition: box-shadow .8s;
+        }
+
+        #myNavbar li a{
+            font-size: 16px !important;
+            color: #515252 !important;
+            transition-duration: .2s;
+        }
+
+        #myNavbar li a:hover{
+            transform: scale(1.1) !important;
+            background: transparent;
+        }
+
+        #logo:hover{
+            transform: scale(1.05);
+        }
+
+        .refresh .download {
+            padding: 1em;
+            float: right;
+            margin: inherit;
+            border: none;
+            outline: none;
+        }
+
+        .table_details {
+            margin-top: 10px;
+        }
+
+        .wrapper {
+            width: 100%;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .col-md-4{
+                padding:0 !important;
+            }
+            .col-md-4 img{
+                display: none;
+            }
+        }
+
+        a[aria-expanded=false]{
+            z-index: 100;
+            background-color: white;
+            border-bottom: 5px solid #004B96;
+        }
+
+        .form-horizontal {
+            padding-left: 10px;
+            padding: inherit;
+        }
+
+        .form-horizontal .control-label {
+            text-align: left;
+        }
+
+        .table-responsive {
+            max-height:300px;
+        }
+
+        .trade_radio {
+            position: relative !important;
+            margin-right: 10px !important;
+        }
+
+        .form-horizontal .control-label {
+            padding-top: 10px;
+        }
+
+        .radio-inline {
+            padding-top: 0px !important;
+        }
+
+        #trade_form {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        #trade_form > .form-group > .col-md-2 {
+            padding-right: 0px;
+        }
+
+        .tab .nav-tabs{
+            display: inline-block;
+            background: white;
+            border-radius: 50px;
+            border: none;
+            padding: 6px;
+            width: 50%;
+            letter-spacing: 2px;
+            /* box-shadow: 0 0 5px 2px gray; */
+        }
+
+        .tab .nav-tabs li{
+            display: inline-block;
+            position: relative;
+            width: 25%;
+        }
+
+        .tab .nav-tabs li a{
+            margin: 5px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: none;
+            color: dimgray;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50px;
+            transition: all 0.5s ease 0s;
+        }
+
+        .tab .nav-tabs li a:hover{
+            background: #004b96;
+            color: #fff;
+            border: none;
+        }
+
+        .tab .nav-tabs li.active a,
+        .tab .nav-tabs li.active a:focus,
+        .tab .nav-tabs li.active a:hover{
+            border: none;
+            background: #004b96;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .tab .tab-content{
+            font-size: 14px;
+            color: #686868;
+            line-height: 25px;
+            text-align: left;
+            padding: 5px 20px;
+        }
+
+        .tab .tab-content h3{
+            font-size: 22px;
+            color: #5b5a5a;
+        }
+
+        @media only screen and (max-width: 480px){
+            .tab .nav-tabs{
+                border-radius: 20px;
+                width: 80%
+            }
+
+            .tab .nav-tabs li{
+                width: 100%;
+                text-align: center;
+                margin-bottom: 2px;
+                border-radius: 15px;
+            }
+
+            .tab .nav-tabs li a{
+                font-size: 14px;
+            }
+
+            .tab .tab-content, .container {
+                padding: 0;
+                border-radius: 0;
+            }
+        }
+
+        .navbar-toggle  .icon-bar {
+            background: #004b96;
+        }
+
+        .tooltip > .tooltip-inner {
+            background-color: #7DDCFF;
+            color: black;
+            border: 1px solid #7DDCFF;
+            padding: 10px;
+            font-size: 12px;
+          }
+    </style>
+
+
+    <div id="container" style="text-align: center;">
+
+        <!-- <nav class="navbar">
+          <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+              <a class="navbarlogo" href="{%url 'index'%}">
+                  <img id="logo" src="{% static 'algotext.png' %}" width="130px" height="auto">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+              <ul class="nav navbar-nav navbar-right">
+                <li class="active"><a href="{%url '' %}">Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav> -->
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tab" role="tabpanel">
+                    <h2 style="color: white; letter-spacing: 2px;">MERCURY</h2>
+                    <!-- Nav tabs -->
+                    <div class="btn-group " id="ordertypes" role="tablist">
+                        <div class="btn x-large white m-3 dark-blue-bg" style="border-radius: 40px;" role="presentation" id="intraday">
+                            <a  href="#Section1" aria-controls="home" role="tab" data-toggle="tab" class="product-tabs link-unstyled">Intraday</a>
+                        </div>
+                        <div class="btn x-large white m-3 dark-blue-bg" style="border-radius: 40px;" role="presentation" id="btst" data-toggle="tooltip" title="Buy/Sell Today Sell/Buy Tomorrow">
+                            <a  href="#Section2" aria-controls="profile" role="tab" data-toggle="tab" class="product-tabs link-unstyled">BTST / STBT</a>
+                        </div>
+                        <div class="btn x-large white m-3 dark-blue-bg" style="border-radius: 40px;" role="presentation" id="positional">
+                            <a  href="#Section3" aria-controls="messages" role="tab" data-toggle="tab" class="product-tabs link-unstyled">Positional</a>
+                        </div>
+                        <div class="btn x-large white m-3 dark-blue-bg" style="border-radius: 40px;" role="presentation" id="longterm">
+                            <a  href="#Section4" aria-controls="messages" role="tab" data-toggle="tab" class="product-tabs link-unstyled">Long Term</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+                <!-- Tab panes -->
+                <div class="tab-content tabs" id="tabswrapper">
+                    <div role="tabpanel active" class="tab-pane fade" id="Section1">
+                        <div id="intraday_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section2">
+                        <div id="btst_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section3">
+                        <div id="positional_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section4">
+                        <div id="longterm_content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div id="trade_modal" class="modal" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header" id="trade_header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="trade_ticker"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <form id="trade_form" class="form-horizontal" style="text-align: left;">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <div class="row">
+                              <div class="col-md-7">
+                                <label style="margin-right: 10px;">Broker </label>
+                                 <select class="trade_form_element" id="trade_broker">
+                                    <option>Zerodha</option>
+                                    <option disabled>Upstox</option>
+                                    <option disabled>HDFC Sec</option>
+                                    <option disabled>Kotak Sec</option>
+                                    <option disabled>ICICI Direct</option>
+                                    <option disabled>Edelweiss</option>
+                                 </select>
+                              </div>
+                              <div class="col-md-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="regular">REG
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="bo" checked>BO
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="co">CO
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row">
+                              <div class="col-md-7">
+                                <label class="radio-inline">
+                                    <input type="radio" name="trade_type" class="trade_radio" value="MIS">MIS
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="trade_type" class="trade_radio" value="CNC">CNC
+                                </label>
+                              </div>
+                              <div class="col-md-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="order_type" class="trade_radio" value="MARKET">MARKET
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="order_type" class="trade_radio" value="LIMIT" checked>LIMIT
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="form-group" style="padding-top: 10px;">
+                            <label class="col-md-1 control-label">Qty</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="quantity" id="qty" value="1" placeholder="1" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-3 control-label">Disclosed Qty</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="disclosed_quantity" value="1" id="disclosed_qty" placeholder="1"
+                                        class="form-control"  type="number">
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">Price</label>
+                            <div class="col-md-4 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="price" id="price" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-3 control-label">Trigger Price</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="trigger_price" id="trigger_price" placeholder="0" class="form-control"  type="number" disabled>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="trade_bo_params" hidden>
+
+                            <label class="col-md-1 control-label">TP</label>
+                            <div class="col-md-3 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="target_price" id="target_price" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-1 control-label">SL</label>
+                            <div class="col-md-3 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="stop_loss" id="stop_loss" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-2 control-label">Trailing SL</label>
+                            <div class="col-md-2 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="trailing_stop_loss" id="trailing_stop_loss" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="buttonView">
+                            <!--<button type="button" id="trade_action" class="trade_action btn btn-rounded"-->
+                                    <!--style=""></button>-->
+                        </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+		function downloadCSV(csv, filename) {
+		    //console.log($('.nav-tabs .active').attr("id"))
+            var csvFile;
+            var downloadLink;
+
+            // CSV file
+            csvFile = new Blob([csv], {type: "text/csv"});
+
+            // Download link
+            downloadLink = document.createElement("a");
+
+            // File name
+            downloadLink.download = filename;
+
+            // Create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+
+            // Hide download link
+            downloadLink.style.display = "none";
+
+            // Add the link to DOM
+            document.body.appendChild(downloadLink);
+
+            // Click download link
+            downloadLink.click();
+        }
+
+		function exportTableToCSV(tabToDownload) {
+		    var d = new Date();
+		    filename = "AlgonautsCalls_" + tabToDownload + '_' + d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate() + ".csv"
+            var csv = [];
+            var rows = document.querySelectorAll("#" + tabToDownload + "_data-table tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+
+                for (var j = 0; j < cols.length; j++)
+                    row.push(cols[j].innerText);
+
+                csv.push(row.join(","));
+            }
+
+            // Download CSV file
+            downloadCSV(csv.join("\n"), filename);
+        }
+    </script>
+{% endblock mercury %}
+
+</html>

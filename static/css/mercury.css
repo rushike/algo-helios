@@ -1,0 +1,192 @@
+a:hover, a:focus{
+    text-decoration: none;
+    outline: none;
+}
+
+a { color: inherit; }
+
+nav{
+    transition: box-shadow .8s;
+}
+
+#myNavbar li a{
+    font-size: 16px !important;
+    color: #515252 !important;
+    transition-duration: .2s;
+}
+
+#myNavbar li a:hover{
+    transform: scale(1.1) !important;
+    background: transparent;
+}
+
+#logo:hover{
+    transform: scale(1.05);
+}
+
+.refresh .download {
+    padding: 1em;
+    float: right;
+    margin: inherit;
+    border: none;
+    outline: none;
+}
+
+.table_details {
+    margin-top: 10px;
+}
+
+.wrapper {
+    width: 100%;
+}
+
+@media only screen and (max-width: 600px) {
+    .col-md-4{
+        padding:0 !important;
+    }
+    .col-md-4 img{
+        display: none;
+    }
+}
+
+a[aria-expanded=false]{
+    z-index: 100;
+    background-color: white;
+    border-bottom: 5px solid #004B96;
+}
+
+.form-horizontal {
+    padding-left: 10px;
+    padding: inherit;
+}
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+.table-responsive {
+    max-height:300px;
+}
+
+.trade_radio {
+    position: relative !important;
+    margin-right: 10px !important;
+}
+
+.form-horizontal .control-label {
+    padding-top: 10px;
+}
+
+.radio-inline {
+    padding-top: 0px !important;
+}
+
+#trade_form {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#trade_form > .form-group > .col-md-2 {
+    padding-right: 0px;
+}
+
+.tab .nav-tabs{
+    display: inline-block;
+    background: white;
+    border-radius: 50px;
+    border: none;
+    padding: 6px;
+    width: 50%;
+    letter-spacing: 2px;
+    // box-shadow: 0 0 5px 2px gray;
+}
+
+.tab .nav-tabs li{
+    display: inline-block;
+    position: relative;
+    width: 25%;
+}
+
+.tab .nav-tabs li a{
+    margin: 5px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: none;
+    color: dimgray;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50px;
+    transition: all 0.5s ease 0s;
+}
+
+.tab .nav-tabs li a:hover{
+    background: #004b96;
+    color: #fff;
+    border: none;
+}
+
+.tab .nav-tabs li.active a,
+.tab .nav-tabs li.active a:focus,
+.tab .nav-tabs li.active a:hover{
+    border: none;
+    background: #004b96;
+    color: #fff;
+    font-size: 18px;
+}
+
+.tab .tab-content{
+    font-size: 14px;
+    color: #686868;
+    line-height: 25px;
+    text-align: left;
+    padding: 5px 20px;
+}
+
+.tab .tab-content h3{
+    font-size: 22px;
+    color: #5b5a5a;
+}
+
+@media only screen and (max-width: 480px){
+    .tab .nav-tabs{
+        border-radius: 20px;
+        width: 80%
+    }
+
+    .tab .nav-tabs li{
+        width: 100%;
+        text-align: center;
+        margin-bottom: 2px;
+        border-radius: 15px;
+    }
+
+    .tab .nav-tabs li a{
+        font-size: 14px;
+    }
+
+    .tab .tab-content, .container {
+        padding: 0;
+        border-radius: 0;
+    }
+}
+
+.navbar-toggle  .icon-bar {
+    background: #004b96;
+}
+
+.tooltip > .tooltip-inner {
+    background-color: #7DDCFF;
+    color: black;
+    border: 1px solid #7DDCFF;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+
+  #ordertypes > div {
+    background-color: white;
+  }
+  .product-tabs:hover, .product-tabs:hover{
+    background-color: #004b96;
+  }

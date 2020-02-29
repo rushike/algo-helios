@@ -48,12 +48,12 @@ def get_group_of_user(user, plan):
     return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
     
 def validate_group_add_url_slug(group_id:int, hash_:str):
-    group = UserGroup.objects.get(id = group_id)
+    group = UserGroup.objects.filter(id = group_id).first()
     if md5(str(group.admin.email).encode()).hexdigest() == hash_:
         return True
     return False
 
-def get_user_subs_plans(user):
+def get_user_subs_plans(user, results = {}):
     user = user._wrapped if hasattr(user,'_wrapped') else user
     user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     now = datetime.datetime.now(pytz.timezone('UTC'))
@@ -71,15 +71,17 @@ def get_user_subs_plans(user):
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
+    results = {'individual_plans' : indivdual_plans, 'group_plans' : group_plans}
     return indivdual_plans, group_plans
 
-def get_user_subs_product(user):
+def get_user_subs_product(user,  results = {}):
     user = user._wrapped if hasattr(user,'_wrapped') else user
     iplan, gplan = get_user_subs_plans(user)
     plans = list(iplan.values('plan_id'))
     plans.extend(gplan.values('plan_id'))
     plans = [plan['plan_id'] for plan in plans]
     products = subscriptions.functions.get_all_products_in_plans(plans)
+    results = {'products' : products}
     return products
 
 def get_all_users_in_group(group_id):

@@ -205,7 +205,7 @@ def plan_subscribe(request):
     return HttpResponseRedirect(redirect_to='/user/profile/info')
     
 
-def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
+async def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = []): 
     recepient = [user.email]
     recepient.extend(recepients)
     subscribed = Subscription.objects.create_subscription(
@@ -216,6 +216,14 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
                     period = period,
                     payment_id = payment_id,
                 )
+    # subscribed = subscriptions.funcntions.create_subscription(
+    #                 user = user,
+    #                 group_type = group_type,
+    #                 plan_type = plan_type,
+    #                 plan_name = plan_name,
+    #                 period = period,
+    #                 payment_id = payment_id,
+    #             )
     if subscribed:
         subject = "Regarding Algonauts Subscription"
         message = "You have successfully subscribed to algonauts plan : " + str(plan_name)

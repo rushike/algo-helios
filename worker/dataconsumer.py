@@ -2,7 +2,7 @@ import threading
 import logging
 import json
 from webpush import send_group_notification
-from worker import ConsumerManager
+from worker.consumermanager import ConsumerManager
 from channels.consumer import AsyncConsumer
 
 
@@ -44,20 +44,20 @@ class DataConsumer(AsyncConsumer):
                 )
 
                 # Send a notification
-                payload = None
-                ticker = data.get('ticker')
-                if data_type == 'signal':
-                    payload = {'head': f"{data.get('algo_category').upper()} - {signal} {ticker}",
-                               'body': f"{signal} {ticker} @ {data.get('price')} with "
-                                       f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
-                                       f"Risk Reward {data.get('risk_reward')} and "
-                                       f"Profit Percentage {data.get('profit_percent')}",
-                               'url': 'https://www.algonauts.in/login'}
-                elif data_type == 'signal_update':
-                    payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
-                               'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
-                               'url': 'https://www.algonauts.in/login'}
-                send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+                # payload = None
+                # ticker = data.get('ticker')
+                # if data_type == 'signal':
+                #     payload = {'head': f"{data.get('algo_category').upper()} - {signal} {ticker}",
+                #                'body': f"{signal} {ticker} @ {data.get('price')} with "
+                #                        f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
+                #                        f"Risk Reward {data.get('risk_reward')} and "
+                #                        f"Profit Percentage {data.get('profit_percent')}",
+                #                'url': 'https://www.dev.algonauts.in/login'}
+                # elif data_type == 'signal_update':
+                #     payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
+                #                'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
+                #                'url': 'https://www.dev.algonauts.in/login'}
+                # send_group_notification(group_name=group_name, payload=payload, ttl=1000)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':

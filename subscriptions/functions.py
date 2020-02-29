@@ -1,5 +1,5 @@
 from django.core.mail import send_mass_mail, send_mail
-import threading
+import threading, asyncio, logging
 import time, datetime, pytz
 from collections import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
@@ -8,6 +8,9 @@ from products.models import Product, ProductCategory, PlanProductMap, ProductFam
 from helios.settings import EMAIL_HOST_USER
 import users.functions
 import jinja2
+
+logger = logging.getLogger("")
+loop = asyncio.get_event_loop()
 
 def get_all_plan_type():
     return PlanType.objects.all().order_by('type_name')
@@ -182,6 +185,32 @@ def register_payment(order_id, payment_id, subscription_id):
 def get_order_instance(order_id):
     return Order.objects.get(razorpay_order_id = order_id)
 
+
+
+async def create_subscription(user, group_type, plan_type, plan_name, period, payment_id):
+    result = {}
+    result =  await loop.run_in_executor(None, Subscription.objects.create_subscription, {
+                    "user" : user,
+                    "group_type" : group_type,
+                    "plan_type" : plan_type,
+                    "plan_name" : plan_name,
+                    "period" : period,
+                    "payment_id" : payment_id,
+                    "result" : result
+                    })
+
+    print(f"subscriptone {result}")
+    # res = result.result
+    raise OSError
+    # result, _ = loop.run_until_complete(asyncio.wait(asyncio.async(Subscription.objects.create_subscription(
+    #                 user = user,
+    #                 group_type = group_type,
+    #                 plan_type = plan_type,
+    #                 plan_name = plan_name,
+    #                 period = period,
+    #                 payment_id = payment_id,
+    #             ))))
+    return result
 
 # payment_ref = models.CharField(max_length=256)
 # order_id = models.ForeignKey(Order, on_delete = models.CASCADE, null = True, default = None)

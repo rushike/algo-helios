@@ -7,7 +7,7 @@ if (loc.protocol == "https:") {
 }
 var endpoint = wsStart + loc.host + "/channel/";
 var socket = new WebSocket(endpoint);
-
+console.log("socket : coonn ,,, ", socket)
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -28,14 +28,18 @@ function guid() {
     return guid;
 };
 
+console.log(sessionStorage)
+
 socket.onopen = function (e) {
     console.log("Web-socket conn opened ", e);
     // window.onload = setTimeout(socket.send(JSON.stringify({'id' :sessionStorage['id'], 'username' : sessionStorage['username']})), 5000)
     sessionStorage['id'] = guid();
     setTimeout(function() {
         socket.send(JSON.stringify({'id' :sessionStorage['id'], 'username' : sessionStorage['username']}));
+        console.log(sessionStorage)
     }, 1000);
 }
+
 
 function getStatus(hit) {
     if (hit == 1) {

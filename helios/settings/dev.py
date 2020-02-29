@@ -1,5 +1,7 @@
 from .common import *
 from razorpay import Client
+import django
+from django.utils.log import DEFAULT_LOGGING
 
 """
 Razorpay Variable and Declaration
@@ -59,6 +61,12 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+DEFAULT_LOGGING['loggers'][''] = {
+    'handlers': ['console'],
+    'level': 'DEBUG',
+    'propagate': True
 }
 
 CRONJOBS = [

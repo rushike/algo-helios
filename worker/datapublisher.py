@@ -2,7 +2,7 @@ import json
 import threading
 import logging
 import os
-from worker import ConsumerManager
+from worker.consumermanager import ConsumerManager
 from channels.consumer import AsyncConsumer
 from algonautsutils.dbhandler import DBConnHandler
 
@@ -19,6 +19,7 @@ class DataPublisher(AsyncConsumer):
     async def websocket_connect(self, event):
         logger.info(f"DATA PUBLISHER Connected: {event}")
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
+        logger.info(f"User scope {self.scope['user']}")
 
         await self.send({
             "type": "websocket.accept",
