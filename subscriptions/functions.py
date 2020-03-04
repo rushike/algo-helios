@@ -1,4 +1,6 @@
 from django.core.mail import send_mass_mail, send_mail
+from channels.db import database_sync_to_async
+
 import threading, asyncio, logging
 import time, datetime, pytz
 from collections import Iterable, Iterator
@@ -9,11 +11,14 @@ from helios.settings import EMAIL_HOST_USER
 import users.functions
 import jinja2
 
+
 logger = logging.getLogger("")
 loop = asyncio.get_event_loop()
 
+
 def get_all_plan_type():
     return PlanType.objects.all().order_by('type_name')
+
 
 def get_all_products_in_plan(plan_id:Plan):
     if type(plan_id) == str:
@@ -23,6 +28,7 @@ def get_all_products_in_plan(plan_id:Plan):
     etc = PlanProductMap.objects.filter(plan_id = plan_id).values('product_id')
     return Product.objects.filter(id__in = etc)
 
+
 def get_all_products_in_plans(plans): 
     if not isinstance(plans, Iterable): return get_product_family_of_products([plans])
     if len(plans) != 0 and type(plans[0]) == Product:
@@ -30,12 +36,14 @@ def get_all_products_in_plans(plans):
     etc = PlanProductMap.objects.filter(plan_id__in = plans).values('product_id')
     return Product.objects.filter(id__in = etc)
 
+
 def get_product_family_of_products(products : list):
     if not isinstance(products, Iterable): return get_product_family_of_products([products])
     if len(products) != 0 and type(products[0]) == Product:
             products = [product.id for product in products]
     prod_fam = Product.objects.filter(id__in = products).values('product_family_id')
     return ProductFamily.objects.filter(id__in = prod_fam)
+
 
 def get_plan_type_of_plans(plans, nobjects = True): 
     if not isinstance(plans, Iterable) : return get_plan_type_of_plans([plans])
@@ -48,27 +56,33 @@ def get_plan_type_of_plans(plans, nobjects = True):
     return PlanType.objects.filter(id__in = plan_typ)
 
 
+
 def get_group_plans():
     now = datetime.datetime.now(pytz.timezone('UTC'))
     enterprize = UserGroupType.objects.exclude(type_name = 'individual') # query give non individual group type
     group_plans = Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now, user_group_type_id__in = enterprize) # query gives active group plans
     return group_plans
 
+
 def is_group_plan(plan_id):
     plan_id = plan_id if type(plan_id) == int else plan_id.id
     x = get_group_plans().filter(id = plan_id).exists()
     return x
 
+
 def get_plan(plan_type, plan_name, group_type):
     group_type = UserGroupType.objects.filter(type_name__iexact = group_type)
     return Plan.objects.get(plan_name__iexact = plan_name, user_group_type_id__in = group_type)
 
+
 def get_all_plans_from_ids(plans_ids:list):
     return Plan.objects.filter(id__in = plans_ids)
+
 
 def get_all_active_plans():
     now = datetime.datetime.now(pytz.timezone('UTC'))
     return Plan.objects.filter(entry_time__lt = now, expiry_time__gt = now)
+
 
 def get_all_plans_xxx_type(plan_type:PlanType, exclude = False):
     try:
@@ -81,6 +95,7 @@ def get_all_plans_xxx_type(plan_type:PlanType, exclude = False):
     if exclude: return Plan.objects.exclude(plan_type_id = plan_type)
     return Plan.objects.filter(plan_type_id = plan_type)
 
+
 def get_all_plans_xxx_group(group_type:UserGroupType, exclude = False):
     try:
         if type(group_type) == int:
@@ -92,6 +107,7 @@ def get_all_plans_xxx_group(group_type:UserGroupType, exclude = False):
     if exclude :
         return Plan.objects.exclude(user_group_type_id = group_type)
     return Plan.objects.filter(user_group_type_id = group_type)
+
 
 def get_context_for_plans(user=None):
     user = users.functions.get_user_object(user)
@@ -111,6 +127,7 @@ def get_context_for_plans(user=None):
                 context[i][0][j][0].append([list(products), plan]) 
     return context
 
+
 def can_subscribe(user, group_type, plan_type, plan_name):
     # Guy having premium paid subscription should not able to subscribe other non premium plans
     user = users.functions.get_user_object(user)
@@ -126,11 +143,13 @@ def can_subscribe(user, group_type, plan_type, plan_name):
     ifplan = Plan.objects.filter(id__in = subs_plans, plan_type_id = premium_plan_type).exists()
     return not ifsubs or not ifplan 
 
+
 def is_trial_applicable(group_type, plan_type, plan_name):
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
     group_type_id = UserGroupType.objects.filter(type_name = group_type).last()
     plan_type_id = PlanType.objects.filter(type_name = plan_type).last()
     return plan_type_id.trial_applicable and group_type_id.eligible_for_trial 
+
 
 def already_had_trial(user, group_type, plan_type, plan_name):
     user = users.functions.get_user_object(user)
@@ -143,20 +162,25 @@ def already_had_trial(user, group_type, plan_type, plan_name):
     user_group_id = user_group_id_.first()
     return Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id).exists()
     
+    
 def send_subscription_link(group, recepients, to = None):
     threading.Thread(target=send_mail_async, args=(group, recepients,)).start()
 
+
 def get_order_details(group_type, plan_type, plan_name, period):
     return
+
 
 def send_email(user, recepients, subject, message, to = None):
     if not isinstance(recepients, list) : return send_email(user, [recepients], subject, message) 
     threading.Thread(target=send_mail_async, args=(user, recepients,subject, message)).start()
 
+
 def send_mail_async(user, recepients, subject, message):
     user = users.functions.get_user_object(user)
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
+
 
 
 def register_order(user_group_id, razorpay_order):
@@ -169,6 +193,7 @@ def register_order(user_group_id, razorpay_order):
         razorpay_order_id = razorpay_order['id'],
         razorpay_payment_id = "---"
     )
+
 
 def register_payment(order_id, payment_id, signature):
     if type(order_id) == str:
@@ -184,39 +209,22 @@ def register_payment(order_id, payment_id, signature):
     Order.objects.filter(razorpay_order_id = order_id.razorpay_order_id).update(razorpay_payment_id = payment_id)
     return payment
 
+
 def get_order_instance(order_id):
     return Order.objects.get(razorpay_order_id = order_id)
 
 
 
-async def create_subscription(user, group_type, plan_type, plan_name, period, payment_id):
-    result = {}
-    result =  await loop.run_in_executor(None, Subscription.objects.create_subscription, {
-                    "user" : user,
-                    "group_type" : group_type,
-                    "plan_type" : plan_type,
-                    "plan_name" : plan_name,
-                    "period" : period,
-                    "payment_id" : payment_id,
-                    "result" : result
-                    })
+ 
+def create_subscription(user, group_type, plan_type, plan_name, period, payment_id):
+    subscribed = Subscription.objects.create_subscription(
+                    user = user,
+                    group_type = group_type,
+                    plan_type = plan_type,
+                    plan_name = plan_name,
+                    period = period,
+                    payment_id = payment_id,
+                )
+    return subscribed
 
-    print(f"subscriptone {result}")
-    # res = result.result
-    raise OSError
-    # result, _ = loop.run_until_complete(asyncio.wait(asyncio.async(Subscription.objects.create_subscription(
-    #                 user = user,
-    #                 group_type = group_type,
-    #                 plan_type = plan_type,
-    #                 plan_name = plan_name,
-    #                 period = period,
-    #                 payment_id = payment_id,
-    #             ))))
-    return result
 
-# payment_ref = models.CharField(max_length=256)
-# order_id = models.ForeignKey(Order, on_delete = models.CASCADE, null = True, default = None)
-# payment_time = models.DateTimeField(auto_now=True)
-# subscription_id = models.ForeignKey(Subscription, on_delete = models.CASCADE)
-# user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE)
-# amount = models.IntegerField()

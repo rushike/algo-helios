@@ -211,15 +211,7 @@ def plan_subscribe(request):
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]
     recepients.extend(recepient)
-    subscribed = Subscription.objects.create_subscription(
-                    user = user,
-                    group_type = group_type,
-                    plan_type = plan_type,
-                    plan_name = plan_name,
-                    period = period,
-                    payment_id = payment_id,
-                )
-    # subscribed = subscriptions.funcntions.create_subscription(
+    # subscribed = Subscription.objects.create_subscription(
     #                 user = user,
     #                 group_type = group_type,
     #                 plan_type = plan_type,
@@ -227,6 +219,14 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
     #                 period = period,
     #                 payment_id = payment_id,
     #             )
+    subscribed = subscriptions.functions.create_subscription(
+                    user = user,
+                    group_type = group_type,
+                    plan_type = plan_type,
+                    plan_name = plan_name,
+                    period = period,
+                    payment_id = payment_id,
+                )
     if subscribed:
         group_add_link = request.build_absolute_uri(users.functions.generate_group_add_link(subscribed.user_group_id))
         subject = "Regarding Algonauts Subscription"

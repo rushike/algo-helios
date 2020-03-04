@@ -114,6 +114,11 @@ li > .navbar-all:hover{
     border: none;
 }
 
+@media (max-width : 786px){
+    #dropdown-li > ul > li {
+        text-align: center;
+    }
+}
 /* .logout-btn{
     color: #007bff;
     text-decoration: none;

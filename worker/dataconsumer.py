@@ -4,6 +4,7 @@ import json
 from webpush import send_group_notification
 from worker.consumermanager import ConsumerManager
 from channels.consumer import AsyncConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 logger = logging.getLogger('worker')
@@ -30,19 +31,20 @@ class DataConsumer(AsyncConsumer):
         if data_type == 'signal' or data_type == 'signal_update':
             signal, portfolio_id = data.get('signal'), data.get('portfolio_id')
             if signal and portfolio_id and signal not in ('WAIT', 'EXIT'):
-                logger.info(f"Received Signal {data}")
+                logger.info(f"Received Signal {data} with portfolio id : {portfolio_id}.")
 
                 # All ratios will be computed in 'janus', so just forward from here based on the permissions
-                group_name = ConsumerManager().get_mapped_group(portfolio_id)
+                group_name = ConsumerManager.get_mapped_group(portfolio_id)
                 logger.info(f"Signal {data.get('call_id')} will be sent to the group {group_name}")
+                logger.debug(f"Data sending to websocket is : {json.dumps(data)}")
                 await self.channel_layer.group_send(
                     group_name,
                     {
-                        'type': 'websocket.send',
+                        'type': 'send.message',
                         'message': json.dumps(data)
                     }
                 )
-
+                
                 # Send a notification
                 # payload = None
                 # ticker = data.get('ticker')
@@ -65,10 +67,17 @@ class DataConsumer(AsyncConsumer):
             await self.channel_layer.group_send(
                 ConsumerManager().get_broadcast_group(),
                 {
-                    'type': 'websocket.send',
+                    'type': 'send.message',
                     'message': json.dumps(data)
                 }
             )
+
+    async def send_message(self, event):
+        response = event.get('message') 
+        await self.send({
+            'type' : 'websocket.send',
+            'message' : json.dumps(response)
+        })   
 
     async def websocket_disconnect(self, event):
         logger.info(f"DATA CONSUMER Disconnected: , {event}")

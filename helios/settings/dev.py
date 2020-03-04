@@ -48,6 +48,7 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'worker.log',
         },
+        
     },
     'loggers': {
         'django': {
@@ -67,6 +68,14 @@ DEFAULT_LOGGING['loggers'][''] = {
     'handlers': ['console'],
     'level': 'DEBUG',
     'propagate': True
+}
+
+
+# Setting InMemory Channel Layer, since default self.channel_layer, channels.layers.get_channel_layer() was having output none
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
 }
 
 CRONJOBS = [

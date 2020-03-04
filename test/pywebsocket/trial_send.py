@@ -114,6 +114,7 @@ async def send_signal(bulk_send=False):
                 break
             if args.interactive:
                 input("Press for Next Entry . . ")
+        
 
 
 asyncio.get_event_loop().run_until_complete(send_signal(args.bulk))

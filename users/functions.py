@@ -6,6 +6,9 @@ import pytz, datetime
 from hashlib import md5
 import subscriptions.functions
 from helios.settings import EMAIL_HOST_USER
+from channels.db import database_sync_to_async
+
+
 
 def get_user_object(user):
     if hasattr(user,'_wrapped') :
@@ -18,10 +21,12 @@ def get_user_object(user):
     else : user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     return user
 
+
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
     return mapper
+
 
 def user_is_verified(user):
     user = get_user_object(user)
@@ -29,12 +34,14 @@ def user_is_verified(user):
     user = user.email
     return EmailAddress.objects.get(email = user).verified
 
+
 def get_all_standard_groups():
     """
         These are the non-individual group type.
     """
     gtypes = UserGroupType.objects.all() 
     return gtypes.order_by('max_members')
+
 
 def generate_group_add_link(group_id:UserGroup):
     group_id = group_id._wrapped if hasattr(group_id,'_wrapped') else group_id # if group id is wrapped by other object e.g. SimplyLazyObject
@@ -44,8 +51,10 @@ def generate_group_add_link(group_id:UserGroup):
     link = '/user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
+
 def get_user_group(group_id):
     return group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
+
 
 def get_group_of_user(user, plan):
     """
@@ -59,12 +68,14 @@ def get_group_of_user(user, plan):
     plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
     group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
     return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
+
     
 def validate_group_add_url_slug(group_id:int, hash_:str):
     group = UserGroup.objects.filter(id = group_id).first()
     if md5(str(group.admin.email).encode()).hexdigest() == hash_:
         return True
     return False
+
 
 def get_user_subs_plans(user):
     user = get_user_object(user)
@@ -86,6 +97,7 @@ def get_user_subs_plans(user):
     results = {'individual_plans' : indivdual_plans, 'group_plans' : group_plans}
     return indivdual_plans, group_plans
 
+
 def get_user_subs_product(user):
     user = get_user_object(user)
     iplan, gplan = get_user_subs_plans(user)
@@ -96,16 +108,19 @@ def get_user_subs_product(user):
     results = {'products' : products}
     return products
 
+
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return users
+
     
 def get_all_groups_of_user(user_id):
     user_id = user_id._wrapped if hasattr(user_id,'_wrapped') else user_id
     user = user_id if type(user_id) == AlgonautsUser else UserGroup.objects.get(id = user_id)
     groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))).values('user_group_id')
     return UserGroup.objects.filter(id__in = groups)
+
 
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
@@ -127,13 +142,16 @@ def add_referral_credits(self_uid, referral_code):
                         )
     return ref, True
 
+
 def generate_referral_user_add_link(user:AlgonautsUser):
     link = '/user/refer/user=' + user.referral_code
     return link
 
+
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
     return ref
+
 
 def add_feedback(user, subject, product, message):
     user = get_user_object(user)

@@ -38,7 +38,11 @@ nav{
 
 .wrapper {
     width: 100%;
+    padding: 2rem 5rem;
 }
+
+
+
 
 @media only screen and (max-width: 600px) {
     .col-md-4{
@@ -46,6 +50,10 @@ nav{
     }
     .col-md-4 img{
         display: none;
+    }
+    .wrapper {
+        width: 100%;
+        padding: 1rem ;
     }
 }
 
@@ -89,22 +97,48 @@ a[aria-expanded=false]{
 #trade_form > .form-group > .col-md-2 {
     padding-right: 0px;
 }
+@media only screen and (min-width: 1400px){
+    .tab .nav-tabs{
+        display: inline-block;
+        background: white;
+        border-radius: 50px;
+        border: none;
+        padding: 6px;
+        width: 57%;
+        letter-spacing: 2px;
+        align-content: center;
+        /* // box-shadow: 0 0 5px 2px gray; */
+    }
+}
+@media only screen and (max-width: 800px){
+    .tab .nav-tabs{
+        display: inline-block;
+        background: white;
+        border-radius: 50px;
+        border: none;
+        padding: 6px;
+        letter-spacing: 2px;
+        /* // box-shadow: 0 0 5px 2px gray; */
+    }
+}
 
-.tab .nav-tabs{
-    display: inline-block;
-    background: white;
-    border-radius: 50px;
-    border: none;
-    padding: 6px;
-    width: 50%;
-    letter-spacing: 2px;
-    // box-shadow: 0 0 5px 2px gray;
+@media only screen and (min-width: 800px) and (max-width: 1400px){
+    
+    .tab .nav-tabs{
+        display: inline-block;
+        background: white;
+        border-radius: 50px;
+        border: none;
+        /* padding: 6px; */
+        letter-spacing: 2px;
+        /* // box-shadow: 0 0 5px 2px gray; */
+    }
 }
 
 .tab .nav-tabs li{
     display: inline-block;
     position: relative;
-    width: 25%;
+    /* width: 25%; */
 }
 
 .tab .nav-tabs li a{
@@ -153,6 +187,9 @@ a[aria-expanded=false]{
         border-radius: 20px;
         width: 80%
     }
+    .wrapper{
+        width: 100%;
+    }
 
     .tab .nav-tabs li{
         width: 100%;
@@ -184,9 +221,29 @@ a[aria-expanded=false]{
   }
 
 
-  #ordertypes > div {
-    background-color: white;
-  }
-  .product-tabs:hover, .product-tabs:hover{
+#ordertypes > div {
+background-color: white;
+}
+/* .product-tabs{
+    min-width: 13rem;
+} */
+#ordertype{
+    display: inline-block;
+}
+.product-tabs:hover, .product-tabs:active{
     background-color: #004b96;
-  }
+}
+ul > li > a {
+    padding : 0rem 3rem;
+}
+ul > li > a :hover, ul > li > a :active{
+    background-color: #004b96;
+} 
+
+body{
+    background: radial-gradient(circle, rgba(2,0,36,1) 7%, rgba(7,7,101,1) 47%, rgba(9,9,121,1) 82%, rgba(0,42,179,1) 100%);
+}
+.modal-backdrop
+{
+    opacity:0.25 !important;
+}

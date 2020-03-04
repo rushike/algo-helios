@@ -6,22 +6,22 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                             </div>
                             <!-- <div class = "col-md-7 col-xs-12">
                                 <div class = "row"> -->
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-2 col-6 count_display">
                                         <label class="param">Total Calls </label>
                                         <label class="value" id="{}_total_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-2 col-6 count_display">
                                         <label class="param">Hits </label>
                                         <label class="value" id="{}_hit_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-2 col-6 count_display">
                                         <a href="#" data-toggle="tooltip" data-placement="top"
                                             title="Partially Successful Calls, Hitting 60% of Target">
                                             <label class="param">Partial Hits </label>
                                             <label class="value" id="{}_partial_hit_count">0</label>
                                         </a>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-2 col-6 count_display">
                                         <label class="param">Miss </label>
                                         <label class="value" id="{}_miss_count">0</label>
                                     </div>
@@ -55,12 +55,12 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                             <!-- Modal content-->
                             <div class="modal-content">
                                 <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title" style="text-align: center;">Filter</h4>
+                                <h4 class="modal-title m-auto" >Filter</h4>
+                                <button type="button" class="close" style = "margin-left : unset" data-dismiss="modal">&times;</button>                                
                                 </div>
                                 <div class="modal-body">
-                                <form action="/data/applyfilters/" method="post" style="text-align: left;" id="{}_filter_form">
-                                    {% csrf_token %}
+                                <form method  = "GET" action="/data/apply-filters"  style="text-align: left;" id="{}_filter_form">
+                                    <!--{% csrf_token %} -->
                                     <div class="form-group">
                                     <label>Tickers</label>
                                     <select name="tickers" class="tickers_filter" id="{}_tickers_filter" multiple="multiple">
@@ -156,7 +156,7 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                     <div id="{}_profit_slider_range" class="profit_slider_range"></div>
                                     </div>
                                     <div class="form-group">
-                                    <button type="button" class="filter_apply btn btn-default">Apply</button>
+                                    <button type="button" class="filter_apply btn btn-default col-12 light-blue-bg">Apply</button>
                                     </div>
                                 </form>
                                 </div>
@@ -194,29 +194,45 @@ String.prototype.format = function () {
     });
 };
 
-$(function() {
+// var csrf_token = "<% csrf_token %>"
 
-    $.ajax({
-        type: "GET",
-        url: "/data/getfilters/",
-        data: {session_id : guid()},
-        success: function(data)
-        {
-            $.each(data, function(tab_to_consider, filter_data) {
-                tab_id = "#" + tab_to_consider
-                $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
-                $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
-                $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
-                $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
-                $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
-                $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
-            });
-        },
-        error: function(request, status, error)
-        {
-            alert(request.responseText);
-        }
-    });
+// $("body").bind("ajaxSend", function(elm, xhr, s){
+//     if (s.type == "POST") {
+//        xhr.setRequestHeader('X-CSRF-Token', csrf_token);
+//     }
+//  });
+
+$(function() {
+    
+    // var frm = $('#contactForm1');
+
+    // frm.submit(function (e) {
+
+    //     e.preventDefault();
+
+        $.ajax({
+            type: "GET",
+            url: "/worker/get-filters",
+            // data: {},
+            data : {session_id : guid(), csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            success: function(data)
+            {
+                $.each(data, function(tab_to_consider, filter_data) {
+                    tab_id = "#" + tab_to_consider
+                    $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
+                    $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
+                    $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
+                    $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
+                    $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
+                    $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
+                });
+            },
+            error: function(request, status, error)
+            {
+                alert(request.responseText);
+            }
+        });
+    // });
 
     $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
         $("#" + value + "_content").html(data_table.format(value));
@@ -318,7 +334,7 @@ $(function() {
         }
 
         // console.log("Status is ", status)
-        new_html = `<span class="badge ` + badge_template + `">` + status + `</span>`;
+        new_html = `<span class="badge white ` + badge_template + `">` + status + `</span>`;
         closest_tr.find('td:eq(8)').html(new_html)
     });
 
@@ -349,7 +365,7 @@ $(function() {
         $('input[name=stop_loss]').val(Math.round(Math.abs(sl - ltp) * 10) / 10);
         $('input[name=trigger_price]').val(sl);
 
-        var trade_action_btn = $('<button id="trade_action" type="button" class= "trade_action btn btn-rounded">');
+        var trade_action_btn = $('<div class = "col-md-12 text-center content-para p-3"><button id="trade_action" type="button" class= "trade_action btn btn-rounded"></div>');
         trade_action_btn.attr("data-name", signal);
         trade_action_btn.text(signal);
         if (signal == "BUY") {
@@ -467,10 +483,11 @@ $(function() {
 
     $(".filter_apply").on('click', function () {
         var current_tab = $('.nav-tabs .active').attr("id")
+        console.log("Data to be send", $('#' + current_tab + "_filter_form").serialize(), $('#' + current_tab + "_filter_form") )
         $.ajax({
-            type: "POST",
-            url: "/data/applyfilters/",
-            data: $('#' + current_tab + "_filter_form").serialize() + '&unique_id=' + guid() + '&call_type=' + current_tab,
+            type: "GET",
+            url: "/data/apply-filters/",
+            data: $('#' + current_tab + "_filter_form").serialize()  + '&call_type=' + current_tab,
             success: function(data)
             {
                 console.log("Filter applied successfully!");
