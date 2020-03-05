@@ -12,7 +12,7 @@ urlpatterns = [
     path('user/', include('users.urls')),
     path('path-not-found-404', views.ERR404),
     path('subscriptions/', include('subscriptions.urls')),
-    path('worker/', include('worker.urls'), name="worker"),
-    path('data/', include('worker.urls'), name="data"),
+    path('worker/', include('worker.urls')),
+    # path('data/', include('worker.urls'), name="data"),
     
 ]

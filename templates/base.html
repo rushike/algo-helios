@@ -123,7 +123,8 @@
                 <a class="nav-link dropdown-toggle dark-gray " id="login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.first_name}} </a>
                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="login">
                     <li class="dropdown-item" href="/user/profile/info"><a class = "link-unstyled dark-gray" href="{% url 'u_profile_page' %}">Dashboard</a></li>
-                    <li class="dropdown-item" href="}"><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
+                    <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
+                    <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="/worker/mercury">Mercury</a></li>
                     <li class="dropdown-item" href="#">
                         <a>
                             <form method="post" id = "logout" action="{% url 'account_logout' %}">

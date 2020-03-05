@@ -14,7 +14,7 @@ $(document).ready(function() {
 								'<div class="bot_profile">'+
 									'<img src="/static/img/chat1.jpg" class="bot_p_img">'+
 									'<div class="close">'+
-										'<i class="fa fa-times" aria-hidden="true"></i>'+
+										'<i class="fa  fa-times fa-4 white" aria-hidden="true"></i>'+
 									'</div>'+
 
 								'</div><!--bot_profile end-->'+
@@ -51,7 +51,7 @@ $(document).ready(function() {
 							// class="btn-group-vertical"
 
 							'<div class="help">'+
-								'<i class="far fa-question-circle"></i>'+
+								'<i class="fa fa-question-circle"></i>'+
 							'</div>';
 
 	$("mybot").html(mybot);

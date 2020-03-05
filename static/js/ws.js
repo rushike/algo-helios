@@ -30,6 +30,8 @@ function guid() {
 
 console.log(sessionStorage)
 
+
+
 socket.onopen = function (e) {
     console.log("Web-socket conn opened ", e);
     // window.onload = setTimeout(socket.send(JSON.stringify({'id' :sessionStorage['id'], 'username' : sessionStorage['username']})), 5000)
@@ -41,25 +43,17 @@ socket.onopen = function (e) {
 }
 
 
-function getStatus(hit) {
-    if (hit == 1) {
-        return "HIT"
-    }
-    else if (hit == -1) {
-        return "MISS"
-    }
-    else if (hit == 2) {
-        return "Partial HIT"
-    }
-    else if (hit == -2) {
-        return "Inactive"
+function getStatus(status) {
+    if(status) {
+        if(status.toLowerCase() == "partialhit") status = "Partial HIT"
+        return status
     }
     return "Active"
 }
 
-function inserNewRow(source_table, data, position) {
+function inserNewRow(source_table, data, position, status) {
     let newRow = source_table.getElementsByTagName("tbody")[0].insertRow(0);
-    status = getStatus(hit)
+    status = getStatus(status)
     newRow.innerHTML =
     `<td id="ticker" data-label="Ticker">`+data["ticker"]+`</td>
     <td id="ltp" data-label="LTP">`+data["price"]+`</td>
@@ -71,7 +65,8 @@ function inserNewRow(source_table, data, position) {
     <td id="stop_loss" data-label="SL">`+data["stop_loss"]+`</td>
     <td id="profit_percent" data-label="Profit %">`+data['profit_percent']+`</td>
     <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
-    newRow.id = data["instrument_token"];
+    newRow.id = data["call_id"];
+    return newRow
 }
 
 function timeFormat(signal_time, portfolioId){
@@ -103,7 +98,7 @@ function getEligibleTab(portfolioId) {
     else if (portfolioId == 4) {
         return "longterm"
     }
-    return ""
+    return "intraday"
 }
 
 function updateCount(activeTab) {
@@ -133,21 +128,25 @@ function updateCount(activeTab) {
 }
 
 socket.onmessage = function (e) {
-    console.log("message ", e);
+    // console.log("message ", e);
 
     var data_dict = JSON.parse(e['data']);
     if (typeof data_dict == 'undefined' || data_dict.length <= 0) {
         // the array is defined and has at least one element
         return;
     }
-
+    console.log("data recieved : ", data_dict)
     dataType = data_dict["dtype"]
-    if (dataType == "signal" || dataType == "tick") {
-        hit = data_dict['hit']
+    if (dataType == "signal" || dataType == "tick" || dataType == "signal_update") {
+        // hit = data_dict['hit']
+        var status = data_dict['status']
+        var active = data_dict['active']
+        console.log("status : ", status, "active : ", active)
         instrumentToken = data_dict["instrument_token"];
         portfolioId = data_dict["portfolio_id"];
 
         var activeTab = getEligibleTab(portfolioId);
+
         var dataTable = document.getElementById(activeTab + "_data-table")
 
         // var rowId = activeTab + instrument_token
@@ -168,14 +167,29 @@ socket.onmessage = function (e) {
                     }
                     row.id = instrumentToken + (Math.random * 100);
 
-                    status = getStatus(hit)
-                    inserNewRow(dataTable, data, 0)
+                    status = getStatus(status)
+                    inserNewRow(dataTable, data, 0, status)
                 }
             }
             else {
                 // console.log("Received a new row ", data)
-                status = getStatus(hit)
-                inserNewRow(dataTable, data, 0);
+                status = getStatus(status)
+                inserNewRow(dataTable, data, 0, status);
+            }
+        }
+        else if (dataType == "signal_update"){
+            if (dataTable && dataTable.rows.namedItem(rowId)) {
+                dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+                dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
+                dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
+
+                row = document.getElementById(rowId);
+                
+                if (!active) {
+                    console.log("Will disable row with call id : ", call_id)
+                    row.className = "disabled";
+                    row.id = instrumentToken + (Math.random * 100);
+                }
             }
         }
         else if (dataType == "tick") {
@@ -185,10 +199,10 @@ socket.onmessage = function (e) {
             if (dataTable && dataTable.rows.namedItem(rowId)) {
                 dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
                 dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
-                dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(hit);
+                dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
 
                 row = document.getElementById(rowId);
-                if (hit != 0 && hit != 2) {
+                if (status != 0 && status != 2) {
                     row.className = "disabled";
                     row.id = instrumentToken + (Math.random * 100);
                 }
@@ -196,31 +210,48 @@ socket.onmessage = function (e) {
         }
     }
     else {
-        //Create table from received data
-        data_dict.forEach(row => {
+        //Create table from received data from database
+        data_dict.forEach(data => {
+
+            var status = data['status']
+            var active = data['active']
+            console.log("status : ", status, "active : ", active)
+            var instrumentToken = data["instrument_token"];
+            var portfolioId = data["portfolio"];
+    
+            var activeTab = getEligibleTab(portfolioId);
+            console.log("data table : ", dataTable, ", active tab : ", activeTab, " protfolio_id : ", portfolioId)
+            var dataTable = document.getElementById(activeTab + "_data-table")
+
+            
             // console.log("Inserting row in the table ", row);
 
-            let portfolioId = row[11]
-            let dataTable = document.getElementById(getEligibleTab(portfolioId) + "_data-table")
+            // let portfolioId = row["portfolio"][0]
 
-            let newRow = dataTable.getElementsByTagName("tbody")[0].insertRow(0);
-            hit = row[8]
-            status = getStatus(hit)
+            // console.log("Portfolio ID : ", portfolioId)
 
-            newRow.innerHTML =
-            `<td id="ticker" data-label="Ticker">`+row[0]+`</td>
-            <td id="ltp" data-label="LTP">`+row[1]+`</td>
-            <td id="signal" data-label="Signal"><button type="button" class="` + row[2] + `_btn trade btn-xs" data-toggle="modal"
-                      data-target="#trade_modal">` + row[2] + `</button></td>
-            <td id="signal_time" data-label="Signal Time">`+timeFormat(row[3], row[11])+`</td>
-            <td id="price" data-label="Signal Price">`+row[4]+`</td>
-            <td id="target_price" data-label="TP">`+row[5]+`</td>
-            <td id="stop_loss" data-label="SL">`+row[6]+`</td>
-            <td id="profit_percent" data-label="Profit %">`+row[7]+`</td>
-            <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
-            newRow.id = row[9];
+            // let dataTable = document.getElementById(getEligibleTab(portfolioId) + "_data-table")
 
-            active = row[10]
+            // let newRow = dataTable.getElementsByTagName("tbody")[0].insertRow(0);
+            // status = row[8]
+            // status = getStatus(status)
+
+            // newRow.innerHTML =
+            // `<td id="ticker" data-label="Ticker">`+row[0]+`</td>
+            // <td id="ltp" data-label="LTP">`+row[1]+`</td>
+            // <td id="signal" data-label="Signal"><button type="button" class="` + row[2] + `_btn trade btn-xs" data-toggle="modal"
+            //           data-target="#trade_modal">` + row[2] + `</button></td>
+            // <td id="signal_time" data-label="Signal Time">`+timeFormat(row[3], row[11])+`</td>
+            // <td id="price" data-label="Signal Price">`+row[4]+`</td>
+            // <td id="target_price" data-label="TP">`+row[5]+`</td>
+            // <td id="stop_loss" data-label="SL">`+row[6]+`</td>
+            // <td id="profit_percent" data-label="Profit %">`+row[7]+`</td>
+            // <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
+            // newRow.id = row[9];
+
+            // active = row[10]
+            newRow = inserNewRow(dataTable, data, 0, status);
+            console.log("inserted new row : ", newRow)
             if (active != 1) {
                 newRow.className = "disabled";
             }

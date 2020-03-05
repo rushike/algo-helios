@@ -6,28 +6,28 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                             </div>
                             <!-- <div class = "col-md-7 col-xs-12">
                                 <div class = "row"> -->
-                                    <div class="col-md-2 col-6 count_display">
+                                    <div class="col-md-2 col-xs-6 count_display">
                                         <label class="param">Total Calls </label>
                                         <label class="value" id="{}_total_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-6 count_display">
+                                    <div class="col-md-2 col-xs-6 count_display">
                                         <label class="param">Hits </label>
                                         <label class="value" id="{}_hit_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-6 count_display">
+                                    <div class="col-md-2 col-xs-6 count_display">
                                         <a href="#" data-toggle="tooltip" data-placement="top"
                                             title="Partially Successful Calls, Hitting 60% of Target">
                                             <label class="param">Partial Hits </label>
                                             <label class="value" id="{}_partial_hit_count">0</label>
                                         </a>
                                     </div>
-                                    <div class="col-md-2 col-6 count_display">
+                                    <div class="col-md-2 col-xs-6 count_display">
                                         <label class="param">Miss </label>
                                         <label class="value" id="{}_miss_count">0</label>
                                     </div>
                                 <!-- </div>
                             </div>-->
-                            <div class="col-md-2 justify-content-center btn-group btn-group-lg pull-right">
+                            <div class="col-md-2 col-xs-12 text-center btn-group btn-group-lg ">
                                 <a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
                                     <button class="btn filter" data-toggle="modal" data-target="#{}_filter_modal">
                                         <small><span class="fa fa-filter"></span></small>
@@ -59,7 +59,7 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                 <button type="button" class="close" style = "margin-left : unset" data-dismiss="modal">&times;</button>                                
                                 </div>
                                 <div class="modal-body">
-                                <form method  = "GET" action="/data/apply-filters"  style="text-align: left;" id="{}_filter_form">
+                                <form method  = "GET" action="/worker/apply-filters"  style="text-align: left;" id="{}_filter_form">
                                     <!--{% csrf_token %} -->
                                     <div class="form-group">
                                     <label>Tickers</label>
@@ -486,7 +486,7 @@ $(function() {
         console.log("Data to be send", $('#' + current_tab + "_filter_form").serialize(), $('#' + current_tab + "_filter_form") )
         $.ajax({
             type: "GET",
-            url: "/data/apply-filters/",
+            url: "/worker/apply-filters/",
             data: $('#' + current_tab + "_filter_form").serialize()  + '&call_type=' + current_tab,
             success: function(data)
             {

@@ -8,6 +8,7 @@ from algonautsutils.dbhandler import DBConnHandler
 from channels.db import database_sync_to_async
 import xml.etree.ElementTree
 import channels.layers
+import datetime
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing DATA PUBLISHER on {threading.get_ident()} {os.getpid()}')
@@ -32,7 +33,7 @@ class DataPublisher(AsyncConsumer):
 
         # Add users to eligible groups
         # groups = await database_sync_to_async(ConsumerManager().get_eligible_groups)(self.scope['user'])
-        groups = await ConsumerManager().get_eligible_groups(self.scope['user'])
+        groups = await ConsumerManager.get_eligible_groups(self.scope['user'])
         logger.debug(f"Eligible groups for user are {groups}")
         for group in groups:
             await self.channel_layer.group_add(
@@ -56,11 +57,14 @@ class DataPublisher(AsyncConsumer):
             logger.debug(f"current directory : {os.listdir()}")
 
             all_calls = self.db_handler.fetch_calls_for_today()
-            logger.debug(f"fetched all calls for today : {all_calls}")
+            logger.debug(f"Fetched all calls for today : {all_calls}")
+
+            groups = await ConsumerManager.get_eligible_groups(user)
+            logger.debug(f"Will send filter data to groups : {groups}")
             await self.send({
                 # Send existing table to the client
                 "type": "websocket.send",
-                "text": json.dumps(ConsumerManager().filter_calls(all_calls, user))
+                "text": json.dumps(ConsumerManager.filter_calls(all_calls, groups))
             })
         except Exception as ex:
             logger.error(f"Failed to connect to web-socket for the event {event}, error {ex}")

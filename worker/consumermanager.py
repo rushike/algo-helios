@@ -20,6 +20,7 @@ class Singleton(type):
 
 class ConsumerManager(metaclass=Singleton):
     PROTFOLIO_MAPPER = {
+            'PortfolioTest' : 'mercury-intraday',
             'TEST': "mercury-intraday",
             '1': "mercury-intraday",
             '2': "mercury-btst",
@@ -54,6 +55,15 @@ class ConsumerManager(metaclass=Singleton):
     def get_broadcast_group(self):
         return self.BROADCAST_GROUP
 
+    @staticmethod
+    def filter_calls(calls_dict, groups):
+        user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
+        logger.debug(f"User protfolios : {user_protfolios}")
+        calls = list(filter(lambda item : item['portfolio'][0] in user_protfolios, calls_dict))
+        [d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+             'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio' : d["portfolio"][0] }) for d in calls] # updates dict to make JSON serializable
+        logger.debug(f"Filter out calls are {calls}")
+        return calls[:17]
     @staticmethod
     @database_sync_to_async
     def get_eligible_groups(user):

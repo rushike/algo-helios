@@ -104,7 +104,7 @@ a[aria-expanded=false]{
         border-radius: 50px;
         border: none;
         padding: 6px;
-        width: 57%;
+        width: auto;
         letter-spacing: 2px;
         align-content: center;
         /* // box-shadow: 0 0 5px 2px gray; */
@@ -224,9 +224,9 @@ a[aria-expanded=false]{
 #ordertypes > div {
 background-color: white;
 }
-/* .product-tabs{
-    min-width: 13rem;
-} */
+.product-tabs{
+    min-width: 150px;
+}
 #ordertype{
     display: inline-block;
 }
