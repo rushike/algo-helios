@@ -6,6 +6,7 @@ from worker.consumermanager import ConsumerManager
 from channels.consumer import AsyncConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 
+from channels.db import database_sync_to_async
 
 logger = logging.getLogger('worker')
 logger.info(f'**** DATA CONSUMER **** {threading.get_ident()}')
@@ -59,7 +60,7 @@ class DataConsumer(AsyncConsumer):
                     payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                                'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
                                'url': 'https://www.dev.algonauts.in/login'}
-                send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+                self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
@@ -84,3 +85,8 @@ class DataConsumer(AsyncConsumer):
         await self.send({
             "type": "websocket.close"
         })
+
+    
+    @database_sync_to_async
+    def send_group_notification_async(self, group_name, payload, ttl):
+        send_group_notification(group_name = group_name, payload = payload, ttl = ttl)

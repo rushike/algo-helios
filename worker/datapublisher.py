@@ -1,14 +1,19 @@
+import xml.etree.ElementTree
 import json
 import threading
 import logging
 import os
-from worker.consumermanager import ConsumerManager
-from channels.consumer import AsyncConsumer
-from algonautsutils.dbhandler import DBConnHandler
-from channels.db import database_sync_to_async
-import xml.etree.ElementTree
-import channels.layers
 import datetime
+
+from channels.consumer import AsyncConsumer
+from channels.db import database_sync_to_async
+import channels.layers
+
+from algonautsutils.dbhandler import DBConnHandler
+
+from helios.settings import DATABASES
+from worker.consumermanager import ConsumerManager
+import worker.functions
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing DATA PUBLISHER on {threading.get_ident()} {os.getpid()}')
@@ -24,9 +29,10 @@ class DataPublisher(AsyncConsumer):
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
         logger.info(f"User scope {self.scope['user']}")
         config_file = xml.etree.ElementTree.parse('./worker/dbconfig.xml')
-        self.db_handler = DBConnHandler(config_file)
+        self.db_handler = DBConnHandler(host = DATABASES["default"]["HOST"], database = DATABASES["default"]["NAME"], 
+                user = DATABASES["default"]["USER"], password = DATABASES["default"]["PASSWORD"], port = DATABASES["default"]["PORT"])
         logger.debug(f"Database handler opened : {self.db_handler}")
-        self.db_handler.start_ops()
+
         await self.send({
             "type": "websocket.accept",
         })
@@ -55,11 +61,18 @@ class DataPublisher(AsyncConsumer):
             ConsumerManager().register_new_client_conn(user, self)
             logger.debug(f"Register the new client {user} with {self}")
             logger.debug(f"current directory : {os.listdir()}")
+            
+            groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
+            
+            product_names = await worker.functions.get_product_names_from_groups(groups)
+
+            for product in product_names:
+                product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
+                logger.debug(f"Product filter for Product {product},  Filter: {product_filter}")
 
             all_calls = self.db_handler.fetch_calls_for_today()
             logger.debug(f"Fetched all calls for today : {all_calls}")
 
-            groups = await ConsumerManager.get_eligible_groups(user)
             logger.debug(f"Will send filter data to groups : {groups}")
             await self.send({
                 # Send existing table to the client
