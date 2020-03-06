@@ -85,10 +85,10 @@ li > .navbar-all:hover{
     border-radius: 0.25rem;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-#logout-btn:hover{
+/* #logout-btn:hover{
     color:#1DA1F2;
-}
-#logout > button{
+} */
+/* #logout > button{
     display: inline-block;
     margin-bottom: 0;
     font-weight: normal;
@@ -108,11 +108,11 @@ li > .navbar-all:hover{
     -ms-user-select: none;
     user-select: none;
     padding: 0px;
-}
-
+} */
+/* 
 #logout > button:hover, button:active{
     border: none;
-}
+} */
 
 @media (max-width : 786px){
     #dropdown-li > ul > li {

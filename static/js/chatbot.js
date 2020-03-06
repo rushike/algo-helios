@@ -14,7 +14,7 @@ $(document).ready(function() {
 								'<div class="bot_profile">'+
 									'<img src="/static/img/chat1.jpg" class="bot_p_img">'+
 									'<div class="close">'+
-										'<i class="fa  fa-times fa-4 white" aria-hidden="true"></i>'+
+										'<i class="fa fa-times-circle" aria-hidden="false"></i>'+
 									'</div>'+
 
 								'</div><!--bot_profile end-->'+
