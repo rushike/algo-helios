@@ -142,7 +142,8 @@ socket.onmessage = function (e) {
         var status = data_dict['status']
         var active = data_dict['active']
         console.log("status : ", status, "active : ", active)
-        instrumentToken = data_dict["instrument_token"];
+        call_id = data_dict["call_id"];
+        
         portfolioId = data_dict["portfolio_id"];
 
         var activeTab = getEligibleTab(portfolioId);
@@ -150,7 +151,7 @@ socket.onmessage = function (e) {
         var dataTable = document.getElementById(activeTab + "_data-table")
 
         // var rowId = activeTab + instrument_token
-        var rowId = instrumentToken
+        var rowId = call_id
 
         if (dataType == "signal") {
             let data;
@@ -165,8 +166,7 @@ socket.onmessage = function (e) {
                     if (row.cells.namedItem("status").innerHTML == "Active") {
                         row.cells.namedItem("status").innerHTML = "Inactive";
                     }
-                    row.id = instrumentToken + (Math.random * 100);
-
+                    
                     status = getStatus(status)
                     inserNewRow(dataTable, data, 0, status)
                 }
@@ -188,7 +188,7 @@ socket.onmessage = function (e) {
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
-                    row.id = instrumentToken + (Math.random * 100);
+                    // row.id = instrumentToken + (Math.random * 100);
                 }
             }
         }
@@ -215,43 +215,16 @@ socket.onmessage = function (e) {
 
             var status = data['status']
             var active = data['active']
-            console.log("status : ", status, "active : ", active)
+            // console.log("status : ", status, "active : ", active)
             var instrumentToken = data["instrument_token"];
             var portfolioId = data["portfolio"];
     
             var activeTab = getEligibleTab(portfolioId);
-            console.log("data table : ", dataTable, ", active tab : ", activeTab, " protfolio_id : ", portfolioId)
+            // console.log("data table : ", dataTable, ", active tab : ", activeTab, " protfolio_id : ", portfolioId)
             var dataTable = document.getElementById(activeTab + "_data-table")
 
-            
-            // console.log("Inserting row in the table ", row);
-
-            // let portfolioId = row["portfolio"][0]
-
-            // console.log("Portfolio ID : ", portfolioId)
-
-            // let dataTable = document.getElementById(getEligibleTab(portfolioId) + "_data-table")
-
-            // let newRow = dataTable.getElementsByTagName("tbody")[0].insertRow(0);
-            // status = row[8]
-            // status = getStatus(status)
-
-            // newRow.innerHTML =
-            // `<td id="ticker" data-label="Ticker">`+row[0]+`</td>
-            // <td id="ltp" data-label="LTP">`+row[1]+`</td>
-            // <td id="signal" data-label="Signal"><button type="button" class="` + row[2] + `_btn trade btn-xs" data-toggle="modal"
-            //           data-target="#trade_modal">` + row[2] + `</button></td>
-            // <td id="signal_time" data-label="Signal Time">`+timeFormat(row[3], row[11])+`</td>
-            // <td id="price" data-label="Signal Price">`+row[4]+`</td>
-            // <td id="target_price" data-label="TP">`+row[5]+`</td>
-            // <td id="stop_loss" data-label="SL">`+row[6]+`</td>
-            // <td id="profit_percent" data-label="Profit %">`+row[7]+`</td>
-            // <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
-            // newRow.id = row[9];
-
-            // active = row[10]
             newRow = inserNewRow(dataTable, data, 0, status);
-            console.log("inserted new row : ", newRow)
+            // console.log("inserted new row : ", newRow)
             if (active != 1) {
                 newRow.className = "disabled";
             }

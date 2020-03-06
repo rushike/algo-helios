@@ -155,8 +155,8 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                     </p>
                                     <div id="{}_profit_slider_range" class="profit_slider_range"></div>
                                     </div>
-                                    <div class="form-group">
-                                    <button type="button" class="filter_apply btn btn-default col-12 light-blue-bg">Apply</button>
+                                    <div class="form-group row text-center">
+                                    <button type="button" class="filter_apply btn btn-default col-xs-8 col-xs-offset-2 light-blue-bg rounded-large">Apply</button>
                                     </div>
                                 </form>
                                 </div>
@@ -202,7 +202,7 @@ String.prototype.format = function () {
 //     }
 //  });
 
-$(function() {
+$(document).ready(function() {
     
     // var frm = $('#contactForm1');
 
@@ -365,8 +365,9 @@ $(function() {
         $('input[name=stop_loss]').val(Math.round(Math.abs(sl - ltp) * 10) / 10);
         $('input[name=trigger_price]').val(sl);
 
-        var trade_action_btn = $('<div class = "col-md-12 text-center content-para p-3"><button id="trade_action" type="button" class= "trade_action btn btn-rounded"></div>');
+        var trade_action_btn = $('<div class = "col-md-12 text-center content-para p-3" id = "btn-col-12"><button id="trade_action" type="button" class= "trade_action btn btn-rounded"></div>');
         trade_action_btn.attr("data-name", signal);
+        console.log("trade_action : ", trade_action_btn, ", signal : ", signal)
         trade_action_btn.text(signal);
         if (signal == "BUY") {
             trade_action_btn.removeClass("SELL_btn");
@@ -378,7 +379,7 @@ $(function() {
         }
         trade_action_btn.addClass(signal + "_btn");
         $('#trade_header').addClass(signal + "_header");
-
+        $("#btn-col-12").remove()
         $("#buttonView").append(trade_action_btn);
 
         $('.trade_action').on('mousedown', function(e){

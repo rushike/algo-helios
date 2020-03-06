@@ -60,7 +60,6 @@ nav{
 a[aria-expanded=false]{
     z-index: 100;
     background-color: white;
-    border-bottom: 5px solid #004B96;
 }
 
 .form-horizontal {

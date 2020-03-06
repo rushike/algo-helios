@@ -64,7 +64,8 @@ li > .navbar-all > a{
 }
 
 li > .navbar-all:hover{
-    transform: scale(1.1)
+    transform: scale(1.1);
+    transition-duration: 0.5s;
 }
 #logout-btn{
     display: inline-block;

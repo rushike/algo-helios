@@ -28,11 +28,11 @@ parser.add_argument('--action', dest='action', default='BUY', choices=["BUY", "S
 
 parser.add_argument('--cat', dest='cat', default='intraday', choices=["intraday", "btst", 'positional', 'longterm'], help='Signal Algorithm Category like ["intraday", "btst", "positional", "longterm"]')
 
-parser.add_argument('--inst', dest='inst', default="0", choices=["0", "1", "2", "3", "4", "5"], help='Signal Algorithm Category like ["intraday", "btst", "positional", "longterm"]')
+parser.add_argument('--inst', dest='inst', default="0", choices=["0", "1", "2", "3", "4", "5"], help='Signal Algorithm Category like ["0", "1", "2", "3", "4", "5"]')
 
 parser.add_argument('--port', dest='port', default='1', choices=["4", "1", '2', '3'], help='Signal Algorithm Category like [1, 2, 3, 4]')
 
-parser.add_argument('--status', dest='status', default='Active', choices=["Active", "HIT", 'MISS', 'Inactive', 'Partial Hit'], help='Signal status from [HIT, MISS, Active, Inactive, Partial Hit]')
+parser.add_argument('--status', dest='status', default='Active', choices=["Active", "HIT", 'MISS', 'Inactive', 'Partial HIT'], help='Signal status from [HIT, MISS, Active, Inactive, Partial Hit]')
 
 parser.add_argument('--call', dest='call', default=0, choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"], help='Signal callid < 16')
 
@@ -85,6 +85,7 @@ def gen_new_signal():
     ltp = round(random.random() * 1000, 2)
     signal = args.action
     status = random.choice(['HIT' , 'MISS' , 'Active' , 'Partial HIT', 'Inactive'])
+    status = args.status
     test_data = {
                     "dtype": "signal",
                     "ticker": "TEST_" + "{}".format(args.inst),
@@ -101,7 +102,7 @@ def gen_new_signal():
                     "trade_life": "-",
                     "algo_source": random.choice(["MACD", "HA"]),
                     "interval": random.choice(["5minute", "15minute"]),
-                    "portfolio_id": random.choice([1, 2, 3, 4, "TEST"]) if args.env == 'dev' else 'TEST',
+                    "portfolio_id": args.port, #random.choice([1, 2, 3, 4, "TEST"]) if args.env == 'dev' else 'TEST',
                     # "portfolio_id": 'TEST',
                     'call_id': random.randint(1, 16) if args.call == 0 else args.call, # This will be always unique right? If yes, we can use this as an id for table rows
                     'db_fetched': True,
@@ -119,13 +120,13 @@ def signal_update():
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     signal = args.action
     price = round(random.random() * 1000, 2)
-    status = random.choice(['HIT' , 'MISS' , 'Active' , 'Partial HIT', 'Inactive'])
+    status = args.status
     test_data = {
         'dtype' : "signal_update",
         'ticker': "TEST_" + "{}".format(args.inst),
         'instrument_token': instrument_token,
         'call_id': random.randint(1, 16) if args.call == 0 else args.call,
-        'portfolio_id': 4,
+        'portfolio_id': args.port,
         'status': status,
         'active': True if status in ['Active', 'Partial HIT'] else False, # True if PartialHIT
         'profit_percent': 10, # Percentage profit/loss earned, Need to think about this
