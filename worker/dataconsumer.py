@@ -21,6 +21,9 @@ class DataConsumer(AsyncConsumer):
         })
 
     async def websocket_receive(self, event):
+        logger.debug(f"Received event [{event}]")
+
+            
         logger.debug(f"DATA FETCHER Received: {event}")
 
         data = json.loads(event['text'])

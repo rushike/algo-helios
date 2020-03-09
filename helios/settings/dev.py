@@ -31,6 +31,14 @@ DATABASES = {
         'PASSWORD': 'algonauts@123',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'janus' : {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'janusdb',
+        'USER': 'algonauts',
+        'PASSWORD': 'algonauts@123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

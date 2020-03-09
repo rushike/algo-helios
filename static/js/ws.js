@@ -66,6 +66,7 @@ function inserNewRow(source_table, data, position, status) {
     <td id="profit_percent" data-label="Profit %">`+data['profit_percent']+`</td>
     <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
     newRow.id = data["call_id"];
+    newRow.setAttribute('class', data['instrument_token'])
     return newRow
 }
 
@@ -174,7 +175,12 @@ socket.onmessage = function (e) {
             else {
                 // console.log("Received a new row ", data)
                 status = getStatus(status)
-                inserNewRow(dataTable, data, 0, status);
+                row = inserNewRow(dataTable, data, 0, status);
+                if (!active) {
+                    console.log("Will disable row with call id : ", call_id)
+                    row.className = "disabled";
+                    // row.id = instrumentToken + (Math.random * 100);
+                }
             }
         }
         else if (dataType == "signal_update"){
@@ -188,26 +194,42 @@ socket.onmessage = function (e) {
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
-                    // row.id = instrumentToken + (Math.random * 100);
                 }
             }
         }
-        else if (dataType == "tick") {
-            delete data_dict.dtype;
-            data = data_dict;
+        else if(dataType == "tick"){
+            class_name = data_dict['instrument_token']
+            instruments = document.getElementsByClassName(class_name)
+            console.log("Instruments on page are : ", instruments, typeof(instruments))
+            for(var i = 0; i < instruments.length; i++){
+                inst = instruments[i]
+                inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+                inst.cells.namedItem("profit_percent").innerHTML = data_dict["profit_percent"];
+                inst.cells.namedItem("status").innerHTML = status
 
-            if (dataTable && dataTable.rows.namedItem(rowId)) {
-                dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-                dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
-                dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
-
-                row = document.getElementById(rowId);
-                if (status != 0 && status != 2) {
-                    row.className = "disabled";
-                    row.id = instrumentToken + (Math.random * 100);
+                if(!status){
+                    console.log("Will disable the row by tick update");
+                    inst.className = "disabled";
                 }
-            }
+            };
+            
         }
+        // else if (dataType == "tick") {
+        //     delete data_dict.dtype;
+        //     data = data_dict;
+
+        //     if (dataTable && dataTable.rows.namedItem(rowId)) {
+        //         dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+        //         dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
+        //         dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
+
+        //         row = document.getElementById(rowId);
+        //         if (status != 0 && status != 2) {
+        //             row.className = "disabled";
+        //             row.id = instrumentToken + (Math.random * 100);
+        //         }
+        //     }
+        // }
     }
     else {
         //Create table from received data from database
@@ -215,16 +237,14 @@ socket.onmessage = function (e) {
 
             var status = data['status']
             var active = data['active']
-            // console.log("status : ", status, "active : ", active)
             var instrumentToken = data["instrument_token"];
-            var portfolioId = data["portfolio"];
+            var portfolioId = data["portfolio_id"];
     
             var activeTab = getEligibleTab(portfolioId);
-            // console.log("data table : ", dataTable, ", active tab : ", activeTab, " protfolio_id : ", portfolioId)
             var dataTable = document.getElementById(activeTab + "_data-table")
 
             newRow = inserNewRow(dataTable, data, 0, status);
-            // console.log("inserted new row : ", newRow)
+
             if (active != 1) {
                 newRow.className = "disabled";
             }

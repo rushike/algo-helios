@@ -1,5 +1,5 @@
 import logging
-import threading
+import threading, itertools
 import users.functions
 from channels.db import database_sync_to_async
 
@@ -20,13 +20,25 @@ class Singleton(type):
 
 class ConsumerManager(metaclass=Singleton):
     PROTFOLIO_MAPPER = {
-            'PortfolioTest' : 'mercury-intraday',
+            'PortfolioTest' : 'mercury-btst',
             'TEST': "mercury-intraday",
             '1': "mercury-intraday",
             '2': "mercury-btst",
             '3': "mercury-positional",
             '4': "mercury-longterm",
         }
+    PRODUCT_MAPPER = {
+        "mercury#intraday" : 1,
+        "mercury#btst" : 2,
+        "mercury#positional" : 3,
+        "mercury#longterm" : 4,
+    }
+    GROUP_MAPPER = {
+        "mercury-intraday" : 1,
+        "mercury-btst" : 2,
+        "mercury-positional" : 3,
+        "mercury-longterm" : 4,
+    }
     def __init__(self):
         logger.info("Initializing ConsumerManager!!!!")
         self.BROADCAST_GROUP = "ALL_USERS"
@@ -58,12 +70,15 @@ class ConsumerManager(metaclass=Singleton):
     @staticmethod
     def filter_calls(calls_dict, groups):
         user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
-        logger.debug(f"User protfolios : {user_protfolios}")
-        calls = list(filter(lambda item : item['portfolio'][0] in user_protfolios, calls_dict))
-        [d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-             'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio' : d["portfolio"][0] }) for d in calls] # updates dict to make JSON serializable
+        logger.debug(f"User protfolios : {user_protfolios}, Calls Dict : {calls_dict}")
+        calls = list(filter( lambda dict_port: list(filter(lambda item : str(item['portfolio_id'][0]) in user_protfolios, dict_port)), calls_dict))
+        logger.debug(f"Calls : {calls}")
+        [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+             'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0] }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
         logger.debug(f"Filter out calls are {calls}")
-        return calls[:17]
+        calls = list(itertools.chain.from_iterable(calls))
+        logger.debug(f"Merge out calls are {calls}") 
+        return calls
     @staticmethod
     @database_sync_to_async
     def get_eligible_groups(user):
