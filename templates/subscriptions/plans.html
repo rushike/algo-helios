@@ -57,7 +57,7 @@
 									});
 								</script>
 								{% for group_type in details %}	
-									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  dark-blue shadow-lg text-light " style="border-color:#23527c" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
+									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn dark-blue text-light " style="border-color:#23527c; min-width: 4rem;" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
 										<span class="font-weight-bold dark-blue p-2">{{ group_type.1.max_members }}<span>
 									</a>
 									<script>
@@ -94,10 +94,10 @@
 								<div class="form-control border-0 shadow-none list-group_item ">
 									<span class="badge badge-pill badge-warning">Choose Period</span><br>
 									<div class="btn-group btn-group-toggle" data-toggle="buttons">
-										<label class="btn btn-primary" id = "period-monthly-label">
+										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
 										</label>
-										<label class = "btn btn-primary" id = "period-yearly-label">
+										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
 										</label>
 									</div>
