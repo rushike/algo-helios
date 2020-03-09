@@ -87,7 +87,11 @@
 								
                 				<div class="card h-100 border-dark shadow-sm">     
                   					<div class="card-header">
-                    					<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}<br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+										{% if iplan.1 != "Premium" %}
+											<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+										{% else %}
+										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+										{% endif %}
 									</div>
 									  
                   					<div class="card-body flex-column">
