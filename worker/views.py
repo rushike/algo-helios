@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 from worker.callfilter import session_filters
+import worker.functions, users.functions
 from django.contrib.auth.decorators import login_required
 import logging
 
@@ -26,7 +27,10 @@ def apply_filters(request):
     logger.info(f"REQUEST  ==:> {request},\nDATA ==:> {request.GET}, \nDICT ==:> {GET} ")
     call_type = request.GET.get('call_type')
     tickers = request.GET.getlist('tickers')
-    sides = request.GET.get('sides')
+    # if len(tickers) > 0:
+    tickers = tickers #(tickers if len(tickers) > 1 else tickers[0]) 
+    # else: tickers = None
+    sides = request.GET.getlist('sides') #if request.GET.get('sides') else None
     risk_reward = tuple(float(v.strip()) for v in request.GET.get('rr_range').split("-"))
     profit_percentage = tuple(float(v.strip()) for v in request.GET.get('pp_range').split("-"))
     signal_time = tuple(float(v.strip()) for v in request.GET.get('signal_time', "0 - 1").split("-")) 
@@ -47,9 +51,14 @@ def apply_filters(request):
 
 @login_required(login_url='/accounts/login/')
 def get_filters(request):
-    print("REQUEST  ", request, request.GET['session_id'])
-    session_id = request.GET['session_id']
-    if session_id in session_filters:
-        print("SESSION FILTER ", session_filters[session_id].to_dict())
-        return JsonResponse(session_filters[session_id].to_dict(), safe=False)
-    return JsonResponse(dict())
+    logger.debug(f"GET Request : {request.GET}")
+    products = [product.product_name for product in users.functions.get_user_subs_product(request.user.email)]
+    logger.debug(f"Products filter : {products}")
+    dict_list = [worker.functions.get_user_filter_for_product(request.user.email, product) for product in list(products)]
+    logger.debug(f"dict_list filter : {dict_list}")
+    key_val_dict = {}
+    for dl_item in dict_list:
+        if dl_item['call_type'] and dl_item['call_type'].lower() in ['intraday', 'btst', 'positional', 'longterm']:
+            key_val_dict[dl_item['call_type'].lower()] = dl_item
+    return JsonResponse(key_val_dict, safe=False)
+    # return JsonResponse(dict())

@@ -28,11 +28,11 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                 <!-- </div>
                             </div>-->
                             <div class="col-md-2 col-xs-12 text-center btn-group btn-group-lg ">
-                                <a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
-                                    <button class="btn filter" data-toggle="modal" data-target="#{}_filter_modal">
+                                <span id = "{}_filter"><a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
+                                    <button class="btn filter get_filter"  data-toggle="modal" data-target="#{}_filter_modal">
                                         <small><span class="fa fa-filter"></span></small>
                                     </button>
-                                </a>
+                                </a></span>
                                 <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
                                     <button class="btn download" onclick='exportTableToCSV("{}")'>
                                         <small><span class="fa fa-download"></span></small>
@@ -209,6 +209,7 @@ $(document).ready(function() {
     // frm.submit(function (e) {
 
     //     e.preventDefault();
+    
 
         $.ajax({
             type: "GET",
@@ -218,13 +219,14 @@ $(document).ready(function() {
             success: function(data)
             {
                 $.each(data, function(tab_to_consider, filter_data) {
+                    console.log("Filter data recieved from database for portfolio : ", tab_to_consider, ", Data ", filter_data)
                     tab_id = "#" + tab_to_consider
-                    $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
-                    $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
+                    $( tab_id + "_rr_range" ).val(filter_data['risk_reward'][0] + " - " + filter_data['risk_reward'][1]);
+                    $( tab_id + "_profit_range" ).val(filter_data['profit_percentage'][0] + " - " + filter_data['profit_percentage'][1]);
                     $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
                     $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
-                    $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
-                    $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
+                    $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['risk_reward'][0], filter_data['risk_reward'][1] ] );
+                    $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['profit_percentage'][0], filter_data['profit_percentage'][1] ] );
                 });
             },
             error: function(request, status, error)
@@ -232,9 +234,51 @@ $(document).ready(function() {
                 alert(request.responseText);
             }
         });
+
+        function getEligibleTab(portfolioId) {
+            if (portfolioId == 1  || portfolioId == "TEST") {
+                return "intraday"
+            }
+            else if (portfolioId == 2) {
+                return "btst"
+            }
+            else if (portfolioId == 3) {
+                return "positional"
+            }
+            else if (portfolioId == 4) {
+                return "longterm"
+            }
+            return "intraday"
+        }
     // });
 
     $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
+        // console.log("Id  for protfolio : ", value, " ,,, ", "#" + value + "_filter")
+        // $(".get_filter").click(function() {
+        //     console.log("Ajax Request for protfolio : ", value)
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "/worker/get-filters",
+        //         // data: {},
+        //         data : {session_id : guid(), value : value, csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+        //         success: function(data)
+        //         {
+        //             $.each(data, function(tab_to_consider, filter_data) {
+        //                 tab_id = "#" + tab_to_consider
+        //                 $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
+        //                 $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
+        //                 $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
+        //                 $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
+        //                 $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
+        //                 $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
+        //             });
+        //         },
+        //         error: function(request, status, error)
+        //         {
+        //             alert(request.responseText);
+        //         }
+        //     });
+        // });
         $("#" + value + "_content").html(data_table.format(value));
 
         $( "#" + value + "_rr_slider_range" ).slider({
@@ -496,7 +540,8 @@ $(document).ready(function() {
             },
             error: function(request, status, error)
             {
-                alert(request.responseText);
+                location.reload()
+                // alert(request.responseText);
             }
         });
     });

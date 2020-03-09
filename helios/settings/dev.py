@@ -1,3 +1,11 @@
+import sys
+import asyncio
+
+if sys.platform == 'win32':
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+
+
 from .common import *
 from razorpay import Client
 import django
@@ -27,6 +35,14 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'algonauts',
+        'USER': 'algonauts',
+        'PASSWORD': 'algonauts@123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    },
+    'janus' : {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'janusdb',
         'USER': 'algonauts',
         'PASSWORD': 'algonauts@123',
         'HOST': 'localhost',

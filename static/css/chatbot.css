@@ -128,10 +128,10 @@ mybot .chatCont {
 
 mybot .close {
   position: absolute;
+  top: 110px;
   right: 5px;
   margin-top: -60px;
-  color: #ffffff;
-  font-size: 18px;
+  font-size: 22px;
   cursor: pointer;
 }
 
@@ -468,7 +468,7 @@ mybot .suggestion span:last-child {
 
 .help {
   position: fixed;
-  right:2rem;
+  right:1rem;
   bottom:50px;
   z-index : 10001;
   color: #868686;

@@ -16,7 +16,7 @@
 
 {% block subscriptions_content %}
 
-<div class="container-fluid mb-4  tabbable boxed parentTabs" style="padding-top: 120px;">
+<div class="container-fluid mb-4 tabbable boxed parentTabs" style="padding-top: 120px;">
     <div class="row ">
         <div class="col text-center">
 
@@ -38,10 +38,10 @@
 			<div class="tabbable">
 				<div class="row mt-4 ">
 					<div class="col-md-12">
-						<div class="text-dar font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
+						<div class="font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
 						<div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
 							
-							<div id = "group-header" class="btn-group " role="group" aria-label="First group">
+							<div id = "group-header text-center" class="btn-group " role="group" aria-label="First group">
 								<script>
 									$(document).ready(() => {
 										var active = "#head-{{group_type.0.1}}";
@@ -57,8 +57,8 @@
 									});
 								</script>
 								{% for group_type in details %}	
-									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  dark-blue shadow-lg text-light " style="border-color:#23527c" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
-										<span class="font-weight-bold dark-blue pl-2 pr-2">{{ group_type.1.max_members }}<span>
+									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn dark-blue text-light " style="border-color:#23527c; min-width: 4rem;" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
+										<span class="font-weight-bold dark-blue p-2">{{ group_type.1.max_members }}<span>
 									</a>
 									<script>
 										$(document).ready(() => {
@@ -87,17 +87,17 @@
 					</div>
 				</div>
 			
-				<div class="row">
-					<div class="col">
-						<div class="card-body text-dark text-center">
-							<ul class="list-group mr-5 ml-5">
-								<div class="form-check list-group_item ">
+				<div class="row text-center">
+					<div class="col-md-12">
+						<div class="card-body text-dark shadow-none">
+							<ul class="list-group mr-5 ml-5 shadow-none">
+								<div class="form-control border-0 shadow-none list-group_item ">
 									<span class="badge badge-pill badge-warning">Choose Period</span><br>
 									<div class="btn-group btn-group-toggle" data-toggle="buttons">
-										<label class="btn btn-primary" id = "period-monthly-label">
+										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
 										</label>
-										<label class = "btn btn-primary" id = "period-yearly-label">
+										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
 										</label>
 									</div>
@@ -125,11 +125,10 @@
 						</div>
 					</div>
 				</div>
-			
+
 				<div class="row">
 					<div class="col">
 						
-			
 						<div class="tab-content" id="pills-tabContent">                
 						{% for group_type in details %}
 							<div class="tab-pane" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
@@ -149,7 +148,7 @@
 													});
 											});
 										</script>
-										<div class="col-md-5 offset-sm-1">     
+										<div class="col-md-6" style="padding: 20px;">     
 											<form method = "POST" action="/subscriptions/order-details"> 
 												{% csrf_token %}        
 												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">

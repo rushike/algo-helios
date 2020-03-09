@@ -29,8 +29,8 @@ class DataPublisher(AsyncConsumer):
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
         logger.info(f"User scope {self.scope['user']}")
         config_file = xml.etree.ElementTree.parse('./worker/dbconfig.xml')
-        self.db_handler = DBConnHandler(host = DATABASES["default"]["HOST"], database = DATABASES["default"]["NAME"], 
-                user = DATABASES["default"]["USER"], password = DATABASES["default"]["PASSWORD"], port = DATABASES["default"]["PORT"])
+        self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
+                user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], port = DATABASES["janus"]["PORT"])
         logger.debug(f"Database handler opened : {self.db_handler}")
 
         await self.send({
@@ -55,7 +55,7 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_receive(self, event):
         try:
-            user = self.scope['user']
+            user = self.scope['user'].email
             logger.debug(f"Received event [{event}] from a user {user}")
 
             ConsumerManager().register_new_client_conn(user, self)
@@ -63,14 +63,27 @@ class DataPublisher(AsyncConsumer):
             logger.debug(f"current directory : {os.listdir()}")
             
             groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
-            
-            product_names = await worker.functions.get_product_names_from_groups(groups)
-
+            logger.debug(f"All  for user groups : {groups}")
+            product_names = await worker.functions.get_product_names_from_groups_async(groups)
+            logger.debug(f"All  for products : {product_names}")
+            all_calls = []
+            user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
             for product in product_names:
+                portfolio_id = ConsumerManager.PRODUCT_MAPPER[product]
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
-                logger.debug(f"Product filter for Product {product},  Filter: {product_filter}")
+                logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
+                if product_filter['call_type']:
+                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}")
+                    tickers = product_filter["tickers"]
+                    calls = self.db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
+                                    min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
+                                min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
+                    logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
+                else : 
+                    calls = self.db_handler.fetch_calls_for_today(portfolio_id= portfolio_id)
+                    logger.debug(f"Calls for protfolio {portfolio_id} withoout filter set : calls : = {calls}")
+                all_calls.append(calls)
 
-            all_calls = self.db_handler.fetch_calls_for_today()
             logger.debug(f"Fetched all calls for today : {all_calls}")
 
             logger.debug(f"Will send filter data to groups : {groups}")
@@ -111,9 +124,15 @@ class DataPublisher(AsyncConsumer):
             # TODO: Should be a way to notify the admin
 
     async def send_message(self, event):
-        response = event.get('message') 
-        logger.info(f"Sending data to client throrugh /channel/ {event}")
-        await self.send({
-            'type' : 'websocket.send',
-            'text' : response
-        })   
+        user = self.scope['user'].email
+        logger.debug(f"A user {user}")
+        response = event.get('message')
+        data = json.loads(response)
+        fdata = await worker.functions.filter_async(user, data)
+        logger.debug(f"Sending data RESPONE : {fdata}")
+        if len(fdata) > 0:
+            logger.info(f"Sending data to client throrugh /channel/ {event}")
+            await self.send({
+                'type' : 'websocket.send',
+                'text' : response
+            })   

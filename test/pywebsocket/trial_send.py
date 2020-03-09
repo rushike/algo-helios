@@ -141,7 +141,7 @@ def signal_update():
 def gen_tick():
     global instrument_tokens
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
-    ltp = instrument_tokens[instrument_token]['price']
+    ltp = random.randint(300, 10000)
     test_tick = {"dtype": "tick",
                  "tradable": True,
                  "mode": "ltp",
@@ -149,7 +149,7 @@ def gen_tick():
                  "last_price": ltp + round((random.random() - 0.5) * 0.02 * ltp, 2),
                  'ticker' : "TEST_" + "{}".format(random.randrange(1, 9)),
                  "portfolio_id": random.choice([1, 2, 3, 4, "TEST"]) if args.env == 'dev' else 'TEST',
-                 'status': random.choice(['HIT' , 'MISS' , 'Inactive' , 'PartialHIT', 'Inactive']),
+                 'status': args.status #random.choice(['HIT' , 'MISS' , 'Inactive' , 'PartialHIT', 'Inactive']),
                  # "portfolio_id": 'TEST',
                  }
     return test_tick
