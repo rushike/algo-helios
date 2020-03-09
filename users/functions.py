@@ -22,6 +22,17 @@ def get_user_object(user):
     return user
 
 
+def get_user_object(user):
+    if hasattr(user,'_wrapped') :
+        if user._wrapped.__class__ == object:
+            user._setup()
+            return None
+        user = user._wrapped 
+    if type(user) == str:
+        user = AlgonautsUser.objects.get(email = user)
+    else : user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
+    return user
+
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
