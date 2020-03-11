@@ -24,6 +24,7 @@ client = Client(auth=(RAZORPAY_KEY, "f82D3I70VdLkWPPOzlKteAhK"))
 Allowed Host for sites
 """
 ALLOWED_HOSTS = [
+    '22e73496.ngrok.io',
     'localhost',
     '127.0.0.1',
 ]
@@ -95,5 +96,7 @@ CHANNEL_LAYERS = {
 }
 
 CRONJOBS = [
-    ('*/1 * * * *', 'subscriptions.cron.check_data_consistency')
+    ('*/1 * * * *', 'subscriptions.cron.check_data_consistency', '>> worker.log')
 ]
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'

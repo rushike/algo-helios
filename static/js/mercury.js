@@ -200,7 +200,7 @@ $(document).ready(function() {
             type: "GET",
             url: "/worker/get-filters",
             // data: {},
-            data : {session_id : guid(), csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+            data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
             success: function(data)
             {
                 $.each(data, function(tab_to_consider, filter_data) {

@@ -8,25 +8,6 @@ if (loc.protocol == "https:") {
 var endpoint = wsStart + loc.host + "/channel/";
 var socket = new WebSocket(endpoint);
 console.log("socket : coonn ,,, ", socket)
-function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-
-function guid() {
-    var nav = window.navigator;
-    var screen = window.screen;
-    var guid = nav.mimeTypes.length;
-    guid += nav.userAgent.replace(/\D+/g, '');
-    guid += nav.plugins.length;
-    guid += screen.height || '';
-    guid += screen.width || '';
-    guid += screen.pixelDepth || '';
-
-    return guid;
-};
 
 console.log(sessionStorage)
 
@@ -34,10 +15,8 @@ console.log(sessionStorage)
 
 socket.onopen = function (e) {
     console.log("Web-socket conn opened ", e);
-    // window.onload = setTimeout(socket.send(JSON.stringify({'id' :sessionStorage['id'], 'username' : sessionStorage['username']})), 5000)
-    sessionStorage['id'] = guid();
     setTimeout(function() {
-        socket.send(JSON.stringify({'id' :sessionStorage['id'], 'username' : sessionStorage['username']}));
+        socket.send(JSON.stringify({'username' : sessionStorage['username']}));
         console.log(sessionStorage)
     }, 1000);
 }

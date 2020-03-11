@@ -16,5 +16,5 @@ def check_data_consistency():
     
     # disabling expired subscritpion
     subs = Subscription.objects.filter(subscription_end__lt = now).update(subscription_active = False)
-    
+    print(f"CRONTABS : subs now : {now}, {subs}")
 
