@@ -133,6 +133,20 @@ TEMPLATES = [
 ASGI_APPLICATION = 'helios.routing.application'
 
 
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'HELIOS_POSTGRES_DB',
+        'USER': 'HELIOS_POSTGRES_USER',
+        'PASSWORD': 'HELIOS_POSTGRES_PASSWORD',
+        'HOST': 'HELIOS_POSTGRES_HOST',
+        'PORT': '5432',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [

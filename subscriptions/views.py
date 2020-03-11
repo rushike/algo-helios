@@ -211,14 +211,6 @@ def plan_subscribe(request):
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]
     recepients.extend(recepient)
-    # subscribed = Subscription.objects.create_subscription(
-    #                 user = user,
-    #                 group_type = group_type,
-    #                 plan_type = plan_type,
-    #                 plan_name = plan_name,
-    #                 period = period,
-    #                 payment_id = payment_id,
-    #             )
     subscribed = subscriptions.functions.create_subscription(
                     user = user,
                     group_type = group_type,

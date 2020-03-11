@@ -26,7 +26,6 @@ django-sslserver==0.22
 django-unixtimestampfield==0.3.9
 django-webpush==0.3.1
 enum34==1.1.9
-Flask==1.1.1
 gevent==1.4.0
 greenlet==0.4.15
 http-ece==1.1.0

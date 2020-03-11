@@ -194,22 +194,7 @@ String.prototype.format = function () {
     });
 };
 
-// var csrf_token = "<% csrf_token %>"
-
-// $("body").bind("ajaxSend", function(elm, xhr, s){
-//     if (s.type == "POST") {
-//        xhr.setRequestHeader('X-CSRF-Token', csrf_token);
-//     }
-//  });
-
 $(document).ready(function() {
-    
-    // var frm = $('#contactForm1');
-
-    // frm.submit(function (e) {
-
-    //     e.preventDefault();
-    
 
         $.ajax({
             type: "GET",
@@ -250,35 +235,8 @@ $(document).ready(function() {
             }
             return "intraday"
         }
-    // });
 
     $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
-        // console.log("Id  for protfolio : ", value, " ,,, ", "#" + value + "_filter")
-        // $(".get_filter").click(function() {
-        //     console.log("Ajax Request for protfolio : ", value)
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "/worker/get-filters",
-        //         // data: {},
-        //         data : {session_id : guid(), value : value, csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
-        //         success: function(data)
-        //         {
-        //             $.each(data, function(tab_to_consider, filter_data) {
-        //                 tab_id = "#" + tab_to_consider
-        //                 $( tab_id + "_rr_range" ).val(filter_data['lower_rr'] + " - " + filter_data['upper_rr']);
-        //                 $( tab_id + "_profit_range" ).val(filter_data['lower_pp'] + " - " + filter_data['upper_pp']);
-        //                 $( tab_id + "_tickers_filter").multiselect('select', filter_data['tickers']);
-        //                 $( tab_id + "_side_filter").multiselect('select', filter_data['sides']);
-        //                 $( tab_id + "_rr_slider_range" ).slider( "option", "values", [ filter_data['lower_rr'], filter_data['upper_rr'] ] );
-        //                 $( tab_id + "_profit_slider_range" ).slider( "option", "values", [ filter_data['lower_pp'], filter_data['upper_pp'] ] );
-        //             });
-        //         },
-        //         error: function(request, status, error)
-        //         {
-        //             alert(request.responseText);
-        //         }
-        //     });
-        // });
         $("#" + value + "_content").html(data_table.format(value));
 
         $( "#" + value + "_rr_slider_range" ).slider({
@@ -341,7 +299,6 @@ $(document).ready(function() {
         )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
     document.querySelectorAll('th').forEach(th => th.addEventListener('click', (() => {
-        //console.log($('.nav-tabs .active').attr("id"))
         const table = document.getElementById($('.nav-tabs .active').attr("id") + "_data-table");
         const tbody = table.children[1];
         Array.from(tbody.querySelectorAll('tr:nth-child(n+1)'))
@@ -377,7 +334,6 @@ $(document).ready(function() {
             return
         }
 
-        // console.log("Status is ", status)
         new_html = `<span class="badge white ` + badge_template + `">` + status + `</span>`;
         closest_tr.find('td:eq(8)').html(new_html)
     });
@@ -541,14 +497,12 @@ $(document).ready(function() {
             error: function(request, status, error)
             {
                 location.reload()
-                // alert(request.responseText);
             }
         });
     });
 
     $(".product-tabs").on('click', function () {
         console.log($('.nav-tabs li.active a').attr("href"))
-        // $(".nav-tabs li.active").css({'background-color' : DARK_BLUE, })
         $("meta[name=active-tab]").attr("content", $('.nav-tabs li.active a').attr("href"));
     });
 
@@ -631,7 +585,7 @@ const sendSubData = async (subscription) => {
         })
 
 
-    console.log("Groups Await from channels are : ", groups, groups.length)
+    console.log("Groups await from channels are : ", groups, groups.length)
     // Subscribe based on the groups eligible
     for(var i = 0; i < groups.length; i++){
         const data = {

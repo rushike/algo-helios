@@ -17,18 +17,17 @@ import worker.functions
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing DATA PUBLISHER on {threading.get_ident()} {os.getpid()}')
-console_logger = logging.getLogger('')
+
 
 class DataPublisher(AsyncConsumer):
     """
     A class to manage BROWSER CONNECTIONS
     """
-    
+
     async def websocket_connect(self, event):
         logger.info(f"DATA PUBLISHER Connected: {event}")
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
         logger.info(f"User scope {self.scope['user']}")
-        config_file = xml.etree.ElementTree.parse('./worker/dbconfig.xml')
         self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
                 user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], port = DATABASES["janus"]["PORT"])
         logger.debug(f"Database handler opened : {self.db_handler}")
@@ -38,7 +37,6 @@ class DataPublisher(AsyncConsumer):
         })
 
         # Add users to eligible groups
-        # groups = await database_sync_to_async(ConsumerManager().get_eligible_groups)(self.scope['user'])
         groups = await ConsumerManager.get_eligible_groups(self.scope['user'])
         logger.debug(f"Eligible groups for user are {groups}")
         for group in groups:

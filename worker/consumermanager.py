@@ -5,8 +5,6 @@ from channels.db import database_sync_to_async
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing CONSUMER MANAGER on thread {threading.get_ident()}')
-console_logger = logging.getLogger('')
-
 
 
 class Singleton(type):

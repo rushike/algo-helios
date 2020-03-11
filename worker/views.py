@@ -3,7 +3,6 @@ from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
 from webpush import send_group_notification
-from worker.callfilter import session_filters
 import worker.functions, users.functions
 from django.contrib.auth.decorators import login_required
 import logging, json
@@ -27,11 +26,8 @@ def apply_filters(request):
     GET = request.GET.dict()
     logger.info(f"REQUEST  ==:> {request},\nDATA ==:> {request.GET}, \nDICT ==:> {GET} ")
     call_type = request.GET.get('call_type')
-    tickers = request.GET.getlist('tickers')
-    # if len(tickers) > 0:
-    tickers = tickers #(tickers if len(tickers) > 1 else tickers[0]) 
-    # else: tickers = None
-    sides = request.GET.getlist('sides') #if request.GET.get('sides') else None
+    tickers = request.GET.getlist('tickers') # tickers is list of strings
+    sides = request.GET.getlist('sides') # sides is list of strings 
     risk_reward = tuple(float(v.strip()) for v in request.GET.get('rr_range').split("-"))
     profit_percentage = tuple(float(v.strip()) for v in request.GET.get('pp_range').split("-"))
     signal_time = tuple(float(v.strip()) for v in request.GET.get('signal_time', "0 - 1").split("-")) 
