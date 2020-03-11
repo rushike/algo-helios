@@ -2,10 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.http import JsonResponse
+from webpush import send_group_notification
 from worker.callfilter import session_filters
 import worker.functions, users.functions
 from django.contrib.auth.decorators import login_required
-import logging
+import logging, json
 
 import products.functions
 
@@ -61,4 +62,9 @@ def get_filters(request):
         if dl_item['call_type'] and dl_item['call_type'].lower() in ['intraday', 'btst', 'positional', 'longterm']:
             key_val_dict[dl_item['call_type'].lower()] = dl_item
     return JsonResponse(key_val_dict, safe=False)
-    # return JsonResponse(dict())
+
+@login_required(login_url = '/worker/mercury/')
+def get_user_channel_groups(request):
+    groups = worker.functions.get_user_subs_groups(request.user)
+    logger.debug(f"User channel groups are : {groups}.")
+    return JsonResponse(groups, safe=False)

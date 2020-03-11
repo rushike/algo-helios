@@ -52,7 +52,9 @@ class DataConsumer(AsyncConsumer):
                 # Send a notification
                 payload = None
                 ticker = data.get('ticker')
+
                 if data_type == 'signal':
+                    logger.debug("Will load Header and body for Push Notification : Signal")
                     payload = {'head': f"{data.get('algo_category').upper()} - {signal} {ticker}",
                                'body': f"{signal} {ticker} @ {data.get('price')} with "
                                        f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
@@ -63,7 +65,8 @@ class DataConsumer(AsyncConsumer):
                     payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                                'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
                                'url': 'https://www.dev.algonauts.in/login'}
-                self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
+                logger.debug("Transfer notification call from async : ")
+                await self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
@@ -92,4 +95,5 @@ class DataConsumer(AsyncConsumer):
     
     @database_sync_to_async
     def send_group_notification_async(self, group_name, payload, ttl):
+        logger.debug(f"Will Send PUSH NOTIFICATION  with : group name : {group_name}, playload : {payload} and the ttl : {ttl}")
         send_group_notification(group_name = group_name, payload = payload, ttl = ttl)

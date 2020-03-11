@@ -60,7 +60,7 @@
 											{% csrf_token %}
 											<div class="form-group">
 												<label for=""><b>Enter Referal Code</b></label>
-												<input type="text" id="" maxlength="6" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline">
+												<input type="text" id="" maxlength="6" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline" required>
 												<button class="btn btn-dark btn-sm mt-1" type="submit">Ok</button>
 											</div>
 											</form>
@@ -87,7 +87,7 @@
 								
                 				<div class="card h-100 border-dark shadow-sm">     
                   					<div class="card-header">
-										{% if iplan.1 != "Premium" %}
+										{% if iplan.1.type_name == "Premium" %}
 											<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 										{% else %}
 										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
@@ -141,7 +141,11 @@
 					
 					<div class="card h-100 border-dark shadow-sm">     
 							<div class="card-header">
-							<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span><br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+							{% if gplan.1.type_name == "Premium" %}
+								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+							{% else %}
+								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+							{% endif %}
 						</div>
 							
 							<div class="card-body flex-column">

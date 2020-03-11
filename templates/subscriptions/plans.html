@@ -63,6 +63,7 @@
 									<script>
 										$(document).ready(() => {
 											var non_active = "#head-{{df}}";
+											var groupcode_clicked = 0
 											active = "#head-{{group_type.1}}"
 											$("#head-{{ group_type.1 }}").click(() =>{
 												var current_clicked_id = "#head-{{ group_type.1 }}"
@@ -71,6 +72,7 @@
 													$("#head-{{ group_type.1 }}").css("background-color", "#daedf4")
 													$(active).css("background-color", "white");
 													active =  "#head-{{ group_type.1 }}"
+													groupcode_clicked = "#head-{{ group_type.1 }}"
 													$('input[name="groupcode"]').val("{{group_type.1}}");
 												}
 												
@@ -391,7 +393,12 @@
 			});
 			// var a = document.getElementById("#ah-center-a")
 			// a.click()
-
+			$(".plancode-div").click(()=>{
+				if(plancode_clicked == 0){
+					console.log("plancode val = ", plancode_clicked)
+					$("#group-header").css({"border-style": "solid", "border-color": "red"})
+				}
+			});
 			$('input[required]').on('invalid', function(e){
 				console.log("errr : ", e, e.target, e.target.name)
 				if(e.target.name == "groupcode"){

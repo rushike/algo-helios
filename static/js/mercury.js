@@ -559,8 +559,10 @@ $(document).ready(function() {
 
 const registerSw = async () => {
     if ('serviceWorker' in navigator) {
+        console.log("Will initialte sw.js NOTIFICATION")
         const reg = await navigator.serviceWorker.register('/static/js/sw.js');
         initialiseState(reg)
+        console.log("initialted sw.js with reg : ", reg)
 
     } else {
         console.log("Not eligible for push notifications!!")
@@ -598,6 +600,7 @@ function urlB64ToUint8Array(base64String) {
 
 const subscribe = async (reg) => {
     const subscription = await reg.pushManager.getSubscription();
+    console.log("Subscribe : subscriptions : ", subscription)
     if (subscription) {
         sendSubData(subscription);
         return;
@@ -618,28 +621,37 @@ const subscribe = async (reg) => {
 // TODOs
 // Get all products subscribed from backend
 // You get the list of products
-
 const sendSubData = async (subscription) => {
     const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
-    const data = {
-        status_type: 'subscribe',
-        subscription: subscription.toJSON(),
-        browser: browser,
-        group: 'calls_consumer',
-    };
+    groups = await fetch('/worker/user_channel_groups/')
+        .then(async (response) => {
+            return await response.json();
+        })
 
+
+    console.log("Groups Await from channels are : ", groups, groups.length)
     // Subscribe based on the groups eligible
+    for(var i = 0; i < groups.length; i++){
+        const data = {
+            status_type: 'subscribe',
+            subscription: subscription.toJSON(),
+            browser: browser,
+            group: groups[i],
+        };
+        console.log("Data to Webpush Save : ", data);
+        const res = await fetch('/webpush/save_information', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            credentials: "include"
+        });
 
-    const res = await fetch('/webpush/save_information', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'content-type': 'application/json'
-        },
-        credentials: "include"
-    });
+        console.log("sendSubData res : is :  ", res)
 
-    handleResponse(res);
+        handleResponse(res);
+    }
 };
 
 const handleResponse = (res) => {

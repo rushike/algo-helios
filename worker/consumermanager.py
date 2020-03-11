@@ -74,7 +74,8 @@ class ConsumerManager(metaclass=Singleton):
         calls = list(filter( lambda dict_port: list(filter(lambda item : str(item['portfolio_id'][0]) in user_protfolios, dict_port)), calls_dict))
         logger.debug(f"Calls : {calls}")
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-             'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0] }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
+                'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0],
+                'profit_percent' : abs((d['price'] - d['target_price']) / d['price'] * 100) }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
         logger.debug(f"Filter out calls are {calls}")
         calls = list(itertools.chain.from_iterable(calls))
         logger.debug(f"Merge out calls are {calls}") 

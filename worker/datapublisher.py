@@ -73,7 +73,7 @@ class DataPublisher(AsyncConsumer):
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
                 logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
                 if product_filter['call_type']:
-                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}")
+                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, porfit_percentage {product_filter['profit_percentage'], type(product_filter['profit_percentage'][0]), type(product_filter['profit_percentage'][1])}")
                     tickers = product_filter["tickers"]
                     calls = self.db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
                                     min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],

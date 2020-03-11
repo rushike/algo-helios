@@ -47,15 +47,17 @@ parser.add_argument('--interactive', dest='interactive', action='store_true',
                     help='Interactive mode')
 
 args = parser.parse_args()
-
+args.cat = False
 """
 
 """
 print(args)
 
+CAT = {"4" : "Longterm", "1" : "Intraday", '3' : "Positional", '2' : "BTST"}
 
 def gen_signal():
     global instrument_tokens
+    global CAT
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     # instrument_token = 99999
     ltp = round(random.random() * 1000, 2)
@@ -81,6 +83,7 @@ def gen_signal():
 
 def gen_new_signal():
     global instrument_tokens
+    global CAT
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     ltp = round(random.random() * 1000, 2)
     signal = args.action
@@ -98,7 +101,7 @@ def gen_new_signal():
                     "stop_loss": ltp + round(random.random() - (0.5 if signal == 'BUY' else -0.5) * 0.1 * ltp, 2),
                     'status' : status,
                     'trade_strategy' : "SuperTrend_Longterm",
-                    'algo_category' : args.cat,
+                    'algo_category' : args.cat if args.cat else CAT[args.port],
                     "trade_life": "-",
                     "algo_source": random.choice(["MACD", "HA"]),
                     "interval": random.choice(["5minute", "15minute"]),
@@ -117,6 +120,7 @@ def gen_new_signal():
 
 def signal_update():
     global instrument_tokens
+    global CAT
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     signal = args.action
     price = round(random.random() * 1000, 2)
@@ -131,7 +135,7 @@ def signal_update():
         'active': True if status in ['Active', 'Partial HIT'] else False, # True if PartialHIT
         'profit_percent': 10, # Percentage profit/loss earned, Need to think about this
         'signal': signal,
-        'algo_category': args.cat,
+        'algo_category': args.cat if args.cat else CAT[args.port],
         'price': price,
     }
     instrument_tokens[instrument_token] = test_data
@@ -140,6 +144,7 @@ def signal_update():
 
 def gen_tick():
     global instrument_tokens
+    global CAT
     instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     ltp = random.randint(300, 10000)
     test_tick = {"dtype": "tick",

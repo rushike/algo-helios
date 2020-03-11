@@ -116,7 +116,6 @@ def get_user_subs_product(user):
     plans.extend(gplan.values('plan_id'))
     plans = [plan['plan_id'] for plan in plans]
     products = subscriptions.functions.get_all_products_in_plans(plans)
-    results = {'products' : products}
     return products
 
 

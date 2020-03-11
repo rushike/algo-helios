@@ -169,7 +169,12 @@ socket.onmessage = function (e) {
                     }
                     
                     status = getStatus(status)
-                    inserNewRow(dataTable, data, 0, status)
+                    row = inserNewRow(dataTable, data, 0, status)
+                    if(!active){
+                        console.log("Will disable row with call id in --signal: ", call_id)
+                        row.className = "disabled";
+                        
+                    }
                 }
             }
             else {
@@ -184,6 +189,7 @@ socket.onmessage = function (e) {
             }
         }
         else if (dataType == "signal_update"){
+            console.log("Signal Update : data_dict = ", data_dict)
             if (dataTable && dataTable.rows.namedItem(rowId)) {
                 dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
                 dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
@@ -214,22 +220,6 @@ socket.onmessage = function (e) {
             };
             
         }
-        // else if (dataType == "tick") {
-        //     delete data_dict.dtype;
-        //     data = data_dict;
-
-        //     if (dataTable && dataTable.rows.namedItem(rowId)) {
-        //         dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-        //         dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
-        //         dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
-
-        //         row = document.getElementById(rowId);
-        //         if (status != 0 && status != 2) {
-        //             row.className = "disabled";
-        //             row.id = instrumentToken + (Math.random * 100);
-        //         }
-        //     }
-        // }
     }
     else {
         //Create table from received data from database
