@@ -16,7 +16,20 @@
 
 {% block subscriptions_content %}
 
+
 <div class="container-fluid mb-4 tabbable boxed parentTabs" style="padding-top: 120px;">
+	
+	{% if alert %}	
+		<div>
+			<div class="alert alert-warning" role="alert">
+				<h4 class="alert-heading">Already Subscribed</h4>
+				<p class="content-para-sm">You Can Renew through Dashbord Plans &nbsp;&nbsp;<a href="/user/profile/info" class="alert-link content-heading">Dashboard</a>.</p>
+				
+				<hr>
+			</div>
+		</div>
+		
+	{% endif %}
     <div class="row ">
         <div class="col text-center">
 
@@ -241,6 +254,7 @@
 														</div>		
 
 													</div>
+													
 												</div>
 												<input class="periodcode" name = "period" value=""hidden></input>
 												<input class="plancode" name= "plancode" value="" hidden></input>

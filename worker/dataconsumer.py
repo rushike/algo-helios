@@ -60,13 +60,13 @@ class DataConsumer(AsyncConsumer):
                                        f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
                                        f"Risk Reward {data.get('risk_reward')} and "
                                        f"Profit Percentage {data.get('profit_percent')}",
-                                "icon": "/static/algonauts.png",
+                                "icon": "https://i.ibb.co/X5XwBpT/algonauts.jpg",
                                 'url': '/worker/mercury/'}
                 elif data_type == 'signal_update':
                     payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                                'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
                                "icon": "/static/algonauts.png",
-                               'url': '/worker/mercury/'}
+                               'url': 'https://i.ibb.co/X5XwBpT/algonauts.jpg'}
                 logger.debug("Transfer notification call from async : ")
                 await self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
             else:

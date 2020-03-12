@@ -33,7 +33,7 @@ $(document).ready(function() {
     								'<input type="text" id="chat-input" style="margin-left:0.5rem" autocomplete="off" placeholder="Try typing here"'+ 'class="chat-text-align bot-txt"/>'+
   									'</div>'+
   									'<div style="float: right;">'+
-    									'<i id="send-img" class="fa fa-paper-plane-o fa-2x dark-blue" aria-hidden="true" ></i>'+
+    									'<i id="send-img" class="fa fa-send fa-2x dark-blue" aria-hidden="true" ></i>'+
   								'</div>'+
 								'</div>'+
 

@@ -22,16 +22,6 @@ def get_user_object(user):
     return user
 
 
-def get_user_object(user):
-    if hasattr(user,'_wrapped') :
-        if user._wrapped.__class__ == object:
-            user._setup()
-            return None
-        user = user._wrapped 
-    if type(user) == str:
-        user = AlgonautsUser.objects.get(email = user)
-    else : user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
-    return user
 
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -63,9 +53,28 @@ def generate_group_add_link(group_id:UserGroup):
     return link
 
 
-def get_user_group(group_id):
+def get_group(group_id):
     return group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
 
+def get_group_type_object(type_name):
+    if isinstance(type_name, str):
+        return UserGroupType.objects.filter(type_name__iexact = type_name).first()
+    if isinstance(type_name, int): 
+        return UserGroupType.objects.filter(id = type_name).first()
+    if isinstance(type_name, UserGroupType):
+        return type_name
+
+def get_user_group(user, group_type, create = False):
+    user = get_user_object(user)
+    group_type = get_group_type_object(group_type)
+    user_groups = UserGroupMapping.objects.filter(user_profile_id = user).values('user_group_id')
+    user_group = UserGroup.objects.filter(id__in = user_groups, user_group_type_id = group_type)
+    if create and not user_group.exists():
+        return UserGroup.objects.create_user_group(group_type, admin=user)
+    if not user_group.exists():
+        return None
+    return user_group.first()
+    
 
 def get_group_of_user(user, plan):
     """
@@ -101,7 +110,7 @@ def get_user_subs_plans(user):
     # filter out all groups of profile with non individual group type 
     
     plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__user_group_type_id__max_members' ,'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
+        .values('plan_id', 'plan_id__user_group_type_id__max_members' , 'plan_id__user_group_type_id__type_name', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)

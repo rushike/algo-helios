@@ -4,12 +4,14 @@
 
 <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
 <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+
 <div class="container mb-5">
 <br>
 <br>
 <br>
 <br>
 <br>
+
 <!-- <h3>DashBoard</h3> -->
 {% if not is_verified %}
 	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
@@ -109,12 +111,20 @@
 											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.0.subscription_end }}</li>
 											</ul>
 									</div>
-									<div class="mt-1 p-4">
-										{% if iplan.0.subscription_type_id__type_name == "Trial" %}
-											<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-										{% else %}
-											<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-										{% endif %}
+									<div class="mt-1 p-4">										
+										<form method="POST" action="/subscriptions/order-details2">
+											{% csrf_token %}
+											<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+											<input class="plancode" name= "plancode" value="{{iplan.1}}" hidden></input>
+											<input class="planname" name= "planname" value="{{iplan.0.plan_id__plan_name}}" hidden></input>
+											<input class="groupcode" name= "groupcode" value="{{iplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
+											<input class="super" name = "super" value="super" hidden/>
+											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
+												<button  type="submit" class="btn btn-block btn-outline-primary" >Subscribe</button>
+											{% else %}
+												<button type="submit" class="btn btn-block btn-outline-primary" >Renew</button>
+											{% endif %}
+										</form>
 									</div>
 											
 								</div>
@@ -142,9 +152,9 @@
 					<div class="card h-100 border-dark shadow-sm">     
 							<div class="card-header">
 							{% if gplan.1.type_name == "Premium" %}
-								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span><br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
 							{% else %}
-								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span> <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
 							{% endif %}
 						</div>
 							
@@ -164,11 +174,20 @@
 								</ul>
 						</div>
 						<div class="mt-1 p-4">
-							{% if gplan.0.subscription_type_id__type_name == "Trial" %}
-								<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-							{% else %}
-								<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-							{% endif %}
+							<form method="POST" action="/subscriptions/order-details2">
+								{% csrf_token %}
+								<input class="periodcode" name = "period" value="{{gplan.0.subscription_type_id__type_name}}"hidden></input>
+								<input class="plancode" name= "plancode" value="{{gplan.1}}" hidden></input>
+								<input class="planname" name= "planname" value="{{gplan.0.plan_id__plan_name}}" hidden></input>
+								<input class="groupcode" name= "groupcode" value="{{gplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
+								<input class="super" name = "super" value="super" hidden/>
+								{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+									<button  type="submit" class="btn btn-block btn-outline-primary" >Subscribe</button>
+								{% else %}
+									<button type="submit" class="btn btn-block btn-outline-primary" >Renew</button>
+								{% endif %}
+							</form>
+							
 						</div>
 								
 					</div>

@@ -72,6 +72,12 @@
     color:#515151;
 }
 
+.ll-gray{
+    color:#f7f7f7;
+}
+.ll-gray-bg{
+    background-color:#f7f7f7 !important;
+}
 
 .rounded-large{
     border-radius: 40px;
