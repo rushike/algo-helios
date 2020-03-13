@@ -144,7 +144,16 @@ DATABASES = {
         'PASSWORD': 'HELIOS_POSTGRES_PASSWORD',
         'HOST': 'HELIOS_POSTGRES_HOST',
         'PORT': '5432',
+    },
+      'janus' : {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'janus_db',
+        'USER': 'sysadmin',
+        'PASSWORD': 'A@lg0@dm!n#2@1',
+        'HOST': '104.211.115.250',
+        'PORT': '5432',
     }
+
 }
 
 # Password validation
