@@ -9,14 +9,14 @@ self.addEventListener('push', function (event) {
     console.log("Notification Data : ", data)
     const head = data.head || 'New Notification';
     const body = data.body || 'This is default content';
-
     // Keep the service worker alive until the notification is created.
     event.waitUntil(
         self.registration.showNotification(head, {
-            body: data.body,
+            body: body,
             icon: data.icon,
             badge: data.icon,
             url: data.url,
         })
     );
+    
 });

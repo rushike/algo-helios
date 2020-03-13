@@ -27,7 +27,7 @@ def neft_details(request):
     POST = dict(request.POST.lists())
     if not POST: 
         POST = request.session.get('order_details_post')
-        if 'order_details_post' in request.session: del request.session['order_details_post']
+        # if 'order_details_post' in request.session: del request.session['order_details_post']
     plan = subscriptions.functions.get_plan(POST['plan_type'], POST['plan_name'], POST['group_type'])
     POST["amount"] = plan.price_per_month if POST['period'].lower() == 'monthly' else plan.price_per_year
 

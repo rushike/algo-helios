@@ -188,9 +188,10 @@ socket.onmessage = function (e) {
             console.log("Instruments on page are : ", instruments, typeof(instruments))
             for(var i = 0; i < instruments.length; i++){
                 inst = instruments[i]
-                inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-                inst.cells.namedItem("profit_percent").innerHTML = data_dict["profit_percent"];
-                inst.cells.namedItem("status").innerHTML = status
+                if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+
+                if(data_dict["profit_percent"]) inst.cells.namedItem("profit_percent").innerHTML = data_dict["profit_percent"];
+                if(status) inst.cells.namedItem("status").innerHTML = status
 
                 if(!status){
                     console.log("Will disable the row by tick update");

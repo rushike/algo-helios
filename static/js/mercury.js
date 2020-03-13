@@ -365,7 +365,7 @@ $(document).ready(function() {
         $('input[name=stop_loss]').val(Math.round(Math.abs(sl - ltp) * 10) / 10);
         $('input[name=trigger_price]').val(sl);
 
-        var trade_action_btn = $('<div class = "col-md-12 text-center content-para p-3" id = "btn-col-12"><button id="trade_action" type="button" class= "trade_action btn btn-rounded"></div>');
+        var trade_action_btn = $('<button id="trade_action2" type="button" class= "trade_action col-md-offset-2 col-md-8 btn btn-rounded rounded-large">');
         trade_action_btn.attr("data-name", signal);
         console.log("trade_action : ", trade_action_btn, ", signal : ", signal)
         trade_action_btn.text(signal);
@@ -379,7 +379,7 @@ $(document).ready(function() {
         }
         trade_action_btn.addClass(signal + "_btn");
         $('#trade_header').addClass(signal + "_header");
-        $("#btn-col-12").remove()
+        $("#trade_action2").remove()
         $("#buttonView").append(trade_action_btn);
 
         $('.trade_action').on('mousedown', function(e){
@@ -387,10 +387,10 @@ $(document).ready(function() {
                 // You can initialize multiple instances if you need
                 var kite = new KiteConnect("tpisubdoz4a7cskn"); // Initialize a new Kite instance
 
-                trade_input = {
+                var trade_input = {
                     "tradingsymbol": $('#trade_ticker').text(),
                     "exchange": "NSE",
-                    "transaction_type": $('#trade_action').text(),
+                    "transaction_type": $('#trade_action2').text(),
                     "order_type": $('input[name="order_type"]:checked').val(),
                     "product": $('input[name="trade_type"]:checked').val(),
                     "price": parseFloat($('input[name=price]').val()),
@@ -402,7 +402,7 @@ $(document).ready(function() {
                     "trigger_price": parseFloat($('input[name=trigger_price]').val()),
                     "disclosed_quantity": parseInt($('input[name=quantity]').val())
                 }
-
+                console.log(trade_input)
                 // Add a Bracket Order
                 kite.add(trade_input);
 
@@ -412,11 +412,12 @@ $(document).ready(function() {
                 });
 
                 // Render the in-built button inside a given target
-                kite.link("#trade_action");
+                kite.link("#trade_action2");
             });
         });
 
         $('.trade_action').on('click', function(e){
+            console.log("trade action clicked")
             $('#trade_modal').modal('toggle');
         });
     });

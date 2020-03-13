@@ -8,12 +8,12 @@
 
 {% block js_imports %}
     <script src="{% static 'js/mercury.js' %}?version=1"></script>
-    <script src="{% static 'js/ws.js' %}?version=1"></script>
+    <script src="{% static 'js/mercury-table.js' %}?version=1"></script>
 {% endblock %}
 
 {% block mercury %}
                 
-    <div id="container" style="text-align: center;">
+    <div id="container" style="text-align: center;" >
 
         
         <div id="container" style="text-align: center; min-height: 830px;">
@@ -177,11 +177,14 @@
                               </div>
                             </div>
                         </div>
-                        <div class="form-group" id="buttonView">        
-                            <div class = "col-md-12 text-center content-para p-3" id = "btn-col-12">
-                            <button id="trade_action" type="button" class= "trade_action btn btn-rounded p-2">								
+                        <div class="form-group" id="buttonView">
+                          <!--<button type="button" id="trade_action" class="trade_action btn btn-rounded"-->
+                                  <!--style=""></button>-->
                       </div>
-                        </div>
+                        <!-- <div class="form-group row text-center" id="buttonView">        
+                            <div class = "col-md-12 text-center content-para p-3" id = "btn-col-12">
+                            
+                        </div> -->
                     </form>
                   </div>
                 </div>
