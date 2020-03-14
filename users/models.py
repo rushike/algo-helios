@@ -201,7 +201,7 @@ class UserGroupMappingManager(models.Manager):
 		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
 		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
 		if unq: return # allow one user to be admin of only one user group of particular type
-		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members * user_group_id.multiplier # checks the maximum number allowed by particular group, includes multiplier in it
+		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
 		if mzx < mems: return # do not add more than max number specified
 		mapper = self.create(
 				user_group_id = user_group_id, 
@@ -250,7 +250,7 @@ def create_individual_user_group(sender, instance, **kwargs):
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, group_admin = True)
 
-def create_usergrou_mapping(sender, instance, **kwargs):
+def create_usergroup_mapping(sender, instance, **kwargs):
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, group_admin = True)
 def active_referral_offer_checks(sender, instance, **kwargs):
 	# ReferralOffer.
@@ -261,6 +261,6 @@ def active_referral_offer_checks(sender, instance, **kwargs):
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
 
-post_save.connect(create_usergrou_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
+post_save.connect(create_usergroup_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
 
 pre_save.connect(active_referral_offer_checks, sender=ReferralOffer, dispatch_uid='users.models.ReferralOffer')

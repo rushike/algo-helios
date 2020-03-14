@@ -30,9 +30,16 @@
 .dark-blue{
     color : #004B96;
 }
+.dark-blue-bg{
+    background-color : #004B96;
+}
 
 .light-blue{
     color : #7DDCFF;
+}
+
+.light-blue-bg{
+    background-color : #7DDCFF;
 }
 .background-light-blue{
     background-color : #7DDCFF;
@@ -46,8 +53,11 @@
 .border-solid{
     border-width: thick;
 }
-.white-fr{
+.white{
     color: white;
+}
+.white-bg{
+    background-color: white;
 }
 
 .light-gray{
@@ -60,4 +70,15 @@
 
 .dark-gray{
     color:#515151;
+}
+
+.ll-gray{
+    color:#f7f7f7;
+}
+.ll-gray-bg{
+    background-color:#f7f7f7 !important;
+}
+
+.rounded-large{
+    border-radius: 40px;
 }

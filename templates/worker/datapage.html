@@ -1,0 +1,244 @@
+{% extends "worker/base.html" %}
+{% load static %}
+
+{% block css_imports %}
+    <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
+    <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
+{% endblock %}
+
+{% block js_imports %}
+    <script src="{% static 'js/mercury.js' %}?version=1"></script>
+    <script src="{% static 'js/mercury-table.js' %}?version=1"></script>
+{% endblock %}
+
+{% block mercury %}
+                
+    <div id="container" style="text-align: center;" >
+
+        
+        <div id="container" style="text-align: center; min-height: 830px;">
+
+        <div class="container-fluid wrapper">
+            <div class="tab" role="tabpanel">
+                <h2 style="color: white; letter-spacing: 2px;">MERCURY</h2>
+                <!-- Nav tabs -->
+                <div class="row">
+                    <div class="col-md-12 col-12">
+                        <ul class="nav nav-tabs tabs_start_position" id="ordertypes" role="tablist">
+                            <li role="presentation" id="intraday">
+                                <a href="#Section1" aria-controls="home" role="tab" data-toggle="tab" class="product_tabs">Intraday</a>
+                            </li>
+                            <li role="presentation" id="btst" data-toggle="tooltip" title="Buy/Sell Today Sell/Buy Tomorrow">
+                                <a href="#Section2" aria-controls="profile" role="tab" data-toggle="tab" class="product_tabs">BTST / STBT</a>
+                            </li>
+                            <li role="presentation" id="positional">
+                                <a href="#Section3" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs">Positional</a>
+                            </li>
+                            <li role="presentation" id="longterm">
+                                <a href="#Section4" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs">Long Term</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tab panes -->
+                <div class="tab-content tabs" id="tabswrapper">
+                    <div role="tabpanel" class="tab-pane fade" id="Section1">
+                        <div id="intraday_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section2">
+                        <div id="btst_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section3">
+                        <div id="positional_content"></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="Section4">
+                        <div id="longterm_content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div id="trade_modal" class="modal" role="dialog">
+              <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header" id="trade_header">
+                    <button type="button" class="closex" data-dismiss="modal"><i class="fa fa-times white" aria-hidden="true"></i>
+                    </button>
+                    <h4 class="modal-title" id="trade_ticker"></h4>
+                  </div>
+                  <div class="modal-body">
+                    <form id="trade_form" class="form-horizontal" style="text-align: left;">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <div class="row">
+                              <div class="col-md-7">
+                                <label style="margin-right: 10px;">Broker </label>
+                                 <select class="trade_form_element" id="trade_broker">
+                                    <option>Zerodha</option>
+                                    <option disabled>Upstox</option>
+                                    <option disabled>HDFC Sec</option>
+                                    <option disabled>Kotak Sec</option>
+                                    <option disabled>ICICI Direct</option>
+                                    <option disabled>Edelweiss</option>
+                                 </select>
+                              </div>
+                              <div class="col-md-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="regular">REG
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="bo" checked>BO
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="exec_type" class="trade_radio" value="co">CO
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <div class="row">
+                              <div class="col-md-7">
+                                <label class="radio-inline">
+                                    <input type="radio" name="trade_type" class="trade_radio" value="MIS">MIS
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="trade_type" class="trade_radio" value="CNC">CNC
+                                </label>
+                              </div>
+                              <div class="col-md-5">
+                                <label class="radio-inline">
+                                    <input type="radio" name="order_type" class="trade_radio" value="MARKET">MARKET
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="order_type" class="trade_radio" value="LIMIT" checked>LIMIT
+                                </label>
+                              </div>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="form-group" style="padding-top: 10px;">
+                            <label class="col-md-1 control-label">Qty</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="quantity" id="qty" value="1" placeholder="1" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-3 control-label">Disclosed Qty</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="disclosed_quantity" value="1" id="disclosed_qty" placeholder="1"
+                                        class="form-control"  type="number">
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-1 control-label">Price</label>
+                            <div class="col-md-4 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="price" id="price" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-3 control-label">Trigger Price</label>
+                            <div class="col-md-4">
+                              <div class="input-group">
+                                <input  name="trigger_price" id="trigger_price" placeholder="0" class="form-control"  type="number" disabled>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="trade_bo_params" hidden>
+
+                            <label class="col-md-1 control-label">TP</label>
+                            <div class="col-md-3 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="target_price" id="target_price" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-1 control-label">SL</label>
+                            <div class="col-md-3 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="stop_loss" id="stop_loss" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+
+                            <label class="col-md-2 control-label">Trailing SL</label>
+                            <div class="col-md-2 inputGroupContainer">
+                              <div class="input-group">
+                                <input  name="trailing_stop_loss" id="trailing_stop_loss" placeholder="0" class="form-control"  type="number">
+                              </div>
+                            </div>
+                        </div>
+                        <div class="form-group" id="buttonView">
+                          <!--<button type="button" id="trade_action" class="trade_action btn btn-rounded"-->
+                                  <!--style=""></button>-->
+                      </div>
+                        <!-- <div class="form-group row text-center" id="buttonView">        
+                            <div class = "col-md-12 text-center content-para p-3" id = "btn-col-12">
+                            
+                        </div> -->
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+		function downloadCSV(csv, filename) {
+		    //console.log($('.nav-tabs .active').attr("id"))
+            var csvFile;
+            var downloadLink;
+
+            // CSV file
+            csvFile = new Blob([csv], {type: "text/csv"});
+
+            // Download link
+            downloadLink = document.createElement("a");
+
+            // File name
+            downloadLink.download = filename;
+
+            // Create a link to the file
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+
+            // Hide download link
+            downloadLink.style.display = "none";
+
+            // Add the link to DOM
+            document.body.appendChild(downloadLink);
+
+            // Click download link
+            downloadLink.click();
+        }
+
+		function exportTableToCSV(tabToDownload) {
+		    var d = new Date();
+		    filename = "AlgonautsCalls_" + tabToDownload + '_' + d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate() + ".csv"
+            var csv = [];
+            var rows = document.querySelectorAll("#" + tabToDownload + "_data-table tr");
+			console.log("rows : " , rows)
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll("td, th");
+
+				for (var j = 0; j < cols.length; j++){
+					row.push(cols[j].innerText.replace(",", " -"));
+				}
+                csv.push(row.join(","));
+            }
+
+            // Download CSV file
+            downloadCSV(csv.join("\n"), filename);
+        }
+    </script>
+    {% endblock mercury %}

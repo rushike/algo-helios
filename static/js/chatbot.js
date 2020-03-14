@@ -14,7 +14,7 @@ $(document).ready(function() {
 								'<div class="bot_profile">'+
 									'<img src="/static/img/chat1.jpg" class="bot_p_img">'+
 									'<div class="close">'+
-										'<i class="fa fa-times" aria-hidden="true"></i>'+
+										'<i class="fa fa-times-circle" aria-hidden="false"></i>'+
 									'</div>'+
 
 								'</div><!--bot_profile end-->'+
@@ -33,7 +33,7 @@ $(document).ready(function() {
     								'<input type="text" id="chat-input" style="margin-left:0.5rem" autocomplete="off" placeholder="Try typing here"'+ 'class="chat-text-align bot-txt"/>'+
   									'</div>'+
   									'<div style="float: right;">'+
-    									'<i id="send-img" class="fa fa-paper-plane-o fa-2x dark-blue" aria-hidden="true" ></i>'+
+    									'<i id="send-img" class="fa fa-send fa-2x dark-blue" aria-hidden="true" ></i>'+
   								'</div>'+
 								'</div>'+
 
@@ -51,7 +51,7 @@ $(document).ready(function() {
 							// class="btn-group-vertical"
 
 							'<div class="help">'+
-								'<i class="far fa-question-circle"></i>'+
+								'<i class="fa fa-question-circle"></i>'+
 							'</div>';
 
 	$("mybot").html(mybot);

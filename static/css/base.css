@@ -64,7 +64,8 @@ li > .navbar-all > a{
 }
 
 li > .navbar-all:hover{
-    transform: scale(1.1)
+    transform: scale(1.1);
+    transition-duration: 0.5s;
 }
 #logout-btn{
     display: inline-block;
@@ -85,37 +86,10 @@ li > .navbar-all:hover{
     border-radius: 0.25rem;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-#logout-btn:hover{
-    color:#1DA1F2;
-}
-#logout > button{
-    display: inline-block;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent;
-    font-size: 14px;
-    line-height: 1.42857143;
-    border-radius: 4px;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    padding: 0px;
-}
 
-#logout > button:hover, button:active{
-    border: none;
-}
 
-/* .logout-btn{
-    color: #007bff;
-    text-decoration: none;
-    background-color: transparent;
-} */
+@media (max-width : 786px){
+    #dropdown-li > ul > li {
+        text-align: center;
+    }
+}

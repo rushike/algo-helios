@@ -19,13 +19,15 @@ def plans(request):
     alert = POST.get('alert')  if POST else False
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
     return render(request, 'subscriptions/plans.html', context=context)
+def can_subscribe(request):
+    pass
 
 @login_required(login_url='/accounts/login/')
 def neft_details(request):
     POST = dict(request.POST.lists())
     if not POST: 
         POST = request.session.get('order_details_post')
-        if 'order_details_post' in request.session: del request.session['order_details_post']
+        # if 'order_details_post' in request.session: del request.session['order_details_post']
     plan = subscriptions.functions.get_plan(POST['plan_type'], POST['plan_name'], POST['group_type'])
     POST["amount"] = plan.price_per_month if POST['period'].lower() == 'monthly' else plan.price_per_year
 
@@ -55,12 +57,12 @@ def send_neft_details(request):
 def order_details(request):
     subs_attr1 = dict(request.GET.lists())
     POST = dict(request.POST.lists())
-    group_type = POST['groupcode'][0]
-    plan_type = POST['plancode'][0]
-    plan_name = POST['planname'][0]
+    group_type = request.POST.get('groupcode')
+    plan_type = request.POST.get('plancode')
+    plan_name = request.POST.get('planname')
     if 'plan_name' in POST:
-        plan_name = POST['plan_name'][0]
-    period = POST['period'][0]
+        plan_name = request.POST.get('plan_name')
+    period = request.POST.get('period')
     
     POST = {
         'group_type' : group_type,
@@ -71,6 +73,26 @@ def order_details(request):
     }    
     request.session['order_details_post'] = POST
     return HttpResponseRedirect("/subscriptions/orders")
+
+def order_details2(request):
+    subs_attr1 = dict(request.GET.lists())
+    POST = dict(request.POST.lists())
+    group_type = request.POST.get('groupcode')
+    plan_type = request.POST.get('plancode')
+    plan_name = request.POST.get('planname')
+    if 'plan_name' in POST:
+        plan_name = request.POST.get('plan_name')
+    period = request.POST.get('period')
+    
+    POST = {
+        'group_type' : group_type,
+        'plan_type' : plan_type,
+        'plan_name' : plan_name,
+        'period' : period,
+        'alert' : False
+    }    
+    request.session['order_details_post'] = POST
+    return HttpResponseRedirect("/subscriptions/neft-details")
 
 @login_required(login_url='/subscriptions/plans')
 def create_order(request):
@@ -92,7 +114,7 @@ def create_order(request):
             }
 
     order = client.order.create(data = DATA)
-    user_group_id = users.functions.get_group_of_user(request.user, plan_name)
+    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
     subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
     context = {
         "order_id" : order["id"],
@@ -120,7 +142,7 @@ def payment_success(request):
         #payment not verified sucessfully
         return HttpResponseRedirect(redirect_to="/subscriptions/plans")
     request.session['order_details_post'] = POST
-    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'),})
+    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'), 'signature' : request.POST.get('razorpay_signature')})
     
     return HttpResponseRedirect('/subscriptions/subscribe')
 
@@ -155,15 +177,17 @@ def subscribe(request):
 
     order_id = POST.get('order_id')
     payment_id = POST.get('payment_id')
-    
+    signature = POST.get('signature')
+
+    payment = subscriptions.functions.register_payment(order_id, payment_id, signature)
     recepients = []
     if 'group_emails' in POST:    
         email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
         recepients.extend(email_list)
     
     subscription_id = subscribe_common(request = request, user = request.user, group_type = group_type, plan_type= plan_type ,   \
-                    plan_name= plan_name, period= period, payment_id = 0, recepients=recepients)
-    subscriptions.functions.register_payment(order_id, payment_id,subscription_id)
+                    plan_name= plan_name, period= period, payment_id = payment, recepients=recepients)
+    
     return HttpResponseRedirect(redirect_to='/user/profile/info')
 
 @login_required(login_url='/accounts/login/') 
@@ -209,7 +233,7 @@ def plan_subscribe(request):
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]
     recepients.extend(recepient)
-    subscribed = Subscription.objects.create_subscription(
+    subscribed = subscriptions.functions.create_subscription(
                     user = user,
                     group_type = group_type,
                     plan_type = plan_type,

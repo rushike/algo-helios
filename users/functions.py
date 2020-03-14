@@ -6,22 +6,28 @@ import pytz, datetime
 from hashlib import md5
 import subscriptions.functions
 from helios.settings import EMAIL_HOST_USER
+from channels.db import database_sync_to_async
+
+
 
 def get_user_object(user):
     if hasattr(user,'_wrapped') :
+        if not user.is_authenticated: return None
         if user._wrapped.__class__ == object:
             user._setup()
-            return None
-        user = user._wrapped 
+        user = user._wrapped
     if type(user) == str:
         user = AlgonautsUser.objects.get(email = user)
     else : user = user if type(user) == AlgonautsUser else AlgonautsUser.objects.get(id = user)
     return user
 
+
+
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
     return mapper
+
 
 def user_is_verified(user):
     user = get_user_object(user)
@@ -29,12 +35,14 @@ def user_is_verified(user):
     user = user.email
     return EmailAddress.objects.get(email = user).verified
 
+
 def get_all_standard_groups():
     """
         These are the non-individual group type.
     """
     gtypes = UserGroupType.objects.all() 
     return gtypes.order_by('max_members')
+
 
 def generate_group_add_link(group_id:UserGroup):
     group_id = group_id._wrapped if hasattr(group_id,'_wrapped') else group_id # if group id is wrapped by other object e.g. SimplyLazyObject
@@ -44,8 +52,29 @@ def generate_group_add_link(group_id:UserGroup):
     link = '/user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
-def get_user_group(group_id):
+
+def get_group(group_id):
     return group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
+
+def get_group_type_object(type_name):
+    if isinstance(type_name, str):
+        return UserGroupType.objects.filter(type_name__iexact = type_name).first()
+    if isinstance(type_name, int): 
+        return UserGroupType.objects.filter(id = type_name).first()
+    if isinstance(type_name, UserGroupType):
+        return type_name
+
+def get_user_group(user, group_type, create = False):
+    user = get_user_object(user)
+    group_type = get_group_type_object(group_type)
+    user_groups = UserGroupMapping.objects.filter(user_profile_id = user).values('user_group_id')
+    user_group = UserGroup.objects.filter(id__in = user_groups, user_group_type_id = group_type)
+    if create and not user_group.exists():
+        return UserGroup.objects.create_user_group(group_type, admin=user)
+    if not user_group.exists():
+        return None
+    return user_group.first()
+    
 
 def get_group_of_user(user, plan):
     """
@@ -59,12 +88,14 @@ def get_group_of_user(user, plan):
     plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
     group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
     return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
+
     
 def validate_group_add_url_slug(group_id:int, hash_:str):
-    group = UserGroup.objects.get(id = group_id)
+    group = UserGroup.objects.filter(id = group_id).first()
     if md5(str(group.admin.email).encode()).hexdigest() == hash_:
         return True
     return False
+
 
 def get_user_subs_plans(user):
     user = get_user_object(user)
@@ -79,11 +110,13 @@ def get_user_subs_plans(user):
     # filter out all groups of profile with non individual group type 
     
     plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__user_group_type_id__max_members' ,'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
+        .values('plan_id', 'plan_id__user_group_type_id__max_members' , 'plan_id__user_group_type_id__type_name', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
+    results = {'individual_plans' : indivdual_plans, 'group_plans' : group_plans}
     return indivdual_plans, group_plans
+
 
 def get_user_subs_product(user):
     user = get_user_object(user)
@@ -94,16 +127,19 @@ def get_user_subs_product(user):
     products = subscriptions.functions.get_all_products_in_plans(plans)
     return products
 
+
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
     users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
     return users
+
     
 def get_all_groups_of_user(user_id):
     user_id = user_id._wrapped if hasattr(user_id,'_wrapped') else user_id
     user = user_id if type(user_id) == AlgonautsUser else UserGroup.objects.get(id = user_id)
     groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))).values('user_group_id')
     return UserGroup.objects.filter(id__in = groups)
+
 
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
@@ -125,13 +161,16 @@ def add_referral_credits(self_uid, referral_code):
                         )
     return ref, True
 
+
 def generate_referral_user_add_link(user:AlgonautsUser):
     link = '/user/refer/user=' + user.referral_code
     return link
 
+
 def if_referred(user:AlgonautsUser):
     ref = Referral.objects.filter(referred_by = user).exists()
     return ref
+
 
 def add_feedback(user, subject, product, message):
     user = get_user_object(user)
