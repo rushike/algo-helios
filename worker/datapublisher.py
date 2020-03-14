@@ -44,7 +44,7 @@ class DataPublisher(AsyncConsumer):
                 group,
                 self.channel_name
             )
-        logger.debug(f"Created groups {groups} with channels {self.channel_name}")
+        logger.debug(f"Created groups {groups} with on channels {self.channel_name}")
         # Add User to broadcast group, will be used to publish tick updates
         await self.channel_layer.group_add(
             ConsumerManager().get_broadcast_group(),
@@ -55,15 +55,10 @@ class DataPublisher(AsyncConsumer):
         try:
             user = self.scope['user'].email
             logger.debug(f"Received event [{event}] from a user {user}")
-
             ConsumerManager().register_new_client_conn(user, self)
-            logger.debug(f"Register the new client {user} with {self}")
-            logger.debug(f"current directory : {os.listdir()}")
             
             groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
-            logger.debug(f"All  for user groups : {groups}")
             product_names = await worker.functions.get_product_names_from_groups_async(groups)
-            logger.debug(f"All  for products : {product_names}")
             all_calls = []
             user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
             for product in product_names:
@@ -71,7 +66,9 @@ class DataPublisher(AsyncConsumer):
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
                 logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
                 if product_filter['call_type']:
-                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, porfit_percentage {product_filter['profit_percentage'], type(product_filter['profit_percentage'][0]), type(product_filter['profit_percentage'][1])}")
+                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
+                     porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
+                     {type(product_filter['profit_percentage'][1])}")
                     tickers = product_filter["tickers"]
                     calls = self.db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
                                     min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
@@ -126,9 +123,9 @@ class DataPublisher(AsyncConsumer):
         logger.debug(f"A user {user}")
         response = event.get('message')
         data = json.loads(response)
-        fdata = await worker.functions.filter_async(user, data)
-        logger.debug(f"Sending data RESPONE : {fdata}")
-        if len(fdata) > 0:
+        if data['dtype'] == 'signal':data = await worker.functions.filter_async(user, data)
+        logger.debug(f"Sending data RESPONE : {data}")
+        if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({
                 'type' : 'websocket.send',

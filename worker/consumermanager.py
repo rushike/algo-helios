@@ -70,13 +70,10 @@ class ConsumerManager(metaclass=Singleton):
         user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
         logger.debug(f"User protfolios : {user_protfolios}, Calls Dict : {calls_dict}")
         calls = list(filter( lambda dict_port: list(filter(lambda item : str(item['portfolio_id'][0]) in user_protfolios, dict_port)), calls_dict))
-        logger.debug(f"Calls : {calls}")
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
                 'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0],
                 'profit_percent' : abs((d['price'] - d['target_price']) / d['price'] * 100) }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
-        logger.debug(f"Filter out calls are {calls}")
         calls = list(itertools.chain.from_iterable(calls))
-        logger.debug(f"Merge out calls are {calls}") 
         return calls
     @staticmethod
     @database_sync_to_async
@@ -87,7 +84,6 @@ class ConsumerManager(metaclass=Singleton):
     @staticmethod
     def get_mapped_group(portfolio_id):
         if type(portfolio_id) == int : portfolio_id = str(portfolio_id)
-        logger.debug(f"protfolio id : {portfolio_id} of class type {type(portfolio_id)} : mapped to group : {ConsumerManager.PROTFOLIO_MAPPER[portfolio_id.upper()]}")
         return ConsumerManager.PROTFOLIO_MAPPER[portfolio_id.upper()]
 
 

@@ -15,10 +15,6 @@ console.log(sessionStorage)
 
 socket.onopen = function (e) {
     console.log("Web-socket conn opened ", e);
-    setTimeout(function() {
-        socket.send(JSON.stringify({'username' : sessionStorage['username']}));
-        console.log(sessionStorage)
-    }, 1000);
 }
 
 
@@ -108,7 +104,7 @@ function updateCount(activeTab) {
 }
 
 socket.onmessage = function (e) {
-    // console.log("message ", e);
+    console.log("message ", e);
 
     var data_dict = JSON.parse(e['data']);
     if (typeof data_dict == 'undefined' || data_dict.length <= 0) {
@@ -118,31 +114,25 @@ socket.onmessage = function (e) {
     console.log("data recieved : ", data_dict)
     dataType = data_dict["dtype"]
     if (dataType == "signal" || dataType == "tick" || dataType == "signal_update") {
-        // hit = data_dict['hit']
         var status = data_dict['status']
         var active = data_dict['active']
         console.log("status : ", status, "active : ", active)
         call_id = data_dict["call_id"];
-        
         portfolioId = data_dict["portfolio_id"];
-
         var activeTab = getEligibleTab(portfolioId);
-
         var dataTable = document.getElementById(activeTab + "_data-table")
 
-        // var rowId = activeTab + instrument_token
         var rowId = call_id
-
+        var row = dataTable.rows.namedItem(rowId)
         if (dataType == "signal") {
             let data;
             data = data_dict;
-            if (existing = dataTable.rows.namedItem(rowId)) {
+            if (existing = row) {
 
                 // A new signal with different side is received, ignore signal with same side
-                if (dataTable.rows.namedItem(rowId).cells.namedItem("signal").innerHTML != data['signal']){
+                if (row.cells.namedItem("signal").innerHTML != data['signal']){
                     row = document.getElementById(rowId);
                     row.className = "disabled";
-                    // console.log("Making row Inactive with status ", row.cells.namedItem("status").innerHTML)
                     if (row.cells.namedItem("status").innerHTML == "Active") {
                         row.cells.namedItem("status").innerHTML = "Inactive";
                     }
@@ -157,7 +147,6 @@ socket.onmessage = function (e) {
                 }
             }
             else {
-                // console.log("Received a new row ", data)
                 status = getStatus(status)
                 row = inserNewRow(dataTable, data, 0, status);
                 if (!active) {
@@ -169,13 +158,13 @@ socket.onmessage = function (e) {
         }
         else if (dataType == "signal_update"){
             console.log("Signal Update : data_dict = ", data_dict)
-            if (dataTable && dataTable.rows.namedItem(rowId)) {
-                dataTable.rows.namedItem(rowId).cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-                dataTable.rows.namedItem(rowId).cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
-                dataTable.rows.namedItem(rowId).cells.namedItem("status").innerHTML = getStatus(status);
-
-                row = document.getElementById(rowId);
+            if (dataTable && row) {
                 
+                row.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+                row.cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
+                row.cells.namedItem("status").innerHTML = getStatus(status);
+
+                // row = document.getElementById(rowId);
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
@@ -207,14 +196,11 @@ socket.onmessage = function (e) {
 
             var status = data['status']
             var active = data['active']
-            var instrumentToken = data["instrument_token"];
             var portfolioId = data["portfolio_id"];
-    
             var activeTab = getEligibleTab(portfolioId);
             var dataTable = document.getElementById(activeTab + "_data-table")
 
             newRow = inserNewRow(dataTable, data, 0, status);
-
             if (active != 1) {
                 newRow.className = "disabled";
             }

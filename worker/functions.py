@@ -48,18 +48,17 @@ def filter(user,  data_list):
     logger.debug(f"Will appky filter data for user : {user} with datalist : {data_list}")
     
     for data in data_list:
-        # RISK REWARD = ABS(C.StopLoss - C.CallPrice) / ABS(C.TargetPrice - C.CallPrice) 
         try : 
             call_type = data['dtype']
             
             product = ConsumerManager.PROTFOLIO_MAPPER[str(data["portfolio_id"])].replace("-", "#")
             user_filter = get_user_filter_for_product(user, product)
             user_filter_call_type = user_filter['call_type']
+            logger.debug(f"Protfolio id : {data['portfolio_id']} User filter : {user_filter}")
             if not user_filter_call_type:
-                logger.debug(f"Call type is {user_filter_call_type} so appending data : {data}")
+                logger.debug(f"User Filter not set.")
                 result_data.append(data)
                 continue
-            logger.debug(f"Protfolio id : {data['portfolio_id']} User filter : {user_filter}")
             logger.debug(f"{user_filter['profit_percentage'][0]} <===================|-===================> {type(user_filter['profit_percentage'][0])} ")            
             if user_filter["tickers"] and  len(user_filter["tickers"]) != 0 and data['ticker'] not in user_filter['tickers']:
                 logger.debug(f"Tickers not in User Filter or Filter is not set to none of Filter for Portfolio : {data['portfolio_id']}")
@@ -67,15 +66,11 @@ def filter(user,  data_list):
             if call_type != 'tick' and  user_filter["sides"] and len(user_filter["sides"]) != 0 and data['signal'].upper() not in user_filter['sides']:
                 logger.debug(f"Signal in data is not in User Filer 'sides'  of Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
-            # profit_percent = data["profit_percent"]
-            logger.debug(f"{user_filter['profit_percentage'][0]} <===================|-===================> {type(user_filter['profit_percentage'][0])} ")
             if call_type != 'tick' and not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= user_filter["profit_percentage"][1]):
                 logger.debug(f"Profit percentage {data['profit_percent']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
-            risk_reward = abs((data["stop_loss"] - data["price"]) / (data["target_price"] - data["price"])) if call_type != 'tick' else None
-            logger.debug(f"Risk Reward calculated : {risk_reward}")
-            if call_type != 'tick' and not (user_filter["risk_reward"][0] <= risk_reward <= user_filter["risk_reward"][1]):
-                logger.debug(f"Risk Reward : {risk_reward} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
+            if call_type != 'tick' and not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
+                logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
             result_data.append(data)
         except Exception as E :
