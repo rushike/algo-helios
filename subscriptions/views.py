@@ -1,8 +1,9 @@
-from django.shortcuts import render, HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, HttpResponse, HttpResponseRedirect     
+from django.http import JsonResponse
 from django.db.models import query
 from django.contrib.auth.decorators import login_required
 
-import datetime, pytz, re
+import datetime, pytz, re, logging
 from razorpay.errors import SignatureVerificationError
 
 import users.functions 
@@ -11,6 +12,7 @@ import subscriptions.functions
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 
+logger = logging.getLogger('django')
 
 
 def plans(request):
@@ -56,13 +58,14 @@ def send_neft_details(request):
 
 def order_details(request):
     subs_attr1 = dict(request.GET.lists())
-    POST = dict(request.POST.lists())
-    group_type = request.POST.get('groupcode')
-    plan_type = request.POST.get('plancode')
-    plan_name = request.POST.get('planname')
+    # POST = request.session.get('order_details_post')
+    POST = request.POST
+    group_type = POST.get('groupcode')
+    plan_type = POST.get('plancode')
+    plan_name = POST.get('planname')
     if 'plan_name' in POST:
-        plan_name = request.POST.get('plan_name')
-    period = request.POST.get('period')
+        plan_name = POST.get('plan_name')
+    period = POST.get('period')
     
     POST = {
         'group_type' : group_type,
@@ -75,57 +78,80 @@ def order_details(request):
     return HttpResponseRedirect("/subscriptions/orders")
 
 def order_details2(request):
-    subs_attr1 = dict(request.GET.lists())
-    POST = dict(request.POST.lists())
+    # subs_attr1 = dict(request.GET.lists())
+    # POST = dict(request.POST.lists())
     group_type = request.POST.get('groupcode')
     plan_type = request.POST.get('plancode')
     plan_name = request.POST.get('planname')
-    if 'plan_name' in POST:
+    if 'plan_name' in request.POST:
         plan_name = request.POST.get('plan_name')
-    period = request.POST.get('period')
+    period = request.POST.get('period', 'Monthly')
     
-    POST = {
+    # POST = {
+    #     'group_type' : group_type,
+    #     'plan_type' : plan_type,
+    #     'plan_name' : plan_name,
+    #     'period' : period,
+    #     'alert' : False
+    # }    
+    # request.session['order_details_post'] = POST
+    # return HttpResponseRedirect("/subscriptions/neft-details")
+    plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
+    amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
+    gst = .18 * amount
+    total_amount = 1.18 * amount
+    context = {
         'group_type' : group_type,
+        'group_max_members' : users.functions.get_max_members_in_group(group_type),
         'plan_type' : plan_type,
         'plan_name' : plan_name,
         'period' : period,
-        'alert' : False
-    }    
-    request.session['order_details_post'] = POST
-    return HttpResponseRedirect("/subscriptions/neft-details")
+        'amount' : amount,
+        'gst' : gst,
+        'total_amount' : total_amount
+    }
+
+    request.session['order_details_post'] = context
+    return render(request, 'subscriptions/order_details.html', context = context)
+    
 
 @login_required(login_url='/subscriptions/plans')
 def create_order(request):
     POST = request.session.get('order_details_post')
-    amount = POST.get('amount')
+    amount = POST.get('total_amount', 1)
     plan_name = POST.get('plan_name')
     group_type = POST.get('group_type')
     plan_type = POST.get('plan_type')
     order_currency = 'INR'
     order_receipt = 'order_rcptid_11'
     notes = {'plan_name': plan_name, 'plan_type' : plan_type, 'group_type' : group_type}   # OPTIONALclient.order.create(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0')
-    amount = amount if amount != 0 else 10000
+
     DATA = {
-                "amount" : amount,
+                "amount" : int(amount * 100), # Stores, Operates in paise
                 "currency" : order_currency,
                 "receipt" : order_receipt,
                 "notes" : notes,
                 "payment_capture" : 0
             }
 
-    order = client.order.create(data = DATA)
-    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
-    subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
-    context = {
-        "order_id" : order["id"],
-        "amount" : amount,
-        "currency" : order_currency,
-        "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
-        "name" : " ".join([request.user.first_name, request.user.last_name]),
-        'email' : request.user.email,
-        'contact' : request.user.contact_no,
-        'razorpay_key' : RAZORPAY_KEY
-    }
+    try : 
+        order = client.order.create(data = DATA)
+        user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
+        subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
+        context = {
+            "order_id" : order["id"],
+            "amount" : amount,
+            "currency" : order_currency,
+            "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
+            "name" : " ".join([request.user.first_name, request.user.last_name]),
+            'email' : request.user.email,
+            'contact' : request.user.contact_no,
+            'razorpay_key' : RAZORPAY_KEY
+        }
+    except Exception as e:
+        logger.error("Error Occured : ", e)
+        # return JsonResponse({'Exception' : str(e)})
+    # return JsonResponse(context)
     return render(request, 'subscriptions/payment.html', context = context)
     # return HttpResponse("Your order is " + str(order))
 

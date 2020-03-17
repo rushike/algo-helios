@@ -1,4 +1,3 @@
--e git+https://algonauts@dev.azure.com/algonauts/algonautsutils/_git/algonautsutils@6835d48f3718bac9a57d5d700216f5760ba40db4#egg=algonautsutils
 asgiref==3.2.3
 astroid==2.3.3
 attrs==19.3.0
@@ -54,7 +53,6 @@ python-dateutil==2.8.1
 python3-openid==3.1.0
 pytz==2019.3
 pywebpush==1.9.4
-pywin32==227
 razorpay==1.2.0
 requests==2.22.0
 requests-oauthlib==1.3.0

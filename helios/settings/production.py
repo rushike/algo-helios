@@ -76,6 +76,12 @@ LOGGING = {
     },
 }
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
 CRONJOBS = [
     ('0 0 * * *', 'subscriptions.cron.check_data_consistency')
 ]

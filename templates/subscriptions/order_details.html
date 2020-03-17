@@ -1,6 +1,263 @@
 {% extends 'subscriptions/base.html' %}
+{% load static %}
+{% load define_action %}
 
-{% block subscriptions_content %}
+{% block js_import %}
+    <script src="{% static '/js/bootstrap-input-spinner.js' %}" ></script>
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .rounded-2x{
+            border-radius: 0.5rem;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+</style>
+
+<form action="/subscriptions/payment/success" method="POST">
+    {% csrf_token %}
+    <script id = "razorpay-script"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        data-key="{{razorpay_key}}" 
+        data-amount="{{amount}}"
+        data-currency="{{currency}}"
+        data-order_id="{{order_id}}"
+        data-buttontext="Pay Online"
+        data-name="Algonauts"
+        data-description="{{plan_details}}"
+        data-image="{% static 'algonauts.png' %}"
+        data-prefill.name="{{name}}"
+        data-prefill.email="{{email}}"
+        data-prefill.contact="{{contact}}"
+        data-theme.color= "#7DDCFF"
+    >
+</script>
+    <!-- <input type="hidden" custom="Hidden Element" name="hidden"> -->
+    <input type="hidden" value="Pay Online" class="razorpay-payment-button">
+</form>
+
+<div class="container-fluid" style="background-color: #f6f9f9; height: 100%;" >
+    
+    <div class="row container text-center" style="">
+
+        <div class="col-md-6 mb-2" id="auto-card-align" style="">
+            <div class="row justify-content-center mb-3">
+
+                <div class="col-md-12 border p-4 order-md-2 mb-2 bg-white shadow-lg" style="min-height: 20rem;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text">Plans</span>
+                        <span class="badge badge-secondary badge-pill">1</span>
+                    </h4>
+                    <ul class="card-body  d-flex flex-column list-group mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed text-left">
+                        <div>
+                            <h6 class="my-0 item-text">{{plan_name | _replace:"#??-"}} - <span class="badge badge-warning p-1">{{period | title}}</span></h6>
+                            <small class="text-muted"><b>Group : </b> {{group_type | title}} </small>
+                        </div>
+                        <div class="btn-toolbar justify-content-between res-size" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group res-size" role="group" aria-label="First group">
+                                <button type="button" class="btn count-btn btn-secondary item-text"  onclick="this.parentNode.querySelector('input[type=number]').stepDown()" style="cursor: pointer; "> <i class="fa fa-minus" aria-hidden="true"></i></button>
+                                <input  class="btn btn-count  btn-white border"  min="1" value="1"  max = "1" type="number" style="width: 2.5rem;" ></input>
+                                <button type="button" class="btn count-btn btn-secondary item-text" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" style="cursor: pointer;"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                        <span class="text-muted item-text">₹ {{amount}}</span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between">
+                        <strong>Total (₹)</strong>
+                        <strong class="item-text">₹ {{amount}}</strong>
+                        </li>
+                    </ul>
+                
+                    <!-- <form class="card p-2">
+                        <div class="input-group" style="margin:0px;">
+                            <input type="text" class="form-control" placeholder="Promo code">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-secondary">Redeem</button>
+                            </div>
+                        </div>
+                    </form> -->
+                </div>
+            </div>
+        </div> 
+        
+        <div class="col-md-6 mb-1" id="auto-card-align">
+            <div class="row justify-content-center mt-4">
+
+                <div class="col-md-10 border p-4 order-md-2 mb-4 bg-white shadow-lg" style="min-height: 15rem;">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text">Pricing Details</span>
+                    </h4>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                            <div>
+                                <h6 class="my-0 item-text">Price</h6>
+                            </div>
+                        
+                            <span class="text-muted item-text">{{amount}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                            <div>
+                                <h6 class="my-0 item-text">GST</h6>
+                            </div>
+                        
+                            <span class="text-muted item-text">{{gst}}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                            <div>
+                                <h6 class="my-0 item-text">Discount</h6>
+                            </div>
+                        
+                            <span class="text-muted item-text">--</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between p-2">
+                        <div class="text-left">
+                            <h6 class="my-0 item-text">Total (₹)</h6>
+                            <small class="text-muted text-danger">Incl GST</small>
+                        </div>
+                        <strong class="item-text">{{total_amount}}</strong>
+                        </li>
+                    </ul>
+                    </div>
+            
+            </div>
+        </div>
+    </div>
+
+    <div class="row container">
+        <div class="col-md-12 p-3">
+            <div class="row mb-2">
+        
+                <div class="col-md-6">
+                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                        <div class="col p-4 d-flex flex-column position-static">
+        
+                        
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text">Payment</span>
+                        </h4>
+        
+                        <div class="mb-1 text-muted p-4">Available Payment Gateways</div>
+                        <p class="mb-auto"></p>
+        
+                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                                <div class="btn-group" role="group" aria-label="First group">
+                                <button type="button" class="btn btn-secondary neft">NEFT</button>
+                                <button type="button" class="btn btn-secondary payonline" >Credit/Debit Card</button>
+                                <button type="button" class="btn btn-secondary payonline" >NetBanking</button>
+                                <button type="button" class="btn btn-secondary payonline" >Wallet</button>
+                                <button type="button" class="btn btn-secondary payonline" >UPI</button>
+                                </div>
+                        </div>
+        
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                            <div class="col-md-10 p-4 d-flex flex-column position-static">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text">Add Members <small class="badge badge-warning">Max : {{group_max_members}}</small></span>
+                                </h4>
+                            <div class="mb-1 row text-muted">
+                                <div class="col-md-8"><span class="btn" style="padding: 0px;">Only for Group Plan</span></div>
+                                <div class="col-md-4 text-right"><button class="btn btn-sm btn-secondary m-2" style="padding: 4px; margin-top: 0rem !important;"><i class="fa fa-plus"></i></button></div> 
+                            </div>
+                            
+                            <form>
+                                <div data-spy="scroll" id = "group-member-add" max = "{{group_max_members}}" data-offset="0" style="height:8rem; overflow-y:scroll; overflow-x:hidden">
+                                        <div class="form-row">
+                                            <div class="col">
+                                                <span type="text" class="form-control border-0">Email Address</span>
+                                            </div>
+                                            <div class="col">
+                                                <input type="text" class="form-control" placeholder="example@gmail.com">
+                                            </div>
+                                        </div>  
+                                </div>                                                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        max = document.getElementById("group-member-add").getAttribute("max")
+        console.log("Max : ", max)
+        str_html = ""
+        for(var i = 0; i < max; i++){
+            str_html += ('<div class="form-row p-1">' + 
+            '<div class="col">' +
+                '<span type="text" class="form-control border-0">Email Address</span>' + 
+            '</div>' + 
+            '<div class="col">' +
+                '<input type="text" class="form-control" placeholder="example@gmail.com">' +
+            '</div>' +
+        '</div>')
+        }
+        console.log("str + HTML : ", str_html)
+        var g = document.getElementById("group-member-add")
+        g.innerHTML = str_html
+    });
+
+    function neft(){
+
+    }
+    $(".payonline").click(()=>{
+        location.href = "{% url 'create_order' %}"
+    });
+
+    $(".neft").click(()=>{
+        location.href = "{% url 'neft_details' %}"
+    });
+    // $(".payonline").click(async ()=>{
+    //     context = await fetch("{% url 'create_order' %}")
+    //     .then(async (response) => {
+    //         console.log("In context razorpay = ", response)
+    //         return await response.json();
+    //     });
+    //     console.log("context razorpay = ", context)
+    //     $("#razorpay-script").attr({
+    //         'data-key':context.razorpay_key,
+    //         'data-amount':context.amount,
+    //         'data-currency':context.currency,
+    //         'data-order_id':context.order_id,
+    //         'data-buttontext':"Pay Online",
+    //         'data-name':"Algonauts",
+    //         'data-description':context.plan_details,
+    //         'data-image':"{% static 'algonauts.png' %}",
+    //         'data-prefill.name':context.name,
+    //         'data-prefill.email':context.email,
+    //         'data-prefill.contact':context.contact,
+    //         'data-theme.color': "#7DDCFF"
+    //     });
+    //     online()
+    // });
+
+    function online(){
+        document.getElementsByClassName("razorpay-payment-button")[0].click()
+        $(".razorpay-payment-button").attr('type', 'hidden')
+        $("#logo1").css({"background-color" : "rgba(255, 115, 220,1.0)"})
+    }
+</script>
 
 
 {% endblock %}
