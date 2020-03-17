@@ -24,7 +24,6 @@ client = Client(auth=(RAZORPAY_KEY, "f82D3I70VdLkWPPOzlKteAhK"))
 Allowed Host for sites
 """
 ALLOWED_HOSTS = [
-    'd5929f4a.ngrok.io',
     'localhost',
     '127.0.0.1',
 ]

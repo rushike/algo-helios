@@ -25,28 +25,6 @@
         }
 </style>
 
-<form action="/subscriptions/payment/success" method="POST">
-    {% csrf_token %}
-    <script id = "razorpay-script"
-        src="https://checkout.razorpay.com/v1/checkout.js"
-        data-key="{{razorpay_key}}" 
-        data-amount="{{amount}}"
-        data-currency="{{currency}}"
-        data-order_id="{{order_id}}"
-        data-buttontext="Pay Online"
-        data-name="Algonauts"
-        data-description="{{plan_details}}"
-        data-image="{% static 'algonauts.png' %}"
-        data-prefill.name="{{name}}"
-        data-prefill.email="{{email}}"
-        data-prefill.contact="{{contact}}"
-        data-theme.color= "#7DDCFF"
-    >
-</script>
-    <!-- <input type="hidden" custom="Hidden Element" name="hidden"> -->
-    <input type="hidden" value="Pay Online" class="razorpay-payment-button">
-</form>
-
 <div class="container-fluid" style="background-color: #f6f9f9; height: 100%;" >
     
     <div class="row container text-center" style="">
@@ -228,29 +206,6 @@
     $(".neft").click(()=>{
         location.href = "{% url 'neft_details' %}"
     });
-    // $(".payonline").click(async ()=>{
-    //     context = await fetch("{% url 'create_order' %}")
-    //     .then(async (response) => {
-    //         console.log("In context razorpay = ", response)
-    //         return await response.json();
-    //     });
-    //     console.log("context razorpay = ", context)
-    //     $("#razorpay-script").attr({
-    //         'data-key':context.razorpay_key,
-    //         'data-amount':context.amount,
-    //         'data-currency':context.currency,
-    //         'data-order_id':context.order_id,
-    //         'data-buttontext':"Pay Online",
-    //         'data-name':"Algonauts",
-    //         'data-description':context.plan_details,
-    //         'data-image':"{% static 'algonauts.png' %}",
-    //         'data-prefill.name':context.name,
-    //         'data-prefill.email':context.email,
-    //         'data-prefill.contact':context.contact,
-    //         'data-theme.color': "#7DDCFF"
-    //     });
-    //     online()
-    // });
 
     function online(){
         document.getElementsByClassName("razorpay-payment-button")[0].click()
