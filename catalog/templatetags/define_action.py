@@ -1,5 +1,4 @@
 from django import template
-import jinja2
 register = template.Library()
 
 @register.simple_tag

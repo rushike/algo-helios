@@ -64,6 +64,11 @@ def get_group_type_object(type_name):
     if isinstance(type_name, UserGroupType):
         return type_name
 
+
+def get_max_members_in_group(group_type_name): #group_name is name of group type
+    group_type = get_group_type_object(group_type_name)
+    return group_type.max_members
+
 def get_user_group(user, group_type, create = False):
     user = get_user_object(user)
     group_type = get_group_type_object(group_type)
