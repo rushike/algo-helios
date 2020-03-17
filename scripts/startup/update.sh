@@ -3,7 +3,7 @@ sudo rm -rf /var/www/algonauts.in/helios
 sudo git -C /var/www/algonauts.in clone ${HELIOS_GIT_SOURCE} -b ${HELIOS_DEPLOYMENT_BRANCH}
 
 # Adding algonauts utils to requirements.txt
-echo "-e git+${ALGONAUTS_UTILS_GIT_SOURCE}@${ALGONAUTS_UTILS_GIT_BRANCH}#egg=algonautsutils" >> /var/www/algonauts.in/janus/configs/requirements.txt
+echo "-e git+${ALGONAUTS_UTILS_GIT_SOURCE}@${ALGONAUTS_UTILS_GIT_BRANCH}#egg=algonautsutils" >> /var/www/algonauts.in/helios/requirements.txt
 sudo /var/www/algonauts.in/venv/bin/pip install wheel psycopg2
 sudo /var/www/algonauts.in/venv/bin/pip install -r /var/www/algonauts.in/helios/requirements.txt
 
