@@ -78,8 +78,6 @@ def order_details(request):
     return HttpResponseRedirect("/subscriptions/orders")
 
 def order_details2(request):
-    # subs_attr1 = dict(request.GET.lists())
-    # POST = dict(request.POST.lists())
     group_type = request.POST.get('groupcode')
     plan_type = request.POST.get('plancode')
     plan_name = request.POST.get('planname')
@@ -87,15 +85,6 @@ def order_details2(request):
         plan_name = request.POST.get('plan_name')
     period = request.POST.get('period', 'Monthly')
     
-    # POST = {
-    #     'group_type' : group_type,
-    #     'plan_type' : plan_type,
-    #     'plan_name' : plan_name,
-    #     'period' : period,
-    #     'alert' : False
-    # }    
-    # request.session['order_details_post'] = POST
-    # return HttpResponseRedirect("/subscriptions/neft-details")
     plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
     amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
     gst = .18 * amount
