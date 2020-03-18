@@ -1,10 +1,15 @@
+variables:
+  - group: dev
 pool:
   vmImage: 'ubuntu-18.04'
 steps:
 - bash: |
-    ls
     sudo apt-get update
     sudo apt-get install -y python3-pip python3-venv python3-dev libpq-dev
+    sudo sed -i "s/HELIOS_POSTGRES_DB/$(HELIOS_POSTGRES_DB)/" helios/settings/common.py
+    sudo sed -i "s/HELIOS_POSTGRES_USER/$(HELIOS_POSTGRES_USER)/" helios/settings/common.py
+    sudo sed -i "s/HELIOS_POSTGRES_PASSWORD/$(HELIOS_POSTGRES_PASSWORD)/" helios/settings/common.py
+    sudo sed -i "s/HELIOS_POSTGRES_HOST/$(HELIOS_POSTGRES_HOST)/" helios/settings/common.py
     sudo python3 -m venv ~/venv
     sudo ~/venv/bin/pip install wheel psycopg2
     sudo ~/venv/bin/pip install -r requirements.txt
