@@ -23,3 +23,5 @@ stunnel/
 *.sql
 *.pgsql
 *.xml
+staticfiles/*
+src/*
