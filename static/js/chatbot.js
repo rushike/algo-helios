@@ -13,7 +13,7 @@ $(document).ready(function() {
 
 								'<div class="bot_profile">'+
 									'<img src="/static/img/chat1.jpg" class="bot_p_img">'+
-									'<div class="close">'+
+									'<div class="close" style="opacity:50;">'+
 										'<i class="fa fa-times-circle" aria-hidden="false"></i>'+
 									'</div>'+
 
