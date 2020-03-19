@@ -11,8 +11,9 @@ urlpatterns = [
     path('send-neft-details', views.send_neft_details, name = 'send_neft_details'),
     path('orders', views.secure_order_details, name= 'orders'),
     path('payment/success', views.payment_success, name= 'payment_success'),
+    path('plan-data', views.plan_data, name="order-details"),
+    path('plan-renew', views.plan_renew, name="order-details"),
     path('order-details', views.order_details, name="order-details"),
-    path('order-details2', views.order_details2, name="order-details"),
     path('plan-overview/subscribe',views.plan_subscribe, name=''),
     path('plan-overview/<slug:slug>', views.plan_overview, name='plan_overview_page'),
 ]

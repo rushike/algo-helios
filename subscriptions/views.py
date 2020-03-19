@@ -12,7 +12,7 @@ import subscriptions.functions
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 
-logger = logging.getLogger('django')
+logger = logging.getLogger('normal')
 
 
 def plans(request):
@@ -56,28 +56,7 @@ def send_neft_details(request):
     return HttpResponseRedirect(redirect_to=  "/user/profile/info")
 
 
-def order_details(request):
-    subs_attr1 = dict(request.GET.lists())
-    # POST = request.session.get('order_details_post')
-    POST = request.POST
-    group_type = POST.get('groupcode')
-    plan_type = POST.get('plancode')
-    plan_name = POST.get('planname')
-    if 'plan_name' in POST:
-        plan_name = POST.get('plan_name')
-    period = POST.get('period')
-    
-    POST = {
-        'group_type' : group_type,
-        'plan_type' : plan_type,
-        'plan_name' : plan_name,
-        'period' : period,
-        'alert' : False
-    }    
-    request.session['order_details_post'] = POST
-    return HttpResponseRedirect("/subscriptions/orders")
-
-def order_details2(request):
+def plan_data(request):
     group_type = request.POST.get('groupcode')
     plan_type = request.POST.get('plancode')
     plan_name = request.POST.get('planname')
@@ -98,9 +77,64 @@ def order_details2(request):
         'amount' : amount,
         'gst' : gst,
         'total_amount' : total_amount
+    }    
+    request.session['order_details_post'] = context
+    logger.debug(f"plan_data context : {context}")
+    return HttpResponseRedirect("/subscriptions/orders")
+
+def plan_renew(request):
+    group_type = request.POST.get('groupcode')
+    plan_type = request.POST.get('plancode')
+    plan_name = request.POST.get('planname')
+    if 'plan_name' in request.POST:
+        plan_name = request.POST.get('plan_name')
+    period = request.POST.get('period', 'Monthly')
+    
+    plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
+    amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
+    gst = .18 * amount
+    total_amount = 1.18 * amount
+    context = {
+        'group_type' : group_type,
+        'group_max_members' : users.functions.get_max_members_in_group(group_type),
+        'plan_type' : plan_type,
+        'plan_name' : plan_name,
+        'period' : period,
+        'amount' : amount,
+        'gst' : gst,
+        'total_amount' : total_amount
+    }    
+    request.session['order_details_post'] = context
+    logger.debug(f"plan_renew context : {context}")
+    return HttpResponseRedirect("/subscriptions/order-details")
+
+@login_required(login_url='/subscriptions/plans')
+def order_details(request):
+    POST = request.session['order_details_post']
+    group_type = POST.get('group_type')
+    plan_type = POST.get('plan_type')
+    plan_name = POST.get('plan_name')
+    if 'plan_name' in POST:
+        plan_name = POST.get('plan_name')
+    period = POST.get('period', 'Monthly')
+    
+    plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
+    amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
+    gst = .18 * amount
+    total_amount = 1.18 * amount
+    context = {
+        'group_type' : group_type,
+        'group_max_members' : users.functions.get_max_members_in_group(group_type),
+        'plan_type' : plan_type,
+        'plan_name' : plan_name,
+        'period' : period,
+        'amount' : amount,
+        'gst' : gst,
+        'total_amount' : total_amount
     }
 
     request.session['order_details_post'] = context
+    logger.debug(f"order_details context : {context}")
     return render(request, 'subscriptions/order_details.html', context = context)
     
 
@@ -138,7 +172,7 @@ def create_order(request):
             'razorpay_key' : RAZORPAY_KEY
         }
     except Exception as e:
-        logger.error("Error Occured : ", e)
+        logger.error(f"Error Occured : {e}")
         # return JsonResponse({'Exception' : str(e)})
     # return JsonResponse(context)
     return render(request, 'subscriptions/payment.html', context = context)
@@ -168,13 +202,16 @@ def secure_order_details(request):
     if not subscriptions.functions.can_subscribe(request.user, group_type, plan_type, plan_name):
         POST["alert"] = True
         request.session['order_details_post'] = POST
+        logger.debug(f"secure_order_details context : {POST}")
         return HttpResponseRedirect(redirect_to='/subscriptions/plans')
     if subscriptions.functions.is_trial_applicable(group_type = group_type, plan_type = plan_type, plan_name = plan_type):
         request.session['order_details_post'] = POST
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
+            logger.debug(f"secure_order_details context : {POST}")
             return HttpResponseRedirect(redirect_to = "/subscriptions/subscribe")
     request.session['order_details_post'] = POST
-    return HttpResponseRedirect(redirect_to = '/subscriptions/neft-details')
+    logger.debug(f"secure_order_details context : {POST}")
+    return HttpResponseRedirect(redirect_to = '/subscriptions/order-details')
 
 @login_required(login_url='/accounts/login/')
 def subscribe(request): 

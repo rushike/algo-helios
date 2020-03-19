@@ -64,11 +64,21 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'worker.log',
         },
+        'file_3': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'normal.log',
+        },
         
     },
     'loggers': {
         'django': {
             'handlers': ['file_1'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'normal': {
+            'handlers': ['file_3'],
             'level': 'DEBUG',
             'propagate': True,
         },
