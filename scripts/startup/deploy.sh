@@ -29,3 +29,6 @@ sudo service apache2 restart
 
 # enabling certbot for ssl
 sudo certbot --apache --domains ${HELIOS_DOMAIN_NAME} --email ${HELIOS_SSL_EMAIL} --agree-tos --non-interactive --redirect
+
+#running daphne server
+sudo /var/www/algonauts.in/venv/bin/daphne -b 0.0.0.0 -p 8080 helios.asgi:application
