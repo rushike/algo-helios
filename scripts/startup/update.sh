@@ -19,5 +19,5 @@ sed -i "s/HELIOS_POSTGRES_HOST/${HELIOS_POSTGRES_HOST}/" /var/www/algonauts.in/h
 
 service apache2 restart
 
-# running daphne server
-/var/www/algonauts.in/venv/bin/daphne -b 0.0.0.0 -p 8080 helios.asgi:application
+# running daphne server with supervisor
+/var/www/algonauts.in/venv/bin/supervisord -c /var/www/algonauts.in/helios/scripts/supervisord.conf

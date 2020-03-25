@@ -21,6 +21,7 @@ sed -i "s/HELIOS_POSTGRES_HOST/${HELIOS_POSTGRES_HOST}/" /var/www/algonauts.in/h
 /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py migrate
 /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py collectstatic
 cp /var/www/algonauts.in/helios/scripts/apache_helios.conf /etc/apache2/sites-available/apache_helios.conf
+cp /var/www/algonauts.in/helios/scripts/apache_helios-le-ssl.conf /etc/apache2/sites-available/apache_helios-le-ssl.conf
 
 # restarting apache
 a2ensite apache_helios.conf
@@ -30,5 +31,6 @@ service apache2 restart
 # enabling certbot for ssl
 certbot --apache --domains ${HELIOS_DOMAIN_NAME} --email ${HELIOS_SSL_EMAIL} --agree-tos --non-interactive --redirect
 
-#running daphne server
-/var/www/algonauts.in/venv/bin/daphne -b 0.0.0.0 -p 8080 helios.asgi:application
+#running daphne server using supervisor
+/var/www/algonauts.in/venv/bin/supervisord -c /var/www/algonauts.in/helios/scripts/supervisord.conf
+
