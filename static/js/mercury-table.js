@@ -62,16 +62,16 @@ function timeFormat(signal_time, portfolioId){
 }
 
 function getEligibleTab(portfolioId) {
-    if (portfolioId == 1  || portfolioId == "TEST") {
+    if (portfolioId == 2  || portfolioId == "TEST") {
         return "intraday"
     }
-    else if (portfolioId == 2) {
+    else if (portfolioId == 3) {
         return "btst"
     }
-    else if (portfolioId == 3) {
+    else if (portfolioId == 4) {
         return "positional"
     }
-    else if (portfolioId == 4) {
+    else if (portfolioId == 5) {
         return "longterm"
     }
     return "intraday"

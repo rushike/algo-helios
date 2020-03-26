@@ -1,6 +1,6 @@
 import threading
 import logging
-import json
+import json, copy
 from webpush import send_group_notification
 from channels.consumer import AsyncConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -38,17 +38,21 @@ class DataConsumer(AsyncConsumer):
 
         if data_type == 'signal' or data_type == 'signal_update':
             signal, portfolio_id = data.get('signal'), data.get('portfolio_id')
+            logger.debug(f"Signal : {signal}, prortfolio : {portfolio_id}")
             if signal and portfolio_id and signal not in ('WAIT', 'EXIT'):
                 # All ratios will be computed in 'janus', so just forward from here based on the permissions
-                group_name = ConsumerManager.get_mapped_group(portfolio_id)
-                logger.info(f"Received Signal {data} with portfolio id : {portfolio_id} and will send to group {group_name}.")
-                await self.channel_layer.group_send(
-                    group_name,
-                    {
-                        'type': 'send.message',
-                        'message': json.dumps(data)
-                    }
-                )
+                datax = copy.deepcopy(data)
+                for prtf_id in portfolio_id:
+                    datax["portfolio_id"] = prtf_id 
+                    group_name = ConsumerManager.get_mapped_group(prtf_id)
+                    logger.info(f"Received Signal {datax} with portfolio id : {prtf_id} and will send to group {group_name}.")
+                    await self.channel_layer.group_send(
+                        group_name,
+                        {
+                            'type': 'send.message',
+                            'message': json.dumps(datax)
+                        }
+                    )
                 
                 # Send a notification
                 payload = None

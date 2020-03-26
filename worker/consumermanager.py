@@ -20,22 +20,22 @@ class ConsumerManager(metaclass=Singleton):
     PROTFOLIO_MAPPER = {
             'PortfolioTest' : 'mercury-btst',
             'TEST': "mercury-intraday",
-            '1': "mercury-intraday",
-            '2': "mercury-btst",
-            '3': "mercury-positional",
-            '4': "mercury-longterm",
+            '2': "mercury-intraday",
+            '3': "mercury-btst",
+            '4': "mercury-positional",
+            '5': "mercury-longterm",
         }
     PRODUCT_MAPPER = {
-        "mercury#intraday" : 1,
-        "mercury#btst" : 2,
-        "mercury#positional" : 3,
-        "mercury#longterm" : 4,
+        "mercury#intraday" : 2,
+        "mercury#btst" : 3,
+        "mercury#positional" : 4,
+        "mercury#longterm" : 5,
     }
     GROUP_MAPPER = {
-        "mercury-intraday" : 1,
-        "mercury-btst" : 2,
-        "mercury-positional" : 3,
-        "mercury-longterm" : 4,
+        "mercury-intraday" : 2,
+        "mercury-btst" : 3,
+        "mercury-positional" : 4,
+        "mercury-longterm" : 5,
     }
     def __init__(self):
         logger.info("Initializing ConsumerManager!!!!")
