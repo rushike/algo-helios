@@ -9,9 +9,6 @@ from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 import channels.layers
 
-from algonautsutils.dbhandler import DBConnHandler
-
-from helios.settings import DATABASES
 from worker.consumermanager import ConsumerManager
 import worker.functions
 
@@ -28,9 +25,7 @@ class DataPublisher(AsyncConsumer):
         logger.info(f"DATA PUBLISHER Connected: {event}")
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
         logger.info(f"User scope {self.scope['user']}")
-        self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
-                user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], port = DATABASES["janus"]["PORT"])
-        logger.debug(f"Database handler opened : {self.db_handler}")
+        logger.debug(f"Database handler opened : {ConsumerManager().db_handler}")
 
         await self.send({
             "type": "websocket.accept",
@@ -60,9 +55,9 @@ class DataPublisher(AsyncConsumer):
             groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
             product_names = await worker.functions.get_product_names_from_groups_async(groups)
             all_calls = []
-            user_protfolios = [ k for k, v in  ConsumerManager.PROTFOLIO_MAPPER.items() if v in groups]
+            user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
             for product in product_names:
-                portfolio_id = ConsumerManager.PRODUCT_MAPPER[product]
+                portfolio_id = ConsumerManager().get_portfolio_from_product(product)
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
                 logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
                 if product_filter['call_type']:
@@ -70,12 +65,12 @@ class DataPublisher(AsyncConsumer):
                      porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
                      {type(product_filter['profit_percentage'][1])}")
                     tickers = product_filter["tickers"]
-                    calls = self.db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
+                    calls = ConsumerManager().db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
                                     min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
                                 min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
                     logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
                 else : 
-                    calls = self.db_handler.fetch_calls_for_today(portfolio_id= portfolio_id)
+                    calls = ConsumerManager().db_handler.fetch_calls_for_today(portfolio_id= portfolio_id)
                     logger.debug(f"Calls for protfolio {portfolio_id} withoout filter set : calls : = {calls}")
                 all_calls.append(calls)
 

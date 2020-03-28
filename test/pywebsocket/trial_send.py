@@ -164,7 +164,7 @@ def gen_tick():
 
 async def send_signal(bulk_send=False):
     if args.env == 'dev':
-        url = "ws://algohelios.herokuapp.com/datalink/"
+        url = "ws://localhost:8000/datalink/"
     elif args.env == 'prod':
         url = "wss://www.algonauts.in/datalink/"
     else:
@@ -232,7 +232,11 @@ def send_custom():
     #         'portfolio': ['Longterm'], 'db_fetched': False, 'profit_percent': 50.0, 
     #         'ltp': 3.3, 'status': 'ActiveU', 'call_id': 5485, 'dtype': 'signal', 'active': True, 'override': False
     #         }
-    data = {'instrument_token': 70913, 'ticker': 'GICRE', 'interval': 'week', 'price': 94.5, 'target_price': 47.25, 'stop_loss': 343.55, 'signal': 'SELL', 'trade_strategy': 'SuperTrend_Longterm', 'algo_category': 'Longterm', 'signal_time': '2020-03-26T13:40:15.418714+05:30', 'algo_source': 'STAnalysis', 'portfolio_id': [5], 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': 'Active', 'call_id': 5638, 'dtype': 'signal', 'active': True, 'override': False}
+    data = {'instrument_token': 70913, 'ticker': 'GICRE', 'interval': 'week', 'price': 94.5, 
+            'target_price': 47.25, 'stop_loss': 343.55, 'signal': 'SELL', 'trade_strategy': 'SuperTrend_Longterm', 
+            'algo_category': 'Longterm', 'signal_time': '2020-03-26T13:40:15.418714+05:30', 'algo_source': 'STAnalysis', 
+            'portfolio_id': [5], 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': 'Active', 'call_id': 5637, 
+            'dtype': 'signal', 'active': True, 'override': False, 'risk_reward': 2 }
     instrument_tokens[instrument_token] = data
     return data
 

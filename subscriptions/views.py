@@ -12,6 +12,9 @@ import subscriptions.functions
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 
+
+from django.views.decorators.clickjacking import xframe_options_exempt
+
 logger = logging.getLogger('normal')
 
 
@@ -141,6 +144,7 @@ def order_details(request):
 @login_required(login_url='/subscriptions/plans')
 def create_order(request):
     POST = request.session.get('order_details_post')
+    group_mails = request.session.get('data', {}).get('group-mails', request.user.email).split(",")
     amount = POST.get('total_amount', 1)
     plan_name = POST.get('plan_name')
     group_type = POST.get('group_type')
@@ -148,16 +152,16 @@ def create_order(request):
     order_currency = 'INR'
     order_receipt = 'order_rcptid_11'
     notes = {'plan_name': plan_name, 'plan_type' : plan_type, 'group_type' : group_type}   # OPTIONALclient.order.create(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0')
-
     DATA = {
                 "amount" : int(amount * 100), # Stores, Operates in paise
                 "currency" : order_currency,
                 "receipt" : order_receipt,
                 "notes" : notes,
-                "payment_capture" : 0
+                "payment_capture" : 0, 
             }
-
-    try : 
+    POST["group_emails"] = group_mails
+    request.session["order_details_post"] = POST
+    try : # xakotob974@fft-mail.com, gojavik450@mailboxt.com
         order = client.order.create(data = DATA)
         user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
         subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
@@ -169,7 +173,8 @@ def create_order(request):
             "name" : " ".join([request.user.first_name, request.user.last_name]),
             'email' : request.user.email,
             'contact' : request.user.contact_no,
-            'razorpay_key' : RAZORPAY_KEY
+            'razorpay_key' : RAZORPAY_KEY,
+            'group_emails' : group_mails
         }
     except Exception as e:
         logger.error(f"Error Occured : {e}")
@@ -233,8 +238,9 @@ def subscribe(request):
 
     payment = subscriptions.functions.register_payment(order_id, payment_id, signature)
     recepients = []
+    logger.info(f"Group mails : {POST.get('group_emails')}")
     if 'group_emails' in POST:    
-        email_list = [v.strip() for v in re.split(",", POST['group_emails'][0])]
+        email_list = [v.strip() for v in POST['group_emails']]
         recepients.extend(email_list)
     
     subscription_id = subscribe_common(request = request, user = request.user, group_type = group_type, plan_type= plan_type ,   \
@@ -280,7 +286,10 @@ def plan_subscribe(request):
         message = 'This is the link for subscription for group : ' + request.build_absolute_uri(users.functions.generate_group_add_link(group))
         subscriptions.functions.send_email(subscribed.user_group_id, recepient, subject, message)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
-    
+
+@xframe_options_exempt
+def group_members_display(request):
+    return render(request, 'subscriptions/group_members_display.html')
 
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]

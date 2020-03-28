@@ -42,6 +42,7 @@ class DataConsumer(AsyncConsumer):
             if signal and portfolio_id and signal not in ('WAIT', 'EXIT'):
                 # All ratios will be computed in 'janus', so just forward from here based on the permissions
                 datax = copy.deepcopy(data)
+                logger.info(f"Will send to {len(portfolio_id)} protfolios..")
                 for prtf_id in portfolio_id:
                     datax["portfolio_id"] = prtf_id 
                     group_name = ConsumerManager.get_mapped_group(prtf_id)
