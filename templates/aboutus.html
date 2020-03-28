@@ -13,16 +13,17 @@
 
 {% block content %}
 
+
 <div class="jumbotron text-center" style="background-color: rgb(242,248,248);">
     <div class="container">
     <h1 class="display-5">About Us</h1>
     <p class="lead text-justify mt-4 mb-3">
-            Algonauts is a team of finance and technology professionals with combined experience 
-            over 20 years. We as a firm strongly believe that algorithmic trading is the future, 
-            and is a way to trade and make money in the markets. Extensive use of technology and 
-            numerous years of experience in stock market empower us to build new algorithms. 
-            With an aim to bridge the gap between technology and quantitative world, and to 
-            generate consistent superior returns we started this firm.
+        Algonauts is a team of finance and technology professionals with combined experience 
+        over 20 years. We identify, evaluate, analyze and leverage trading and investment 
+        opportunities to build algorithms using statistical and mathematical models. Extensive 
+        use of technology and numerous years of experience in stock market empower us to build 
+        new algorithms. We as a firm strongly believe that algorithmic trading is the future, 
+        and is a way to trade and make money in the markets.
     </p>
     </div>
 </div>
@@ -33,39 +34,21 @@
         <div class="row md-12 mb-2">
 
             <div class="col-md-6">
-                <img class="img-responsive" src="/static/img/about-us-img.png" width="80%" height="85%">
+                <img class="img-responsive" src="/static/img/about-us-bg-img.svg" width="100%" height="100%">
             </div>
 
             <div class="col-md-6">
-                <div class="row text-center justify-content-around">
+                <div class="row">
                     
-                    <div class="col-md-5 border rounded-b">
+                    <div class="col-md-12">
                         
-                        <div class="pt-3">
-                            <div style="background-color: rgb(242,248,248);">
-                                <strong class="d-inline-block mb-2 lead font-weight-bold">
+                        <div class="mt-5">
+                                <h1 class="mt-5 mb-2 display-5">
                                     Our Mission
-                                </strong>
-                            </div> 
-                            <p class="lead text-justify p-3">
+                                </h1>
+                            <p class="lead text-justify pt-3">
                             We aim to bridge the gap between Technology and Quantitative World 
                             and to generate consistent superior results.
-                            </p>
-                        </div>
-
-                    </div>
-                    <div class="col-md-2 mb-2">  </div>
-                    <div class="col-md-5 border rounded-b">
-
-                        <div class="pt-3">
-                            <div style="background-color: rgb(242,248,248);">
-                                <strong class="d-inline-block mb-2 lead font-weight-bold">
-                                    Our Belief
-                                </strong>
-                            </div>
-                            <p class="lead text-justify p-3">
-                            We as a firm strongly believe that algorithmic trading is the future,
-                            and the way to trade and make money in the markets.
                             </p>
                         </div>
 
@@ -77,7 +60,7 @@
     </div> <!-- middle container ends -->
 
 
-    <div class="jumbotron mt-1 p-5 bg-white">
+    <div class="jumbotron p-5 bg-white">
         <div class="container">
             <h1 class="display-5 mb-5 text-center">Our Team</h1>
 
@@ -89,14 +72,12 @@
                         </div>
                 </div> -->
                 <div class="col-md-12">
-                        <p class="lead">Mr Sharad Sankaran</p>
-                        <p class="text-justify">
-                            Mr. Sharad Sankaran is a Chartered Accountant and he has cleared 
-                            three levels of CFA Institute USA. He has 15 years experience in 
-                            financial markets spanning from equity analysis to wealth management. 
-                            He started his career in financial markets working for Clear Capital, 
-                            a UK based equity research in 2004. Since 2007, he has managed 
-                            wealth for HNIs in his individual capacity
+                        <p class="lead font-weight-bold">Mr Sharad Sankaran</p>
+                        <p class="lead text-justify">
+                            Mr. Sharad Sankaran has cleared three levels of CFA Institute USA 
+                            and has 15 years of experience in financial markets. His career 
+                            started with working for Clear Capital in 2004. Since 2007, he has 
+                            managed wealth for HNIs.
                         </p>
                 </div>
             </div>
@@ -109,12 +90,11 @@
                         </div>
                 </div> -->
                 <div class="col-md-12">
-                        <p class="lead">Mr Gaurav Mane</p>
-                        <p class="text-justify">
+                        <p class="lead font-weight-bold">Mr Gaurav Mane</p>
+                        <p class="lead text-justify">
                             Mr. Gaurav Mane has worked at Morgan Stanley Advantage Services for 
                             past 4 years as a Software Developer primarily in the Electronic 
-                            Trading domain, while having expertise in 
-                            C/C++ and Python technology.
+                            Trading domain, while having expertise in C/C++ and Python technology.
                         </p>
                 </div>
             </div>
@@ -126,7 +106,12 @@
     <div class="jumbotron text-center" style="background-color:#004B96; margin-bottom: 0;">
         <h1 class="display-5 text-white">Careers</h1>
         <p class="text-justify text-center text-white">Please send us your Resume at</p>
-        <button class="btn btn-light text-dark">coreteam@algonauts.in</button>
+        <button class="btn btn-light text-dark bg-white">
+            <a href="mailto:coreteam@algonauts.in?subject=Careers:Resume" class="text-decoration-none">
+            <p class="pb-1 pt-2" style="color:#004B96;"> coreteam@algonauts.in </p>
+            </a>
+        </button>
     </div>
+
 
 {% endblock %}
