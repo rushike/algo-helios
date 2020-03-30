@@ -56,6 +56,7 @@ class DataPublisher(AsyncConsumer):
             product_names = await worker.functions.get_product_names_from_groups_async(groups)
             all_calls = []
             user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
+            logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
             for product in product_names:
                 portfolio_id = ConsumerManager().get_portfolio_from_product(product)
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
@@ -110,7 +111,7 @@ class DataPublisher(AsyncConsumer):
 
             logger.info(f"Total Users Connected {ConsumerManager().total_users()}")
         except Exception as ex:
-            logger.error(f"Failed to connect to web-socket for the event {event}")
+            logger.error(f"Failed to connect to web-socket for the event {event}, exception {ex}")
             # TODO: Should be a way to notify the admin
 
     async def send_message(self, event):

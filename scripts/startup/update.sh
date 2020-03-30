@@ -22,6 +22,3 @@ cp /var/www/algonauts.in/helios/scripts/apache_helios-le-ssl.conf /etc/apache2/s
 /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py collectstatic
 
 service apache2 restart
-
-# running daphne server with supervisor
-/var/www/algonauts.in/venv/bin/supervisord -c /var/www/algonauts.in/helios/scripts/supervisord.conf

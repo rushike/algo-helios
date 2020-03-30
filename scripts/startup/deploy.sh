@@ -31,6 +31,4 @@ service apache2 restart
 # enabling certbot for ssl
 certbot --apache --domains ${HELIOS_DOMAIN_NAME} --email ${HELIOS_SSL_EMAIL} --agree-tos --non-interactive --redirect
 
-#running daphne server using supervisor
-/var/www/algonauts.in/venv/bin/supervisord -c /var/www/algonauts.in/helios/scripts/supervisord.conf
 

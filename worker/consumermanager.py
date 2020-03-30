@@ -63,7 +63,7 @@ class ConsumerManager(metaclass=Singleton):
 
     def get_portfolio_from_group(self, name:str):
         if isinstance(name, list) or isinstance(name, tuple):
-            return [self.reverse_portfolios.get(name.split("-")[1].lower(), 2) for group in name]
+            return [self.reverse_portfolios.get(group.split("-")[1].lower(), 2) for group in name]
         return self.reverse_portfolios.get(name.split("-")[1].lower(), 2) # default portfolio as Intraday
 
     def get_portfolio_from_product(self, name:str):
