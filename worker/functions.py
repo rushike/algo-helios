@@ -58,7 +58,7 @@ def filter(user,  data_list):
     logger.debug(f"Will appky filter data for user : {user} with datalist : {data_list}")
     
     for data in data_list:
-        # try : 
+        try : 
             call_type = data['dtype']
             product = ConsumerManager().get_product_from_portfolio(data["portfolio_id"])
             user_filter = get_user_filter_for_product(user, product)
@@ -81,8 +81,8 @@ def filter(user,  data_list):
                 logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
             result_data.append(data)
-        # except Exception as E :
-        #     logger.debug(f"{E} Exception Occured while filtering  data {data}:")
+        except Exception as E :
+            logger.error(f"{E} Exception Occured while filtering  data {data}:")
         
     logger.debug(f"Will send : result data == {result_data} to user {user}")
     return result_data        

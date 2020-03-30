@@ -13,12 +13,7 @@ sed -i "s/HELIOS_POSTGRES_USER/${HELIOS_POSTGRES_USER}/" /var/www/algonauts.in/h
 sed -i "s/HELIOS_POSTGRES_PASSWORD/${HELIOS_POSTGRES_PASSWORD}/" /var/www/algonauts.in/helios/helios/settings/common.py
 sed -i "s/HELIOS_POSTGRES_HOST/${HELIOS_POSTGRES_HOST}/" /var/www/algonauts.in/helios/helios/settings/common.py
 
-cp /var/www/algonauts.in/helios/scripts/apache_helios.conf /etc/apache2/sites-available/apache_helios.conf
-cp /var/www/algonauts.in/helios/scripts/apache_helios-le-ssl.conf /etc/apache2/sites-available/apache_helios-le-ssl.conf
-
-
 # using django migrate and restarting apache
 /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py migrate
 /var/www/algonauts.in/venv/bin/python /var/www/algonauts.in/helios/manage.py collectstatic
-
 service apache2 restart
