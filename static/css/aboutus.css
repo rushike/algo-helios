@@ -103,3 +103,13 @@ footer{
 .footer-menu{
     padding:80px;
 }
+
+h1, .lead{
+    font-family: 'Roboto', sans-serif;
+}
+p{
+    font-family: 'Lato', sans-serif;
+}
+.rounded-b {
+border-radius: 20px;
+} 

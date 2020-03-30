@@ -2,8 +2,17 @@
 {% load static %}
 {% load define_action %}
 
-{% block js_import %}
-    <script src="{% static '/js/bootstrap-input-spinner.js' %}" ></script>
+{% block js_imports %}
+    <!-- <script src="{% static '/js/bootstrap-input-spinner.js' %}" ></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="{% static '/js/jquery.amsify.suggestags.js' %}" ></script>
+{% endblock %}
+
+
+{% block css_imports %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/amsify.suggestags.css' %}">    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}
 
 
@@ -29,10 +38,10 @@
     
     <div class="row container text-center" style="">
 
-        <div class="col-md-6 mb-2" id="auto-card-align" style="">
+        <div class="col-md-6 mb-2 p-3" id="auto-card-align" style="">
             <div class="row justify-content-center mb-3">
 
-                <div class="col-md-12 border p-4 order-md-2 mb-2 bg-white shadow-lg" style="min-height: 20rem;">
+                <div class="col-md-10 border p-4 order-md-2 mb-2 bg-white shadow-lg" style="min-height: 20rem;">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text">Plans</span>
                         <span class="badge badge-secondary badge-pill">1</span>
@@ -74,7 +83,7 @@
         <div class="col-md-6 mb-1" id="auto-card-align">
             <div class="row justify-content-center mt-4">
 
-                <div class="col-md-10 border p-4 order-md-2 mb-4 bg-white shadow-lg" style="min-height: 15rem;">
+                <div class="col-md-12 border p-4 mb-4 bg-white shadow-lg" style="min-height: 20rem;">
                     <h4 class="d-flex justify-content-between align-items-center mb-3">
                         <span class="text">Pricing Details</span>
                     </h4>
@@ -119,7 +128,7 @@
             <div class="row mb-2">
         
                 <div class="col-md-6">
-                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                    <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
                         <div class="col p-4 d-flex flex-column position-static">
         
                         
@@ -130,7 +139,7 @@
                         <div class="mb-1 text-muted p-4">Available Payment Gateways</div>
                         <p class="mb-auto"></p>
         
-                        <div class="btn-toolbar justify-content-center" role="toolbar">
+                        <div class="btn-toolbar justify-content-center text-responsive" role="toolbar">
                                 <div class="btn-group" role="group" aria-label="First group">
                                 <button type="button" class="btn btn-secondary neft">NEFT</button>
                                 <button type="button" class="btn btn-secondary payonline" >Credit/Debit Card</button>
@@ -146,27 +155,49 @@
                 </div>
         
                 <div class="col-md-6">
-                    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                    <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
                             <div class="col-md-10 p-4 d-flex flex-column position-static">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text">Add Members <small class="badge badge-warning">Max : {{group_max_members}}</small></span>
                                 </h4>
-                            <div class="mb-1 row text-muted">
-                                <div class="col-md-8"><span class="btn" style="padding: 0px;">Only for Group Plan</span></div>
-                                <div class="col-md-4 text-right"><button class="btn btn-sm btn-secondary m-2" style="padding: 4px; margin-top: 0rem !important;"><i class="fa fa-plus"></i></button></div> 
+                            <!-- <div class="row">
+                                <div class="col-md-12 text-left">
+                                    Emails
+                                </div>
+                            </div> -->
+                            <div class="font-weight-bold row">
+                                <div class="col-7">Emails</div>
+                                <div class="col-5 text-right"><small> <b>ENTER</b> to add</small></div>
                             </div>
-                            
-                            <form>
-                                <div data-spy="scroll" id = "group-member-add" max = "{{group_max_members}}" data-offset="0" style="height:8rem; overflow-y:scroll; overflow-x:hidden">
-                                        <div class="form-row">
-                                            <div class="col">
-                                                <span type="text" class="form-control border-0">Email Address</span>
-                                            </div>
-                                            <div class="col">
-                                                <input type="text" class="form-control" placeholder="example@gmail.com">
-                                            </div>
-                                        </div>  
-                                </div>                                                                
+                            <div class="mb-1 row text-muted">
+                                <div class="col-md-8">
+                                    <!-- <input type="text" class="form-control" name="gemail" placeholder="example@gmail.com"> -->
+                                </div>
+                                <div class="col-md-4 text-right p-1">
+                                    
+                                    <!-- <button id="gemail-btn" class="btn btn-sm btn-secondary m-2" style="padding: 4px; margin-top: 0rem !important;"><i class="fa fa-plus"></i></button> -->
+                                    <!-- <i class="fa fa-plus"></i> -->
+                                </div> 
+                            </div>
+                            <script>
+                                $(document).ready(()=>{
+                                    $(".amsify-suggestags-input").css({
+                                            "top": "6rem",
+                                            "left": "2rem",
+                                            "position": "absolute",
+                                    })
+                                })
+                            </script>
+                            <form>  
+                                <div>
+                                    <input type="text" value="{{user.email}}," name="group-mails" />
+                                </div>
+                                <script>
+                                    $('input[name="group-mails"]').amsifySuggestags({
+                                        type : 'materialize',
+                                        tagLimit :"{{group_max_members}}"
+                                    });
+                                </script>                 
                             </form>
                         </div>
                     </div>
@@ -200,10 +231,39 @@
 
     }
     $(".payonline").click(()=>{
-        location.href = "{% url 'create_order' %}"
+        // window. sessionStorage.setItem("group-mails", $('input[name="group-mails"]').val());
+        // location.href = "{% url 'create_order' %}"
+    });
+
+    $(".payonline").click(()=>{
+        // $.ajax({
+        //     type: 'GET', 
+        //     url: serviceEndpoint,
+        //     dataType: 'json',
+        //     contentType: 'json',
+        //     headers: { 'api-key':'myKey' },
+        //     success: function(data){
+        //         location.href = "{% url 'create_order' %}"    
+        //     },
+        // });
+        $.ajax({
+         type : "GET",
+         url: '{% url "update_session" %}',
+         data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
+         success : function(response){
+            console.log(response);
+            location.href = "{% url 'create_order' %}"
+         },   
+    });
+    //     $.post('/update-session',   // url
+    //     {"data": {"group-mails" : $('input[name="group-mails"]').val() } }, // data to be submit
+    //    function(data, status, jqXHR) {// success callback
+    //         location.href = "{% url 'create_order' %}"
+    //     })
     });
 
     $(".neft").click(()=>{
+        sessionStorage.setItem("group-mails", $('input[name="group-mails"]').val());
         location.href = "{% url 'neft_details' %}"
     });
 

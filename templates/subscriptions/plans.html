@@ -5,6 +5,7 @@
 
 {% block css_imports %}
 	<link rel="stylesheet" type="text/css" href="{% static '/css/plans.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/css/services.css' %}">
 {% endblock %}
 {% block js_imports %}	
 	<!-- <script src="{% static '/js/plans.js' %}" type="text/javascript"></script> -->
@@ -48,6 +49,13 @@
 	
 	<div class="tab-content" id = "pricing-page">
 		<div class="tab-pane active" id="plans" role="tabpanel">
+			<div class="card text-black bg-white pt-4 mt-1 border-0">
+				<p class="text-center text-justify">
+					Your personal technical analyst! A product tailor-made for investors and traders 
+					that desire investing lesser time and efforts in stock market and aim to keep reaping 
+					greater benefits. Please try out our premium product for free.
+				</p>
+			</div>
 			<div class="tabbable">
 				<div class="row mt-4 ">
 					<div class="col-md-12">
@@ -164,7 +172,7 @@
 											});
 										</script>
 										<div class="col-md-6" style="padding: 20px;">     
-											<form method = "POST" action="/subscriptions/order-details2"> 
+											<form method = "POST" action="/subscriptions/plan-data"> 
 												{% csrf_token %}        
 												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">
 													
@@ -297,7 +305,14 @@
 			</div>
 			
 		</div>
+		
 		<div class="tab-pane" id="services" role="tabpanel">
+			<div class="text-center">
+				<p class="text p-5">
+					We offer customized trading solutions that are user-friendly, and fine-tuned to your 
+					particular needs, and provide swift execution.
+				</p>
+			</div>
 			<div class="row mt-3 mt-1">
 				<div class="col-md-12">
 					<div class="card">
@@ -305,7 +320,10 @@
 							Automation :
 						</div>
 						<div class="card-body">
-
+						<p class="text">
+							We can fully automate your trading strategies with smooth and robust 
+							execution
+						</p>
 						</div>
 					</div>
 				</div>
@@ -317,7 +335,10 @@
 							Backtesting :
 						</div>
 						<div class="card-body">
-
+							<p class="text">
+							We backtest your strategies within a few seconds and cover many 
+							instruments and market.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -329,7 +350,11 @@
 							Algorithm Development :
 						</div>
 						<div class="card-body">
-
+						<p class="text">
+							We deliver high performance optimized algorithms that enables you to 
+							rapidly develop, simulate, deploy and automate any quantitative trading 
+							strategy for the market.
+						</p>
 						</div>
 					</div>
 				</div>
@@ -341,7 +366,11 @@
 							Data Analytics :
 						</div>
 						<div class="card-body">
-
+							<p class="text">
+							This service provides actionable insight to brokers and asset managers 
+							to enhance and synchronize their trading related execution quality 
+							management capability.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -353,7 +382,10 @@
 							Custom Strategies :
 						</div>
 						<div class="card-body">
-
+							<p class="text">
+							We also provide custom strategies to improve the accuracy of your 
+							strategies with a variety of algorithms to fine tune your parameters.
+							</p>
 						</div>
 					</div>
 				</div>

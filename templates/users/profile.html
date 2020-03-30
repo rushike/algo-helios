@@ -112,9 +112,13 @@
 											</ul>
 									</div>
 									<div class="mt-1 p-4">										
-										<form method="POST" action="/subscriptions/order-details2">
+										<form method="POST" action="/subscriptions/plan-renew">
 											{% csrf_token %}
-											<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+											{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
+												<input class="periodcode" name = "period" value="Monthly"hidden></input>
+											{% else %}
+												<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+											{% endif %}
 											<input class="plancode" name= "plancode" value="{{iplan.1}}" hidden></input>
 											<input class="planname" name= "planname" value="{{iplan.0.plan_id__plan_name}}" hidden></input>
 											<input class="groupcode" name= "groupcode" value="{{iplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
@@ -174,9 +178,14 @@
 								</ul>
 						</div>
 						<div class="mt-1 p-4">
-							<form method="POST" action="/subscriptions/order-details2">
+							<form method="POST" action="/subscriptions/plan-renew">
 								{% csrf_token %}
-								<input class="periodcode" name = "period" value="{{gplan.0.subscription_type_id__type_name}}"hidden></input>
+								<!-- <input class="periodcode" name = "period" value="{{gplan.0.subscription_type_id__type_name}}"hidden></input> -->
+								{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
+									<input class="periodcode" name = "period" value="Monthly"hidden></input>
+								{% else %}
+									<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+								{% endif %}
 								<input class="plancode" name= "plancode" value="{{gplan.1}}" hidden></input>
 								<input class="planname" name= "planname" value="{{gplan.0.plan_id__plan_name}}" hidden></input>
 								<input class="groupcode" name= "groupcode" value="{{gplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>

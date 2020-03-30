@@ -54,68 +54,29 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
 
                             <!-- Modal content-->
                             <div class="modal-content">
-                                <div class="modal-header">
-                                <h4 class="modal-title m-auto" >Filter</h4>
-                                <button type="button" class="close" style = "margin-left : unset" data-dismiss="modal">&times;</button>                                
+                                <div class="modal-header row">
+                                <div class = "col-xs-3">
+                                    <div id = "{}_clear_filter" style = "cursor : pointer;">
+                                        <span class="fa-stack fa-2x" style="font-size:1.8rem;">
+                                            <i class="fa fa-filter fa-stack-1x"></i>
+                                            <i class="fa fa-ban fa-3x fa-stack-2x"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class = "col-xs-5 text-center" style = "left:3rem">
+                                    <h4 class="m-auto" >Filter</h4>
+                                </div>
+                                <div class = "col-xs-4">
+                                    <button type="button" class="close" style = "margin-left : unset; opacity : 0.8" data-dismiss="modal" >&times;</button>                                
+                                </div>
                                 </div>
                                 <div class="modal-body">
                                 <form method  = "GET" action="/worker/apply-filters"  style="text-align: left;" id="{}_filter_form">
                                     <!--{% csrf_token %} -->
                                     <div class="form-group">
                                     <label>Tickers</label>
-                                    <select name="tickers" class="tickers_filter" id="{}_tickers_filter" multiple="multiple">
-                                        <option value"">NIFTY 50</option>
-                                        <option value"">NIFTY BANK</option>
-                                        <option value"">ADANIPORTS</option>
-                                        <option value"">ASIANPAINT</option>
-                                        <option value"">AXISBANK</option>
-                                        <option value"">BAJAJ-AUTO</option>
-                                        <option value"">BAJFINANCE</option>
-                                        <option value"">BAJAJFINSV</option>
-                                        <option value"">BPCL</option>
-                                        <option value"">BHARTIARTL</option>
-                                        <option value"">INFRATEL</option>
-                                        <option value"">BRITANNIA</option>
-                                        <option value"">CIPLA</option>
-                                        <option value"">COALINDIA</option>
-                                        <option value"">DRREDDY</option>
-                                        <option value"">EICHERMOT</option>
-                                        <option value"">GAIL</option>
-                                        <option value"">GRASIM</option>
-                                        <option value"">HCLTECH</option>
-                                        <option value"">HDFCBANK</option>
-                                        <option value"">HEROMOTOCO</option>
-                                        <option value"">HINDALCO</option>
-                                        <option value"">HINDUNILVR</option>
-                                        <option value"">HDFC</option>
-                                        <option value"">ICICIBANK</option>
-                                        <option value"">ITC</option>
-                                        <option value"">IOC</option>
-                                        <option value"">INDUSINDBK</option>
-                                        <option value"">INFY</option>
-                                        <option value"">JSWSTEEL</option>
-                                        <option value"">KOTAKBANK</option>
-                                        <option value"LT">LT</option>
-                                        <option value"M&M">M&M</option>
-                                        <option value"MARUTI">MARUTI</option>
-                                        <option value"NTPC">NTPC</option>
-                                        <option value"NESTLEIND">NESTLEIND</option>
-                                        <option value"ONGC">ONGC</option>
-                                        <option value"POWERGRID">POWERGRID</option>
-                                        <option value"RELIANCE">RELIANCE</option>
-                                        <option value"SBIN">SBIN</option>
-                                        <option value"SUNPHARMA">SUNPHARMA</option>
-                                        <option value"TCS">TCS</option>
-                                        <option value"TATAMOTORS">TATAMOTORS</option>
-                                        <option value"TATASTEEL">TATASTEEL</option>
-                                        <option value"TECHM">TECHM</option>
-                                        <option value"TITAN">TITAN</option>
-                                        <option value"UPL">UPL</option>
-                                        <option value"ULTRACEMCO">ULTRACEMCO</option>
-                                        <option value"VEDL">VEDL</option>
-                                        <option value"WIPRO">WIPRO</option>
-                                        <option value"YESBANK">YESBANK</option>
-                                        <option value"ZEEL">ZEEL</option>
+                                        <select name="tickers" class="tickers_filter" id="{}_tickers_filter" multiple="multiple">
+                                        {{~~~~~|||~~~~~}}
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -194,6 +155,14 @@ String.prototype.format = function () {
     });
 };
 
+function option_tag_list(list){
+    var op_str = "";
+    for(var i = 0; i < list.length; i++){
+        op_str += "<option value" + list[i] + ">" + list[i] + "</option>"
+    }return op_str
+}
+
+
 $(document).ready(function() {
 
         $.ajax({
@@ -235,9 +204,26 @@ $(document).ready(function() {
             }
             return "intraday"
         }
+    function fetch_instruments_for_portfolio(portfolio){
+        var data = $.ajax({
+            type: "POST",
+            async: false,
+            url: "/worker/get-instrument-from-portfolio",           
+            data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : portfolio},
+            success: function(data)
+            {
+                return option_tag_list(data);
+            },
+            error: function(request, status, error)
+            {
+                alert(request.responseText);
+            }
+        });
+        return option_tag_list(data.responseJSON)
+    }
 
     $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
-        $("#" + value + "_content").html(data_table.format(value));
+        $("#" + value + "_content").html(data_table.format(value).replace("{{~~~~~|||~~~~~}}", fetch_instruments_for_portfolio(value)));
 
         $( "#" + value + "_rr_slider_range" ).slider({
                 range: true,
@@ -248,6 +234,24 @@ $(document).ready(function() {
                 slide: function( event, ui ) {
                 $( "#" + value + "_rr_range" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 }
+        });
+
+        $("#" + value + "_clear_filter").click(()=>{
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: "/worker/clear-filter/",           
+                data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : value},
+                success: function(data)
+                {
+                    console.log("filter cleared")
+                    location.reload();
+                },
+                error: function(request, status, error)
+                {
+                    alert(request.responseText);
+                }
+            });
         });
 
         $( "#" + value + "_rr_range" ).val($( "#" + value + "_rr_slider_range" ).slider( "values", 0 ) +

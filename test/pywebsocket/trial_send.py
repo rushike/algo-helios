@@ -23,6 +23,8 @@ parser.add_argument('--bulk', dest='bulk', action='store_true',
                     help='To test bulk send, by default single msg will be sent')
 parser.add_argument('--tick', dest='tick', action='store_true',
                     help='Just send the tick data')
+parser.add_argument('--custom', dest='custom', action='store_true',
+                    help='custom send signal')
 
 parser.add_argument('--action', dest='action', default='BUY', choices=["BUY", "SELL"], help='Signal action BUY or SELL')
 
@@ -171,6 +173,12 @@ async def send_signal(bulk_send=False):
 
     async with websockets.connect(url) as websocket:
         while True:
+            if args.custom:
+                test_data = send_custom()
+                data = json.dumps(test_data)
+                print('Sending ', data)
+                await websocket.send(data)
+                break
             if args.tick or args.signal or args.update:
                 if args.tick:
                     test_tick = gen_tick()
@@ -212,5 +220,24 @@ async def send_signal(bulk_send=False):
                 input("Press for Next Entry . . ")
         
 
+
+def send_custom():
+    global instrument_tokens
+    global CAT
+    instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
+    # data = {'instrument_token': 3677697, 'ticker': 'IDEA', 'interval': 'week', 
+    #         'price': 3.3, 'target_price': 1.65, 'stop_loss': 8.85, 'signal': 'SELL', 
+    #         'trade_strategy': 'SuperTrend_Longterm', 'algo_category': 'Longterm', 
+    #         'signal_time': '2020-03-26T12:11:24.079633+05:30', 'algo_source': 'STAnalysis', 
+    #         'portfolio': ['Longterm'], 'db_fetched': False, 'profit_percent': 50.0, 
+    #         'ltp': 3.3, 'status': 'ActiveU', 'call_id': 5485, 'dtype': 'signal', 'active': True, 'override': False
+    #         }
+    data = {'instrument_token': 70913, 'ticker': 'GICRE', 'interval': 'week', 'price': 94.5, 
+            'target_price': 47.25, 'stop_loss': 343.55, 'signal': 'SELL', 'trade_strategy': 'SuperTrend_Longterm', 
+            'algo_category': 'Longterm', 'signal_time': '2020-03-26T13:40:15.418714+05:30', 'algo_source': 'STAnalysis', 
+            'portfolio_id': [5], 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': 'Active', 'call_id': 5637, 
+            'dtype': 'signal', 'active': True, 'override': False, 'risk_reward': 2 }
+    instrument_tokens[instrument_token] = data
+    return data
 
 asyncio.get_event_loop().run_until_complete(send_signal(args.bulk))

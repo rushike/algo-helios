@@ -29,3 +29,5 @@ service apache2 restart
 
 # enabling certbot for ssl
 certbot --apache --domains ${HELIOS_DOMAIN_NAME} --email ${HELIOS_SSL_EMAIL} --agree-tos --non-interactive --redirect
+
+
