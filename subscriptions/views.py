@@ -13,8 +13,6 @@ from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, 
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 
 
-from django.views.decorators.clickjacking import xframe_options_exempt
-
 logger = logging.getLogger('normal')
 
 
@@ -287,9 +285,6 @@ def plan_subscribe(request):
         subscriptions.functions.send_email(subscribed.user_group_id, recepient, subject, message)
     return HttpResponseRedirect(redirect_to='/user/profile/info')
 
-@xframe_options_exempt
-def group_members_display(request):
-    return render(request, 'subscriptions/group_members_display.html')
 
 def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id, recepients = [], request = None): 
     recepient = [user.email]

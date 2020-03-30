@@ -111,7 +111,7 @@ class ConsumerManager(metaclass=Singleton):
     def filter_calls(calls_dict, groups):
         user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
         logger.debug(f"User protfolios : {user_protfolios}, Calls Dict : {calls_dict}")
-        calls = list(filter( lambda dict_port: list(filter(lambda item : str(item['portfolio_id'][0]) in user_protfolios, dict_port)), calls_dict))
+        calls = list(filter( lambda dict_port: list(filter(lambda item : item['portfolio_id'][0] in user_protfolios, dict_port)), calls_dict))
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
                 'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0],
                 'profit_percent' : abs((d['price'] - d['target_price']) / d['price'] * 100) }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
