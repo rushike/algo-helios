@@ -46,7 +46,7 @@ class ConsumerManager(metaclass=Singleton):
         self.BROADCAST_GROUP = "ALL_USERS"
         self.users_conns = dict()
         self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
-                user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], port = DATABASES["janus"]["PORT"])
+                user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], port = DATABASES["janus"]["PORT"], False, False)
         logger.debug(f"Database handler opened : {self.db_handler}")
 
         self.portfolios = dict(self.db_handler.get_portfolios())  # int --> str
