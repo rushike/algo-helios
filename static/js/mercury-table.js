@@ -105,19 +105,17 @@ function updateCount(activeTab) {
 }
 
 socket.onmessage = function (e) {
-    console.log("message ", e);
+    // console.log("message ", e);
 
     var data_dict = JSON.parse(e['data']);
     if (typeof data_dict == 'undefined' || data_dict.length <= 0) {
         // the array is defined and has at least one element
         return;
     }
-    console.log("data recieved : ", data_dict)
     dataType = data_dict["dtype"]
     if (dataType == "signal" || dataType == "tick" || dataType == "signal_update") {
         var status = data_dict['status']
         var active = data_dict['active']
-        console.log("status : ", status, "active : ", active)
         call_id = data_dict["call_id"];
         portfolioId = data_dict["portfolio_id"];
         var activeTab = getEligibleTab(portfolioId);
@@ -126,10 +124,10 @@ socket.onmessage = function (e) {
         var rowId = call_id
         var row = dataTable.rows.namedItem(rowId)
         if (dataType == "signal") {
+            console.debug("data recieved : ", data_dict)
             let data;
             data = data_dict;
             if (existing = row) {
-
                 // A new signal with different side is received, ignore signal with same side
                 if (row.cells.namedItem("signal").innerHTML != data['signal']){
                     row = document.getElementById(rowId);
@@ -153,11 +151,11 @@ socket.onmessage = function (e) {
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
-                    // row.id = instrumentToken + (Math.random * 100);
                 }
             }
         }
         else if (dataType == "signal_update"){
+            console.debug("data recieved : ", data_dict)
             console.log("Signal Update : data_dict = ", data_dict)
             if (dataTable && row) {
                 
@@ -168,7 +166,6 @@ socket.onmessage = function (e) {
                                                                                     data-target="#trade_modal">` + data_dict["signal"] + `</button>`
                 if(data_dict['price']) row.cells.namedItem("price").innerHTML = data_dict['price'];
                 
-                // row = document.getElementById(rowId);
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
@@ -178,18 +175,12 @@ socket.onmessage = function (e) {
         else if(dataType == "tick"){
             class_name = data_dict['instrument_token']
             instruments = document.getElementsByClassName(class_name)
-            console.log("Instruments on page are : ", instruments, typeof(instruments))
             for(var i = 0; i < instruments.length; i++){
                 inst = instruments[i]
                 if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
 
                 if(data_dict["profit_percent"]) inst.cells.namedItem("profit_percent").innerHTML = data_dict["profit_percent"];
                 if(status) inst.cells.namedItem("status").innerHTML = status
-
-                if(!status){
-                    console.log("Will disable the row by tick update");
-                    inst.className = "disabled";
-                }
             };
             
         }

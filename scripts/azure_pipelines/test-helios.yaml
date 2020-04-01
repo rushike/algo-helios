@@ -12,6 +12,7 @@ steps:
     sudo sed -i "s/HELIOS_POSTGRES_HOST/$(HELIOS_POSTGRES_HOST)/" helios/settings/common.py
     sudo python3 -m venv ~/venv
     sudo ~/venv/bin/pip install wheel psycopg2
+    echo "-e git+${ALGONAUTS_UTILS_GIT_SOURCE}@${ALGONAUTS_UTILS_GIT_BRANCH}#egg=algonautsutils" >> requirements.txt
     sudo ~/venv/bin/pip install -r requirements.txt
     sudo ~/venv/bin/python manage.py test
 trigger:
