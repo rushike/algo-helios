@@ -2,13 +2,15 @@ from django.test import Client
 
 from users.models import *
 
+import random
+
 def line(): print("\n" + "=" * 50 + "\n")
 
 #Create a dummy user
 user = AlgonautsUser.objects.create_user(
     first_name = "Test",
     last_name = "Algonauts",
-    email = "test.algonauts@gmail.com",
+    email = f"test{random.randint(1000, 100000)}.algonauts@gmail.com",
     contact_no = "8978689786",
     password = "okpasswordispassword",
 )

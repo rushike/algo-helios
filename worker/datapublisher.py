@@ -23,9 +23,10 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_connect(self, event):
         logger.info(f"DATA PUBLISHER Connected: {event}")
-        logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
+        logger.info(f"Total Active Users are {len(ConsumerManager().total_users())}")
         logger.info(f"User scope {self.scope['user']}")
         logger.debug(f"Database handler opened : {ConsumerManager().db_handler}")
+        logger.debug(f"Database handler cursor : {ConsumerManager().db_handler.conn}, {ConsumerManager().db_handler.cursor}")
 
         await self.send({
             "type": "websocket.accept",
@@ -54,10 +55,10 @@ class DataPublisher(AsyncConsumer):
             
             groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
             product_names = await worker.functions.get_product_names_from_groups_async(groups)
-            all_calls = []
+            all_calls = {}
             user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
             logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
-            for product in product_names:
+            for i, product in enumerate(product_names):
                 portfolio_id = ConsumerManager().get_portfolio_from_product(product)
                 product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
                 logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
@@ -66,14 +67,14 @@ class DataPublisher(AsyncConsumer):
                      porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
                      {type(product_filter['profit_percentage'][1])}")
                     tickers = product_filter["tickers"]
-                    calls = ConsumerManager().db_handler.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
-                                    min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
+                    calls = await self.fetch_calls_for_today_async( portfolio_id= portfolio_id, side=product_filter["sides"],
+                                tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
                                 min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
                     logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
                 else : 
-                    calls = ConsumerManager().db_handler.fetch_calls_for_today(portfolio_id= portfolio_id)
+                    calls = await self.fetch_calls_for_today_async(portfolio_id= portfolio_id)
                     logger.debug(f"Calls for protfolio {portfolio_id} withoout filter set : calls : = {calls}")
-                all_calls.append(calls)
+                all_calls[portfolio_id] = (calls)
 
             logger.debug(f"Fetched all calls for today : {all_calls}")
 
@@ -85,6 +86,7 @@ class DataPublisher(AsyncConsumer):
             })
         except Exception as ex:
             logger.error(f"Failed to connect to web-socket for the event {event}, error {ex}")
+            ConsumerManager().init_db_handler()
 
     async def websocket_disconnect(self, event):
         try:
@@ -109,7 +111,6 @@ class DataPublisher(AsyncConsumer):
                 self.channel_name
             )
 
-            logger.info(f"Total Users Connected {ConsumerManager().total_users()}")
         except Exception as ex:
             logger.error(f"Failed to connect to web-socket for the event {event}, exception {ex}")
             # TODO: Should be a way to notify the admin
@@ -127,3 +128,16 @@ class DataPublisher(AsyncConsumer):
                 'type' : 'websocket.send',
                 'text' : response
             })   
+
+    @database_sync_to_async
+    def fetch_calls_for_today_async(self, *args, **kwargs):
+        try : 
+            if ConsumerManager().db_handler.test_connection():
+                return ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+            else :
+                ConsumerManager().init_db_handler()
+                return ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+        except Exception as E:
+            logger.error(f"Error occured while fetching data  :  , {E}")
+            ConsumerManager().init_db_handler()
+            return ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)

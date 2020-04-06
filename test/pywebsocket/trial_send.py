@@ -11,10 +11,27 @@ The uri is set to localhost and should be configured while running on other than
 import asyncio
 import websockets
 import argparse
+import time
 import json
-import random
+import random, datetime
 
 instrument_tokens = {}
+class store:
+    instruments_list = [] # it contains intruments for which signal is sent
+    @classmethod
+    def push(cls, value):
+        cls.instruments_list.append(value)
+        with open('test/pywebsocket/instrument_send.json', 'w') as f:
+            json.dump(cls.instruments_list, f)
+    @classmethod
+    def get(cls):
+        with open('test/pywebsocket/instrument_send.json', 'r') as f:
+            cls.instruments_list = json.load(f)
+    @classmethod
+    def empty(cls):
+        cls.instruments_list = []
+        with open('test/pywebsocket/instrument_send.json', 'w') as f:
+            json.dump(cls.instruments_list, f)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--env', dest='env', default='dev', choices=["dev", "prod"], help='Env to be tested')
@@ -56,6 +73,8 @@ args.cat = False
 print(args)
 
 CAT = {"4" : "Longterm", "1" : "Intraday", '3' : "Positional", '2' : "BTST"}
+with open("test/pywebsocket/instruments.json", "r") as f:
+    instruments = json.load(f)
 
 def gen_signal():
     global instrument_tokens
@@ -164,7 +183,7 @@ def gen_tick():
 
 async def send_signal(bulk_send=False):
     if args.env == 'dev':
-        url = "ws://localhost:8000/datalink/"
+        url = "wss://dev.algonauts.in/datalink/"
     elif args.env == 'prod':
         url = "wss://www.algonauts.in/datalink/"
     else:
@@ -173,12 +192,19 @@ async def send_signal(bulk_send=False):
 
     async with websockets.connect(url) as websocket:
         while True:
-            if args.custom:
-                test_data = send_custom()
+            if args.custom and args.tick:
+                test_data = send_custom_tick()
                 data = json.dumps(test_data)
-                print('Sending ', data)
+                print("sending tick")
                 await websocket.send(data)
                 break
+            elif args.custom:
+                test_data = send_custom_signal()
+                data = json.dumps(test_data)
+                print('sending signal or signal_update')
+                await websocket.send(data)
+                break
+
             if args.tick or args.signal or args.update:
                 if args.tick:
                     test_tick = gen_tick()
@@ -220,24 +246,31 @@ async def send_signal(bulk_send=False):
                 input("Press for Next Entry . . ")
         
 
-
-def send_custom():
+def send_custom_signal():
     global instrument_tokens
     global CAT
-    instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
-    # data = {'instrument_token': 3677697, 'ticker': 'IDEA', 'interval': 'week', 
-    #         'price': 3.3, 'target_price': 1.65, 'stop_loss': 8.85, 'signal': 'SELL', 
-    #         'trade_strategy': 'SuperTrend_Longterm', 'algo_category': 'Longterm', 
-    #         'signal_time': '2020-03-26T12:11:24.079633+05:30', 'algo_source': 'STAnalysis', 
-    #         'portfolio': ['Longterm'], 'db_fetched': False, 'profit_percent': 50.0, 
-    #         'ltp': 3.3, 'status': 'ActiveU', 'call_id': 5485, 'dtype': 'signal', 'active': True, 'override': False
-    #         }
-    data = {'instrument_token': 70913, 'ticker': 'GICRE', 'interval': 'week', 'price': 94.5, 
-            'target_price': 47.25, 'stop_loss': 343.55, 'signal': 'SELL', 'trade_strategy': 'SuperTrend_Longterm', 
-            'algo_category': 'Longterm', 'signal_time': '2020-03-26T13:40:15.418714+05:30', 'algo_source': 'STAnalysis', 
-            'portfolio_id': [5], 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': 'Active', 'call_id': 5637, 
-            'dtype': 'signal', 'active': True, 'override': False, 'risk_reward': 2 }
-    instrument_tokens[instrument_token] = data
+    global instruments
+    store.get()
+    # instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
+    ri = random.choice(instruments)
+    status = random.choices(['HIT' , 'MISS' , 'Active' , 'Partial HIT', 'Inactive'], weights=[0.16, 0.16, 0.26, 0.26, 0.16])[0]
+    data = {'instrument_token': ri[1], 'ticker': ri[2], 'interval': 'week', 'price': random.randint(0, 1000), 
+            'target_price': random.randint(0, 1000), 'stop_loss': random.randint(0, 1000), 'signal': random.choice(['SELL', 'BUY']), 'trade_strategy': 'SuperTrend_Longterm', 
+            'algo_category': random.choice(['Longterm', 'Intraday', 'Postitional', 'BTST']), 'signal_time': datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), 'algo_source': 'STAnalysis', 
+            'portfolio_id': random.sample([5, 2, 3, 4], k = random.randint(1, 4)), 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': status, 'call_id': ri[1], 
+            'dtype': random.choice(['signal', 'signal_update']), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
+    print(data)
+    store.push(ri)
+    return data
+
+def send_custom_tick():
+    global instruments
+    store.get()
+    print("instrument list : ", store.instruments_list)
+    if store.instruments_list == []: time.sleep(3)
+    ri = random.choice(store.instruments_list)
+    data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
+    print(data)
     return data
 
 asyncio.get_event_loop().run_until_complete(send_signal(args.bulk))

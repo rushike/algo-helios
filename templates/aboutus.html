@@ -102,7 +102,6 @@
 
         </div>
     </div>
-
     <div class="jumbotron text-center" style="background-color:#004B96; margin-bottom: 0;">
         <h1 class="display-5 text-white">Careers</h1>
         <p class="text-justify text-center text-white">Please send us your Resume at</p>
@@ -113,5 +112,69 @@
         </button>
     </div>
 
+    <script>
+        $(document).ready(()=>{
+            console.log("Will change css.")
+            $("nav").attr({style : "background-color: rgb(242, 248, 248)!important"});      
+        })
+    </script>
+
+
+{% endblock %}
+
+
+{% block base_scripts %}
+    <script>
+        $(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 200) {
+                    $('nav').attr('style', 'box-shadow:2px 2px 5px grey; background-color: rgb(242, 248, 248)!important;');
+                    $('.navbar-collapse').attr('style', 'padding-top:10px;background-color: rgb(242, 248, 248)!important');
+                    $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;background-color: rgb(242, 248, 248)!important');
+                    $('#logo').attr('style', 'transform: scale(0.8)');
+
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(0.85)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(0.8)');
+                    });
+                }
+                if ($(this).scrollTop() < 200) {
+                    $('nav').attr('style', 'box-shadow:none;background-color: rgb(242, 248, 248)!important');
+                    $('.navbar-collapse').attr('style', 'padding-top:25px;background-color: rgb(242, 248, 248)!important');
+                    $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;background-color: rgb(242, 248, 248)!important')
+                    $('#logo').attr('style', 'transform: scale(1)');
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(1.1)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(1)');
+                    });
+                }
+            })
+        });
+
+
+        $(document).ready(function () {
+            $(".whatwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#whatwedocont").offset().top - 80
+                }, 800);
+            });
+
+            $(".howwedoi").click(function () {
+                $('html, body').animate({
+                    scrollTop: $("#howwedocont").offset().top - 80
+                }, 800);
+            });
+        });
+
+        $(document).ready(function () {
+            $("#chat-input").css({"margin-top":"1.0rem"});
+            $("#send-img").addClass("fa fa-paper-plane-o")
+        });
+
+
+    </script>
+    <script src="{% static 'js/chatbot.js' %}"></script>
 
 {% endblock %}

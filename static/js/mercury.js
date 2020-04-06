@@ -511,7 +511,8 @@ $(document).ready(function() {
         $("meta[name=active-tab]").attr("content", $('.nav-tabs li.active a').attr("href"));
     });
 
-        $('.nav-tabs a[href="#' + $('meta[name=active-tab]').attr("content") + '"]').tab('show');
+    // $('.nav-tabs a[href="#' + $('meta[name=active-tab]').attr("content") + '"]').tab('show');
+    $('.nav-tabs a[href="#' + sessionStorage.getItem('portfolio') + '"]').tab('show');
 });
 
 // PUSH Notifications

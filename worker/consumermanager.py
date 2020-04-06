@@ -3,7 +3,6 @@ import threading, itertools
 import users.functions
 from channels.db import database_sync_to_async
 
-
 from algonautsutils.dbhandler import DBConnHandler
 from helios.settings import DATABASES
 
@@ -56,6 +55,11 @@ class ConsumerManager(metaclass=Singleton):
     def get_instruments_from_db(self, protfolio_id):
         return list(v[0] for v in self.db_handler.get_instruments_from_portfolios(portfolios=[self.portfolios.get(protfolio_id, "Nifty50")])) 
 
+    def init_db_handler(self):
+        logger.debug(f"Reinitiated handler self handler deleted : {self.db_handler}, conn : {self.db_handler.conn}, cursor : {self.db_handler.cursor}")
+        self.db_handler.connect()
+        logger.debug(f"Reinitiated handler opened : {self.db_handler}, conn : {self.db_handler.conn}, cursor : {self.db_handler.cursor}")
+
     def get_instruments(self, portfolio_id):
         if isinstance(portfolio_id, str):
             portfolio_id = self.reverse_portfolios.get(portfolio_id.lower(), 'intraday')
@@ -68,7 +72,7 @@ class ConsumerManager(metaclass=Singleton):
 
     def get_portfolio_from_product(self, name:str):
         if isinstance(name, list) or isinstance(name, tuple):
-            return [self.get_portfolio_from_product(group) for group in name]   
+            return [self.get_portfolio_from_product(group) for group in name]
         return self.reverse_portfolios.get(name.split("#")[1].lower(), 2) # default portfolio as Intraday
     
     def get_group_name_from_portfolio(self, name):
@@ -109,14 +113,13 @@ class ConsumerManager(metaclass=Singleton):
 
     @staticmethod
     def filter_calls(calls_dict, groups):
-        user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
-        logger.debug(f"User protfolios : {user_protfolios}, Calls Dict : {calls_dict}")
-        calls = list(filter( lambda dict_port: list(filter(lambda item : item['portfolio_id'][0] in user_protfolios, dict_port)), calls_dict))
+        calls = []
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                'active' : True if d['status'].value.lower() in ["active", 'partial hit'] else False, 'portfolio_id' : d["portfolio_id"][0],
-                'profit_percent' : abs((d['price'] - d['target_price']) / d['price'] * 100) }) for d in call_one] for call_one in calls] # updates dict to make JSON serializable
-        calls = list(itertools.chain.from_iterable(calls))
+                'active' :d['active_flag'], 'portfolio_id' : port}) for d in calls] for port, calls in calls_dict.items()] # updates dict to make JSON serializable
+        [calls.extend(v) for _, v in calls_dict.items()]
+        logger.debug(f"User Sending the Calls: {len(calls)} {calls}, \ncallsitems : {len(calls)}")
         return calls
+
     @staticmethod
     @database_sync_to_async
     def get_eligible_groups(user):

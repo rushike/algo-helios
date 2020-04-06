@@ -62,7 +62,7 @@
 						<div class="font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
 						<div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
 							
-							<div id = "group-header text-center" class="btn-group " role="group" aria-label="First group">
+							<div id = "group-header" class="text-center" class="btn-group " role="group" aria-label="First group">
 								<script>
 									$(document).ready(() => {
 										var active = "#head-{{group_type.0.1}}";
@@ -254,9 +254,9 @@
 														<div class="row justify-content-center">
 															<div class="">
 																{% if group_type.1.eligible_for_trial and plan_type.1.trial_applicable %}
-																	<button type='submit' class="col btn  btn-primary plancode-div font-weight-bold"> Try Now</button>
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Try Now</button>
 																{% else %}
-																	<button type='submit' class="col btn  btn-primary plancode-div font-weight-bold"> Subscribe</button>
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Subscribe</button>
 																{% endif %}
 															</div>
 														</div>		
@@ -397,14 +397,18 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>		
+	<script>	
+		function validate(){
+			if($("input[name='groupcode']").val() == ""){
+				$("#group-header").css("border-color", "#ff9797")
+				}
+		}	
 		$(document).ready(()=>{
 
 			// $("div.group-header a").click(function (e) {
 			// 	e.preventDefault();  
 			// 		$(this).tab('show');
 			// });
-
 			$("div.header a").click(function (e) {
 				e.preventDefault();  
 					$(this).tab('show');
@@ -442,14 +446,14 @@
 			$(".plancode-div").click(()=>{
 				if(plancode_clicked == 0){
 					console.log("plancode val = ", plancode_clicked)
-					$("#group-header").css({"border-style": "solid", "border-color": "red"})
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797", "border-width":"1.6px"})
 				}
 			});
 			$('input[required]').on('invalid', function(e){
 				console.log("errr : ", e, e.target, e.target.name)
 				if(e.target.name == "groupcode"){
 					console.log("changing border")
-					$("#group-header").css({"border-style": "solid", "border-color": "red"})
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797"})
 				}
 			});
 		});

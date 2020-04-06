@@ -21,7 +21,7 @@ def get_health_status(request):
 def mercury(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
+    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section2"})
 
 @login_required(login_url='/accounts/login/')
 def apply_filters(request):

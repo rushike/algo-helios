@@ -241,6 +241,8 @@ ul > li > a :hover, ul > li > a :active{
 
 body{
     background: radial-gradient(circle, rgba(2,0,36,1) 7%, rgba(7,7,101,1) 47%, rgba(9,9,121,1) 82%, rgba(0,42,179,1) 100%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 .modal-backdrop
 {

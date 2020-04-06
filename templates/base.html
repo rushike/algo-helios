@@ -82,7 +82,7 @@
 <mybot></mybot>
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top font-weight-bold">
+<nav class="navbar navbar-expand-lg navbar-light bg-light  font-weight-bold">
     <a class="navbar-brand" href="/"></a>
     <a class="navbarlogo" href="/"><img id="logo" src="/static/algotext.png" width="150px" height="auto" alt="image"></a>
   
@@ -261,6 +261,7 @@
 
     {% endblock %}
 
+{% block base_scripts %}
     <script>
         $(function () {
             $(window).scroll(function () {
@@ -313,6 +314,8 @@
 
     </script>
     <script src="{% static 'js/chatbot.js' %}"></script>
+
+{% endblock %}
 </body>
 
 </html>
