@@ -12,7 +12,6 @@ console.log("socket : coonn ,,, ", socket)
 console.log(sessionStorage)
 
 
-
 socket.onopen = function (e) {
     console.log("Web-socket conn opened ", e);
     socket.send(JSON.stringify({'load' : true}));

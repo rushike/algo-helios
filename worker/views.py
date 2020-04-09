@@ -9,6 +9,7 @@ import logging, json
 
 import products.functions
 
+from worker.utils import DBManager
 from worker.consumermanager import ConsumerManager
 
 logger = logging.getLogger('worker')
@@ -70,7 +71,7 @@ def get_user_channel_groups(request):
 @login_required(login_url = '/accounts/login/')
 def get_instruments_from_portfolio(request):
     portfolio_id = request.POST.get("portfolio_id", 1)
-    instruments = ConsumerManager().get_instruments(portfolio_id)
+    instruments = DBManager().get_instruments(portfolio_id)
     return JsonResponse(instruments, safe= False)
 
 @login_required(login_url = '/accounts/login/')
@@ -78,10 +79,10 @@ def get_calls_from_db(request):
     groups = ConsumerManager().get_eligible_groups(request.user.email) # group-name is product name
     product_names =  worker.functions.get_product_names_from_groups(groups)
     all_calls = {}
-    user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
+    user_protfolios = DBManager().get_portfolio_from_group(groups)
     logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
     for i, product in enumerate(product_names):
-        portfolio_id = ConsumerManager().get_portfolio_from_product(product)
+        portfolio_id = DBManager().get_portfolio_from_product(product)
         product_filter =  worker.functions.get_user_filter_for_product(request.user.email, product)
         logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
         if product_filter['call_type']:
@@ -98,12 +99,12 @@ def get_calls_from_db(request):
             calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
             logger.debug(f"Calls for protfolio {portfolio_id} without filter set : calls : = {calls}")
         all_calls[portfolio_id] = (calls)
-    return JsonResponse(ConsumerManager().filter_calls(all_calls), safe= False)
+    return JsonResponse(DBManager().filter_calls(all_calls), safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def clear_filter(request):
     portfolio_id = request.POST.get("portfolio_id", 1)
-    product = ConsumerManager().get_product_from_portfolio(portfolio_id)
+    product = DBManager().get_product_from_portfolio(portfolio_id)
     logger.debug(f"calling worker function filter for portfolio : {portfolio_id}, product : {product}")
     worker.functions.clear_filter(request.user.email, product)
     return HttpResponse("ok")

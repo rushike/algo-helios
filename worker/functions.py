@@ -6,6 +6,8 @@ import json, logging
 import threading
 from channels.db import database_sync_to_async
 
+from worker.utils import DBManager
+
 logger = logging.getLogger('worker')
 
 
@@ -67,7 +69,7 @@ def filter(user,  data_list):
     for data in data_list:
         try : 
             call_type = data['dtype']
-            product = ConsumerManager().get_product_from_portfolio(data["portfolio_id"])
+            product = DBManager().get_product_from_portfolio(data["portfolio_id"])
             user_filter = get_user_filter_for_product(user, product)
             user_filter_call_type = user_filter['call_type']
             logger.debug(f"Protfolio id : {data['portfolio_id']} User filter : {user_filter}")
@@ -100,26 +102,17 @@ def filter_async(user, data_list):
 
 
 def fetch_calls_for_today_in_thread(*args, **kwargs):
-    args[0].extend(ConsumerManager().db_handler.fetch_calls_for_today(*args[2:], **kwargs))
+    args[0].extend(DBManager().db_handler.fetch_calls_for_today(*args[2:], **kwargs))
 
 def fetch_calls_for_today(*args, **kwargs):
     result = []
     logger.debug("fetch calls in worker")
     try : 
-        if ConsumerManager().db_handler.test_connection():
-            logger.debug(f"Already connected to db :")
-            ConsumerManager().init_db_handler()
-            calls_thread = threading.Thread(target = fetch_calls_for_today_in_thread, args = (result, *args), kwargs = (kwargs))
-            calls_thread.start()
-            calls_thread.join(timeout=1)
-            return result
-        else :
-            logger.debug(f"Reconnect to db : ")
-            ConsumerManager().init_db_handler()
-            calls_thread = threading.Thread(target = fetch_calls_for_today_in_thread, args = (result, *args), kwargs = (kwargs))
-            calls_thread.start()
-            calls_thread.join(timeout=  1)
-            return result
+        logger.debug(f"Already connected to db :")
+        calls_thread = threading.Thread(target = fetch_calls_for_today_in_thread, args = (result, *args), kwargs = (kwargs))
+        calls_thread.start()
+        calls_thread.join(timeout=1)
+        return result
     except Exception as E:
         logger.error(f"Error occured while fetching data  :  , {E}")
 
