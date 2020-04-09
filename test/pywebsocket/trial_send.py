@@ -180,10 +180,10 @@ def gen_tick():
                  }
     return test_tick
 
-
+# All calls fetched
 async def send_signal(bulk_send=False):
     if args.env == 'dev':
-        url = "wss://dev.algonauts.in/datalink/"
+        url = "ws://dev.algonauts.in/datalink/"
     elif args.env == 'prod':
         url = "wss://www.algonauts.in/datalink/"
     else:
@@ -259,18 +259,44 @@ def send_custom_signal():
             'algo_category': random.choice(['Longterm', 'Intraday', 'Postitional', 'BTST']), 'signal_time': datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), 'algo_source': 'STAnalysis', 
             'portfolio_id': random.sample([5, 2, 3, 4], k = random.randint(1, 4)), 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': status, 'call_id': ri[1], 
             'dtype': random.choice(['signal', 'signal_update']), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
+    # data = {'instrument_token': ri[1], 'ticker': ri[2], 'interval': 'week', 'price': random.randint(0, 1000), 
+    #         'target_price': random.randint(0, 1000), 'stop_loss': random.randint(0, 1000), 'signal': random.choice(['SELL', 'BUY']), 'trade_strategy': 'SuperTrend_Longterm', 
+    #         'algo_category': 'Intraday', 'signal_time': datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), 'algo_source': 'STAnalysis', 
+    #         'portfolio_id': [2], 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': status, 'call_id': ri[1], 
+    #         'dtype': random.choice(['signal', 'signal_update']), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
     print(data)
     store.push(ri)
     return data
 
 def send_custom_tick():
     global instruments
-    store.get()
-    print("instrument list : ", store.instruments_list)
-    if store.instruments_list == []: time.sleep(3)
-    ri = random.choice(store.instruments_list)
-    data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
+    # store.get()
+    # print("instrument list : ", store.instruments_list)
+    # if store.instruments_list == []: time.sleep(3)
+    # ri = random.choice(store.instruments_list)
+    # 340481, "HDFC"]
+    # data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
+    data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  340481, "ticker": "HDFC"}
     print(data)
     return data
 
 asyncio.get_event_loop().run_until_complete(send_signal(args.bulk))
+
+"""
+import time                                                                                                                                                                                                        now = time.time()
+try :                                                                                                                                                                                                                  if ConsumerManager().db_handler.test_connection():
+        logger.info("No error, connection on already")                                                                                                                                                                     calls = ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+        logger.debug(f"All calls fetched in {time.time() - now}secs : {calls}")
+        return calls
+    else :
+        logger.warning("Connection need to reset")
+        ConsumerManager().init_db_handler()
+        calls = ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+        logger.debug(f"All calls test false in {time.time() - now}secs : {calls}")
+except Exception as E:
+    logger.error(f"Error occured while fetching data  :  , {E}")
+    ConsumerManager().db_handler.connect()
+    calls = ConsumerManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+    logger.debug(f"All calls fetched after error: {time.time() - now} {calls}")
+    return calls
+"""

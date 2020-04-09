@@ -45,7 +45,7 @@ class DataConsumer(AsyncConsumer):
                 logger.info(f"Will send to {len(portfolio_id)} protfolios..")
                 for prtf_id in portfolio_id:
                     datax["portfolio_id"] = prtf_id 
-                    group_name = ConsumerManager.get_mapped_group(prtf_id)
+                    group_name = ConsumerManager().get_mapped_group(prtf_id)
                     logger.info(f"Received Signal {datax} with portfolio id : {prtf_id} and will send to group {group_name}.")
                     await self.channel_layer.group_send(
                         group_name,
@@ -79,13 +79,18 @@ class DataConsumer(AsyncConsumer):
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
             logger.debug(f"Received Tick Updates {data}")
-            await self.channel_layer.group_send(
-                ConsumerManager().get_broadcast_group(),
-                {
-                    'type': 'send.message',
-                    'message': json.dumps(data)
-                }
-            )
+            await self.send({
+                # Send existing table to the client
+                "type": "send.message",
+                "message": json.dumps(data)
+            })
+            # await self.channel_layer.group_send(
+            #     ConsumerManager().get_broadcast_group(),
+            #     {
+            #         'type': 'send.message',
+            #         'message': json.dumps(data)
+            #     }
+            # )
 
     async def send_message(self, event):
         response = event.get('message') 

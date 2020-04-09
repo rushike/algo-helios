@@ -41,7 +41,7 @@ def apply_filters(request):
         "sides" : sides, 
         "risk_reward" : risk_reward,
         "profit_percentage" : profit_percentage,
-        "signal_tiem" : signal_time,
+        "signal_item" : signal_time,
 
     }
     logger.debug(f"Sending attributes to store or update in database : [ \n\t{request.user._wrapped} , \n\t{'mercury#{}'.format(call_type)}, \n\t{filter_dict}\n]")
@@ -73,6 +73,32 @@ def get_instruments_from_portfolio(request):
     instruments = ConsumerManager().get_instruments(portfolio_id)
     return JsonResponse(instruments, safe= False)
 
+@login_required(login_url = '/accounts/login/')
+def get_calls_from_db(request):
+    groups = ConsumerManager().get_eligible_groups(request.user.email) # group-name is product name
+    product_names =  worker.functions.get_product_names_from_groups(groups)
+    all_calls = {}
+    user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
+    logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
+    for i, product in enumerate(product_names):
+        portfolio_id = ConsumerManager().get_portfolio_from_product(product)
+        product_filter =  worker.functions.get_user_filter_for_product(request.user.email, product)
+        logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
+        if product_filter['call_type']:
+            logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
+                porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
+                {type(product_filter['profit_percentage'][1])}")
+            tickers = product_filter["tickers"]
+            calls =  worker.functions.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
+                        tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
+                        min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
+            logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
+        else : 
+            logger.debug("No product filter")
+            calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
+            logger.debug(f"Calls for protfolio {portfolio_id} without filter set : calls : = {calls}")
+        all_calls[portfolio_id] = (calls)
+    return JsonResponse(ConsumerManager().filter_calls(all_calls), safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def clear_filter(request):

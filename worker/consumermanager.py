@@ -111,8 +111,7 @@ class ConsumerManager(metaclass=Singleton):
     def get_broadcast_group(self):
         return self.BROADCAST_GROUP
 
-    @staticmethod
-    def filter_calls(calls_dict, groups):
+    def filter_calls(self, calls_dict):
         calls = []
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
                 'active' :d['active_flag'], 'portfolio_id' : port}) for d in calls] for port, calls in calls_dict.items()] # updates dict to make JSON serializable
@@ -120,14 +119,16 @@ class ConsumerManager(metaclass=Singleton):
         logger.debug(f"User Sending the Calls: {len(calls)} {calls}, \ncallsitems : {len(calls)}")
         return calls
 
-    @staticmethod
     @database_sync_to_async
-    def get_eligible_groups(user):
+    def get_eligible_groups_async(self, user):
         products = users.functions.get_user_subs_product(user)
         return list(map(lambda product: product.product_name.replace("#", "-").lower(), products))
-       
-    @staticmethod
-    def get_mapped_group(portfolio_id):
+    
+    def get_eligible_groups(self, user):
+        products = users.functions.get_user_subs_product(user)
+        return list(map(lambda product: product.product_name.replace("#", "-").lower(), products))
+
+    def get_mapped_group(self, portfolio_id):
         if isinstance(portfolio_id, str) : portfolio_id = int(portfolio_id)
         return ConsumerManager().get_group_name_from_portfolio(portfolio_id)
 

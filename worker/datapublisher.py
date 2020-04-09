@@ -23,7 +23,7 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_connect(self, event):
         logger.info(f"DATA PUBLISHER Connected: {event}")
-        logger.info(f"Total Active Users are {len(ConsumerManager().total_users())}")
+        logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
         logger.info(f"User scope {self.scope['user']}")
         logger.debug(f"Database handler opened : {ConsumerManager().db_handler}")
         logger.debug(f"Database handler cursor : {ConsumerManager().db_handler.conn}, {ConsumerManager().db_handler.cursor}")
@@ -33,7 +33,7 @@ class DataPublisher(AsyncConsumer):
         })
 
         # Add users to eligible groups
-        groups = await ConsumerManager.get_eligible_groups(self.scope['user'])
+        groups = await ConsumerManager().get_eligible_groups_async(self.scope['user'])
         logger.debug(f"Eligible groups for user are {groups}")
         for group in groups:
             await self.channel_layer.group_add(
@@ -53,37 +53,37 @@ class DataPublisher(AsyncConsumer):
             logger.debug(f"Received event [{event}] from a user {user}")
             ConsumerManager().register_new_client_conn(user, self)
             
-            groups = await ConsumerManager.get_eligible_groups(user) # group-name is product name
-            product_names = await worker.functions.get_product_names_from_groups_async(groups)
-            all_calls = {}
-            user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
-            logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
-            for i, product in enumerate(product_names):
-                portfolio_id = ConsumerManager().get_portfolio_from_product(product)
-                product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
-                logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
-                if product_filter['call_type']:
-                    logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
-                     porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
-                     {type(product_filter['profit_percentage'][1])}")
-                    tickers = product_filter["tickers"]
-                    calls = await self.fetch_calls_for_today_async( portfolio_id= portfolio_id, side=product_filter["sides"],
-                                tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
-                                min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
-                    logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
-                else : 
-                    calls = await self.fetch_calls_for_today_async(portfolio_id= portfolio_id)
-                    logger.debug(f"Calls for protfolio {portfolio_id} withoout filter set : calls : = {calls}")
-                all_calls[portfolio_id] = (calls)
+            # groups = await ConsumerManager().get_eligible_groups_async(user) # group-name is product name
+            # product_names = await worker.functions.get_product_names_from_groups_async(groups)
+            # all_calls = {}
+            # user_protfolios = ConsumerManager().get_portfolio_from_group(groups)
+            # logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
+            # for i, product in enumerate(product_names):
+            #     portfolio_id = ConsumerManager().get_portfolio_from_product(product)
+            #     product_filter = await worker.functions.get_user_filter_for_product_async(user, product)
+            #     logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
+            #     if product_filter['call_type']:
+            #         logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
+            #          porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
+            #          {type(product_filter['profit_percentage'][1])}")
+            #         tickers = product_filter["tickers"]
+            #         calls = await self.fetch_calls_for_today_async( portfolio_id= portfolio_id, side=product_filter["sides"],
+            #                     tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
+            #                     min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
+            #         logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
+            #     else : 
+            #         calls = await self.fetch_calls_for_today_async(portfolio_id= portfolio_id)
+            #         logger.debug(f"Calls for protfolio {portfolio_id} withoout filter set : calls : = {calls}")
+            #     all_calls[portfolio_id] = (calls)
 
-            logger.debug(f"Fetched all calls for today : {all_calls}")
+            # logger.debug(f"Fetched all calls for today : {all_calls}")
 
-            logger.debug(f"Will send filter data to groups : {groups}")
-            await self.send({
-                # Send existing table to the client
-                "type": "websocket.send",
-                "text": json.dumps(ConsumerManager.filter_calls(all_calls, groups))
-            })
+            # logger.debug(f"Will send filter data to groups : {groups}")
+            # await self.send({
+            #     # Send existing table to the client
+            #     "type": "websocket.send",
+            #     "text": json.dumps(ConsumerManager().filter_calls(all_calls))
+            # })
         except Exception as ex:
             logger.error(f"Failed to connect to web-socket for the event {event}, error {ex}")
             ConsumerManager().init_db_handler()
@@ -91,7 +91,7 @@ class DataPublisher(AsyncConsumer):
     async def websocket_disconnect(self, event):
         try:
             user = self.scope['user']
-            logger.info(f"DATA CONSUMER Disconnected for user {user}, event {event}")
+            logger.info(f"DATA Publisher Disconnected for user {user}, event {event}")
 
             ConsumerManager().deregister_client_conn(user, self)
             await self.send({
@@ -99,7 +99,7 @@ class DataPublisher(AsyncConsumer):
             })
 
             # Remove the User from all groups
-            for room in ConsumerManager().get_eligible_groups(self.scope['user']):
+            for room in ConsumerManager().get_eligible_groups_async(self.scope['user']):
                 await self.channel_layer.group_discard(
                     room,
                     self.channel_name
@@ -112,7 +112,7 @@ class DataPublisher(AsyncConsumer):
             )
 
         except Exception as ex:
-            logger.error(f"Failed to connect to web-socket for the event {event}, exception {ex}")
+            logger.error(f"Failed to disconnect to web-socket for the event {event}, exception {ex}")
             # TODO: Should be a way to notify the admin
 
     async def send_message(self, event):

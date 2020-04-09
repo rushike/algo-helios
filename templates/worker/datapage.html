@@ -23,7 +23,50 @@
 					sessionStorage.setItem("portfolio", 'Section' + (index + 1));
 				})
 			})
-		});
+    });
+    
+    $(document).ready(()=>{
+      
+	  //Create table from received data from database
+	//   $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
+			var data = $.ajax({
+				type: "POST",
+				url: "/worker/calls-from-db/",           
+				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+				success: function(data)
+				{
+					console.log("Success  : ", data)
+					return update_from_db(data);
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});  
+	// });	
+
+	function update_from_db(data_dictionary){
+		  data_dictionary.forEach((data, i) => {
+				var status = data['status']
+				var active = data['active']
+				var portfolioId = data["portfolio_id"];
+				console.log("portfolio_id : ", portfolioId)
+				var activeTab = getEligibleTab(portfolioId);
+				var dataTable = document.getElementById(activeTab + "_data-table")
+
+				newRow = inserNewRow(dataTable, data, 0, status);
+				if (active != 1) {
+					newRow.className = "disabled";
+				}
+			})
+
+			allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
+			for (var i = 0, max = allTabs.length; i < max; i++) {
+				updateCount(allTabs[i].getAttribute("id"))
+			}
+			// updateCount(activeTab)		
+		}
+	})
     </script>
     <div id="container" style="text-align: center;" >
 
