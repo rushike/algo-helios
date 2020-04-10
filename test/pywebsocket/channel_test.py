@@ -22,10 +22,11 @@ def on_close(ws):
 
 def on_open(ws):
     def run(*args):
-        for i in range(30):
-            time.sleep(1)
+        # for i in range(30):
+        #     time.sleep(1)
             # ws.send("Hello %d" % i)
-        time.sleep(1)
+        ws.send(json.dumps({'load' : True}))
+        # time.sleep(1)
         # ws.close()
         print("thread terminating...")
     threading.Thread(target=  run, args = ()).start()

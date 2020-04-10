@@ -111,7 +111,7 @@ def fetch_calls_for_today(*args, **kwargs):
         logger.debug(f"Already connected to db :")
         calls_thread = threading.Thread(target = fetch_calls_for_today_in_thread, args = (result, *args), kwargs = (kwargs))
         calls_thread.start()
-        calls_thread.join(timeout=1)
+        calls_thread.join(timeout=6)
         return result
     except Exception as E:
         logger.error(f"Error occured while fetching data  :  , {E}")

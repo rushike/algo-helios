@@ -4,14 +4,79 @@
 {% block css_imports %}
     <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
     <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
-{% endblock %}
+    <!-- animsition.css -->
+	<link rel="stylesheet" href="{% static 'css/animsition.css' %}">
+	{% endblock %}
 
 {% block js_imports %}
     <script src="{% static 'js/mercury.js' %}?version=1"></script>
     <script src="{% static 'js/mercury-table.js' %}?version=1"></script>
+    <!-- animsition.js -->
+    <script src="{% static 'js/animsition.js' %}"></script>
 {% endblock %}
 
 {% block mercury %}
+	<style>
+		#load-head{
+			margin-top: 20vh;
+			text-align: center;
+			font-size: 6rem;
+			font-weight: 900;
+			color: #004b96;
+		}
+		.loader{
+			min-width: 100%;
+			width: 100%;
+			height: 100%;
+		}
+		.loader::before,
+		.loader::after{
+			content: "";
+			width: 10.8rem;
+			height: 10.8rem;
+			position: absolute;
+			top: 50vh;
+			border-radius: 4em;
+			animation: moveleft 1s ease infinite;
+		}
+		.loader::before{
+			background-color: #7DDCFF;
+			left: 50%;
+			transform: translateX(10px);
+			animation: moveright 1s ease infinite;
+		}
+		.loader::after{
+			background-color: #004B96;
+			right: 50%;
+			transform: translateX(-10px);
+		}
+
+		@keyframes moveleft {
+			0%{
+				transform: translateX(10px);
+			}
+			50%{
+				transform: translateX(-10px);
+			}
+			100%{
+				transform: translateX(10px);
+			}	
+		}
+
+		@keyframes moveright {
+			0%{
+				transform: translateX(-10px);
+			}
+			50%{
+				transform: translateX(10px);
+			}
+			100%{
+				transform: translateX(-10px);
+			}	
+		}
+
+	</style>
+	
     <script>
 		if(sessionStorage.getItem("portfolio") == null) sessionStorage.setItem("portfolio", "Section1");
 		$(document).ready(()=>{
@@ -36,6 +101,7 @@
 				success: function(data)
 				{
 					console.log("Success  : ", data)
+					showpage()
 					return update_from_db(data);
 				},
 				error: function(request, status, error)
@@ -67,8 +133,15 @@
 			// updateCount(activeTab)		
 		}
 	})
-    </script>
-    <div id="container" style="text-align: center;" >
+	</script>
+	
+	<div class="container-fluid">
+		<div id= "load" class="loader">
+			<h1 id="load-head">Mercury</h1>
+		</div>
+	</div>
+	
+    <div class="containerm" style="text-align: center;" >
 
         
         <div id="container" style="text-align: center; min-height: 830px;">
@@ -250,6 +323,17 @@
 
 
     <script>
+		document.body.scrollTop = 0;
+  		document.documentElement.scrollTop = 0;
+		document.querySelector('.containerm').style.display = "none";
+		document.getElementById("load").classList.add('loader')
+
+		function showpage(){
+			document.getElementById("load").classList.remove('loader');
+			document.getElementById("load").style.display="none";
+			document.querySelector('.containerm').style.display = "block";
+		}
+
 		function downloadCSV(csv, filename) {
 		    //console.log($('.nav-tabs .active').attr("id"))
             var csvFile;
