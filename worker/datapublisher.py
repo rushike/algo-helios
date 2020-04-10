@@ -1,4 +1,3 @@
-import xml.etree.ElementTree
 import json
 import threading
 import logging
@@ -8,6 +7,7 @@ import datetime
 from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
+from django.contrib.auth.models import AnonymousUser
 
 from worker.consumermanager import ConsumerManager
 import worker.functions
@@ -27,7 +27,8 @@ class DataPublisher(AsyncConsumer):
         logger.error(f"Channel Name : {self.channel_name}")
         logger.info(f"DATA PUBLISHER Connected: {event}")
         logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
-        logger.info(f"User scope {self.scope['user']}")
+        self.user = 'ajan@gmail.com' if isinstance(self.scope['user'], AnonymousUser) else self.scope['user'] 
+        logger.info(f"User scope {self.user}")
         await self.send({
             "type": "websocket.accept",
         })
@@ -38,7 +39,7 @@ class DataPublisher(AsyncConsumer):
         logger.info(f"self channel {self.channel_layer}, {self.channel_name}")
 
         # Add users to eligible groups
-        groups = await ConsumerManager().get_eligible_groups_async(self.scope['user'])
+        groups = await ConsumerManager().get_eligible_groups_async(self.user)
         logger.info(f"Eligible groups for user are {groups}")
         for group in groups:
             await self.channel_layer.group_add(
@@ -55,7 +56,7 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_receive(self, event):
         try:
-            user = self.scope['user'].email
+            user = self.user
             logger.debug(f"Received event [{event}] from a user {user}")
             ConsumerManager().register_new_client_conn(user, self)
         except Exception as ex:
@@ -64,7 +65,7 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_disconnect(self, event):
         try:
-            user = self.scope['user']
+            user = self.user
             logger.info(f"DATA Publisher Disconnected for user {user}, event {event}")
 
             ConsumerManager().deregister_client_conn(user, self)
@@ -73,7 +74,7 @@ class DataPublisher(AsyncConsumer):
             })
 
             # Remove the User from all groups
-            for room in ConsumerManager().get_eligible_groups_async(self.scope['user']):
+            for room in ConsumerManager().get_eligible_groups_async(self.user):
                 await self.channel_layer.group_discard(
                     room,
                     self.channel_name
@@ -90,7 +91,7 @@ class DataPublisher(AsyncConsumer):
             # TODO: Should be a way to notify the admin
 
     async def send_message(self, event):
-        user = self.scope['user'].email
+        user = self.user
         logger.debug(f"A user {user}")
         response = event.get('message')
         data = json.loads(response)

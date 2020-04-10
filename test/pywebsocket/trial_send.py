@@ -183,7 +183,7 @@ def gen_tick():
 # All calls fetched
 async def send_signal(bulk_send=False):
     if args.env == 'dev':
-        url = "ws://localhost:8000/datalink/"
+        url = "ws://dev.algonauts.in/datalink/"
     elif args.env == 'prod':
         url = "wss://www.algonauts.in/datalink/"
     else:

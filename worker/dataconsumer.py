@@ -6,14 +6,12 @@ from channels.consumer import AsyncConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
-# HE78AHVNC
 from worker.consumermanager import ConsumerManager
-# from helios.settings import DOMAIN
+from django.contrib.sites.models import Site
 
 logger = logging.getLogger('worker')
 logger.info(f'**** DATA CONSUMER **** {threading.get_ident()}')
 
-from django.contrib.sites.models import Site
 DOMAIN = Site.objects.get_current().domain
 
 logger.debug(f"DOMAIN :  {DOMAIN}, URL : {''.join([DOMAIN, '/worker/mercury/'])}")

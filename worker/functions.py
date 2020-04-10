@@ -1,16 +1,12 @@
 from products.models import UserProductFilter, Product
 from worker.consumermanager import ConsumerManager
-
 import users.functions
 import json, logging
 import threading
 from channels.db import database_sync_to_async
-
 from worker.utils import DBManager
 
 logger = logging.getLogger('worker')
-
-
 
 def clear_filter(user, product):
     logger.debug(f"clearing filter for user : {user},  product : {product}")
@@ -59,7 +55,6 @@ def get_user_subs_groups(user):
 def get_user_subs_groups_async(user):
     products = users.functions.get_user_subs_product(user)
     return list(map(lambda product: product.product_name.replace("#", "-").lower(), products))
-
 
 def filter(user,  data_list):
     if not type(data_list) == list: return filter(user, [data_list])
