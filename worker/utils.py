@@ -1,16 +1,12 @@
 import logging
 
 from algonautsutils.dbhandler import DBConnHandler
+from algonautsutils.templates import Singleton
 from helios.settings import DATABASES
+
 
 logger = logging.getLogger('worker')
 
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
 class DBManager(metaclass=Singleton):
     def __init__(self):
@@ -25,11 +21,6 @@ class DBManager(metaclass=Singleton):
 
     def get_instruments_from_db(self, protfolio_id):
         return list(v[0] for v in self.db_handler.get_instruments_from_portfolios(portfolios=[self.portfolios.get(protfolio_id, "Nifty50")])) 
-
-    def init_db_handler(self):
-        logger.debug(f"Reinitiated handler self handler deleted : {self.db_handler}, conn : {self.db_handler.conn}, cursor : {self.db_handler.cursor}")
-        self.db_handler.connect()
-        logger.debug(f"Reinitiated handler opened : {self.db_handler}, conn : {self.db_handler.conn}, cursor : {self.db_handler.cursor}")
 
     def get_instruments(self, portfolio_id):
         if isinstance(portfolio_id, str):

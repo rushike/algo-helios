@@ -16,9 +16,6 @@ DOMAIN = Site.objects.get_current().domain
 
 logger.debug(f"DOMAIN :  {DOMAIN}, URL : {''.join([DOMAIN, '/worker/mercury/'])}")
 
-# ticks_channel_layer = get_channel_layer('ticks')
-# logger.info(f"Data Consumer tick channel layer : {ticks_channel_layer}")
-
 class DataConsumer(AsyncConsumer):
 
     async def websocket_connect(self, event):
@@ -26,9 +23,6 @@ class DataConsumer(AsyncConsumer):
         await self.send({
             "type": "websocket.accept"
         })
-        # self.ticks_channel_layer = get_channel_layer('ticks')
-        # logger.info(f"Data Publisher tick channel layer : {self.ticks_channel_layer}")
-        # self.ticks_channel_layer_name = await self.ticks_channel_layer.new_channel()
 
     async def websocket_receive(self, event):
         logger.debug(f"Received event [{event}]")
@@ -83,11 +77,6 @@ class DataConsumer(AsyncConsumer):
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
             logger.debug(f"Received Tick Updates {data}")
-            # await self.send({
-            #     # Send existing table to the client
-            #     "type": "send.message",
-            #     "message": json.dumps(data)
-            # })
             await self.channel_layer.group_send(
                 ConsumerManager().get_broadcast_group(),
                 {

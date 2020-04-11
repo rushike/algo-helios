@@ -24,19 +24,12 @@ class DataPublisher(AsyncConsumer):
     """
 
     async def websocket_connect(self, event):
-        logger.error(f"Channel Name : {self.channel_name}")
-        logger.info(f"DATA PUBLISHER Connected: {event}")
-        logger.info(f"Total Active Users are {ConsumerManager().total_users()}")
-        self.user = 'ajan@gmail.com' if isinstance(self.scope['user'], AnonymousUser) else self.scope['user'] 
-        logger.info(f"User scope {self.user}")
+        logger.info(f"Data Publisher Connected: {event}" + f"\nTotal Active Users are {ConsumerManager().total_users()}")
+        self.user = self.scope['user'] 
+        logger.info(f"User {self.user} connected to Data Publisher.")
         await self.send({
             "type": "websocket.accept",
         })
-        # self.ticks_channel_layer = get_channel_layer('ticks')
-        # logger.info(f"Data Publisher tick channel layer : {self.ticks_channel_layer}")
-        # self.ticks_channel_layer_name = await self.ticks_channel_layer.new_channel()
-
-        logger.info(f"self channel {self.channel_layer}, {self.channel_name}")
 
         # Add users to eligible groups
         groups = await ConsumerManager().get_eligible_groups_async(self.user)
@@ -46,13 +39,11 @@ class DataPublisher(AsyncConsumer):
                 group,
                 self.channel_name
             )
-        logger.info(f"Created groups {groups} with on channels {self.channel_name}")
         # Add User to broadcast group, will be used to publish tick updates
         await self.channel_layer.group_add(
             ConsumerManager().get_broadcast_group(),
             self.channel_name
         )
-        # logger.info(f"added group to channel {self.ticks_channel_layer_name}, {self.ticks_channel_layer}")
 
     async def websocket_receive(self, event):
         try:
@@ -66,7 +57,7 @@ class DataPublisher(AsyncConsumer):
     async def websocket_disconnect(self, event):
         try:
             user = self.user
-            logger.info(f"DATA Publisher Disconnected for user {user}, event {event}")
+            logger.info(f"Data Publisher disconnected for user {user}, event {event}")
 
             ConsumerManager().deregister_client_conn(user, self)
             await self.send({
@@ -92,11 +83,9 @@ class DataPublisher(AsyncConsumer):
 
     async def send_message(self, event):
         user = self.user
-        logger.debug(f"A user {user}")
         response = event.get('message')
         data = json.loads(response)
         if data['dtype'] == 'signal':data = await worker.functions.filter_async(user, data)
-        logger.debug(f"Sending data RESPONE : {data}")
         if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({

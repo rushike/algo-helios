@@ -79,25 +79,22 @@ def get_calls_from_db(request):
     groups = ConsumerManager().get_eligible_groups(request.user.email) # group-name is product name
     product_names =  worker.functions.get_product_names_from_groups(groups)
     all_calls = {}
-    user_protfolios = DBManager().get_portfolio_from_group(groups)
-    logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_protfolios}")
+    user_portfolios = DBManager().get_portfolio_from_group(groups)
+    logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_portfolios}")
     for i, product in enumerate(product_names):
         portfolio_id = DBManager().get_portfolio_from_product(product)
         product_filter =  worker.functions.get_user_filter_for_product(request.user.email, product)
-        logger.debug(f"Product Filter protfolio {portfolio_id} from worker.functions : {product_filter}")
         if product_filter['call_type']:
-            logger.debug(f"Async Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
-                porfit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
+            logger.debug(f"Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
+                profit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
                 {type(product_filter['profit_percentage'][1])}")
-            tickers = product_filter["tickers"]
             calls =  worker.functions.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
                         tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
                         min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
-            logger.debug(f"calls for protfolio {portfolio_id}  and side : {product_filter['sides']} tickers : {tickers}  is : {calls}")
         else : 
             logger.debug("No product filter")
             calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
-            logger.debug(f"Calls for protfolio {portfolio_id} without filter set : calls : = {calls}")
+        logger.debug(f"calls for protfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
     return JsonResponse(DBManager().filter_calls(all_calls), safe= False)
 

@@ -12,10 +12,7 @@ def clear_filter(user, product):
     logger.debug(f"clearing filter for user : {user},  product : {product}")
     product = Product.objects.filter(product_name__iexact = product).first()
     user = users.functions.get_user_object(user)
-    logger.debug(f"User : {user} ,, Product : {product}")
     UserProductFilter.objects.filter(user_id = user, product_id = product).delete()
-    logger.info(f"Filter cleared for user : {user} ")
-    return
 
 def get_user_filter_for_product(user, product):
     product = Product.objects.filter(product_name__iexact = product).first()
@@ -44,8 +41,8 @@ def get_product_names_from_groups(groups):
 
 @database_sync_to_async
 def get_product_names_from_groups_async(groups):
-    groups = list(map(lambda group : group.replace("-", "#"), groups))
-    return groups
+    return list(map(lambda group : group.replace("-", "#"), groups))
+    
 
 def get_user_subs_groups(user):
     products = users.functions.get_user_subs_product(user)
@@ -59,7 +56,7 @@ def get_user_subs_groups_async(user):
 def filter(user,  data_list):
     if not type(data_list) == list: return filter(user, [data_list])
     result_data = []
-    logger.debug(f"Will appky filter data for user : {user} with datalist : {data_list}")
+    logger.debug(f"Will apply filter data for user : {user} with datalist : {data_list}")
     
     for data in data_list:
         try : 
@@ -87,14 +84,12 @@ def filter(user,  data_list):
             result_data.append(data)
         except Exception as E :
             logger.error(f"{E} Exception Occured while filtering  data {data}:")
-        
     logger.debug(f"Will send : result data == {result_data} to user {user}")
     return result_data        
 
 @database_sync_to_async
 def filter_async(user, data_list):
     return filter(user, data_list)
-
 
 def fetch_calls_for_today_in_thread(*args, **kwargs):
     args[0].extend(DBManager().db_handler.fetch_calls_for_today(*args[2:], **kwargs))
