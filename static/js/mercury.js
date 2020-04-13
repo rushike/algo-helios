@@ -39,7 +39,7 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                     </button>
                                 </a>
                                 <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
-                                    <button class="btn refresh" onclick="location.reload()" title="Refresh">
+                                    <button class="btn refresh" id = "{}-refresh"  title="Refresh">
                                         <small><span class="fa fa-refresh"></span></small>
                                     </button>
                                 </a>
@@ -273,7 +273,46 @@ $(document).ready(function() {
 
         $( "#" + value + "_profit_range" ).val($( "#" + value + "_profit_slider_range" ).slider( "values", 0 ) +
             " - " + $( "#" + value + "_profit_slider_range" ).slider( "values", 1 ) );
+
+
+        $(`#${value}-refresh`).click(()=>{
+            console.debug(`#${value}-refresh clicked ...`)
+            var data = $.ajax({
+				type: "POST",
+				url: "/worker/calls-from-db/",           
+				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : [value]},
+				success: function(data)
+				{
+					console.log(`#${value}-refresh` + " success  : ", data)
+					return update_from_db_to_table(data, value);
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});  
+        });
     });
+
+    function update_from_db_to_table(data_dictionary, value){
+        var activeTab = value
+        var dataTable = document.getElementById(activeTab + "_data-table")
+        $("#" + activeTab + "_data-table").find("tr:not(:first)").remove();
+        data_dictionary.forEach((data, i) => {
+              var status = data['status']
+              var active = data['active']
+              newRow = inserNewRow(dataTable, data, 0, status);
+              if (active != 1) {
+                  newRow.className = "disabled";
+              }
+          })
+
+          allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
+          for (var i = 0, max = allTabs.length; i < max; i++) {
+              updateCount(allTabs[i].getAttribute("id"))
+          }
+          // updateCount(activeTab)		
+      }
 
     $('.tickers_filter').multiselect({
         includeSelectAllOption: true,
@@ -513,6 +552,7 @@ $(document).ready(function() {
 
     // $('.nav-tabs a[href="#' + $('meta[name=active-tab]').attr("content") + '"]').tab('show');
     $('.nav-tabs a[href="#' + sessionStorage.getItem('portfolio') + '"]').tab('show');
+
 });
 
 // PUSH Notifications

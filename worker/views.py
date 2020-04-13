@@ -22,7 +22,7 @@ def get_health_status(request):
 def mercury(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section2"})
+    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
 
 @login_required(login_url='/accounts/login/')
 def apply_filters(request):
@@ -76,7 +76,11 @@ def get_instruments_from_portfolio(request):
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db(request):
+    portfolios = request.POST.getlist("portfolio_id[]", ['intraday', 'btst', 'positional' , 'longterm'])
+    portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
     groups = ConsumerManager().get_eligible_groups(request.user.email) # group-name is product name
+
+    groups = list(set(groups).intersection(portfolios))
     product_names =  worker.functions.get_product_names_from_groups(groups)
     all_calls = {}
     user_portfolios = DBManager().get_portfolio_from_group(groups)
