@@ -13,7 +13,6 @@ logger = logging.getLogger('worker')
 logger.info(f'**** DATA CONSUMER **** {threading.get_ident()}')
 
 DOMAIN = Site.objects.get_current().domain
-
 logger.debug(f"DOMAIN :  {DOMAIN}, URL : {''.join([DOMAIN, '/worker/mercury/'])}")
 
 class DataConsumer(AsyncConsumer):

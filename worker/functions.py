@@ -36,14 +36,12 @@ def get_user_filter_for_product_async(user, product):
     return get_user_filter_for_product(user, product)
 
 def get_product_names_from_groups(groups):
-    groups = list(map(lambda group : group.replace("-", "#"), groups))
-    return groups
+    return list(map(lambda group : group.replace("-", "#"), groups))
 
 @database_sync_to_async
 def get_product_names_from_groups_async(groups):
     return list(map(lambda group : group.replace("-", "#"), groups))
     
-
 def get_user_subs_groups(user):
     products = users.functions.get_user_subs_product(user)
     return list(map(lambda product: product.product_name.replace("#", "-").lower(), products))
@@ -99,9 +97,7 @@ def fetch_calls_for_today(*args, **kwargs):
     logger.debug("fetch calls in worker")
     try : 
         logger.debug(f"Already connected to db :")
-        calls_thread = threading.Thread(target = fetch_calls_for_today_in_thread, args = (result, *args), kwargs = (kwargs))
-        calls_thread.start()
-        calls_thread.join(timeout=6)
+        result = DBManager().db_handler.fetch_calls_for_today(*args, **kwargs)
         return result
     except Exception as E:
         logger.error(f"Error occured while fetching data  :  , {E}")

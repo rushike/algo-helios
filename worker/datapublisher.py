@@ -3,12 +3,10 @@ import threading
 import logging
 import os
 import datetime
-
 from channels.consumer import AsyncConsumer
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from django.contrib.auth.models import AnonymousUser
-
 from worker.consumermanager import ConsumerManager
 import worker.functions
 import secrets

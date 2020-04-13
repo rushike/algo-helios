@@ -24,12 +24,20 @@
 			{% endif %}
 			
 			<button class="primaryAction btn btn-outline-dark btn-block" type="submit">{% trans "Sign In" %}</button>
-			<a class="button secondaryAction pt-5" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+			<div class="mt-2"><a class="button secondaryAction mt-3" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a></div>
 			
 		</form>
-			<hr>
-			<p class="text-center font-weight-bold">OR</p>
-		</form>
+		<div class="row">
+			<div class="col-5">
+				<hr>
+			</div>
+			<div class="col-2">
+				<p class="text-center font-weight-bold">OR</p>
+			</div>
+			<div class="col-5">
+				<hr>
+			</div>
+		</div>
 
 
 {% else %}
