@@ -121,6 +121,7 @@ def get_context_for_plans(user=None):
             plan_type_id = str(plan_type).lower()
             context[i][0].append([[], plan_type])
             plans = Plan.objects.filter(plan_type_id = plan_type, user_group_type_id = group_type)  
+            plans = sorted(plans, key = lambda plan: plan.plan_name)
             for k, plan in enumerate(plans):
                 plan_id = str(plan.id)
                 products = get_all_products_in_plan(plan)

@@ -140,10 +140,10 @@ class SubscriptionManager(models.Manager):
         user_group_id = UserGroup.objects.create_user_group(user_group_type_id, admin=user)
 
         now = datetime.datetime.now(pytz.timezone('UTC'))
-        
-        subscription_type = SubscriptionType.objects.filter(type_name__iexact = period).first()
-        period = subscription_type.duration_in_days
 
+        subscription_type = SubscriptionType.objects.filter(type_name__iexact = period).first()
+        
+        period = subscription_type.duration_in_days
         subscription_start = datetime.datetime.now(pytz.timezone('UTC'))
         prev_end_date = Subscription.objects.filter(plan_id = plan_id, user_group_id = user_group_id) \
                     .order_by('subscription_end').last() # get the latest entry in the table

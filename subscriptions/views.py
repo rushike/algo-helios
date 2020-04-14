@@ -63,8 +63,7 @@ def plan_data(request):
     plan_name = request.POST.get('planname')
     if 'plan_name' in request.POST:
         plan_name = request.POST.get('plan_name')
-    period = request.POST.get('period', 'Monthly')
-    
+    period = request.POST.get('period', 'monthly')
     plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
     amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
     gst = .18 * amount
