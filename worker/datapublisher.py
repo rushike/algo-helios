@@ -47,7 +47,7 @@ class DataPublisher(AsyncConsumer):
         products = await users.functions.get_user_subs_product_async(self.user)
         logger.debug(f"User subscribed products : {products}")
         self.products_filter = dict([
-                        (prod, await worker.functions.get_user_filter_for_product_async(self.user, prod)) 
+                        (prod.lower(), await worker.functions.get_user_filter_for_product_async(self.user, prod)) 
                         for prod in products
                         ])
         logger.debug(f"self products_filter : {self.products_filter}")
@@ -104,7 +104,7 @@ class DataPublisher(AsyncConsumer):
         response = event.get('message')
         data = json.loads(response)
         if data['dtype'] == 'signal' : data = await worker.functions.filter_async(user, data, self.products_filter)
-        if not (data['dtype'] == 'tick' and data['ticker'] in self.users_tickers): data = None
+        if 'dtype' in data and data['dtype'] == 'tick' and data['ticker'] not in self.users_tickers: data = None
         if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({

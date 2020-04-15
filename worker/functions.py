@@ -64,7 +64,7 @@ def filter(user,  data_list, products_filter = None):
             call_type = data['dtype']
             product = DBManager().get_product_from_portfolio(data["portfolio_id"])
             user_filter = get_user_filter_for_product(user, product) \
-                                if products_filter and product not in products_filter \
+                                if not products_filter or product not in products_filter \
                                 else products_filter[product]
             user_filter_call_type = user_filter['call_type']
             if not user_filter_call_type:
