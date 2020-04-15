@@ -62,16 +62,17 @@ class DataConsumer(AsyncConsumer):
                                         f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
                                         f"Risk Reward {data.get('risk_reward')} and "
                                         f"Profit Percentage {data.get('profit_percent')}",
-                                    "icon": ''.join([DOMAIN, '/static/img/algonauts.jpg']),
+                                    "icon":  ''.join([DOMAIN, '/static/img/algonauts.jpg']), 
                                     'url': ''.join([DOMAIN, '/worker/mercury/'])
                                     }
+                        await self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
                     elif data_type == 'signal_update' and prtf_id != 5: # not sending notification for longterm, portfolio = 5
                         payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                                 'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
                                 "icon": ''.join([DOMAIN, '/static/img/algonauts.jpg']),
                                 'url': ''.join([DOMAIN, '/worker/mercury/'])
                                 }
-                await self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
+                        await self.send_group_notification_async(group_name=group_name, payload=payload, ttl=1000)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
