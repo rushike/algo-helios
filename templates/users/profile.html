@@ -1,4 +1,5 @@
 {% extends "users/base.html" %}
+{% load static %}
 {% load define_action %}
 {% block profile_content %}
 
@@ -22,6 +23,15 @@
 	</div>
 {% endif %}
   
+<style>
+	.table-striped tbody tr:nth-of-type(odd) {
+    	background-color:  rgb(236, 250, 255);
+	}
+	.table-striped tbody tr:nth-of-type(odd):hover {
+		color: #212529;
+		background-color: rgba(0, 0, 0, 0.075);
+	}
+</style>
   <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item">
       <a class="nav-link text-dark active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
@@ -94,6 +104,16 @@
 										{% else %}
 										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 										{% endif %}
+										<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
+											<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
+												<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
+											</span>
+									
+											<div class="dropdown-menu dropdown-menu-right">
+												<a class="dropdown-item" href="#">Edit</a>
+												<a class="dropdown-item" href="#">Add link</a>
+											</div>
+										</div>
 									</div>
 									  
                   					<div class="card-body flex-column">
@@ -160,6 +180,42 @@
 							{% else %}
 								<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span> <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
 							{% endif %}
+							
+							<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
+									<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
+										<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
+									</span>
+							
+								<div class="dropdown-menu dropdown-menu-right">
+									<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan">Edit</button>
+									<a class="dropdown-item" href="#">Add link</a>
+								</div>
+							</div>
+								
+							<script>
+								$("#edit-plan-btn").click(()=>{
+									var data = $.ajax({
+										type: "POST",
+										url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+										data : {
+											csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+											period : "{{gplan.0.subscription_type_id__type_name}}",
+											plancode : "{{gplan.1}}",
+											planname : "{{gplan.0.plan_id__plan_name}}",
+											groupcode : "{{gplan.0.plan_id__user_group_type_id__type_name}}",
+										},
+										success: function(data)
+										{
+											console.log("Success  : ", data)
+											return update_edit_plan_table(data);
+										},
+										error: function(request, status, error)
+										{
+											alert(request.responseText);
+										}
+									});
+								});
+							</script>
 						</div>
 							
 							<div class="card-body flex-column">
@@ -228,6 +284,55 @@
   </div> <!-- Container ends -->
 </div> 
 
+<div class="modal fade" id="edit-plan" tabindex="-1" role="dialog" aria-labelledby="edit-plan-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="edit-plan-label">Edit Plan</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<table class="table table-striped table-hover">
+					<thead>
+					  <tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col">Action</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<th scope="row">1</th>
+						<td>Mark</td>
+						<td>Otto</td>
+						<td>@mdo</td>
+					  </tr>
+					  <tr>
+						<th scope="row">2</th>
+						<td>Jacob</td>
+						<td>Thornton</td>
+						<td>@fat</td>
+					  </tr>
+					  <tr>
+						<th scope="row">3</th>
+						<td>Larry</td>
+						<td>the Bird</td>
+						<td>@twitter</td>
+					  </tr>
+					</tbody>
+				  </table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Send message</button>
+			</div>
+		</div>
+	</div>
+  </div>
+
 <script type="text/javascript">
 
 $('.alertx').alert()
@@ -238,6 +343,10 @@ $('.alertx').alert()
 </script>
 
 <script type="text/javascript">
+	function update_edit_plan_table(){
+
+	}
+
   function copyTextFunction() {
   var copyText = document.getElementById("myInput");
   copyText.select();

@@ -76,9 +76,10 @@ def get_instruments_from_portfolio(request):
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db(request):
+    user = request.user.email
     portfolios = request.POST.getlist("portfolio_id[]", ['intraday', 'btst', 'positional' , 'longterm'])
     portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
-    groups = ConsumerManager().get_eligible_groups(request.user.email) # group-name is product name
+    groups = ConsumerManager().get_eligible_groups(user) # group-name is product name
 
     groups = list(set(groups).intersection(portfolios))
     product_names =  worker.functions.get_product_names_from_groups(groups)
@@ -87,20 +88,10 @@ def get_calls_from_db(request):
     logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_portfolios}")
     for i, product in enumerate(product_names):
         portfolio_id = DBManager().get_portfolio_from_product(product)
-        product_filter =  worker.functions.get_user_filter_for_product(request.user.email, product)
-        if product_filter['call_type']:
-            logger.debug(f"Product filter for Product {product}, Portfolio : {portfolio_id}, Filter: {product_filter}, \
-                profit_percentage {product_filter['profit_percentage']}, type(product_filter['profit_percentage'][0]), \
-                {type(product_filter['profit_percentage'][1])}")
-            calls =  worker.functions.fetch_calls_for_today( portfolio_id= portfolio_id, side=product_filter["sides"],
-                        tickers=product_filter["tickers"], min_risk_reward=product_filter["risk_reward"][0], max_risk_reward=product_filter["risk_reward"][1],
-                        min_profit_percent=product_filter["profit_percentage"][0], max_profit_percent=product_filter["profit_percentage"][1])
-        else : 
-            logger.debug("No product filter")
-            calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
+        calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
         logger.debug(f"calls for protfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
-    return JsonResponse(DBManager().filter_calls(all_calls), safe= False)
+    return JsonResponse(DBManager().filter_calls_from_db(user, all_calls), safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def clear_filter(request):

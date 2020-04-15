@@ -9,6 +9,8 @@ from channels.layers import get_channel_layer
 from django.contrib.auth.models import AnonymousUser
 from worker.consumermanager import ConsumerManager
 import worker.functions
+import users.functions
+from worker.utils import DBManager
 import secrets
 
 logger = logging.getLogger('worker')
@@ -42,12 +44,30 @@ class DataPublisher(AsyncConsumer):
             ConsumerManager().get_broadcast_group(),
             self.channel_name
         )
+        products = await users.functions.get_user_subs_product_async(self.user)
+        logger.debug(f"User subscribed products : {products}")
+        self.products_filter = dict([
+                        (prod, await worker.functions.get_user_filter_for_product_async(self.user, prod)) 
+                        for prod in products
+                        ])
+        logger.debug(f"self products_filter : {self.products_filter}")
+        self.users_tickers = set()
+        [
+            self.users_tickers.update(
+                    v['tickers'] 
+                    if v and v['tickers'] 
+                    else DBManager().get_instruments(DBManager().get_portfolio_from_product(product))
+                ) 
+            for product, v in self.products_filter.items()
+            ]
+        logger.debug(f"self user tickers : {self.users_tickers}")
 
     async def websocket_receive(self, event):
         try:
             user = self.user
             logger.debug(f"Received event [{event}] from a user {user}")
             ConsumerManager().register_new_client_conn(user, self)
+
         except Exception as ex:
             logger.error(f"Failed to recieve to web-socket for the event {event}, error {ex}")
 
@@ -83,7 +103,8 @@ class DataPublisher(AsyncConsumer):
         user = self.user
         response = event.get('message')
         data = json.loads(response)
-        if data['dtype'] == 'signal':data = await worker.functions.filter_async(user, data)
+        if data['dtype'] == 'signal' : data = await worker.functions.filter_async(user, data, self.products_filter)
+        if not (data['dtype'] == 'tick' and data['ticker'] in self.users_tickers): data = None
         if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({

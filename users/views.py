@@ -43,6 +43,8 @@ def add_referral_credits(request, referral_code):
     users.functions.add_referral_credits(logged_user, referral_code=referral_code)
     return HttpResponseRedirect('/user/profile/info')
 
+def get_all_users_in_group(request):
+    return HttpResponse("Ok")
 
 @login_required(login_url = '/accounts/login/')    
 def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>md5_hash(admin_email)

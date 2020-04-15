@@ -269,12 +269,12 @@ def send_custom_signal():
     return data
 
 def send_custom_tick():
-    global instruments
+    # global instruments
     # store.get()
     # print("instrument list : ", store.instruments_list)
     # if store.instruments_list == []: time.sleep(3)
     # ri = random.choice(store.instruments_list)
-    # 340481, "HDFC"]
+    
     # data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
     data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  340481, "ticker": "HDFC"}
     print(data)

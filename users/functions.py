@@ -25,7 +25,11 @@ def get_user_object(user):
 
 def join_to_group(user:AlgonautsUser, group_id:UserGroup): # method add user(self) to the specific group with group_id 
     user_group_id  =group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= user, user_group_id=user_group_id, group_admin= False)
+    mapper = UserGroupMapping.objects.create_user_group_mapping(
+                                                                user_profile_id= user, 
+                                                                user_group_id=user_group_id, 
+                                                                group_admin= False, 
+                                                                )
     return mapper
 
 
@@ -81,7 +85,7 @@ def get_user_group(user, group_type, create = False):
     return user_group.first()
     
 
-def get_group_of_user(user, plan):
+def get_group_of_user_from_plan(user, plan):
     """
     Returns group object of user subscribe with plan
     Arguments:
@@ -108,14 +112,15 @@ def get_user_subs_plans(user):
     iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(min_members = 1, max_members = 1) # get rest group types available from model
     #one user linked with multiple groups
-    user_all_groups = UserGroupMapping.objects.filter(user_profile_id = user) \
+    user_all_groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))) \
                 .values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id')
     indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
     group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') 
     # filter out all groups of profile with non individual group type 
     
     plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__user_group_type_id__max_members' , 'plan_id__user_group_type_id__type_name', 'plan_id__plan_name' ,'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
+        .values('plan_id', 'plan_id__user_group_type_id__max_members' , 'plan_id__user_group_type_id__type_name', 'plan_id__plan_name', 
+        'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
         'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
     group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
     indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
@@ -132,6 +137,9 @@ def get_user_subs_product(user):
     products = subscriptions.functions.get_all_products_in_plans(plans)
     return products
 
+@database_sync_to_async
+def get_user_subs_product_async(user):
+    return [product.product_name for product in get_user_subs_product(user)]
 
 def get_all_users_in_group(group_id):
     group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)

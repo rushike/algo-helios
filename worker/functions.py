@@ -1,10 +1,13 @@
-from products.models import UserProductFilter, Product
-from worker.consumermanager import ConsumerManager
 import users.functions
 import json, logging
 import threading
+import cachetools
+import datetime
+from collections import Iterable
 from channels.db import database_sync_to_async
-from worker.utils import DBManager
+from worker.utils import DBManager, MercuryCache
+from products.models import UserProductFilter, Product
+from worker.consumermanager import ConsumerManager
 
 logger = logging.getLogger('worker')
 
@@ -18,7 +21,7 @@ def get_user_filter_for_product(user, product):
     product = Product.objects.filter(product_name__iexact = product).first()
     user = users.functions.get_user_object(user)
     logger.debug(f"User : {user} ,, Product : {product}")
-    user_product_filter = UserProductFilter.objects.filter(user_id = user, product_id = product).first()
+    user_product_filter = UserProductFilter.objects.filter(user_id = user, product_id = product).first() 
     logger.debug(f"User product filter for Product : {product} , user : {user} {type(user)} is : {user_product_filter}")
     if not user_product_filter:
         return {
@@ -51,18 +54,19 @@ def get_user_subs_groups_async(user):
     products = users.functions.get_user_subs_product(user)
     return list(map(lambda product: product.product_name.replace("#", "-").lower(), products))
 
-def filter(user,  data_list):
+def filter(user,  data_list, products_filter = None):
     if not type(data_list) == list: return filter(user, [data_list])
     result_data = []
-    logger.debug(f"Will apply filter data for user : {user} with datalist : {data_list}")
+    logger.debug(f"Will apply filter : {products_filter} to data for user : {user} with datalist : {data_list}")
     
     for data in data_list:
         try : 
             call_type = data['dtype']
             product = DBManager().get_product_from_portfolio(data["portfolio_id"])
-            user_filter = get_user_filter_for_product(user, product)
+            user_filter = get_user_filter_for_product(user, product) \
+                                if products_filter and product not in products_filter \
+                                else products_filter[product]
             user_filter_call_type = user_filter['call_type']
-            logger.debug(f"Protfolio id : {data['portfolio_id']} User filter : {user_filter}")
             if not user_filter_call_type:
                 logger.debug(f"User Filter not set.")
                 result_data.append(data)
@@ -86,15 +90,16 @@ def filter(user,  data_list):
     return result_data        
 
 @database_sync_to_async
-def filter_async(user, data_list):
-    return filter(user, data_list)
+def filter_async(user, data_list, products_filter = None):
+    return filter(user, data_list, products_filter)
 
 def fetch_calls_for_today_in_thread(*args, **kwargs):
     args[0].extend(DBManager().db_handler.fetch_calls_for_today(*args[2:], **kwargs))
 
+@cachetools.cached(MercuryCache(10, 60))
 def fetch_calls_for_today(*args, **kwargs):
     result = []
-    logger.debug("fetch calls in worker")
+    logger.debug(f"fetch calls in worker {datetime.datetime.now()}")
     try : 
         logger.debug(f"Already connected to db :")
         result = DBManager().db_handler.fetch_calls_for_today(*args, **kwargs)

@@ -277,7 +277,7 @@ def plan_subscribe(request):
                     period = POST['period'],
                     payment_id = 0,
                 )
-    group = users.functions.get_group_of_user(request.user, POST['plan_name'])
+    group = users.functions.get_group_of_user_from_plan(request.user, POST['plan_name'])
     if subscribed:
         subject = 'Algonauts Plan Subscription Link'
         message = 'This is the link for subscription for group : ' + request.build_absolute_uri(users.functions.generate_group_add_link(group))
