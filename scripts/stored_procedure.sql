@@ -59,7 +59,7 @@ BEGIN
 						C.ExitTime > NOW()::date
 					)
 				)
-					AND
+					AND 
 				PM.PortfolioId=portfolio_id;
 END;
 $$
