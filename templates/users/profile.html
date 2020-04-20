@@ -31,6 +31,73 @@
 		color: #212529;
 		background-color: rgba(0, 0, 0, 0.075);
 	}
+	.modal-footerx{
+		background-color: #004B96;
+		padding: 1rem;
+		border-top: 1px solid #dee2e6;
+		border-bottom-right-radius: calc(0.3rem - 1px);
+		border-bottom-left-radius: calc(0.3rem - 1px);
+	}
+
+	.close-table{
+		float: right;
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1;
+		color: #000;
+		text-shadow: 0 1px 0 #fff;
+		opacity: .5;
+		background-color: transparent;
+		border: 0;
+		-webkit-appearance: none;
+	}
+	.close-table, .close-table:focus {
+		color: #000;
+		text-decoration: none;
+		opacity: .75;
+	}
+
+	.close-table:not(:disabled):not(.disabled) {
+		cursor: pointer;
+	}
+	.close-remove{
+		float: right;
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1;
+		color: #000;
+		text-shadow: 0 1px 0 #fff;
+		opacity: .5;
+		background-color: transparent;
+		border: 0;
+		-webkit-appearance: none;
+	}
+	.close-remove, .close-remove:focus {
+		color: #000;
+		text-decoration: none;
+		opacity: .75;
+	}
+
+	.close-remove:not(:disabled):not(.disabled) {
+		cursor: pointer;
+	}
+	#add-members-container{
+		position: relative;
+		cursor: pointer;
+	}
+	#add-members-style{
+		left: 1.67rem;
+		z-index: 4;
+		top: -0.6rem;
+		position: absolute;
+	}
+	#add-members-plus-style{
+		font-size: medium;
+		z-index: 10;
+		top: -0.9rem;
+		position: absolute;
+	}
+
 </style>
   <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
     <li class="nav-item">
@@ -104,16 +171,6 @@
 										{% else %}
 										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 										{% endif %}
-										<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
-											<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
-												<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
-											</span>
-									
-											<div class="dropdown-menu dropdown-menu-right">
-												<a class="dropdown-item" href="#">Edit</a>
-												<a class="dropdown-item" href="#">Add link</a>
-											</div>
-										</div>
 									</div>
 									  
                   					<div class="card-body flex-column">
@@ -187,35 +244,16 @@
 									</span>
 							
 								<div class="dropdown-menu dropdown-menu-right">
-									<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan">Edit</button>
+									<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
+																	trigger_edit_plan(
+																		'{{gplan.0.subscription_type_id__type_name}}', 
+																		'{{gplan.1}}',
+																		'{{gplan.0.plan_id__plan_name}}', 
+																		'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																	)">Edit</button>
 									<a class="dropdown-item" href="#">Add link</a>
 								</div>
-							</div>
-								
-							<script>
-								$("#edit-plan-btn").click(()=>{
-									var data = $.ajax({
-										type: "POST",
-										url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
-										data : {
-											csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-											period : "{{gplan.0.subscription_type_id__type_name}}",
-											plancode : "{{gplan.1}}",
-											planname : "{{gplan.0.plan_id__plan_name}}",
-											groupcode : "{{gplan.0.plan_id__user_group_type_id__type_name}}",
-										},
-										success: function(data)
-										{
-											console.log("Success  : ", data)
-											return update_edit_plan_table(data);
-										},
-										error: function(request, status, error)
-										{
-											alert(request.responseText);
-										}
-									});
-								});
-							</script>
+							</div>				
 						</div>
 							
 							<div class="card-body flex-column">
@@ -284,23 +322,31 @@
   </div> <!-- Container ends -->
 </div> 
 
+
 <div class="modal fade" id="edit-plan" tabindex="-1" role="dialog" aria-labelledby="edit-plan-label" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
+				<div type="text" id = "edit-group-type-id" style="display: none;"></div>
 				<h5 class="modal-title" id="edit-plan-label">Edit Plan</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<button type="button" class="close-table" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<table class="table table-striped table-hover">
+				<div id = "add-members-container">
+					<span id = "add-members-plus-style" class="badge badge-warning badge-pill">+</span>
+					<span id="add-members-style" class="badge badge-danger" >
+						add members
+					</span>
+				</div>
+				<table id = "edit-plan-table" class="table table-striped table-hover">
 					<thead>
 					  <tr>
 						<th scope="col">#</th>
 						<th scope="col">Name</th>
 						<th scope="col">Email</th>
-						<th scope="col">Action</th>
+						<th scope="col" >Action</th>
 					  </tr>
 					</thead>
 					<tbody>
@@ -308,30 +354,81 @@
 						<th scope="row">1</th>
 						<td>Mark</td>
 						<td>Otto</td>
-						<td>@mdo</td>
-					  </tr>
-					  <tr>
-						<th scope="row">2</th>
-						<td>Jacob</td>
-						<td>Thornton</td>
-						<td>@fat</td>
-					  </tr>
-					  <tr>
-						<th scope="row">3</th>
-						<td>Larry</td>
-						<td>the Bird</td>
-						<td>@twitter</td>
+						<td >
+							<span class="fa fa-times red-danger" style="cursor: pointer;">
+
+							</span>
+						</td>
 					  </tr>
 					</tbody>
 				  </table>
 			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary">Send message</button>
+			<div class="modal-footerx">
+				<!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Send message</button> -->
+				<div id = "modal-plan-full-name" class="font-weight-bold float-left" style="color: azure;">
+					
+				</div>
+				<div id = "modal-period" class="font-weight-bold float-right" style="color: azure;"> 
+
+				</div>
 			</div>
 		</div>
 	</div>
   </div>
+
+<div class="modal fade" id="confim-user-remove" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-remove-header">Confim User Remove</h5>
+				<button type="button" id="close-confirm" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h6>Enter the email address of user to removed from the group <span id = "confirm-group-type-id" class="font-weight-bold"></span>. 
+					Enter <span id = "confirm-email-id" class="font-weight-bold"></span> to confirm remove.</h6>
+				<div>
+					<div class="form-row form-inline">
+						<label for="removed-user-email" class="col-md-3"><span class="badge badg-secondary"> Email address</span></label>
+						<input type="email" name = "entered-email-id" class="form-control col-md-9" id="removed-user-email" aria-describedby="emailHelp" placeholder="Enter email">
+					</div>
+					<div class="form-row form-inline text-center">
+						<button id = "removed-verified" class="btn btn-primary text-center" style="margin-left:10%;width: 80%;">Submit</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+
+<div class="modal fade" id="confim-user-add" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-add-header">Add User</h5>
+				<button type="button" id="close-confirm" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h6>Enter the email address of user to added to the group <span id = "add-group-type-id" class="font-weight-bold"></span>. 
+					Group add link will sent to email given.
+				<div>
+					<div class="form-row form-inline">
+						<label for="removed-user-email" class="col-md-3"><span class="badge badg-secondary"> Email address</span></label>
+						<input type="email" name = "add-email-id" class="form-control col-md-9" id="add-user-email" aria-describedby="emailHelp" placeholder="Enter email">
+					</div>
+					<div class="form-row form-inline text-center">
+						<button id = "send-mail-to-user" class="btn btn-primary text-center" style="margin-left:10%;width: 80%;">Send Mail</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+
 
 <script type="text/javascript">
 
@@ -343,17 +440,125 @@ $('.alertx').alert()
 </script>
 
 <script type="text/javascript">
-	function update_edit_plan_table(){
+	$(document).ready(()=>{
+		$("#close-confirm").click(()=>{
+			$('#edit-plan').modal("toggle");
+		});
+		$("#removed-verified").click(()=>{
+			console.log($("input[name='entered-email-id']").val(), $("#confirm-email-id").html(), ",   condition : ", $("input[name='entered-email-id']").val() == $("#confirm-email-id").html())
+			if($("input[name='entered-email-id']").val() == $("#confirm-email-id").html()){
+				console.log("Will remove ", $("#confirm-email-id").html() ," user from group")
+				$.ajax({
+					type: "POST",
+					url: "{% url 'remove_user_from_group' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						email : $("input[name='entered-email-id']").val(),
+						groupcode : $("#confirm-group-type-id").html(),
+					},
+					success: function(data)
+					{
+						console.log(data)
+						$('#confim-user-remove').modal('toggle');
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+			}else{
+				console.log("Incorrect Match")
+			}
+		});
 
+		$("#add-members-container").click(()=>{
+			$('#edit-plan').modal('toggle');
+			$("#confim-user-add").modal()
+		});
+
+		$("#send-mail-to-user").click(()=>{
+			$.ajax({
+					type: "POST",
+					url: "{% url 'send_user_add_link' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						email : $("input[name='add-email-id']").val(),
+						groupcode : $("#edit-group-type-id").html(),
+					},
+					success: function(data)
+					{
+						console.log(data)
+						$("#confim-user-add").modal('toggle')
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+		});
+	});
+
+	function remove_member(email, group_type){
+		$("#confirm-email-id").html(email)
+		$("#confirm-group-type-id").html(group_type)
+		$('#edit-plan').modal('toggle');
+		$("#confim-user-remove").modal()
+	}
+	function insert_row_in_edit_plan_table(source_table, data, index, group_type) {
+		let row = source_table.getElementsByTagName("tbody")[0].insertRow(-1);
+		row.innerHTML = `<th scope="row">` + index + `</th>` + 
+						`<td>` + data['first_name'] + ` ` + data['last_name'] + `</td>` + 
+						`<td>` + data['email'] + `</td>` +
+						`<td id = "remove-member" onclick="remove_member('` + data['email'] +`','` + group_type + `')">` + 
+							// `<button type="button" class="btn" data-toggle="modal" data-target="#confim-user-remove">` + 
+								`<span class="fa fa-times red-danger" style="cursor: pointer;" data-toggle="modal" data-target="#confim-user-remove"></span>` +
+							// `</button>` +
+						`</td>`
+		row.setAttribute('class', "none")
+		return row
+	}
+
+	function update_edit_plan_table(data, extras){
+		console.log( typeof data, ",  ", data, ", group type : ", extras.group_type)
+		$("#edit-group-type-id").html(extras.group_type)
+		var table = document.getElementById("edit-plan-table")
+		$("#edit-plan-table").find("tr:not(:first)").remove();
+		data.forEach((row, index) => {
+			insert_row_in_edit_plan_table(table, row, index + 1, extras.group_type)
+		});
+	}
+
+	function trigger_edit_plan(period, plancode, planname, groupcode){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				period : period,
+				plancode : plancode,
+				planname : planname,
+				groupcode : groupcode,
+			},
+			success: function(data)
+			{
+				return update_edit_plan_table(data, {group_type:groupcode});
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+		$("#modal-plan-full-name").html(planname.toLowerCase() + "-" + plancode.toLowerCase() + "  <span class='badge badge-secondary'>" + groupcode + "</span>")
+		$("#modal-period").html("<span class='badge badge-warning'>" + period + "</span>")
 	}
 
   function copyTextFunction() {
-  var copyText = document.getElementById("myInput");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Copied the text: " + copyText.value);
-}
+	var copyText = document.getElementById("myInput");
+	copyText.select();
+	copyText.setSelectionRange(0, 99999);
+	document.execCommand("copy");
+	alert("Copied the text: " + copyText.value);
+	}
 </script>
 
 {% endblock %}

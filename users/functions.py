@@ -7,7 +7,10 @@ from hashlib import md5
 import subscriptions.functions
 from helios.settings import EMAIL_HOST_USER
 from channels.db import database_sync_to_async
+import logging
 
+
+logger = logging.getLogger('normal')
 
 
 def get_user_object(user):
@@ -56,6 +59,11 @@ def generate_group_add_link(group_id:UserGroup):
     link = '/user/add-to-group/' + str(id_) + "/" + md5(str(admin).encode()).hexdigest()
     return link
 
+def get_user_add_group_link(user, group_type):
+    group_id = get_user_group(user, group_type)
+    if user != group_id.admin.email: return None
+    logger.debug(f"group id for generating link : {group_id}")
+    return generate_group_add_link(group_id)
 
 def get_group(group_id):
     return group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
@@ -85,7 +93,7 @@ def get_user_group(user, group_type, create = False):
     return user_group.first()
     
 
-def get_group_of_user_from_plan(user, plan):
+def get_group_of_user_from_plan(user, plan, plan_type, group_type, period):
     """
     Returns group object of user subscribe with plan
     Arguments:
@@ -94,7 +102,7 @@ def get_group_of_user_from_plan(user, plan):
     """
     user = get_user_object(user)
     groups = get_all_groups_of_user(user).values('user_group_type_id')
-    plan = Plan.objects.filter(plan_name__iexact = plan).order_by("-expiry_time").last()
+    plan_id  = subscriptions.functions.get_plan_id(plan, plan_type, group_type)
     group_type_id = Plan.objects.filter(user_group_type_id__in = groups, id = plan.id).values("user_group_type_id")
     return UserGroup.objects.filter(user_group_type_id__in = group_type_id).last()
 
@@ -142,9 +150,16 @@ def get_user_subs_product_async(user):
     return [product.product_name for product in get_user_subs_product(user)]
 
 def get_all_users_in_group(group_id):
-    group = group_id if type(group_id) == UserGroup else UserGroup.objects.get(id = group_id)
-    users = UserGroupMapping.objects.filter(user_group_id = group, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
-    return users
+    group = UserGroup.objects.get(id = group_id) \
+                if isinstance(group_id, int) \
+                else group_id
+    users = UserGroupMapping \
+                .objects \
+                .filter(
+                    user_group_id = group, 
+                    time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))
+                    ).values("user_profile_id")
+    return AlgonautsUser.objects.filter(id__in = users)
 
     
 def get_all_groups_of_user(user_id):
@@ -194,3 +209,11 @@ def add_feedback(user, subject, product, message):
     UserFeedback.objects.create(email=user, subject = subject, category_name = product, feedback_message=message).save()
 
 
+def remove_user_from_group(user, group_type, admin):
+    group_id = get_user_group(user, group_type)
+    if admin == group_id.admin.email:
+        logger.debug(f"User admin succefully verified, will remove {user} from group {group_type}")
+        UserGroupMapping.objects.delete_user_from_group(user, group_id, admin)
+    else:
+        logger.debug(f"admin can't be verified, for user group {group_id} admin is : {group_id.admin.email}, but given : {admin}")
+    

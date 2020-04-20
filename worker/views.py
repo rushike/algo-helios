@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from webpush import send_group_notification
 import worker.functions, users.functions
 from django.contrib.auth.decorators import login_required
-import logging, json
+import logging, json, time
 
 import products.functions
 
@@ -88,10 +88,13 @@ def get_calls_from_db(request):
     logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_portfolios}")
     for i, product in enumerate(product_names):
         portfolio_id = DBManager().get_portfolio_from_product(product)
+        now = time.time()
         calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
+        logger.debug(f"time required to fetch through cache or db : {time.time() - now}\n \
+            calls for protfolio {portfolio_id}, calls : {calls}")
         logger.debug(f"calls for protfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
-    return JsonResponse(DBManager().filter_calls_from_db(user, all_calls), safe= False)
+    return JsonResponse(worker.functions.filter_calls_from_db(user, all_calls), safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def clear_filter(request):

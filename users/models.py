@@ -207,7 +207,7 @@ class UserGroupMappingManager(models.Manager):
 		mapper.save(using = self._db)
 		return mapper
 	
-	def delete_user_from_group(self, user_profile_id, group_admin):
+	def delete_user_from_all_groups(self, user_profile_id, group_admin):
 		if not user_profile_id and not group_admin: return # if group is not form due to some err, don't add user_group_mapping 
 		user_profile_id = user_profile_id if isinstance(user_profile_id, AlgonautsUser) else AlgonautsUser.objects.filter(email = user_profile_id).first()
 		group_map = UserGroupMapping.objects.filter(user_profile_id = user_profile_id)
@@ -216,6 +216,20 @@ class UserGroupMappingManager(models.Manager):
 		user_group = UserGroup.objects.filter(id__in = user_groups_id, admin__in = admin)
 		if user_group.exists():
 			group_map = group_map.filter(user_group_id__in = user_group)
+			group_map.update(time_removed = datetime.datetime.now(pytz.timezone('UTC')))
+
+	def delete_user_from_group(self, user_profile_id, group_id, group_admin):
+		if not user_profile_id or not group_admin or not group_id: return # if group is not form due to some err, don't add user_group_mapping 
+		user_profile_id = user_profile_id \
+							if isinstance(user_profile_id, AlgonautsUser) \
+							else AlgonautsUser.objects.filter(email = user_profile_id).first()
+		group_map = UserGroupMapping.objects.filter(user_profile_id = user_profile_id, user_group_id = group_id)
+		admin = AlgonautsUser.objects.filter(email = group_admin).first() \
+						if not isinstance(group_admin, AlgonautsUser) \
+						else group_admin
+
+		if admin.email == group_id.admin.email:
+			group_map = group_map.filter(time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
 			group_map.update(time_removed = datetime.datetime.now(pytz.timezone('UTC')))
 
 

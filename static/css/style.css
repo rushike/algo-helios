@@ -50,6 +50,14 @@
     border-width: thick;
 }
 
+.red-danger{
+    color: rgb(240, 16, 0) !important;
+}
+
+.red-danger-bg{
+    background-color: rgb(240, 16, 0) !important;
+}
+
 .border-solid{
     border-width: thick;
 }

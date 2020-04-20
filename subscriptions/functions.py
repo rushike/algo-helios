@@ -19,6 +19,26 @@ loop = asyncio.get_event_loop()
 def get_all_plan_type():
     return PlanType.objects.all().order_by('type_name')
 
+def get_plan_id(plan_name, plan_type, group_type):
+    """return particular plan id
+    
+    Arguments:
+        plan_name {str} -- plan name
+        plan_type {str} -- plan type name
+        group_type {str} -- group type name
+    """
+    group_type = UserGroupType.objects.filter(type_name__iexact = group_type).first()
+    plan_type = PlanType.objects.filter(type_name__iexact = plan_type).first()
+    return Plan.objects.filter(
+                        plan_name = plan_name,
+                        user_group_type_id = group_type, 
+                        plan_type_id = plan_type
+                    ).first().values("id")
+
+def get_subscription_type_id(period):
+    return SubscriptionType.objects.filter(
+                        type_name__iexact = period
+                    ).first().values("id")
 
 def get_all_products_in_plan(plan_id:Plan):
     if type(plan_id) == str:
@@ -178,7 +198,7 @@ def send_email(user, recepients, subject, message, to = None):
 
 
 def send_mail_async(user, recepients, subject, message):
-    user = users.functions.get_user_object(user)
+    # user = users.functions.get_user_object(user)
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
 

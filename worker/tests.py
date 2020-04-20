@@ -33,8 +33,8 @@ class SimpleTest(TestCase):
         self.user.delete()
 
 
-tester = SimpleTest()
-tester.setUp()
-tester.test_details()
-tester.delete() 
+# tester = SimpleTest()
+# tester.setUp()
+# tester.test_details()
+# tester.delete() 
 

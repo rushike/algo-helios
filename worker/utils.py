@@ -3,7 +3,6 @@ from cachetools import TTLCache, Cache
 from algonautsutils.dbhandler import DBConnHandler
 from algonautsutils.templates import Singleton
 from helios.settings import DATABASES
-import worker.functions
 
 logger = logging.getLogger('worker')
 
@@ -49,47 +48,41 @@ class DBManager(metaclass=Singleton):
         if isinstance(name, int): name = self.portfolios.get(name, "intraday")
         return "#".join(["mercury", name])
     
-    def filter_calls_from_db(self, user, calls_dict):
-        calls = []
-        for k, v in calls_dict.items():
-            product = DBManager().get_product_from_portfolio(k)
-            user_filter = worker.functions.get_user_filter_for_product(user, product)
-            user_filter_call_type = user_filter['call_type']
-            if not user_filter_call_type:
-                logger.debug(f"User Filter not set.")
-                [d.update({'signal' : d['signal'] if isinstance(d['signal'], str) else d['signal'].name,
-                    'status' : d['status'] if isinstance(d['status'], str) else  d['status'].value, 
-                    'time' : d['time'] if isinstance(d['time'], str) else  d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                    'active' :d['active_flag'], 'portfolio_id' : k}) for d in v]
-                calls.extend(v)
-                continue
-            for data in v: # iterating over calls in each porfolio
-                try:
-                    if user_filter["tickers"] and  len(user_filter["tickers"]) != 0 and data['ticker'] not in user_filter['tickers']:
-                        logger.debug(f"Tickers not in User Filter or Filter is not set to none of Filter for Portfolio : {data['portfolio_id']}")
-                        continue # will not add in data list
-                    if user_filter["sides"] and len(user_filter["sides"]) != 0 and data['signal'].upper() not in user_filter['sides']:
-                        logger.debug(f"Signal in data is not in User Filer 'sides'  of Portfolio : {data['portfolio_id']}")
-                        continue # will not add in data list
-                    if not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= user_filter["profit_percentage"][1]):
-                        logger.debug(f"Profit percentage {data['profit_percent']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
-                        continue # will not add in data list
-                    if not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
-                        logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
-                        continue # will not add in data list
-                    data.update({'signal' : data['signal'].name,  'status' : data['status'].value, 'time' : data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                        'active' :data['active_flag'], 'portfolio_id' : k})
-                    calls.append(data)
-                except Exception as E :
-                    logger.error(f"{E} Exception Occured while filtering  data {data}:")
-        logger.debug(f"all calls for user {user} after filtering : {calls}")
-        return calls
+    def get_calls_for_today(self, portfolio_id):
+        try:
+            conn = self.db_handler.pool.getconn()
+            conn.autocommit = self.db_handler.autocommit
+            cur = conn.cursor()
+            logger.debug(f"open the cursor for stored procedure : {cur}")
+            cur.callproc('get_calls_for_today', [portfolio_id, ])
+            result = cur.fetchall()
+            logger.debug(f"Fetch from stored procedure : {result}")
+            cur.close()
+            self.db_handler.pool.putconn(conn)
+            result_dict = self.db_handler.generate_call_dict(result, portfolio_id_present = True)
+            logger.debug(f"Generated dict for result from stored procedure : {result_dict}")
+            return result_dict
+        except Exception as exc:
+            logger.error(f"Result not fetched for portofolio_id : {portfolio_id} due to exception {exc}")
+            cur.close()
+            self.db_handler.pool.putconn(conn)
+
 
     def filter_calls(self, calls_dict):
         calls = []
-        [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                'active' :d['active_flag'], 'portfolio_id' : port}) for d in calls] for port, calls in calls_dict.items()] # updates dict to make JSON serializable
-        [calls.extend(v) for _, v in calls_dict.items()]
+        for port, calls in calls_dict.items():
+            for d in calls:
+                d.update(
+                            {
+                                'signal' : d['signal'].name,  
+                                'status' : d['status'].value, 
+                                'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+                                'active' :d['active_flag'], 
+                                'portfolio_id' : port, 
+                                'profit_percent' : round(d['profit_percent'], 2)
+                            }
+                    ) # updates dict to make JSON serializable
+            calls.extend(calls)
         logger.debug(f"User Sending the Calls: {len(calls)} {calls}, \ncallsitems : {len(calls)}")
         return calls
 
@@ -100,3 +93,6 @@ class DBManager(metaclass=Singleton):
 class MercuryCache(TTLCache):
     def __setitem__(self, key, value, cache_setitem=Cache.__setitem__):
         if value: super().__setitem__(key, value)
+
+
+DBManager()

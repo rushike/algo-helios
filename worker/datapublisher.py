@@ -32,9 +32,9 @@ class DataPublisher(AsyncConsumer):
         })
 
         # Add users to eligible groups
-        groups = await ConsumerManager().get_eligible_groups_async(self.user)
-        logger.info(f"Eligible groups for user are {groups}")
-        for group in groups:
+        self.groups = await ConsumerManager().get_eligible_groups_async(self.user)
+        logger.info(f"Eligible groups for user are {self.groups}")
+        for group in self.groups:
             await self.channel_layer.group_add(
                 group,
                 self.channel_name
@@ -74,16 +74,15 @@ class DataPublisher(AsyncConsumer):
 
     async def websocket_disconnect(self, event):
         try:
-            user = self.user
-            logger.info(f"Data Publisher disconnected for user {user}, event {event}")
-
-            ConsumerManager().deregister_client_conn(user, self)
             await self.send({
                 "type": "websocket.close"
             })
+            user = self.user
+            logger.info(f"Data Publisher disconnected for user {user}, with publisher {self}, event {event}")
 
+            ConsumerManager().deregister_client_conn(user, self)
             # Remove the User from all groups
-            for room in ConsumerManager().get_eligible_groups_async(self.user):
+            for room in self.groups:
                 await self.channel_layer.group_discard(
                     room,
                     self.channel_name
@@ -94,7 +93,7 @@ class DataPublisher(AsyncConsumer):
                 ConsumerManager().get_broadcast_group(),
                 self.channel_name
             )
-
+            
         except Exception as ex:
             logger.error(f"Failed to disconnect to web-socket for the event {event}, exception {ex}")
             # TODO: Should be a way to notify the admin

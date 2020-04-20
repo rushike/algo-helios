@@ -21,6 +21,7 @@ generate.py
 consideration.txt
 stunnel/
 *.sql
+!scripts/*
 *.pgsql
 *.xml
 staticfiles/*

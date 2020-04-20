@@ -1,6 +1,7 @@
 import users.functions
 import json, logging
 import threading
+import time
 import cachetools
 import datetime
 from collections import Iterable
@@ -101,8 +102,10 @@ def fetch_calls_for_today(*args, **kwargs):
     result = []
     logger.debug(f"fetch calls in worker {datetime.datetime.now()}")
     try : 
+        now = time.time()
         logger.debug(f"Already connected to db :")
-        result = DBManager().db_handler.fetch_calls_for_today(*args, **kwargs)
+        result = DBManager().get_calls_for_today(*args, **kwargs)
+        logger.debug(f"Time required to fetched calls are : {time.time() - now}")
         return result
     except Exception as E:
         logger.error(f"Error occured while fetching data  :  , {E}")
@@ -110,3 +113,48 @@ def fetch_calls_for_today(*args, **kwargs):
 @database_sync_to_async
 def fetch_calls_for_today_async(*args, **kwargs):
     return fetch_calls_for_today(*args, **kwargs)
+
+
+def filter_calls_from_db(user, calls_dict):
+    calls = []
+    for k, v in calls_dict.items():
+        product = DBManager().get_product_from_portfolio(k)
+        user_filter = get_user_filter_for_product(user, product)
+        user_filter_call_type = user_filter['call_type']
+        if not user_filter_call_type:
+            logger.debug(f"User Filter not set.")
+            for d in v:
+                d.update({
+                        'signal' : d['signal'] if isinstance(d['signal'], str) else d['signal'].name,
+                        'status' : d['status'] if isinstance(d['status'], str) else  d['status'].value, 
+                        'time' : d['time'] if isinstance(d['time'], str) else  d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+                        'active' :d['active_flag'], 
+                        'portfolio_id' : k, 
+                        'profit_percent' : round(d['profit_percent'], 2)
+                        }) 
+            calls.extend(v)
+            continue
+        for data in v: # iterating over calls in each porfolio
+            signal  = data['signal'] if isinstance(data['signal'], str) else data['signal'].name
+            status  = data['status'] if isinstance(data['status'], str) else data['status'].value
+            timestr = data['time'] if isinstance(data['time'], str) else data['time'].strftime("%m/%d/%Y, %H:%M:%S")
+            try:
+                if user_filter["tickers"] and  len(user_filter["tickers"]) != 0 and data['ticker'] not in user_filter['tickers']:
+                    logger.debug(f"Tickers not in User Filter or Filter is not set to none of Filter for Portfolio : {data['portfolio_id']}")
+                    continue # will not add in data list
+                if user_filter["sides"] and len(user_filter["sides"]) != 0 and data['signal'].upper() not in user_filter['sides']:
+                    logger.debug(f"Signal in data is not in User Filer 'sides'  of Portfolio : {data['portfolio_id']}")
+                    continue # will not add in data list
+                if not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= user_filter["profit_percentage"][1]):
+                    logger.debug(f"Profit percentage {data['profit_percent']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
+                    continue # will not add in data list
+                if not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
+                    logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
+                    continue # will not add in data list
+                data.update({'signal' : signal,  'status' : status, 'time' : timestr, 
+                    'active' :data['active_flag'], 'portfolio_id' : k})
+                calls.append(data)
+            except Exception as E :
+                logger.error(f"{E} Exception Occured while filtering  data {data}:")
+    logger.debug(f"all calls for user {user} after filtering : {calls}")
+    return calls
