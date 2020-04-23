@@ -1,4 +1,6 @@
 import logging
+import psycopg2
+import threading
 from cachetools import TTLCache, Cache
 from algonautsutils.dbhandler import DBConnHandler
 from algonautsutils.templates import Singleton
@@ -17,6 +19,7 @@ class DBManager(metaclass=Singleton):
         self.portfolios = dict(self.db_handler.get_portfolios())  # int --> str
         self.reverse_portfolios = dict([(v.lower(), k) for k, v in self.portfolios.items()]) # key are in lower case, str --> int
         self.instruments = dict([(k, self.get_instruments_from_db(k)) for k in self.portfolios]) # instruments dict initialize once.
+        self.lock = threading.RLock()
 
     def get_instruments_from_db(self, protfolio_id):
         return list(v[0] for v in self.db_handler.get_instruments_from_portfolios(portfolios=[self.portfolios.get(protfolio_id, "Nifty50")])) 
@@ -66,7 +69,23 @@ class DBManager(metaclass=Singleton):
             logger.error(f"Result not fetched for portofolio_id : {portfolio_id} due to exception {exc}")
             cur.close()
             self.db_handler.pool.putconn(conn)
-
+    
+    def get_calls_for_today1(self, portfolio_id):
+        try:
+            with self.lock:
+                cur = self.db_handler.cursor
+                logger.debug(f"open the cursor for stored procedure : {cur}")
+                cur.callproc('get_calls_for_today', [portfolio_id, ])
+                result = cur.fetchall()
+                logger.debug(f"Fetch from stored procedure : {result}")
+                result_dict = self.db_handler.generate_call_dict(result, portfolio_id_present = True)
+                logger.debug(f"Generated dict for result from stored procedure : {result_dict}")
+                return result_dict
+        except psycopg2.InterfaceError as exc:
+            logger.error(f"Cursor closed result not fetched from stored procedured due to exception {exc}")
+            self.db_handler.conn = psycopg2.connect(self.db_handler.dsn)
+            self.db_handler.conn.autocommit = False
+            self.get_calls_for_today1(portfolio_id)
 
     def filter_calls(self, calls_dict):
         calls = []

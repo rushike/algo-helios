@@ -408,7 +408,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="confim-user-add-header">Add User</h5>
-				<button type="button" id="close-confirm" class="close-remove" data-dismiss="modal" aria-label="Close">
+				<button type="button" id="close-confirm-add" class="close-remove" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -442,8 +442,13 @@ $('.alertx').alert()
 <script type="text/javascript">
 	$(document).ready(()=>{
 		$("#close-confirm").click(()=>{
-			$('#edit-plan').modal("toggle");
+			$('#edit-plan').modal('toggle');
 		});
+
+		$("#close-confirm-add").click(()=>{
+			$('#edit-plan').modal('toggle');
+		});
+
 		$("#removed-verified").click(()=>{
 			console.log($("input[name='entered-email-id']").val(), $("#confirm-email-id").html(), ",   condition : ", $("input[name='entered-email-id']").val() == $("#confirm-email-id").html())
 			if($("input[name='entered-email-id']").val() == $("#confirm-email-id").html()){

@@ -29,8 +29,8 @@ def get_user_filter_for_product(user, product):
             "call_type" : None,
             "tickers" : None,
             "sides": None,
-            "risk_reward": [0, 1000], 
-            "profit_percentage": [0, 1000], 
+            "risk_reward": [0, 5], 
+            "profit_percentage": [0, 5], 
             "signal_item": None,
         }
     return json.loads(user_product_filter.filter_attributes)
@@ -118,26 +118,25 @@ def fetch_calls_for_today_async(*args, **kwargs):
 def filter_calls_from_db(user, calls_dict):
     calls = []
     for k, v in calls_dict.items():
+        append = True
         product = DBManager().get_product_from_portfolio(k)
         user_filter = get_user_filter_for_product(user, product)
+        logger.debug(f"User Filter for user {user} is {user_filter}")
         user_filter_call_type = user_filter['call_type']
-        if not user_filter_call_type:
-            logger.debug(f"User Filter not set.")
-            for d in v:
-                d.update({
-                        'signal' : d['signal'] if isinstance(d['signal'], str) else d['signal'].name,
-                        'status' : d['status'] if isinstance(d['status'], str) else  d['status'].value, 
-                        'time' : d['time'] if isinstance(d['time'], str) else  d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                        'active' :d['active_flag'], 
-                        'portfolio_id' : k, 
-                        'profit_percent' : round(d['profit_percent'], 2)
-                        }) 
-            calls.extend(v)
-            continue
         for data in v: # iterating over calls in each porfolio
-            signal  = data['signal'] if isinstance(data['signal'], str) else data['signal'].name
-            status  = data['status'] if isinstance(data['status'], str) else data['status'].value
-            timestr = data['time'] if isinstance(data['time'], str) else data['time'].strftime("%m/%d/%Y, %H:%M:%S")
+            data.update({
+                        'signal' : data['signal'] if isinstance(data['signal'], str) else data['signal'].name,
+                        'status' : data['status'] if isinstance(data['status'], str) else  data['status'].value, 
+                        'time' : data['time'] if isinstance(data['time'], str) else  data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+                        'active' :data['active_flag'], 
+                        'portfolio_id' : k, 
+                        'profit_percent' : round(data['profit_percent'], 2)
+                        })
+            if append and not user_filter_call_type:
+                logger.debug(f"User Filter not set.")
+                calls.extend(v)
+                append = False
+                continue
             try:
                 if user_filter["tickers"] and  len(user_filter["tickers"]) != 0 and data['ticker'] not in user_filter['tickers']:
                     logger.debug(f"Tickers not in User Filter or Filter is not set to none of Filter for Portfolio : {data['portfolio_id']}")
@@ -151,7 +150,7 @@ def filter_calls_from_db(user, calls_dict):
                 if not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
                     logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                     continue # will not add in data list
-                data.update({'signal' : signal,  'status' : status, 'time' : timestr, 
+                data.update({'signal' : data['signal'],  'status' : data['status'], 'time' : data['time'], 
                     'active' :data['active_flag'], 'portfolio_id' : k})
                 calls.append(data)
             except Exception as E :
