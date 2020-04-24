@@ -118,7 +118,6 @@ def fetch_calls_for_today_async(*args, **kwargs):
 def filter_calls_from_db(user, calls_dict):
     calls = []
     for k, v in calls_dict.items():
-        append = True
         product = DBManager().get_product_from_portfolio(k)
         user_filter = get_user_filter_for_product(user, product)
         logger.debug(f"User Filter for user {user} is {user_filter}")
@@ -132,11 +131,11 @@ def filter_calls_from_db(user, calls_dict):
                         'portfolio_id' : k, 
                         'profit_percent' : round(data['profit_percent'], 2)
                         })
-            if append and not user_filter_call_type:
+            if not user_filter_call_type:
                 logger.debug(f"User Filter not set.")
-                calls.extend(v)
-                append = False
+                calls.append(data)
                 continue
+
             try:
                 if user_filter["tickers"] and  len(user_filter["tickers"]) != 0 and data['ticker'] not in user_filter['tickers']:
                     logger.debug(f"Tickers not in User Filter or Filter is not set to none of Filter for Portfolio : {data['portfolio_id']}")

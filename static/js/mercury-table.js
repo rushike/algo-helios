@@ -36,10 +36,10 @@ function inserNewRow(source_table, data, position, status) {
         data-target="#trade_modal">` + data["signal"] + `</button></td>
     <td id="signal_time" data-label="Signal Time">`+timeFormat(data["signal_time"], data["portfolio_id"])+`</td>
     <td id="price" data-label="Signal Price">`+data["price"]+`</td>
-    <td id="target_price" data-label="TP">`+data["target_price"]+`</td>
-    <td id="stop_loss" data-label="SL">`+data["stop_loss"]+`</td>
-    <td id="profit_percent" data-label="Profit %">`+data['profit_percent']+`</td>
-    <td id="status" data-label="Status" class="call_status">`+status+`</td>`;
+    <td id="target_price" data-label="TP">`+Math.abs(data["target_price"]).toFixed(2)+`</td>
+    <td id="stop_loss" data-label="SL">`+Math.abs(data["stop_loss"]).toFixed(2)+`</td>
+    <td id="profit_percent" data-label="Profit %">`+Math.abs(data['profit_percent']).toFixed()+`</td>
+    <td id="status" data-label="Status" class="call_status">`+ status +`</td>`;
     newRow.id = data["call_id"];
     newRow.setAttribute('class', data['instrument_token'])
     return newRow
@@ -178,7 +178,11 @@ socket.onmessage = function (e) {
                 inst = instruments[i]
                 if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
 
-                if(data_dict["profit_percent"]) inst.cells.namedItem("profit_percent").innerHTML = data_dict["profit_percent"];
+                if(data_dict["profit_percent"]) {
+                    inst.cells.namedItem("profit_percent").innerHTML = Math.abs(data_dict["profit_percent"]).toFixed(2);
+                }else{
+                    inst.cells.namedItem("profit_percent").innerHTML = Math.abs((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
+                }
                 if(status) inst.cells.namedItem("status").innerHTML = status
             };
             

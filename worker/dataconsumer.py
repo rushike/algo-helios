@@ -41,6 +41,7 @@ class DataConsumer(AsyncConsumer):
                 datax = copy.deepcopy(data)
                 logger.info(f"Will send to {len(portfolio_id)} protfolios..")
                 for prtf_id in portfolio_id:
+                    if prtf_id == 1: continue
                     datax["portfolio_id"] = prtf_id 
                     group_name = ConsumerManager().get_mapped_group(prtf_id)
                     logger.info(f"Received Signal {datax} with portfolio id : {prtf_id} and will send to group {group_name}.")

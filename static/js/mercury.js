@@ -230,7 +230,7 @@ $(document).ready(function() {
                 min: 0,
                 max: 5,
                 step: 0.1,
-                values: [1, 5],
+                values: [0, 5],
                 slide: function( event, ui ) {
                 $( "#" + value + "_rr_range" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 }
