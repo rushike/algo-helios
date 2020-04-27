@@ -78,6 +78,16 @@ def send_user_add_link(request):
         return HttpResponse("ok")
     return HttpResponse("Err")
 
+def get_user_group_add_link(request):
+    group_type = request.POST.get("groupcode", 'enterprise')
+    email = request.POST.get("email", 'vikas.naik@gmail.com')
+    logger.debug(f"Got the group-type : {group_type},  email : {email}, admin : {request.user.email}")
+    link = users.functions.get_user_add_group_link(request.user.email, group_type)
+    if link:
+        link = request.build_absolute_uri(link)
+        return JsonResponse({'link' : link, 'groupcode' : group_type}, safe=False)
+    return JsonResponse({'link' : None, 'groupcode' : group_type}, safe=False)
+
 @login_required(login_url = '/accounts/login/')
 def remove_user_from_group(request):
     email = request.POST.get("email", 'vikas.naik@gmail.com')

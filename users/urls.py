@@ -10,6 +10,7 @@ urlpatterns = [
     path('remove-user-from-group/', views.remove_user_from_group, name="remove_user_from_group"),
     path('send-user-add-link/', views.send_user_add_link, name="send_user_add_link"),
     path('get-all-users-in-group/', views.get_all_users_in_group, name="get_all_users_in_group"),
+    path('get-user-group-add-link/', views.get_user_group_add_link, name="get_user_group_add_link"),
     path('feedback', views.get_feedback, name= "feedback"),
     path('register-feedback', views.register_feedback, name= "register_feedback"),
 ]

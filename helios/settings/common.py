@@ -207,6 +207,8 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # For Mailing Purpose 
-
 FEEDBACK_EMAIL_USER = 'feedback@gmail.com'
+FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
+
+SALES_EMAIL = 'feedback@gmail.com'
 FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'

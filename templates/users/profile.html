@@ -135,11 +135,11 @@
 									</li>
 									{% if not if_referred %}
 										<li class="list-group-item">
-										<form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
+										<form class="form-inline" action="/user/refer/user={{ user.referal_link }}" method="POST">
 											{% csrf_token %}
 											<div class="form-group">
 												<label for=""><b>Enter Referal Code</b></label>
-												<input type="text" id="" maxlength="6" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline" required>
+												<input type="text" id="" maxlength="8" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline" required>
 												<button class="btn btn-dark btn-sm mt-1" type="submit">Ok</button>
 											</div>
 											</form>
@@ -251,7 +251,13 @@
 																		'{{gplan.0.plan_id__plan_name}}', 
 																		'{{gplan.0.plan_id__user_group_type_id__type_name}}',
 																	)">Edit</button>
-									<a class="dropdown-item" href="#">Add link</a>
+									<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
+																	trigger_group_add_link(
+																		'{{gplan.0.subscription_type_id__type_name}}', 
+																		'{{gplan.1}}',
+																		'{{gplan.0.plan_id__plan_name}}', 
+																		'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																	)">Show Link</button>
 								</div>
 							</div>				
 						</div>
@@ -352,8 +358,8 @@
 					<tbody>
 					  <tr>
 						<th scope="row">1</th>
-						<td>Mark</td>
-						<td>Otto</td>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
 						<td >
 							<span class="fa fa-times red-danger" style="cursor: pointer;">
 
@@ -427,7 +433,28 @@
 			</div>
 		</div>
 	</div>
-</div> 
+</div>
+
+<div class="modal fade" id="group-add-link" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-add-header">Group : <span id="group-name" class="badge badge-warning"></span></h5>
+				<button type="button" id="close-confirm-add" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="input-group input-group-sm  mx-auto">
+					<input type="text" class="form-control card" value="" id="group-add-link-input" readonly>
+					<div class="input-group-append">
+						<span class="input-group-text btn fa fa-clipboard" id="basic-addon1"  onclick="copyTextFunction()"></span>
+					</div><br>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 
 <script type="text/javascript">
@@ -555,6 +582,30 @@ $('.alertx').alert()
 		});
 		$("#modal-plan-full-name").html(planname.toLowerCase() + "-" + plancode.toLowerCase() + "  <span class='badge badge-secondary'>" + groupcode + "</span>")
 		$("#modal-period").html("<span class='badge badge-warning'>" + period + "</span>")
+	}
+
+	function trigger_group_add_link(period, plancode, planname, groupcode){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'get_user_group_add_link' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				period : period,
+				plancode : plancode,
+				planname : planname,
+				groupcode : groupcode,
+			},
+			success: function(data)
+			{
+				console.log("group - add link : ", data)
+				$("#group-add-link-input").val(data['link'])
+				$('#group-name').html(data['groupcode'])
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
 	}
 
   function copyTextFunction() {

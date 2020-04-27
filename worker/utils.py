@@ -13,7 +13,7 @@ class DBManager(metaclass=Singleton):
     def __init__(self):
         self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
                 user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], 
-                port = DATABASES["janus"]["PORT"], autocommit=False, set_update_hitrate_timer=False)
+                port = DATABASES["janus"]["PORT"], set_update_hitrate_timer=False)
         logger.debug(f"Database handler opened : {self.db_handler}")
 
         self.portfolios = dict(self.db_handler.get_portfolios())  # int --> str
@@ -53,39 +53,11 @@ class DBManager(metaclass=Singleton):
     
     def get_calls_for_today(self, portfolio_id):
         try:
-            conn = self.db_handler.pool.getconn()
-            conn.autocommit = self.db_handler.autocommit
-            cur = conn.cursor()
-            logger.debug(f"open the cursor for stored procedure : {cur}")
-            cur.callproc('get_calls_for_today', [portfolio_id, ])
-            result = cur.fetchall()
-            logger.debug(f"Fetch from stored procedure : {result}")
-            cur.close()
-            self.db_handler.pool.putconn(conn)
-            result_dict = self.db_handler.generate_call_dict(result, portfolio_id_present = True)
-            logger.debug(f"Generated dict for result from stored procedure : {result_dict}")
-            return result_dict
-        except Exception as exc:
-            logger.error(f"Result not fetched for portofolio_id : {portfolio_id} due to exception {exc}")
-            cur.close()
-            self.db_handler.pool.putconn(conn)
-    
-    def get_calls_for_today1(self, portfolio_id):
-        try:
-            with self.lock:
-                cur = self.db_handler.cursor
-                logger.debug(f"open the cursor for stored procedure : {cur}")
-                cur.callproc('get_calls_for_today', [portfolio_id, ])
-                result = cur.fetchall()
-                logger.debug(f"Fetch from stored procedure : {result}")
-                result_dict = self.db_handler.generate_call_dict(result, portfolio_id_present = True)
-                logger.debug(f"Generated dict for result from stored procedure : {result_dict}")
-                return result_dict
+            return self.db_handler.get_calls_for_today(portfolio_id)
         except psycopg2.InterfaceError as exc:
             logger.error(f"Cursor closed result not fetched from stored procedured due to exception {exc}")
             self.db_handler.conn = psycopg2.connect(self.db_handler.dsn)
-            self.db_handler.conn.autocommit = False
-            self.get_calls_for_today1(portfolio_id)
+            return self.get_calls_for_today(portfolio_id)
 
     def filter_calls(self, calls_dict):
         calls = []
