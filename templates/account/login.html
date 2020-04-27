@@ -12,7 +12,13 @@
 
 
 {% if socialaccount_providers %}
-
+<style>
+	/* for (Remember Me) Text Size */
+.form-check-label{
+	font-size: 14px;
+	margin-top: 4px;
+}
+</style>
 		<h1 class="display-5">Sign In</h1><hr>
 		<form class="login" method="POST" action="{% url 'account_login' %}">
 		
