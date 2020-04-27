@@ -440,7 +440,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="confim-user-add-header">Group : <span id="group-name" class="badge badge-warning"></span></h5>
-				<button type="button" id="close-confirm-add" class="close-remove" data-dismiss="modal" aria-label="Close">
+				<button type="button" id="close-group-add-link" class="close-remove" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
@@ -448,7 +448,7 @@
 				<div class="input-group input-group-sm  mx-auto">
 					<input type="text" class="form-control card" value="" id="group-add-link-input" readonly>
 					<div class="input-group-append">
-						<span class="input-group-text btn fa fa-clipboard" id="basic-addon1"  onclick="copyTextFunction()"></span>
+						<span class="input-group-text btn fa fa-clipboard" id="basic-addon1"  onclick="copyTextFunction('group-add-link-input', 'group-add-link', 'close-group-add-link')"></span>
 					</div><br>
 				</div>
 			</div>
@@ -608,12 +608,18 @@ $('.alertx').alert()
 		});
 	}
 
-  function copyTextFunction() {
-	var copyText = document.getElementById("myInput");
+  function copyTextFunction(id = 'myInput', modal_id = null, modal_close = null) {
+	var copyText = document.getElementById(id);
 	copyText.select();
 	copyText.setSelectionRange(0, 99999);
 	document.execCommand("copy");
-	alert("Copied the text: " + copyText.value);
+	if(modal_id){
+		$(`#${modal_id}`).modal('toggle');
+		$(`#${modal_close}`).click();
+		
+
+	}
+	// alert("Copied the text: " + copyText.value);
 	}
 </script>
 

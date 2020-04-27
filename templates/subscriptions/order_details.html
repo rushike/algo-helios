@@ -53,6 +53,7 @@
                                     <div>
                                         <h6 class="my-0 item-text">{{plan_name | _replace:"#??-"}} - <span class="badge badge-warning p-1">{{period | title}}</span></h6>
                                         <small class="text-muted"><b>Group : </b> {{group_type | title}} </small>
+                                        <span id = "group-type-text" hidden>{{group_type}}</span>
                                     </div>
                                     <span class="text-muted item-text">₹ {{amount}}</span>
                                     </li>
@@ -121,8 +122,9 @@
             <div class="row mb-2">
         
                 <div class="col-md-6">
-                    <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
-                        <div class="col p-4 d-flex flex-column position-static bg-white">
+                    <!-- bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative -->
+                    <div class="row mb-4 shadow-lg position-relative m-2">
+                        <div class="col p-4 d-flex flex-column position-static bg-white " style="min-height: 17rem;">
         
                         
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -147,8 +149,9 @@
                 </div>
         
                 <div class="col-md-6">
-                    <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
-                            <div class="col-md-10 p-4 d-flex flex-column" style="min-height: 26vh;">
+                    <!-- bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative -->
+                    <div class="row mb-4 shadow-lg position-relative m-2">
+                            <div class="col-md-12 bg-white p-4 d-flex flex-column" style="min-height: 17rem;">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text">Add Members <small class="badge badge-warning">Max : {{group_max_members}}</small></span>
                                 </h4>
@@ -175,41 +178,56 @@
                                 // Use this ajax to get all members in group
 
                                 var data = $.ajax({
-                                type: "POST",
-                                url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
-                                data : {
-                                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-                                    groupcode : groupcode,
-                                },
-                                success: function(data)
-                                {
-                                    return update_edit_plan_table(data, {group_type:groupcode});
-                                },
-                                error: function(request, status, error)
-                                {
-                                    alert(request.responseText);
-                                }
+                                    type: "POST",
+                                    url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+                                    data : {
+                                        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                                        groupcode : $(`#group-type-text`).html(),
+                                    },
+                                    success: function(data)
+                                    {
+                                        console.log("data : ", data)
+                                        var datamap = data.map(x => x.email)
+                                    
+                                        datastr = datamap.join(",")
+                                        console.log("datamap : ", datamap, ", datastr : ", datastr)
+                                        $("input[name='group-mails']").val(datastr);
+                                        console.log("val : - group-mails : ", $("input[name='group-mails]").val())
+                                        // return update_add_members(data, {group_type:groupcode});
+
+                                        $(document).ready(()=>{                                                                                
+                                            $('input[name="group-mails"]').amsifySuggestags({
+                                                type : 'materialize',
+                                                tagLimit :"{{group_max_members}}"
+                                            });
+
+                                            $(".amsify-suggestags-input").css({
+                                                    "top": "6rem",
+                                                    "left": "2rem",
+                                                    "position": "absolute",
+                                            })
+                                
+                                            $(".amsify-suggestags-area").addClass("mt-4")
+                                            $(".amsify-suggestags-input-area").attr({                
+                                                "style":
+                                                "padding :5px;overflow-y: auto;max-height: 15vh;min-height: 15vh;"
+                                            });
+                                        })                                    
+                                    },
+                                    error: function(request, status, error)
+                                    {
+                                        alert(request.responseText);
+                                    }
                                 });
                                 
-                                $(document).ready(()=>{
-                                    $(".amsify-suggestags-input").css({
-                                            "top": "6rem",
-                                            "left": "2rem",
-                                            "position": "absolute",
-                                    })
-
-                                    $(".amsify-suggestags-area").addClass("mt-4")
-                                })
+                                
                             </script>
                             <form>  
                                 <div>
-                                    <input type="text" value="{{user.email}}," name="group-mails" />
+                                    <input type="text" value="" name="group-mails" />
                                 </div>
                                 <script>
-                                    $('input[name="group-mails"]').amsifySuggestags({
-                                        type : 'materialize',
-                                        tagLimit :"{{group_max_members}}"
-                                    });
+                                    
                                 </script>                 
                             </form>
                         </div>
@@ -244,36 +262,17 @@
     function neft(){
 
     }
-    $(".payonline").click(()=>{
-        // window. sessionStorage.setItem("group-mails", $('input[name="group-mails"]').val());
-        // location.href = "{% url 'create_order' %}"
-    });
 
     $(".payonline").click(()=>{
-        // $.ajax({
-        //     type: 'GET', 
-        //     url: serviceEndpoint,
-        //     dataType: 'json',
-        //     contentType: 'json',
-        //     headers: { 'api-key':'myKey' },
-        //     success: function(data){
-        //         location.href = "{% url 'create_order' %}"    
-        //     },
-        // });
-        $.ajax({
-         type : "GET",
-         url: '{% url "update_session" %}',
-         data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
-         success : function(response){
-            console.log(response);
-            location.href = "{% url 'create_order' %}"
-         },   
-    });
-    //     $.post('/update-session',   // url
-    //     {"data": {"group-mails" : $('input[name="group-mails"]').val() } }, // data to be submit
-    //    function(data, status, jqXHR) {// success callback
-    //         location.href = "{% url 'create_order' %}"
-    //     })
+            $.ajax({
+            type : "GET",
+            url: '{% url "update_session" %}',
+            data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
+            success : function(response){
+                console.log(response);
+                location.href = "{% url 'create_order' %}"
+            },   
+        });
     });
 
     $(".neft").click(()=>{
