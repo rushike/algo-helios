@@ -36,100 +36,93 @@
 
 <div class="container-fluid" style="background-color: #f6f9f9; height: 100%;" >
     
-    <div class="row container text-center" style="">
-
-        <div class="col-md-6 mb-2 p-3" id="auto-card-align" style="">
-            <div class="row justify-content-center mb-3">
-
-                <div class="col-md-10 border p-4 order-md-2 mb-2 bg-white shadow-lg" style="min-height: 20rem;">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text">Plans</span>
-                        <span class="badge badge-secondary badge-pill">1</span>
-                    </h4>
-                    <ul class="card-body  d-flex flex-column list-group mb-3">
-                        <li class="list-group-item d-flex justify-content-between lh-condensed text-left">
-                        <div>
-                            <h6 class="my-0 item-text">{{plan_name | _replace:"#??-"}} - <span class="badge badge-warning p-1">{{period | title}}</span></h6>
-                            <small class="text-muted"><b>Group : </b> {{group_type | title}} </small>
-                        </div>
-                        <div class="btn-toolbar justify-content-between res-size" role="toolbar" aria-label="Toolbar with button groups">
-                            <div class="btn-group res-size" role="group" aria-label="First group">
-                                <button type="button" class="btn count-btn btn-secondary item-text"  onclick="this.parentNode.querySelector('input[type=number]').stepDown()" style="cursor: pointer; "> <i class="fa fa-minus" aria-hidden="true"></i></button>
-                                <input  class="btn btn-count  btn-white border"  min="1" value="1"  max = "1" type="number" style="width: 2.5rem;" ></input>
-                                <button type="button" class="btn count-btn btn-secondary item-text" onclick="this.parentNode.querySelector('input[type=number]').stepUp()" style="cursor: pointer;"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    <div class="row container">
+            <div class="col-md-12 pt-3">
+                <div class="row mb-2">
+            
+                    <div class="col-md-6">
+                        <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                            <div class="col p-4 d-flex flex-column" style="min-height: 30vh;">
+            
+                            
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text">Plans</span>
+                            </h4>
+                            <ul class="card-body d-flex flex-column list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed text-left">
+                                    <div>
+                                        <h6 class="my-0 item-text">{{plan_name | _replace:"#??-"}} - <span class="badge badge-warning p-1">{{period | title}}</span></h6>
+                                        <small class="text-muted"><b>Group : </b> {{group_type | title}} </small>
+                                    </div>
+                                    <span class="text-muted item-text">₹ {{amount}}</span>
+                                    </li>
+            
+                                    <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Total (₹)</strong>
+                                    <strong class="item-text">₹ {{amount}}</strong>
+                                    </li>
+                            </ul>
+            
                             </div>
                         </div>
-                        <span class="text-muted item-text">₹ {{amount}}</span>
-                        </li>
-
-                        <li class="list-group-item d-flex justify-content-between">
-                        <strong>Total (₹)</strong>
-                        <strong class="item-text">₹ {{amount}}</strong>
-                        </li>
-                    </ul>
-                
-                    <!-- <form class="card p-2">
-                        <div class="input-group" style="margin:0px;">
-                            <input type="text" class="form-control" placeholder="Promo code">
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-secondary">Redeem</button>
-                            </div>
-                        </div>
-                    </form> -->
-                </div>
-            </div>
-        </div> 
-        
-        <div class="col-md-6 mb-1" id="auto-card-align">
-            <div class="row justify-content-center mt-4">
-
-                <div class="col-md-12 border p-4 mb-4 bg-white shadow-lg" style="min-height: 20rem;">
-                    <h4 class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text">Pricing Details</span>
-                    </h4>
-                    <ul class="list-group list-group-flush mb-3">
-                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
-                            <div>
-                                <h6 class="my-0 item-text">Price</h6>
-                            </div>
-                        
-                            <span class="text-muted item-text">{{amount}}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
-                            <div>
-                                <h6 class="my-0 item-text">GST</h6>
-                            </div>
-                        
-                            <span class="text-muted item-text">{{gst}}</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
-                            <div>
-                                <h6 class="my-0 item-text">Discount</h6>
-                            </div>
-                        
-                            <span class="text-muted item-text">--</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between p-2">
-                        <div class="text-left">
-                            <h6 class="my-0 item-text">Total (₹)</h6>
-                            <small class="text-muted text-danger">Incl GST</small>
-                        </div>
-                        <strong class="item-text">{{total_amount}}</strong>
-                        </li>
-                    </ul>
                     </div>
             
+                    <div class="col-md-6">
+                        <div class="row bg-white no-gutters border rounded flex-md-row mb-4 shadow-lg">
+                                <div class="col-md-12 p-4 d-flex flex-column" style="min-height: 30vh; height: 34vh!important;">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text">Pricing Details</span>
+                                    </h4>
+                                    <ul class="list-group list-group-flush mb-3">
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">Price</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">{{amount}}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">GST</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">{{gst}}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">Discount</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">--</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between p-2">
+                                            <div class="text-left">
+                                                <h6 class="my-0 item-text">Total (₹)</h6>
+                                                <small class="text-muted text-danger">Incl GST</small>
+                                            </div>
+                                            <strong class="item-text">{{total_amount}}</strong>
+                                            </li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+        
+
+
+
+
+
 
     <div class="row container">
-        <div class="col-md-12 p-3">
+        <div class="col-md-12">
             <div class="row mb-2">
         
                 <div class="col-md-6">
                     <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
-                        <div class="col p-4 d-flex flex-column position-static">
+                        <div class="col p-4 d-flex flex-column position-static bg-white">
         
                         
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -137,17 +130,16 @@
                         </h4>
         
                         <div class="mb-1 text-muted p-4">Available Payment Gateways</div>
-                        <p class="mb-auto"></p>
-        
-                        <div class="btn-toolbar justify-content-center text-responsive" role="toolbar">
-                                <div class="btn-group" role="group" aria-label="First group">
-                                <button type="button" class="btn btn-secondary neft">NEFT</button>
-                                <button type="button" class="btn btn-secondary payonline" >Credit/Debit Card</button>
-                                <button type="button" class="btn btn-secondary payonline" >NetBanking</button>
-                                <button type="button" class="btn btn-secondary payonline" >Wallet</button>
-                                <button type="button" class="btn btn-secondary payonline" >UPI</button>
-                                </div>
-                        </div>
+                        <!-- <p class="mb-auto"></p> -->
+                        <!-- <div class="btn-toolbar justify-content-center text-responsive" role="toolbar"> -->
+                            <div class="btn-group flex-wrap" role="group" aria-label="First group">
+                                <button type="button" class="text-black btn btn-outline-dark neft">NEFT</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">Credit/Debit Card</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">NetBanking</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">Wallet</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">UPI</button>
+                            </div>
+                        <!-- </div> -->
         
                         </div>
                         <!--  -->
@@ -156,7 +148,7 @@
         
                 <div class="col-md-6">
                     <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
-                            <div class="col-md-10 p-4 d-flex flex-column position-static">
+                            <div class="col-md-10 p-4 d-flex flex-column" style="min-height: 26vh;">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text">Add Members <small class="badge badge-warning">Max : {{group_max_members}}</small></span>
                                 </h4>
@@ -180,6 +172,25 @@
                                 </div> 
                             </div>
                             <script>
+                                // Use this ajax to get all members in group
+
+                                var data = $.ajax({
+                                type: "POST",
+                                url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+                                data : {
+                                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                                    groupcode : groupcode,
+                                },
+                                success: function(data)
+                                {
+                                    return update_edit_plan_table(data, {group_type:groupcode});
+                                },
+                                error: function(request, status, error)
+                                {
+                                    alert(request.responseText);
+                                }
+                                });
+                                
                                 $(document).ready(()=>{
                                     $(".amsify-suggestags-input").css({
                                             "top": "6rem",
@@ -207,6 +218,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <script>

@@ -62,8 +62,7 @@ nav{
 }
 
 .wrapper{
-    margin: 2% 5%;
-    padding:2% 0%;
+ z   padding:2% 0%;
 }
 
 a:hover,a:focus{
@@ -220,7 +219,7 @@ a:hover,a:focus{
 }
 
 .itemlist{
-    padding: 2.5% 5%;
+    /* padding: 2.5% 5%; */
 }
 
 .itemlist li{

@@ -155,7 +155,7 @@
 						<div class="tab-content" id="pills-tabContent">                
 						{% for group_type in details %}
 							<div class="tab-pane" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
-								<div class="row">
+								<div class="row justify-content-center">
 									{% for plan_type in group_type.0 %}
 										<script>
 											$(document).ready(function(){
@@ -171,7 +171,7 @@
 													});
 											});
 										</script>
-										<div class="col-md-6" style="padding: 20px;">     
+										<div class="col-md-4" style="padding: 20px;">     
 											<form method = "POST" action="/subscriptions/plan-data"> 
 												{% csrf_token %}        
 												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">
@@ -205,7 +205,7 @@
 															{% for plan in plan_type.0 %}
 																
 																{% if plan_type.1.products_count == 1 %}
-																		<div class="form-check list-group-item pl-5">
+																		<div class="form-check list-group-item pl-5 border-0 border-0">
 																			<input class="form-check-input" type="radio" name="plan_name" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
 																			<label class="form-check-label" for="{{plan.1}}">
 																				{{plan.0.0.product_name | _split:'1??#' }}
@@ -226,7 +226,7 @@
 																		</script>
 																{% elif plan_type.1.products_count == 0 %} 
 																		{% for product in plan.0 %}
-																			<div class="form-check list-group-item pl-5">
+																			<div class="form-check list-group-item pl-5 border-0">
 																				<input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
 																				<label class="form-check-label" for="{{plan.1}}" style="color: black;">    
 																					{{product.product_name | _split:"1??#"}}
@@ -308,6 +308,10 @@
 		
 		<div class="tab-pane" id="services" role="tabpanel">
 			<div class="">
+					<p class="text-center text-justify mt-4">
+							We offer customized trading solutions that are user-friendly, and 
+							fine-tuned to your particular needs, and provide swift execution
+					</p>
 
 				<div class="row mb-2 justify-content-center">
 		
