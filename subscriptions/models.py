@@ -3,6 +3,7 @@ from users.models import UserGroupType, UserGroup, UserGroupMapping
 import datetime
 from django.utils import timezone 
 import pytz
+from algonautsutils.timeutil.tradingcalendar import TradingCalendar
 
 
 class PlanType(models.Model):
@@ -159,7 +160,7 @@ class SubscriptionManager(models.Manager):
         else:
             is_trial = True
             subscription_type = SubscriptionType.objects.filter(type_name__iexact = 'Trial').first()         
-            subscription_end = subscription_start + datetime.timedelta(days=1)
+            subscription_end = datetime.datetime.combine(TradingCalendar().next_working_day(), datetime.datetime.max.time()).astimezone(pytz.timezone('UTC'))
 
         subscription = self.model(
                         user_group_id = user_group_id, 

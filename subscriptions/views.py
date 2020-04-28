@@ -243,7 +243,7 @@ def subscribe(request):
     subscription_id = subscribe_common(request = request, user = request.user, group_type = group_type, plan_type= plan_type ,   \
                     plan_name= plan_name, period= period, payment_id = payment, recepients=recepients)
     
-    return HttpResponseRedirect(redirect_to='/user/profile/info')
+    return HttpResponseRedirect(redirect_to='/worker/mercury')
 
 @login_required(login_url='/accounts/login/') 
 def plan_for_users(request):
