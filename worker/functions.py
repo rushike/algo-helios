@@ -117,6 +117,7 @@ def fetch_calls_for_today_async(*args, **kwargs):
 
 def filter_calls_from_db(user, calls_dict):
     calls = []
+    logger.debug(f"call_dict : {calls_dict}")
     for k, v in calls_dict.items():
         product = DBManager().get_product_from_portfolio(k)
         user_filter = get_user_filter_for_product(user, product)
@@ -127,7 +128,7 @@ def filter_calls_from_db(user, calls_dict):
                         'signal' : data['signal'] if isinstance(data['signal'], str) else data['signal'].name,
                         'status' : data['status'] if isinstance(data['status'], str) else  data['status'].value, 
                         'time' : data['time'] if isinstance(data['time'], str) else  data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                        'active' :data['active_flag'], 
+                        'active' :data['active'], 
                         'portfolio_id' : k, 
                         'profit_percent' : round(data['profit_percent'], 2)
                         })
@@ -150,7 +151,7 @@ def filter_calls_from_db(user, calls_dict):
                     logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                     continue # will not add in data list
                 data.update({'signal' : data['signal'],  'status' : data['status'], 'time' : data['time'], 
-                    'active' :data['active_flag'], 'portfolio_id' : k})
+                    'active' :data['active'], 'portfolio_id' : k})
                 calls.append(data)
             except Exception as E :
                 logger.error(f"{E} Exception Occured while filtering  data {data}:")

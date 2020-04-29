@@ -68,7 +68,7 @@ class DBManager(metaclass=Singleton):
                                 'signal' : d['signal'].name,  
                                 'status' : d['status'].value, 
                                 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                                'active' :d['active_flag'], 
+                                'active' :d['active'], 
                                 'portfolio_id' : port, 
                                 'profit_percent' : round(d['profit_percent'], 2)
                             }

@@ -233,9 +233,6 @@ def register_payment(order_id, payment_id, signature):
 
 def get_order_instance(order_id):
     return Order.objects.get(razorpay_order_id = order_id)
-
-
-
  
 def create_subscription(user, group_type, plan_type, plan_name, period, payment_id):
     subscribed = Subscription.objects.create_subscription(

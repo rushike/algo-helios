@@ -52,7 +52,7 @@ class ConsumerManager(metaclass=Singleton):
     def filter_calls(self, calls_dict):
         calls = []
         [[d.update({'signal' : d['signal'].name,  'status' : d['status'].value, 'time' : d['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
-                'active' :d['active_flag'], 'portfolio_id' : port}) for d in calls] for port, calls in calls_dict.items()] # updates dict to make JSON serializable
+                'active' :d['active'], 'portfolio_id' : port}) for d in calls] for port, calls in calls_dict.items()] # updates dict to make JSON serializable
         [calls.extend(v) for _, v in calls_dict.items()]
         logger.debug(f"User Sending the Calls: {len(calls)} {calls}, \ncallsitems : {len(calls)}")
         return calls

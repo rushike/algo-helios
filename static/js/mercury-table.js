@@ -38,7 +38,7 @@ function inserNewRow(source_table, data, position, status) {
     <td id="price" data-label="Signal Price">`+data["price"]+`</td>
     <td id="target_price" data-label="TP">`+Math.abs(data["target_price"]).toFixed(2)+`</td>
     <td id="stop_loss" data-label="SL">`+Math.abs(data["stop_loss"]).toFixed(2)+`</td>
-    <td id="profit_percent" data-label="Profit %">`+Math.abs(data['profit_percent']).toFixed(2)+`</td>
+    <td id="profit_percent" data-label="Profit %">`+(data['profit_percent']).toFixed(2)+`</td>
     <td id="status" data-label="Status" class="call_status">`+ status +`</td>`;
     newRow.id = data["call_id"];
     newRow.setAttribute('class', data['instrument_token'])
@@ -181,7 +181,7 @@ socket.onmessage = function (e) {
                 if(data_dict["profit_percent"]) {
                     inst.cells.namedItem("profit_percent").innerHTML = Math.abs(data_dict["profit_percent"]).toFixed(2);
                 }else{
-                    inst.cells.namedItem("profit_percent").innerHTML = Math.abs((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
+                    inst.cells.namedItem("profit_percent").innerHTML = ((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
                 }
                 if(status) inst.cells.namedItem("status").innerHTML = status
             };

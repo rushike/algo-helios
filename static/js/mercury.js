@@ -283,8 +283,8 @@ $(document).ready(function() {
 				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : [value]},
 				success: function(data)
 				{
-					console.log(`#${value}-refresh` + " success  : ", data)
-					return update_from_db_to_table(data, value);
+                    console.log(`#${value}-refresh` + " success  : ", data)                
+                    return update_from_db_to_table(data.calls, value);
 				},
 				error: function(request, status, error)
 				{
@@ -295,6 +295,7 @@ $(document).ready(function() {
     });
 
     function update_from_db_to_table(data_dictionary, value){
+        console.log(data_dictionary)
         var activeTab = value
         var dataTable = document.getElementById(activeTab + "_data-table")
         $("#" + activeTab + "_data-table").find("tr:not(:first)").remove();

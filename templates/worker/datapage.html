@@ -46,9 +46,14 @@
 				success: function(data)
 				{
 					console.log("Success  : ", data)
+          			update_from_db(data.calls);
 					fire.fly_up()
 					showpage()
-					return update_from_db(data);
+					if (!data['subs-active'] ){
+						if (window.confirm(`Don't have any active plans. If you click "ok" you would be redirected to our plans page. Cancel will load this website `))                         {
+							window.location.href='/subscriptions/plans';
+						};
+					}
 				},
 				error: function(request, status, error)
 				{
