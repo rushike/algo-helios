@@ -15,7 +15,7 @@
 
 <!-- <h3>DashBoard</h3> -->
 {% if not is_verified %}
-	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
+	<div class="alertx alert alert-dismissible fade show" role="alertx" style="background-color: rgb(246,248,248);">
 	<strong>Check Your Email ! Click On Verify Me</strong>
 	<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
 		<span aria-hidden="true">&times;</span>
@@ -24,6 +24,12 @@
 {% endif %}
   
 <style>
+	*{
+        font-family: 'Roboto', sans-serif;
+    }
+    .round_effect{
+        border-radius: 20px;
+    }
 	.table-striped tbody tr:nth-of-type(odd) {
     	background-color:  rgb(236, 250, 255);
 	}
@@ -99,21 +105,8 @@
 	}
 
 </style>
-  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link text-dark active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
-	</li>
-	<!-- <li class="nav-item">
-		<a class="nav-link text-dark" id="MyOrders-tab" data-toggle="tab" href="#MyOrders" role="tab" aria-controls="MyOrders" aria-selected="false">My Orders</a>
-	</li> -->
-  </ul>
 
-  <div class="tab-content" id="myTabContent" style="min-height: 30rem;">
-    <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-		<div class="row">
+		<!-- <div class="row">
 			<div class="col-md-12">
 				<div class="flush-left">
 						<div class="card rounded">
@@ -150,13 +143,101 @@
 						</div>
 				</div>
 			</div>
-		</div> 
-	</div> <!-- profile tab ends-->
-    <!-- ------------------------------------------------------------------------------------------ -->
-    
-    <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
-		<div class="container mt-5">
+		</div>  -->
+	<div class="container">
+		<h1>Hello {{ user.first_name|title }} !</h1>
+        <p class="text-dark"><small>Your previous login : {{ user.last_login }}</small></p>
+      <hr>
+      
+      <div class="row mt-3 justify-content-center">
 
+        <div class="col-md-4 pb-2">
+          <div class="card h-100 border bg-white text-dark p-3 round_effect">
+            <p class="lead">Personal Information</p>
+            <hr class="mt-0">
+            <p class=""><img src="/static/img/email-box.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.email }}</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 pb-2">
+          <div class="card h-100 border bg-white text-dark p-3 round_effect">
+              <p class="lead">Credits</p>
+              <hr class="mt-0">
+			  <p class=""><img src="/static/img/credits.png" class="mr-3" class="img-fluid p-1" style="height: 27px; width: 27px;" />
+				{{ user.algo_credits }}
+			  <small class="ml-4">Share Referral Code to Gain Credits !</small></p>
+			  {% if not if_referred %}
+			  <form class="form-inline justify-content-center" action="/user/refer/user={{ user.referal_link }}" method="POST">
+				  {% csrf_token %}
+				  <div class="input-group input-group-sm">
+					  <input type="text" id="" maxlength="8" class="form-control pl-2" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
+					  <button class="btn btn-dark btn-sm ml-2" type="submit">Ok</button>
+				  </div>
+			  </form>
+			  {% endif %}
+          </div>
+        </div>
+
+        <div class="col-md-4 pb-2">
+          <div class="card h-100 border text-dark p-3 round_effect" style="background-color: rgb(246,248,248); ">
+              <p class="lead">Referral Code</p>
+              <hr class="mt-0">
+                  <p class="text-inline" id="p2">
+                    <img src="/static/img/ref-code.png" class="mr-3" class="img-fluid p-1" style="height: 28px; width: 28px;" />
+                    <kbd>{{user.referral_code}}</kbd>
+                  </p>
+				  <p type="text" class="d-none" id="ref-code">{{ user.referral_code }}</p>
+				  <p type="text" class="d-none" id="ref-link">{{ referral_link }}</p>
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-code')" data-toggle="tooltip" 
+                    data-placement="bottom" title="Click To Copy">
+                    Copy Code
+                    </button>
+                    <button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-link')" data-toggle="tooltip" 
+                    data-placement="bottom" title="Click To Copy">
+                    Copy Shareable Link
+                    </button>
+                  </div>
+                </p>
+          </div>
+		</div>
+	
+      </div> <!-- row ends -->
+
+      <!-- row 2 starts -->
+      <div class="row mt-3 justify-content-center pb-3">
+
+        <div class="col-md-8 pb-2">
+          <div class="card h-100 p-3 round_effect" style="background-color: rgb(246,248,248);">
+            <p class="lead">Go To Mercury</p>
+            <hr class="mt-0">
+            <p class="text">Your Personal Technical Analyst!</p>
+			<a href="/worker/mercury" class="stretched-link"></a>  
+				<img src="/static/img/arrow-black.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+			</a>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="card h-100 text-white p-3 round_effect" style="background-color:#004B96">
+            <p class="lead">Browse Premium & Basic Plans</p>
+            <hr class="mt-0">
+			<p class="text-white">Subscribe or Avail Free Premium Plan</p>
+			<a href="/subscriptions/plans" class="stretched-link">
+			  <img src="/static/img/arrow.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+			</a>  
+          </div>
+        </div>
+
+      </div> <!-- row 2  -->
+
+	<hr>
+  </div> <!-- container ends-->
+</div>
+	<!-- ------------------------------------------------------------------------------------------ -->
+    
+	<div class="container mt-5">
+		<h1>Your Plans</h1>
 			  {% if iplans %}
 			  		<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Personal Plans</h3></div>
 			  		
@@ -464,7 +545,19 @@ $('.alertx').alert()
     $('[data-toggle="tooltip"]').tooltip()
   })
 
-</script>
+	function copyToClipboard(element) {
+		var $temp = $("<input>");
+		$("body").append($temp);
+		$temp.val($(element).text()).select();
+		document.execCommand("copy");
+		$temp.remove();
+	}
+
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+  
+  </script>
 
 <script type="text/javascript">
 	$(document).ready(()=>{
