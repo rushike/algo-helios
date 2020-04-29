@@ -54,9 +54,10 @@ nav{
 }
 
 #myNavbar li a{
-    font-size: 18px !important;
+    /* font-size: 18px !important;
     color:#515252 !important;
-    transition-duration: .2s;
+    transition-duration: .2s; */
+    color: #0056b3 !important;
 }
 
 #myNavbar li a:hover{

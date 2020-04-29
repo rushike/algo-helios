@@ -9,12 +9,86 @@
         <h1>{% trans "Sign Up" %}</h1><hr>
         <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 
+
         <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-          {% csrf_token %}
-          {{ form|crispy }}
-          {% if redirect_field_value %}
-          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-          {% endif %}
-          <button class="btn btn-block btn-outline-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>
+          <!-- <input type="hidden" name="csrfmiddlewaretoken" value="O6NHA3iwHqjHVoe9rhjG8f4DZa57MpfrmsXsq0u2jBBphZxMQJ6SF6niUsbTkTeS"> -->
+		  	{% csrf_token %}
+				<div id="div_id_email" class="form-group"> 
+					<label for="id_email" class=" requiredField">Email<span class="asteriskField">*</span> </label> 
+				
+					<div class=""> 
+						<input type="email" name="email" placeholder="Email" class="textinput textInput form-control" required="" id="id_email"> 
+					</div> 
+				</div> 
+				
+				<div id="div_id_first_name" class="form-group"> 
+					<label for="id_first_name" class=" requiredField">First Name<span class="asteriskField">*</span> </label>
+					<div class="">
+						 <input type="text" name="first_name" maxlength="30" placeholder="First Name" class="textinput textInput form-control" required="" id="id_first_name"> 
+					</div> 
+				</div> 
+				
+				<div id="div_id_last_name" class="form-group"> 
+					<label for="id_last_name" class=" requiredField">Last Name<span class="asteriskField">*</span> </label> 
+					<div class=""> 
+						<input type="text" name="last_name" maxlength="30" placeholder="Last Name" class="textinput textInput form-control" required="" id="id_last_name"> 
+					</div> 
+				</div> 
+				
+				<div id="div_id_contact_no" class="form-group"> 
+					<label for="id_contact_no" class=" requiredField">Contact<span class="asteriskField">*</span> </label> 
+					<div class=""> 
+						<input type="text" name="contact_no" placeholder="Contact Number" class="textinput textInput form-control" required="" id="id_contact_no"> 
+					</div> 
+				</div> 
+				
+				<div id="div_id_password1" class="form-group"> 
+					<label for="id_password1" class=" requiredField">Password<span class="asteriskField">*</span> </label> 
+					<div class=""> 
+						<input type="password" name="password1" placeholder="Password" class="textinput textInput form-control" required="" id="id_password1"> 
+					</div> 
+				</div> 
+				
+				<div id="div_id_password2" class="form-group"> 
+					<label for="id_password2" class=" requiredField">Confirm Password<span class="asteriskField">*</span> </label> 
+					<div class=""> 
+						<input type="password" name="password2" placeholder="Confirm Password" class="textinput textInput form-control" required="" id="id_password2"> 
+					</div> 
+				</div>
+
+				<div id = "referal" class="mb-3 ml-1" style="margin-top : -0.3rem;">
+					<a class="mb-5" data-toggle="collapse" href="#collapse-referal" onclick="change_span_text()" role="button" aria-expanded="false" aria-controls="referal-collapse"><span id = "down-mark" class = "content-heading text-dark">▼</span> Referal Code</a>
+					<div class="collapse mt-2" id="collapse-referal">
+						<input type="text" id="" maxlength="8" name="referral-code" value="" placeholder="8 - Digit Code" class="textinput textInput form-control" >
+					</div>
+				</div>
+          <button id = "sign-up-btn" class="btn btn-block btn-outline-primary" type="submit">Sign Up »</button>
         </form>
+
+		<script>
+			var referal_arrow = true;
+			$("input[name = 'referral-code']").val(sessionStorage.getItem("referral-code"))
+			sessionStorage.removeItem("referral-code")
+			function change_span_text(){
+				if(referal_arrow) {
+					$('#down-mark').html("⮞")
+					referal_arrow = !referal_arrow
+				}else{
+					$('#down-mark').html("▼")
+					referal_arrow = !referal_arrow
+				}
+			}
+
+			$("#sign-up-btn").click(()=>{
+				$.ajax({
+					type : "GET",
+					url: '{% url "update_session" %}',
+					data: {"data" : JSON.stringify({'data' : {"referral-code" : $('input[name="referral-code"]').val()}})}, // data to be submit
+					success : function(response){
+						console.log(response);
+						// location.href = "{% url 'create_order' %}"
+					},
+				});
+			});
+		</script>
 {% endblock %}

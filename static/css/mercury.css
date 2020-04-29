@@ -18,6 +18,17 @@ nav{
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
     background: transparent;
+    /* color: #0056b3; */
+}
+
+#dropdown-ul > li a:hover{
+    color: #0056b3 !important;
+    transform: scale(1) !important;
+}
+
+#dropdown-ul > li > a > form > button:hover{
+    color: #0056b3 !important;
+    transform: scale(1) !important;
 }
 
 #logo:hover{

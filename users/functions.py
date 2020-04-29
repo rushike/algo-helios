@@ -172,7 +172,7 @@ def get_all_groups_of_user(user_id):
 def add_referral_credits(self_uid, referral_code):
     ref_by = AlgonautsUser.objects.get(referral_code=referral_code)
     ref_to = self_uid if type(self_uid) == AlgonautsUser else AlgonautsUser.objects.get(id = self_uid)
-    referral_offer_id = list(ReferralOffer.objects.filter(offer_active = True).order_by('offer_end'))[-1] # take the latest and only active offer
+    referral_offer_id = (ReferralOffer.objects.filter(offer_active = True).order_by('offer_end').last()) # take the latest and only active offer
     referral_time = datetime.datetime.now(pytz.timezone('UTC'))
     if Referral.objects.filter(referred_to = ref_to).exists():
         return None, False

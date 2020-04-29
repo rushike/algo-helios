@@ -24,7 +24,7 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
             <link rel="stylesheet" type="text/css" href="/static/css/index.css">
             <link rel="stylesheet" type="text/css" href="/static/css/base.css">
-        
+            <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
             <!-- Include the plugin //-->
             <script src="https://kite.trade/publisher.js?v=3"></script>
         
@@ -57,6 +57,12 @@
 
             {% block css_imports %}
             {% endblock %}
+
+            <style>
+                #dropdown-li > ul{
+                    overflow: hidden;
+                }
+            </style>
 
     </head>
     <body>
@@ -114,15 +120,15 @@
                     </li>
                         
                     {% else %}
-                    <li class="nav-item dropdown" id = "dropdown-li" >
+                    <li class="nav-item dropdown" id = "dropdown-li">
                         <a class="nav-link dropdown-toggle dark-gray " id="login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.first_name}} </a>
-                        <ul class="dropdown-menu dropdown-menu-right text-center" aria-labelledby="login">
+                        <ul class="dropdown-menu dropdown-menu-right" id = "dropdown-ul" aria-labelledby="login">
                             <li class="dropdown-item" href="/user/profile/info"><a class = "link-unstyled dark-gray" href="{% url 'u_profile_page' %}">Dashboard</a></li>
                             <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
                             <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="/worker/mercury">Mercury</a></li>
                             <li class="dropdown-item" href="#">
-                                <a>
-                                    <form method="post" id = "logout" action="{% url 'account_logout' %}">
+                                <a style="margin-left: -0.9rem;">
+                                    <form method="post" id = "logout" style="margin-bottom: 0rem;" action="{% url 'account_logout' %}">
                                         {% csrf_token %}
                                         {% if redirect_field_value %}>
                                             <input  name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"hidden/>    

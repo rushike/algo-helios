@@ -97,8 +97,10 @@ def remove_user_from_group(request):
     return HttpResponse("ok")
 
 
-@login_required(login_url = '/accounts/signup/')
+# @login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):
+    if not request.user.is_authenticated:
+        return render(request,'account/before-signup.html', context = {'referral_code' : referral_code})
     return HttpResponseRedirect('/user/refer/code=' + str(referral_code))
 
 
@@ -118,4 +120,11 @@ def register_feedback(request):
 @receiver(user_signed_up)
 def redirect_after_signup(request, user, **kwargs):
     request.session["REDIRECT_URL"] = "/subscriptions/plans"
+    # referral_code = request.session.get('data', {'referral-code' : ""}).get("referral-code", "")
+    referral_code = request.POST.get("referral-code", "")
+    email =  request.POST.get("email", "")
+    logged_user = users.functions.get_user_object(email)
+    if referral_code != '':
+        users.functions.add_referral_credits(logged_user, referral_code=referral_code)
     return HttpResponseRedirect("/products/")
+
