@@ -74,7 +74,13 @@
 			<div class="card h-100 border bg-white text-dark p-3 round_effect">
 				<p class="lead">Personal Information</p>
 				<hr class="mt-0">
-				<p class=""><img src="/static/img/email-box.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.email }}</p>
+				<p class="">
+					<img src="/static/img/email-box.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.email }}
+				</p>
+				<span class="">
+					<img src="/static/img/phone.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.contact_no }}
+					<p class="float-right"><a href="">Edit</a></p>
+				</span>
 			</div>
         </div>
 
@@ -146,6 +152,14 @@
 						data-placement="bottom" title="Click To Copy">
 						Copy Shareable Link
 						</button>
+						<a type="button" class="btn btn-outline-dark" data-toggle="tooltip" 
+						data-placement="bottom" title="" 
+						href="https://wa.me/?text=Hello,%20join%20my%20Algonauts
+						%20Group%20for%20Mercury%20Product%20using%20Referral%20Code:%0D%0A
+						{{ user.referral_code }}%0D%0Aor%20Refferral%20Link%20as%20%0D%0A
+						{{ referral_link }}">
+						Share on Whatsapp
+						</a>
 					</div>
 					</p>
 			</div>
@@ -200,7 +214,7 @@
 					
 				<div class="row mt-3 justify-content-left">
 					{% for iplan in iplans %}
-						<div class="col-md-6 pb-2">
+						<div class="col-md-4 pb-2">
 							<div class="card h-100 border bg-white text-dark p-3 round_effect">
 								<p class="lead">
 									{% if iplan.1.type_name == "Premium" %}
@@ -272,7 +286,7 @@
 				
 			<div class="row mt-3 justify-content-left">
 				{% for gplan in gplans %}
-					<div class="col-md-6 pb-2">
+					<div class="col-md-4 pb-2">
 						<div class="card h-100 border bg-white text-dark p-3 round_effect">
 							<p class="lead">
 								{% if gplan.1.type_name == "Premium" %}
