@@ -13,7 +13,7 @@
 <!-- <h3>DashBoard</h3> -->
   
 <style>
-	
+
 </style>
 
 		<!-- <div class="row">
@@ -78,12 +78,47 @@
 					<img src="/static/img/email-box.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.email }}
 				</p>
 				<span class="">
-					<img src="/static/img/phone.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.contact_no }}
-					<p class="float-right"><a href="">Edit</a></p>
+					<img src="/static/img/phone.png" class="mr-3" style="height: 25px; width: 25px;">
+					<span id="contact_no_field">{{ user.contact_no }}</span>
+					<p class="float-right"><a href="" data-toggle="modal" id="contact_no_button">Edit</a></p>
+				</span>
+				<span class="">
+					<img src="/static/img/address.png" class="mr-3" style="height: 25px; width: 25px;">Address
+					<p class="float-right"><a href="">Add</a></p>
 				</span>
 			</div>
         </div>
+<!-- Contact Edit Modal -->
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" id="editContactModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+				
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Edit Contact</h5>
+					<button type="button" class="closex" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="recipient-name" class="col-form-label">Enter new Contact No.</label>
+							<input type="tel" maxlength="10" class="form-control" id="" name="contact_no">
+						</div>
+						
+						<div class="modal-footer">
+							<button type="button" class="btn btn-light" id="contact_edit_button">Save</button>
+						</div>
+					</form>
+				</div>
 
+
+		</div>
+	</div>
+</div>
+
+<!-- Contact Edit Modal End -->
 			<div class="col-md-4 pb-2">
 			<div class="card h-100 border bg-white text-dark p-3 round_effect">
 				<p class="lead" id = "credit-head"></p>
@@ -97,10 +132,10 @@
 					<div id = 'if-referred' style="display: none;">yes</div>
 				{% endif %}
 				<script>
-					var win_refer = `<form class="form-inline justify-content-center" action="/user/refer/user={{ user.referal_link }}" method="POST">
+					var win_refer = `<form class="form-inline justify-content-center" action="/user/refer/user={{ user.referral_code }}" method="POST">
 										{% csrf_token %}
 										<div class="input-group input-group-sm">
-											<input type="text" id="" maxlength="8" class="form-control pl-2" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
+											<input type="text" id="" name = "rcode" maxlength="8" class="form-control pl-2 light-blue-focus" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
 											<button class="btn btn-dark btn-sm ml-2" type="submit">Ok</button>
 										</div>
 									</form>`
@@ -120,6 +155,7 @@
 							$("#credits-content").html(refer_credits);
 						}
 						if (head_bool == 'win'){
+							win_refer.replace($("input[name='rcode']"))
 							$("#credits-content").html(win_refer);
 						}
 						if (head_bool == 'head'){
@@ -146,11 +182,11 @@
 					<div class="btn-group btn-group-sm" role="group">
 						<button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-code')" data-toggle="tooltip" 
 						data-placement="bottom" title="Click To Copy">
-						Copy Code
+							Copy Code
 						</button>
 						<button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-link')" data-toggle="tooltip" 
 						data-placement="bottom" title="Click To Copy">
-						Copy Shareable Link
+							Copy Shareable Link
 						</button>
 						<a type="button" class="btn btn-outline-dark" data-toggle="tooltip" 
 						data-placement="bottom" title="" 
@@ -158,7 +194,8 @@
 						%20Group%20for%20Mercury%20Product%20using%20Referral%20Code:%0D%0A
 						{{ user.referral_code }}%0D%0Aor%20Refferral%20Link%20as%20%0D%0A
 						{{ referral_link }}">
-						Share on Whatsapp
+						<i class="fab fa-whatsapp wa">
+						</i>
 						</a>
 					</div>
 					</p>
@@ -168,11 +205,25 @@
 		</div> <!-- row ends -->
 
 		<!-- row 2 starts -->
-		<div class="row mt-3 justify-content-center pb-3">
+		<div class="row mt-3 pb-3">
 
-			<div class="col-md-8 pb-2">
-			<div class="card h-100 p-3 round_effect" style="background-color: rgb(246,248,248);">
-				<p class="lead">Go To Mercury</p>
+			<div class="col-md-4 pb-2">
+				<div class="card h-100 p-3 round_effect">
+					<p class="lead">Billing</p>
+					<hr class="mt-0">
+					<p class="text">Generate Invoice</p>
+					<a href="" class="stretched-link"></a>  
+						<img src="/static/img/arrow-black.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+						 <!-- RAZOR PAY invoice for    -->
+					</a>
+				</div>
+			</div>
+
+			<div class="col-md-4 pb-2">
+			<div class="card h-100 p-3 round_effect">
+				<p class="lead">Go To Mercury
+					<!-- <a href="www.google.com"><button class="float-right btn btn-dark">bill</button></a> -->
+				</p>
 				<hr class="mt-0">
 				<p class="text">Your Personal Technical Analyst!</p>
 				<a href="/worker/mercury" class="stretched-link"></a>  
@@ -225,7 +276,7 @@
 												
 								</p>
 								<hr class="mt-0">
-								<ul class="list-group card-body flex-column">
+								<ul class="list-group card-body flex-column pl-3">
 									<li class="list-group-item">
 								<!-- <p class=""> -->
 									{% if iplan.0.subscription_type_id__type_name == "Trial" %}
@@ -242,9 +293,9 @@
 										<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
 										<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
 									</ul>
-									<div class="row mt-1 pl-0" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
+									<div class="row mt-1 px-3">
 										<div class="col-6">
-											<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" >EXIT</button>
+											<button  class="btn btn-block btn-outline-primary plans-view-btn-danger">EXIT</button>
 										</div>
 										<div class="col-6">
 											<form method="POST" action="/subscriptions/plan-renew">
@@ -262,7 +313,7 @@
 												{% if iplan.0.subscription_type_id__type_name == "Trial" %}
 													<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
 												{% else %}
-													<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW NOW</button>
+													<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW</button>
 												{% endif %}
 											</form>
 										</div>
@@ -288,11 +339,35 @@
 				{% for gplan in gplans %}
 					<div class="col-md-4 pb-2">
 						<div class="card h-100 border bg-white text-dark p-3 round_effect">
-							<p class="lead">
+							<p class="">
 								{% if gplan.1.type_name == "Premium" %}
-									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} </h4>
+									
+									<div class="justify-content-between h5 pt-1 px-2">
+
+										<span class="badge badge-pill badge-secondary" style="min-width: 20px;">
+											{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+										</span>  
+										 
+										<span class="badge badge-pill badge-warning float-right">
+											{{gplan.0.subscription_type_id__type_name}}
+										</span>
+									</div>
+
 								{% else %}
-									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} </h4>
+									<div class="justify-content-between h5 pt-1 px-2">
+										
+										<span class="badge badge-pill badge-secondary float-left" style="min-width: 20px;">
+											{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+										</span>  
+
+										<span class="badge badge-pill badge-warning float-right">
+											{{gplan.0.subscription_type_id__type_name}}
+										</span>
+									
+									</div>
+										
 								{% endif %}
 								<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
 									<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
@@ -318,7 +393,7 @@
 								</div>				
 							</p>
 							<hr class="mt-0">
-							<ul class="list-group card-body flex-column">
+							<ul class="list-group card-body flex-column pl-3 pl-3">
 								<li class="list-group-item">
 							<!-- <p class=""> -->
 								{% if gplan.0.subscription_type_id__type_name == "Trial" %}
@@ -335,7 +410,7 @@
 									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ gplan.0.subscription_start }}</span></li>
 									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ gplan.0.subscription_end }}</span></li>
 								</ul>
-								<div class="row mt-1" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
+								<div class="row px-3">
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" >EXIT</button>
 									</div>
@@ -355,7 +430,7 @@
 											{% if gplan.0.subscription_type_id__type_name == "Trial" %}
 												<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
 											{% else %}
-												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW NOW</button>
+												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW</button>
 											{% endif %}
 										</form>
 									</div>
@@ -533,9 +608,13 @@ $('.alertx').alert()
 		$('[data-toggle="tooltip"]').tooltip()
 	})
   
-  </script>
+</script>
 
 <script type="text/javascript">
+
+	var current_contact = document.getElementById("contact_no_field").innerHTML
+	console.log("juna contact is ", current_contact)
+
 	$(document).ready(()=>{
 		$("#close-confirm").click(()=>{
 			$('#edit-plan').modal('toggle');
@@ -597,6 +676,50 @@ $('.alertx').alert()
 					}
 				});
 		});
+
+		$("#contact_no_button").click(()=>{
+
+			var edit_contact_var = `<input type="tel" maxlength="10" minlength="10" id="edit_contact_no_id" name="contact_no_input" required>`
+			var contact_no =  $("input[name='contact_no_input']").val()
+			if ($('#contact_no_button').html().toLowerCase() == 'save') { 
+			
+			// $("#edit_contact_no_id").click()
+			
+			$.ajax({
+					type: "POST",
+					url: "{% url 'contact_no_edit' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						contact_no : contact_no			
+					},
+					success: function(data)
+					{
+						console.log("changed contact success : ", data)
+						$('#contact_no_field').html(data.contact_no)
+						$('#contact_no_button').html("Edit")
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+			}
+			else{
+				$('#contact_no_field').html(edit_contact_var)
+				$('#contact_no_button').html("Save")
+			}
+		});
+
+
+
+		// $("#contact_no_field").focusout(()=>{
+		// 	// if ($('#contact_no_button').html().toLowerCase() != 'save') {
+		// 		console.log("old hi hai : ", current_contact)
+		// 		$('#contact_no_field').html(current_contact)
+		// 		$('#contact_no_button').html("Edit")
+		// 	// }
+		// });
+
 	});
 
 	function remove_member(email, group_type){

@@ -13,4 +13,5 @@ urlpatterns = [
     path('get-user-group-add-link/', views.get_user_group_add_link, name="get_user_group_add_link"),
     path('feedback', views.get_feedback, name= "feedback"),
     path('register-feedback', views.register_feedback, name= "register_feedback"),
+    path('contact-no-edit', views.contact_no_edit, name= "contact_no_edit"),
 ]

@@ -128,3 +128,15 @@ def redirect_after_signup(request, user, **kwargs):
         users.functions.add_referral_credits(logged_user, referral_code=referral_code)
     return HttpResponseRedirect("/products/")
 
+# EDIT section 
+
+def contact_no_edit(request):
+    contact_no =  request.POST.get("contact_no", request.user.contact_no)
+    users.functions.contact_no_edit(request.user, contact_no)  #function call
+    print("___________ contact is ", contact_no)
+    print("___________", request.POST)
+    logger.info(f"{contact_no}")
+    logger.info(f"{request.POST}")
+    return JsonResponse({"success":True, "contact_no":contact_no})
+
+
