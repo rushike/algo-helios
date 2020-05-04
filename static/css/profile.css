@@ -138,3 +138,16 @@ button.closex {
 .plans-view-btn-danger:focus{
     box-shadow: 0 0 0 0rem transparent !important;;
 }
+.fa-whatsapp{
+	width:40px;
+	height:40px;
+    padding:7px;
+    /* padding: 0px; */
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:30px;
+	text-align:center;
+    font-size:25px;
+	box-shadow: 2px 2px 3px #999;
+    z-index:100;
+}

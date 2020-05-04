@@ -217,3 +217,11 @@ def remove_user_from_group(user, group_type, admin):
     else:
         logger.debug(f"admin can't be verified, for user group {group_id} admin is : {group_id.admin.email}, but given : {admin}")
     
+# EDIT section
+
+def contact_no_edit(user, contact_no):
+    user = get_user_object(user)
+    AlgonautsUser.objects.filter(id = user.id).update(contact_no = contact_no)
+
+
+
