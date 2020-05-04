@@ -16,5 +16,7 @@ urlpatterns = [
     path('order-details', views.order_details, name="order-details"),
     path('plan-overview/subscribe',views.plan_subscribe, name=''),
     path('plan-overview/<slug:slug>', views.plan_overview, name='plan_overview_page'),
-    path('terminate-subscription', views.terminate_subscription, name='terminate_subscription')
+    path('terminate-subscription', views.terminate_subscription, name='terminate_subscription'),
+    path('historical-purchases', views.historical_purchases, name='historical_purchases'),
+    path('download-invoice', views.download_invoice, name='download_invoice'),
 ]

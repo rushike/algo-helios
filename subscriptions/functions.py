@@ -111,8 +111,7 @@ def get_plan(plan_type, plan_name, group_type):
     group_type = UserGroupType.objects.filter(type_name__iexact = group_type)
     if isinstance(plan_type, str):
         plan_type = PlanType.objects.filter(type_name__iexact = plan_type)
-    return Plan.objects.get(plan_type_id = plan_type, plan_name__iexact = plan_name, user_group_type_id__in = group_type)
-
+    return  Plan.objects.filter(plan_name__iexact = plan_name, user_group_type_id__in = group_type, plan_type_id__in = plan_type).first()
 
 def get_all_plans_from_ids(plans_ids:list):
     return Plan.objects.filter(id__in = plans_ids)
@@ -272,3 +271,21 @@ def create_subscription(user, group_type, plan_type, plan_name, period, payment_
                     payment_id = payment_id,
                 )
     return subscribed
+
+def get_all_subscriptions_of_user(user):
+    user = users.functions.get_user_object(user)
+    now = datetime.datetime.now(pytz.timezone('UTC'))
+
+    user_all_groups = UserGroupMapping.objects.filter(
+                            user_profile_id = user, 
+                            time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))
+                            ).values(
+                                'user_profile_id', 
+                                'user_group_id', 
+                                'user_group_id__user_group_type_id'
+                                ).values('user_group_id') # one user linked with multiple groups
+
+    return Subscription.objects.filter(
+                            user_group_id__in = user_all_groups, 
+                            subscription_end__gt = now, 
+                            subscription_start__lt = now)

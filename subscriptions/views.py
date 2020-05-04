@@ -365,9 +365,48 @@ def terminate_subscription(request):
             plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
             subscription_type = subscriptions.functions.get_subscription_type_object(period)
             subscriptions.functions.end_subscription(request.user, plan, subscription_type)
-            
+
         else : # if plan subscribed by non individual group
             group = users.functions.get_user_group(request.user, group_type)
             users.functions.remove_user_from_group(request.user, group_type, group.admin)
+
+        JsonResponse({"success" : True})
         
     return JsonResponse({"success" : False})
+
+def historical_purchases(request):
+    all_active_subscriptions = subscriptions.functions.get_all_subscriptions_of_user(request.user)
+
+    subs_dict = all_active_subscriptions.values(
+                                'plan_id', 
+                                'plan_id__user_group_type_id__max_members' , 
+                                'plan_id__user_group_type_id__type_name', 
+                                'plan_id__plan_name',
+                                'plan_id__plan_type_id__type_name', 
+                                'user_group_id', 
+                                'plan_id__user_group_type_id', 
+                                'subscription_type_id__type_name', 
+                                'payment_id__invoice_id',
+                                'subscription_start',
+                                'subscription_end'
+                                )
+    data = [] # list of dictionaries
+    for subscription in subs_dict:
+        logger.info(f'end date {subscription["subscription_start"]},  type : {type(subscription["subscription_start"])}')
+        data.append({
+            "plan-name"     : subscription["plan_id__plan_name"].replace("#", "-"), 
+            "plan-type"     : subscription["plan_id__plan_type_id__type_name"], 
+            "group-members" : subscription["plan_id__user_group_type_id__max_members"],
+            "start-date"    : subscription["subscription_start"].date(),
+            "end-date"      : subscription["subscription_end"].date(),
+            "download-link" : f"https://invoices.razorpay.com/v1/invoices/{subscription['payment_id__invoice_id']}/pdf?download=1&key_id={RAZORPAY_KEY}",
+            "invoice-id"    : subscription['payment_id__invoice_id']
+        })
+
+    return JsonResponse({"data" : data})
+
+def download_invoice(request):
+    invoice_id = request.POST.get("invoice_id")
+    if invoice_id:
+        return JsonResponse({"url" : f"https://invoices.razorpay.com/v1/invoices/{invoice_id}/pdf?download=1&key_id={RAZORPAY_KEY}"})
+    return JsonResponse({"url" : None})

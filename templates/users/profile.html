@@ -155,7 +155,7 @@
 		<div class="row mt-3 pb-3">
 
 			<div class="col-md-4 pb-2">
-				<div class="card h-100 p-3 round_effect">
+				<div class="card h-100 p-3 round_effect" onclick="get_all_historical_purchases()">
 					<p class="lead">Billing</p>
 					<hr class="mt-0">
 					<p class="text">Generate Invoice</p>
@@ -246,9 +246,12 @@
 								<div class="row mt-1 pl-0" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
-										data-toggle="modal" data-target="#exit-iplan-modal">
-											EXIT
-										</button>
+										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
+																							'{{iplan.0.subscription_type_id__type_name}}', 
+																							'{{iplan.1}}',
+																							'{{iplan.0.plan_id__plan_name}}', 
+																							'{{iplan.0.plan_id__user_group_type_id__type_name}}',			
+																						)">EXIT</button>
 									</div>
 									<div class="col-6">
 										<form method="POST" action="/subscriptions/plan-renew">
@@ -341,8 +344,12 @@
 								<div class="row px-3">
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
-										data-toggle="modal" data-target="#exit-gplan-modal">
-										EXIT</button>
+										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
+																									'{{gplan.0.subscription_type_id__type_name}}', 
+																									'{{gplan.1}}',
+																									'{{gplan.0.plan_id__plan_name}}', 
+																									'{{gplan.0.plan_id__user_group_type_id__type_name}}',			
+																								)">EXIT</button>
 									</div>
 									<div class="col-6">
 										<form method="POST" action="/subscriptions/plan-renew">
@@ -535,7 +542,7 @@
 				</div>
 				<div class="modal-body">
 					
-					<table id = "edit-plan-table" class="table table-striped table-hover">
+					<table id = "edit-invoice-table" class="table table-striped table-hover">
 						<thead>
 						  <tr>
 							<th scope="col">#</th>
@@ -563,8 +570,7 @@
 							<td>01 august 1998</td>
 							<td>03 february 1999</td>
 							<td>
-								<span class="fa fa-arrow-alt-circle-down fa-2x" style="cursor: pointer;">
-								</span>
+								<span class="fa fa-download" style="cursor: pointer;"></span>
 							</td>
 						  </tr>
 						</tbody>
@@ -588,7 +594,7 @@
 
 <!-- Exit individual plan modal -->
 
-<div class="modal fade" id="exit-iplan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+<div class="modal fade" id="exit-plan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
 	<div class="modal-dialog modal-sm" role="document">
 		<div class="modal-content">
 
@@ -600,13 +606,17 @@
 			</div>
 
 			<div class="modal-body text-center">
+				<div class="text-left">
+					Enter password to confirm exit from the group <span id = "exit-plan-name" class="font-weight-bold"></span>.
+				</div>
 				<div class="input-group input-group-sm  mx-auto">
-					<input type="password" class="form-control card" value="" id="">
+					<input type="password" class="form-control card" value="" id="" placeholder="Enter Password">
 					<div class="input-group-append">
 						<span class="input-group-text btn fa fa-check-circle" id=""></span>
 					</div>
 				</div>
 				<small>Note that you will be unscubscribed of this plan</small>
+				
 			</div>
 
 		</div>
@@ -617,7 +627,7 @@
 
 <!-- Exit individual plan modal -->
 
-<div class="modal fade" id="exit-gplan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+<!-- <div class="modal fade" id="exit-gplan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
 		<div class="modal-dialog modal-sm" role="document">
 			<div class="modal-content">
 	
@@ -640,7 +650,7 @@
 	
 			</div>
 		</div>
-</div>
+</div> -->
 	
 <!-- Exit individual plan modal ends -->
 
@@ -807,6 +817,98 @@ $('.alertx').alert()
 		$('#edit-plan').modal('toggle');
 		$("#confim-user-remove").modal()
 	}
+	
+	function insert_row_in_invoice_table(source_table, data, index, group_type) {
+		let row = source_table.getElementsByTagName("tbody")[0].insertRow(-1);
+
+		row.innerHTML = `<th scope="row">` + index + `</th>` + 
+						`<td class = "font-weight-bold">` + `${data["plan-name"]} | ${data["plan-type"]} | <span class = "badge badge-secondary" >${data["group-members"]}</span>` + `</td>` + 
+						`<td>` + data['start-date'] + `</td>` +
+						`<td>` + data['end-date'] + `</td>` +
+						`<td id = "download-invoice-id" onclick="download_invoice('${data['invoice-id']}')">` + 
+							// `<button type="button" class="btn" data-toggle="modal" data-target="#confim-user-remove">` + 
+								`<span class="fa fa-download" style="cursor: pointer;"></span>` +
+							// `</button>` +
+						`</td>`
+		row.setAttribute('class', "none")
+		return row
+	}
+
+	function update_invoice_table(data){
+		console.log("invoice data : ", data)
+		var table = document.getElementById("edit-invoice-table")
+		$("#edit-invoice-table").find("tr:not(:first)").remove();
+		data.forEach((row, index) => {
+			insert_row_in_invoice_table(table, row, index + 1)
+		});
+	}
+
+	function get_all_historical_purchases(){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'historical_purchases' %}" ,
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				
+			},
+			success: function(data)
+			{
+				return update_invoice_table(data["data"]);
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+	}
+
+	function download_invoice(invoice_id){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'download_invoice' %}" ,
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				invoice_id : invoice_id
+			},
+			success: function(data)
+			{
+				if(data["url"]){
+					var link = document.createElement('a');
+					link.href = data["url"];
+					link.download = "file.pdf"
+					link.dispatchEvent(new MouseEvent('click'));
+				}
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+	}
+
+	function exit_from_plan(period, plancode, planname, groupcode){
+		console.log("period : ", period, ",  plancode : ", plancode, ",  planname : ", planname, ",  groupcode : ", groupcode)
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'terminate_subscription' %}" ,
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				period : period,
+				plancode : plancode,
+				planname : planname,
+				groupcode : groupcode,
+			},
+			success: function(data)
+			{
+
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+	}
+	
 	function insert_row_in_edit_plan_table(source_table, data, index, group_type) {
 		let row = source_table.getElementsByTagName("tbody")[0].insertRow(-1);
 		row.innerHTML = `<th scope="row">` + index + `</th>` + 
@@ -820,7 +922,7 @@ $('.alertx').alert()
 		row.setAttribute('class', "none")
 		return row
 	}
-
+	
 	function update_edit_plan_table(data, extras){
 		console.log( typeof data, ",  ", data, ", group type : ", extras.group_type)
 		$("#edit-group-type-id").html(extras.group_type)
