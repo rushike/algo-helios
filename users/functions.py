@@ -2,6 +2,7 @@ from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMappi
 from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
 from allauth.account.admin import EmailAddress
+from django.contrib.auth import authenticate
 import pytz, datetime
 from hashlib import md5
 import subscriptions.functions
@@ -87,8 +88,10 @@ def get_user_group(user, group_type, create = False):
     user_groups = UserGroupMapping.objects.filter(user_profile_id = user).values('user_group_id')
     user_group = UserGroup.objects.filter(id__in = user_groups, user_group_type_id = group_type)
     if create and not user_group.exists():
+        logger.debug(f"Group with type : {group_type} doesn't exist for user {user} and will be created")
         return UserGroup.objects.create_user_group(group_type, admin=user)
     if not user_group.exists():
+        logger.debug(f"Group doesn't exist and will not created due to create : {create}")
         return None
     return user_group.first()
     
@@ -116,23 +119,62 @@ def validate_group_add_url_slug(group_id:int, hash_:str):
 
 def get_user_subs_plans(user):
     user = get_user_object(user)
+    
     now = datetime.datetime.now(pytz.timezone('UTC'))
+
     iGroupType = UserGroupType.objects.get(min_members = 1, max_members = 1 ) # get the individual object from moddles
     eGroupType = UserGroupType.objects.exclude(min_members = 1, max_members = 1) # get rest group types available from model
-    #one user linked with multiple groups
-    user_all_groups = UserGroupMapping.objects.filter(user_profile_id = user, time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))) \
-                .values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id').values('user_group_id')
-    indivdual =	user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id = iGroupType).values('user_group_id__user_group_type_id')
-    group = user_all_groups.filter(user_profile_id=user, user_group_id__user_group_type_id__in = eGroupType).values('user_group_id__user_group_type_id') 
-    # filter out all groups of profile with non individual group type 
+
+    user_all_groups = UserGroupMapping.objects.filter(
+                            user_profile_id = user, 
+                            time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))
+                            ).values(
+                                'user_profile_id', 
+                                'user_group_id', 
+                                'user_group_id__user_group_type_id'
+                                ).values('user_group_id') # one user linked with multiple groups
+
+    indivdual =	user_all_groups.filter(
+                            user_profile_id=user, 
+                            user_group_id__user_group_type_id = iGroupType
+                            ).values('user_group_id__user_group_type_id')
     
-    plans = Subscription.objects.filter(user_group_id__in = user_all_groups, subscription_end__gt = now, subscription_start__lt = now) \
-        .values('plan_id', 'plan_id__user_group_type_id__max_members' , 'plan_id__user_group_type_id__type_name', 'plan_id__plan_name', 
-        'user_group_id', 'plan_id__user_group_type_id', 'subscription_type_id__type_name', 'plan_id__entry_time', \
-        'plan_id__expiry_time', 'plan_id__price_per_month', 'plan_id__price_per_year','subscription_start','subscription_end')
-    group_plans = plans.filter(plan_id__user_group_type_id__in = group, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now )		
-    indivdual_plans = plans.filter(plan_id__user_group_type_id__in = indivdual, plan_id__entry_time__lt = now, plan_id__expiry_time__gt = now)
-    results = {'individual_plans' : indivdual_plans, 'group_plans' : group_plans}
+    group = user_all_groups.filter(
+                            user_profile_id=user, 
+                            user_group_id__user_group_type_id__in = eGroupType
+                            ).values('user_group_id__user_group_type_id') # filter out all groups of profile with non individual group type 
+    
+    plans = Subscription.objects.filter(
+                            user_group_id__in = user_all_groups, 
+                            subscription_end__gt = now, 
+                            subscription_start__lt = now).values(
+                                'plan_id', 
+                                'plan_id__user_group_type_id__max_members' , 
+                                'plan_id__user_group_type_id__type_name', 
+                                'plan_id__plan_name', 
+                                'user_group_id', 
+                                'plan_id__user_group_type_id', 
+                                'subscription_type_id__type_name', 
+                                'plan_id__entry_time', 
+                                'plan_id__expiry_time', 
+                                'plan_id__price_per_month', 
+                                'plan_id__price_per_year',
+                                'subscription_start',
+                                'subscription_end'
+                                )
+
+    group_plans = plans.filter(
+                            plan_id__user_group_type_id__in = group, 
+                            plan_id__entry_time__lt = now, 
+                            plan_id__expiry_time__gt = now 
+                            )
+
+    indivdual_plans = plans.filter(
+                            plan_id__user_group_type_id__in = indivdual, 
+                            plan_id__entry_time__lt = now, 
+                            plan_id__expiry_time__gt = now
+                            )
+                            
     return indivdual_plans, group_plans
 
 
@@ -216,12 +258,22 @@ def remove_user_from_group(user, group_type, admin):
         UserGroupMapping.objects.delete_user_from_group(user, group_id, admin)
     else:
         logger.debug(f"admin can't be verified, for user group {group_id} admin is : {group_id.admin.email}, but given : {admin}")
-    
+
+
+def check_password(user, password):
+    user = get_user_object(user)
+    auth = authenticate(email=user.email, password=password)
+    if auth:
+        logger.debug("Password verfied successfully")
+        return True
+    logger.debug(f"Incorrect password provided, can't verify user {user.email}")
+    return False
+
 # EDIT section
 
 def contact_no_edit(user, contact_no):
     user = get_user_object(user)
     AlgonautsUser.objects.filter(id = user.id).update(contact_no = contact_no)
-
+    logger.debug(f"contact number changed sucessfully to {contact_no}")
 
 

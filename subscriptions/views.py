@@ -352,4 +352,22 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
     return subscribed
 
 def terminate_subscription(request):
-    return JsonResponse({"success" : True})
+    password = request.POST.get('password', None)
+    if password and users.functions.check_password(request.user, password):
+        group_type = request.POST.get('groupcode')
+        plan_type = request.POST.get('plancode')
+        plan_name = request.POST.get('planname')
+        if 'plan_name' in request.POST:
+            plan_name = request.POST.get('plan_name')
+        period = request.POST.get('period', 'monthly')
+
+        if group_type == 'individual': # if plan subscribed by individual group
+            plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
+            subscription_type = subscriptions.functions.get_subscription_type_object(period)
+            subscriptions.functions.end_subscription(request.user, plan, subscription_type)
+            
+        else : # if plan subscribed by non individual group
+            group = users.functions.get_user_group(request.user, group_type)
+            users.functions.remove_user_from_group(request.user, group_type, group.admin)
+        
+    return JsonResponse({"success" : False})

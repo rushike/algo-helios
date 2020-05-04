@@ -109,7 +109,9 @@ def is_group_plan(plan_id):
 
 def get_plan(plan_type, plan_name, group_type):
     group_type = UserGroupType.objects.filter(type_name__iexact = group_type)
-    return Plan.objects.get(plan_name__iexact = plan_name, user_group_type_id__in = group_type)
+    if isinstance(plan_type, str):
+        plan_type = PlanType.objects.filter(type_name__iexact = plan_type)
+    return Plan.objects.get(plan_type_id = plan_type, plan_name__iexact = plan_name, user_group_type_id__in = group_type)
 
 
 def get_all_plans_from_ids(plans_ids:list):
@@ -247,6 +249,14 @@ def register_payment(order_id, payment_id, signature, invoice_id):
     )
     Order.objects.filter(razorpay_order_id = order_id.razorpay_order_id).update(razorpay_payment_id = payment_id)
     return payment
+
+def end_subscription(user, plan, subscription_type):
+    user_group_id = users.functions.get_user_group(user, plan.user_group_type_id)
+    subscription = Subscription.objects.filter(
+        user_group_id = user_group_id,
+        plans_id = plan,
+        subscription_type_id = subscription_type
+    )
 
 
 def get_order_instance(order_id):
