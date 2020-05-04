@@ -651,13 +651,13 @@ $('.alertx').alert()
 				responsiveFallback: false,       											
 				direction: "vertical"           
 			});
-			$(".onepage-pagination").attr("style", "left:10px");
+			// $(".onepage-pagination").attr("style", "left:10px;right:none;");
 		}
 		$("#contact_no_button").click(()=>{
 
 			var edit_contact_var = `<input type="tel" maxlength="10" minlength="10" id="edit_contact_no_id" name="contact_no_input" required>`
 			var contact_no =  $("input[name='contact_no_input']").val()
-			if ($('#contact_no_button').html().toLowerCase() == 'save') { 
+			if ($('#contact_no_button').html().toLowerCase() == 'save' && contact_no.length == 10) { 
 			
 			// $("#edit_contact_no_id").click()
 			
@@ -679,6 +679,10 @@ $('.alertx').alert()
 						alert(request.responseText);
 					}
 				});
+			}
+			else if(contact_no && contact_no.length < 10){
+				$("#contact_no_input").click()
+				document.getElementById("contact_no_input").click();
 			}
 			else{
 				$('#contact_no_field').html(edit_contact_var)
