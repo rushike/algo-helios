@@ -90,3 +90,7 @@
 .rounded-large{
     border-radius: 40px;
 }
+
+.light-blue-focus:focus{
+    box-shadow:  0 0 0 2px #7DDCFF !important;
+}

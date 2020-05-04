@@ -7,7 +7,7 @@ from collections import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
 from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType, Order, Payment
 from products.models import Product, ProductCategory, PlanProductMap, ProductFamily
-from helios.settings import EMAIL_HOST_USER
+from helios.settings import EMAIL_HOST_USER, client, RAZORPAY_KEY
 import users.functions
 import jinja2
 
@@ -33,7 +33,24 @@ def get_plan_id(plan_name, plan_type, group_type):
                         plan_name = plan_name,
                         user_group_type_id = group_type, 
                         plan_type_id = plan_type
-                    ).first().values("id")
+                    ).values("id").first()["id"]
+
+def get_plan_object(plan):
+    if isinstance(plan, str):
+        return Plan.objects.filter(plan_name__iexact = plan).first()
+    if isinstance(plan, int): 
+        return Plan.objects.filter(id = plan).first()
+    if isinstance(plan, Plan):
+        return plan
+
+def get_subscription_type_object(subscription_type, period = True):
+    if isinstance(subscription_type, str):
+        return SubscriptionType.objects.filter(type_name__iexact = subscription_type).first()
+    if isinstance(subscription_type, int):
+        if period : return  SubscriptionType.objects.filter(duration_in_days = subscription_type).first()
+        return SubscriptionType.objects.filter(id = subscription_type).first()
+    if isinstance(subscription_type, SubscriptionType):
+        return subscription_type
 
 def get_subscription_type_id(period):
     return SubscriptionType.objects.filter(
@@ -216,7 +233,7 @@ def register_order(user_group_id, razorpay_order):
     )
 
 
-def register_payment(order_id, payment_id, signature):
+def register_payment(order_id, payment_id, signature, invoice_id):
     if type(order_id) == str:
         order_id = get_order_instance(order_id)
     if not order_id : return None
@@ -226,6 +243,7 @@ def register_payment(order_id, payment_id, signature):
         user_group_id = order_id.user_group_id,
         signature = signature,
         amount = order_id.order_amount,    
+        invoice_id = invoice_id
     )
     Order.objects.filter(razorpay_order_id = order_id.razorpay_order_id).update(razorpay_payment_id = payment_id)
     return payment
@@ -244,5 +262,3 @@ def create_subscription(user, group_type, plan_type, plan_name, period, payment_
                     payment_id = payment_id,
                 )
     return subscribed
-
-

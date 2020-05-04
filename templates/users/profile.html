@@ -6,55 +6,30 @@
 <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
 <link rel="stylesheet" type="text/css" href="/static/css/style.css">
 
+<!--  -->
 
-<div class="container mb-5" style="margin-top: 15vh;">
+	<!-- <link rel="stylesheet" type="text/css" href="/static/css/fullpage.css"> -->
+	<script src="{% static 'js/onepage-scroll.js' %}"></script>
 
+<script>
+	if (screen && screen.width > 480) {
+		document.write(`<link rel="stylesheet" type="text/css" href="/static/css/onepage-scroll.css">`);
+	}
+</script>
+<!-- <link rel="stylesheet" type="text/css" href="/static/css/fullpage.css">
+<script src="{% static 'js/fullpage.js' %}"></script> -->
 
-<!-- <h3>DashBoard</h3> -->
-  
-<style>
+<!-- <script type="text/javascript" src="https://raw.githubusercontent.com/alvarotrigo/fullPage.js/2.9.7/jquery.fullPage.js"></script> -->
+<div id = "profile-id" class="container onepagescroll  mb-5" style="margin-top: 15vh;">
+	  
 	
-</style>
+	<style>
+		
+	</style>
 
-		<!-- <div class="row">
-			<div class="col-md-12">
-				<div class="flush-left">
-						<div class="card rounded">
-							<div class="card-body p-2">
-								<ul class="list-group list-group-flush">
-									<li class="list-group-item"><b>Name : </b>{{ user.first_name }} {{user.last_name}} </li>
-									<li class="list-group-item"><b>Email : </b>{{ user.email }} </li>
-									<li class="list-group-item"><b>Credits :</b> <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
-									<li class="list-group-item"><b>Last Login : </b>{{ user.last_login }}</li>
-									<li class="list-group-item"><b>Your Referral Code : </b>
-									<span class="badge badge-pill badge-dark p-2"> {{ user.referral_code }} </span>
-										<div class="input-group input-group-sm w-75 mx-auto">
-											<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
-											<div class="input-group-append">
-												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="copyTextFunction()">copy</span>
-											</div><br>
-										</div>
-										<small>Share link to avail 30 Credits (Applicable only Once)</small>
-									</li>
-									{% if not if_referred %}
-										<li class="list-group-item">
-										<form class="form-inline" action="/user/refer/user={{ user.referal_link }}" method="POST">
-											{% csrf_token %}
-											<div class="form-group">
-												<label for=""><b>Enter Referal Code</b></label>
-												<input type="text" id="" maxlength="8" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline" required>
-												<button class="btn btn-dark btn-sm mt-1" type="submit">Ok</button>
-											</div>
-											</form>
-										</li>
-									{% endif %}
-								</ul>
-							</div> 
-						</div>
-				</div>
-			</div>
-		</div>  -->
-	<div class="container" style="min-height: 85vh;">
+	<section>
+	<div class="container  section" style="min-height: 85vh;">
+		
 		
 		{% if not is_verified %}
 		<div class="alertx alert alert-dismissible fade show" role="alertx" style="background-color: rgb(246,248,248);">
@@ -97,10 +72,10 @@
 					<div id = 'if-referred' style="display: none;">yes</div>
 				{% endif %}
 				<script>
-					var win_refer = `<form class="form-inline justify-content-center" action="/user/refer/user={{ user.referal_link }}" method="POST">
+					var win_refer = `<form class="form-inline justify-content-center" action="/user/refer/user=" method="POST">
 										{% csrf_token %}
 										<div class="input-group input-group-sm">
-											<input type="text" id="" maxlength="8" class="form-control pl-2 light-blue-focus" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
+											<input type="text" id="" name = "rcode" maxlength="8" class="form-control pl-2 light-blue-focus" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
 											<button class="btn btn-dark btn-sm ml-2" type="submit">Ok</button>
 										</div>
 									</form>`
@@ -120,6 +95,8 @@
 							$("#credits-content").html(refer_credits);
 						}
 						if (head_bool == 'win'){
+						
+							
 							$("#credits-content").html(win_refer);
 						}
 						if (head_bool == 'head'){
@@ -195,145 +172,147 @@
 		</div> <!-- row 2  -->
 
 		<hr>
-	</div> <!-- container ends-->
 	
-	<div>
-		<!-- ------------------------------------------------------------------------------------------ -->
-		
-		<div class="container mt-5">
+	</div> <!--Info container ends , also onepagescroll ends here-->
+	</section>
+
+	<div class=" section">
+
+		<!-- --------------------------------------Your Plans section starts---------------------------- -->
+		<div class="container">
 			<h1>Your Plans</h1>
 				
-				
-			</div>
+		</div>
 
-
-			<div class="container mt-5">
-			
-				{% if iplans %}
-				<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Individual Plans</h3></div>
-					
-				<div class="row mt-3 justify-content-left">
-					{% for iplan in iplans %}
-						<div class="col-md-4 pb-2">
-							<div class="card h-100 border bg-white text-dark p-3 round_effect">
-								<p class="lead">
-									{% if iplan.1.type_name == "Premium" %}
-										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
-									{% else %}
-										<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
-									{% endif %}
-												
-								</p>
-								<hr class="mt-0">
-								<ul class="list-group card-body flex-column">
-									<li class="list-group-item">
-								<!-- <p class=""> -->
-									{% if iplan.0.subscription_type_id__type_name == "Trial" %}
-										<p class="lead"> Subscribe With the following Plan</p>
-										<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
-										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
-									{% elif iplan.0.subscription_type_id__type_name == "Monthly" %}
-										<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
-									{% else %}
-										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
-									{% endif %}
-									</li>
-									<!-- <ul class="list-group mb-4"> -->
-										<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
-										<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
-									</ul>
-									<div class="row mt-1 pl-0" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
-										<div class="col-6">
-											<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" >EXIT</button>
-										</div>
-										<div class="col-6">
-											<form method="POST" action="/subscriptions/plan-renew">
-												{% csrf_token %}
-												<!-- <input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input> -->
-												{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
-													<input class="periodcode" name = "period" value="Monthly"hidden></input>
-												{% else %}
-													<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
-												{% endif %}
-												<input class="plancode" name= "plancode" value="{{iplan.1}}" hidden></input>
-												<input class="planname" name= "planname" value="{{iplan.0.plan_id__plan_name}}" hidden></input>
-												<input class="groupcode" name= "groupcode" value="{{iplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
-												<input class="super" name = "super" value="super" hidden/>
-												{% if iplan.0.subscription_type_id__type_name == "Trial" %}
-													<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
-												{% else %}
-													<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW NOW</button>
-												{% endif %}
-											</form>
-										</div>
-									</div>
-								</p>
-							</div>
-						</div>	  	
-					{% endfor %}		
-					{% endif %}
-	
-				</div> <!-- Individual Plan tab ends-->
-			</div>
-
-
-		<!-- ------------------------------- -->
+		<!-- Individual Plans -->
 		
-			<div class="container mt-5">
-			
-			{% if gplans %}
-			<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Group Plans</h3></div>
+		<div class="container mt-2">
+		
+			{% if iplans %}
+			<section>
+			<div class="card card-header mt-2"><h3 class="x-large font-weight-bold">Individual Plans</h3></div>
 				
 			<div class="row mt-3 justify-content-left">
-				{% for gplan in gplans %}
+				{% for iplan in iplans %}
 					<div class="col-md-4 pb-2">
 						<div class="card h-100 border bg-white text-dark p-3 round_effect">
 							<p class="lead">
-								{% if gplan.1.type_name == "Premium" %}
-									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+								{% if iplan.1.type_name == "Premium" %}
+									<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 								{% else %}
-									<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+									<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
 								{% endif %}
-								<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
-									<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
-										<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
-									</span>
-							
-								<div class="dropdown-menu dropdown-menu-right">
-									<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
-																	trigger_edit_plan(
-																		'{{gplan.0.subscription_type_id__type_name}}', 
-																		'{{gplan.1}}',
-																		'{{gplan.0.plan_id__plan_name}}', 
-																		'{{gplan.0.plan_id__user_group_type_id__type_name}}',
-																	)">Edit</button>
-									<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
-																	trigger_group_add_link(
-																		'{{gplan.0.subscription_type_id__type_name}}', 
-																		'{{gplan.1}}',
-																		'{{gplan.0.plan_id__plan_name}}', 
-																		'{{gplan.0.plan_id__user_group_type_id__type_name}}',
-																	)">Show Link</button>
-									</div>
-								</div>				
+											
 							</p>
 							<hr class="mt-0">
 							<ul class="list-group card-body flex-column">
 								<li class="list-group-item">
 							<!-- <p class=""> -->
-								{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+								{% if iplan.0.subscription_type_id__type_name == "Trial" %}
 									<p class="lead"> Subscribe With the following Plan</p>
-									<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
-									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
-								{% elif gplan.0.subscription_type_id__type_name == "Monthly" %}
-									<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+									<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+								{% elif iplan.0.subscription_type_id__type_name == "Monthly" %}
+									<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
 								{% else %}
-									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
 								{% endif %}
 								</li>
 								<!-- <ul class="list-group mb-4"> -->
-									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ gplan.0.subscription_start }}</span></li>
-									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ gplan.0.subscription_end }}</span></li>
+									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
+									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
+								</ul>
+								<div class="row mt-1 pl-0" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
+									<div class="col-6">
+										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" >EXIT</button>
+									</div>
+									<div class="col-6">
+										<form method="POST" action="/subscriptions/plan-renew">
+											{% csrf_token %}
+											<!-- <input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input> -->
+											{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
+												<input class="periodcode" name = "period" value="Monthly"hidden></input>
+											{% else %}
+												<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+											{% endif %}
+											<input class="plancode" name= "plancode" value="{{iplan.1}}" hidden></input>
+											<input class="planname" name= "planname" value="{{iplan.0.plan_id__plan_name}}" hidden></input>
+											<input class="groupcode" name= "groupcode" value="{{iplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
+											<input class="super" name = "super" value="super" hidden/>
+											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
+												<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
+											{% else %}
+												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW NOW</button>
+											{% endif %}
+										</form>
+									</div>
+								</div>
+							</p>
+						</div>
+					</div>	  	
+				{% endfor %}
+				</section>		
+				{% endif %}
+
+			</div> <!-- Individual Plan tab ends-->
+		</div>
+
+		<!------------ Group plans starts ------------- -->			
+		<div class="container mt-2">
+			{% if gplans %}
+			<section>
+				<div class="card card-header"><h3 class="x-large font-weight-bold">Group Plans</h3></div>
+					
+				<div class="row mt-3 justify-content-left">
+					{% for gplan in gplans %}
+						<div class="col-md-4 pb-2">
+							<div class="card h-100 border bg-white text-dark p-3 round_effect">
+								<p class="lead">
+									{% if gplan.1.type_name == "Premium" %}
+										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+									{% else %}
+										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+									{% endif %}
+									<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
+										<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
+											<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
+										</span>
+								
+									<div class="dropdown-menu dropdown-menu-right">
+										<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
+																		trigger_edit_plan(
+																			'{{gplan.0.subscription_type_id__type_name}}', 
+																			'{{gplan.1}}',
+																			'{{gplan.0.plan_id__plan_name}}', 
+																			'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																		)">Edit</button>
+										<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
+																		trigger_group_add_link(
+																			'{{gplan.0.subscription_type_id__type_name}}', 
+																			'{{gplan.1}}',
+																			'{{gplan.0.plan_id__plan_name}}', 
+																			'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																		)">Show Link</button>
+										</div>
+									</div>				
+								</p>
+								<hr class="mt-0">
+								<ul class="list-group card-body flex-column">
+									<li class="list-group-item">
+								<!-- <p class=""> -->
+									{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+										<p class="lead"> Subscribe With the following Plan</p>
+										<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+									{% elif gplan.0.subscription_type_id__type_name == "Monthly" %}
+										<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+									{% else %}
+										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+									{% endif %}
+									</li>
+									<!-- <ul class="list-group mb-4"> -->
+										<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ gplan.0.subscription_start }}</span></li>
+										<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ gplan.0.subscription_end }}</span></li>
 								</ul>
 								<div class="row mt-1" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
 									<div class="col-6">
@@ -360,30 +339,34 @@
 										</form>
 									</div>
 								</div>
-							</p>
-						</div>
-					</div>	  	
-				{% endfor %}		
-				{% endif %}
-			{% if not gplans and not iplans %}
-				<div>
-					<div class="alert alert-secondary" role="alert">
-						<h4 class="alert-heading">Not Subscribed to any of plans</h4>
-						<p class="content-para-sm">To know more about our products please visit &nbsp;&nbsp;<a href="/subscriptions/plans" class="alert-link content-heading">Plans</a>.</p>
-						<p class="content-para-sm">To know more contact our sales department at &nbsp;&nbsp; <a href="mailto:sales@algonauts.in?subject=Want to Know about product features&body=" class="alert-link content-heading">sales@algonauts.in</a>.</p>
-
-						<hr>
-					</div>
-				</div>
+								
+							</div>
+						</div>	  	
+					{% endfor %}		
+				</div> 
+			</section>
 			{% endif %}
-
-			</div> <!-- Plan tab ends-->
-			<!-- ------------------------------------------------------------------------------------------ -->
+		</div> <!--Group  Plan  ends-->
 
 
-		</div> <!-- Tab Content ends -->
-	</div> <!-- Container ends -->
-	</div> 
+		{% if not gplans and not iplans %}
+		<section>
+			<div>
+				<div class="alert alert-secondary" role="alert">
+					<h4 class="alert-heading">Not Subscribed to any of plans</h4>
+					<p class="content-para-sm">To know more about our products please visit &nbsp;&nbsp;<a href="/subscriptions/plans" class="alert-link content-heading">Plans</a>.</p>
+					<p class="content-para-sm">To know more contact our sales department at &nbsp;&nbsp; <a href="mailto:sales@algonauts.in?subject=Want to Know about product features&body=" class="alert-link content-heading">sales@algonauts.in</a>.</p>
+
+					<hr>
+				</div>
+			</div>
+		</section>
+		{% endif %}
+		<!-- ------------------------------------------------------------------------------------------ -->
+	
+	</div> <!-- Container ends, OnePageScroll ends for your plans -->
+	<!-- </div>  -->
+</div> 
 
 
 <div class="modal fade" id="edit-plan" tabindex="-1" role="dialog" aria-labelledby="edit-plan-label" aria-hidden="true">
@@ -597,6 +580,25 @@ $('.alertx').alert()
 					}
 				});
 		});
+
+		console.log($(window).height(), $(window).width(), $(window).width() > 450)
+		if($(window).width() > 450){
+			$(".onepagescroll").onepage_scroll({
+				sectionContainer: "section",    
+				easing: "ease",                 
+												
+				animationTime: 1000,            
+				pagination: true,               
+				updateURL: true,               
+				beforeMove: function(index) {}, 
+				afterMove: function(index) {},  
+				loop: false,                    
+				keyboard: true,                 
+				responsiveFallback: false,       											
+				direction: "vertical"           
+			});
+			$(".onepage-pagination").attr("style", "left:10px");
+		}
 	});
 
 	function remove_member(email, group_type){

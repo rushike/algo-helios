@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Subscription, SubscriptionType,Plan, Offer, OfferPrerequisites, PlanOfferMap, PlanType, Order
+from .models import Subscription, SubscriptionType,Plan, Offer, OfferPrerequisites, PlanOfferMap, PlanType, Order, Payment
 
 
 class SubscriptionTypeAdmin(admin.ModelAdmin):
@@ -34,11 +34,11 @@ class PlanAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, 
         {
-            'fields': ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'trial_applicable', 'is_active')
+            'fields': ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time', 'trial_applicable', 'is_active', 'razorpay_plan_per_month_id', 'razorpay_plan_per_year_id')
         }),
     )
     
-    list_display = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
+    list_display = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active', 'razorpay_plan_per_month_id', 'razorpay_plan_per_year_id')
     list_filter = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
     search_fields = ('plan_name','user_group_type_id')
     ordering = ('plan_name', 'user_group_type_id', 'plan_type_id', 'price_per_month', 'price_per_year' ,'entry_time', 'expiry_time','trial_applicable', 'is_active')
@@ -71,6 +71,16 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('user_group_id',)
     ordering = ('razorpay_order_id', 'user_group_id', 'order_amount', 'razorpay_payment_id')
 
+class PaymentAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, 
+        {
+            'fields': ('user_group_id', 'order_id', 'payment_ref', 'payment_time', 'amount', 'invoice_id')
+        }),
+    )
+
+    list_display = ('user_group_id', 'order_id', 'payment_ref', 'payment_time', 'amount', 'invoice_id')
+    search_fields = ('user_group_id',)
 
 admin.site.register(Subscription,SubscriptionAdmin)
 admin.site.register(Plan, PlanAdmin)
@@ -80,5 +90,6 @@ admin.site.register(PlanOfferMap)
 admin.site.register(OfferPrerequisites)
 admin.site.register(PlanType, PlanTypeAdmin)
 admin.site.register(SubscriptionType, SubscriptionTypeAdmin)
+admin.site.register(Payment, PaymentAdmin)
 
 

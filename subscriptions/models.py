@@ -4,7 +4,7 @@ import datetime
 from django.utils import timezone 
 import pytz
 from algonautsutils.timeutil.tradingcalendar import TradingCalendar
-
+from django.db.models.signals import post_save
 
 class PlanType(models.Model):
     type_name = models.CharField(max_length=64)
@@ -54,6 +54,8 @@ class Plan(models.Model):
     entry_time = models.DateTimeField()
     expiry_time = models.DateTimeField()
     is_active = models.BooleanField(default=False)
+    razorpay_plan_per_month_id = models.CharField(max_length = 64, null = True)
+    razorpay_plan_per_year_id = models.CharField(max_length = 64, null = True)
     trial_applicable = models.BooleanField(default= False)
     objects = PlanManager()
     
@@ -119,6 +121,7 @@ class Payment(models.Model):
     payment_time = models.DateTimeField(auto_now=True)
     signature = models.CharField(max_length=256, null= True, default = None)
     user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE)
+    invoice_id = models.CharField(max_length = 64, null = True)
     amount = models.IntegerField()
 
 
@@ -176,15 +179,15 @@ class SubscriptionManager(models.Manager):
 
 
 class Subscription(models.Model):
-    user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE) 
-    plan_id = models.ForeignKey(Plan, on_delete=models.CASCADE) 
-    offer_id = models.ForeignKey(Offer, on_delete=models.DO_NOTHING, null = True, default = None)
-    subscription_type_id = models.ForeignKey(SubscriptionType, on_delete= models.CASCADE)
+    user_group_id = models.ForeignKey(UserGroup, on_delete = models.CASCADE) 
+    plan_id = models.ForeignKey(Plan, on_delete = models.CASCADE) 
+    offer_id = models.ForeignKey(Offer, on_delete = models.DO_NOTHING, null = True, default = None)
+    subscription_type_id = models.ForeignKey(SubscriptionType, on_delete = models.CASCADE)
     subscription_start = models.DateTimeField()
     subscription_end = models.DateTimeField()
-    payment_id = models.ForeignKey(Payment, on_delete=models.CASCADE, null = True, default = None) 
-    is_trial = models.BooleanField(default=False)
-    subscription_active = models.BooleanField(default=False)
+    payment_id = models.ForeignKey(Payment, on_delete = models.CASCADE, null = True, default = None) 
+    is_trial = models.BooleanField(default = False)
+    subscription_active = models.BooleanField(default = False)
     objects = SubscriptionManager()
     
     def __str__(self):
@@ -198,6 +201,4 @@ class PlanOfferMap(models.Model):
     
     def __str__(self):
         return str(self.offer_id)
-
-
 

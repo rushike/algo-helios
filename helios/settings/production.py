@@ -6,9 +6,9 @@ DEBUG = False
 """
 Razorpay Variable and Declaration
 """
-RAZORPAY_KEY = "rzp_test_FwV0DxK207WiS4"
+RAZORPAY_KEY = "rzp_test_mORiHoyolnJdWj"
 
-client = Client(auth=(RAZORPAY_KEY, "f82D3I70VdLkWPPOzlKteAhK"))
+client = Client(auth=(RAZORPAY_KEY, "1HoPO6AkWpoZC5NG3vgN83zp"))
 
 
 

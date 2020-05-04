@@ -8,7 +8,9 @@ from razorpay.errors import SignatureVerificationError
 
 import users.functions 
 from helios.settings import EMAIL_HOST_USER, client, RAZORPAY_KEY
+
 import subscriptions.functions 
+import subscriptions.razorpay
 from subscriptions.models import Plan, Subscription, OfferPrerequisites, Offer, PlanOfferMap
 from users.models import UserGroupMapping, UserGroup, UserGroupType
 
@@ -143,6 +145,54 @@ def create_order(request):
     POST = request.session.get('order_details_post')
     group_mails = request.session.get('data', {}).get('group-mails', request.user.email).split(",")
     amount = POST.get('total_amount', 1)
+    period = POST.get('period', 'monthly')
+    plan_name = POST.get('plan_name')
+    group_type = POST.get('group_type')
+    plan_type = POST.get('plan_type')
+    order_currency = 'INR'
+    order_receipt = 'order_rcptid_11'
+    notes = {'plan_name': plan_name, 'plan_type' : plan_type, 'group_type' : group_type}   # OPTIONALclient.order.create(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0')
+    DATA = {
+                "amount" : int(amount * 100), # Stores, Operates in paise
+                "currency" : order_currency,
+                "receipt" : order_receipt,
+                "notes" : notes,
+                "payment_capture" : 0, 
+            }
+    POST["group_emails"] = group_mails
+    # try : # xakotob974@fft-mail.com, gojavik450@mailboxt.com
+    # order = client.order.create(data = DATA)
+    plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
+    invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
+    order = client.order.fetch(invoice["order_id"])
+    order["receipt"] = order_receipt
+    POST["invoice_id"] = invoice["id"]
+    POST["razorpay_order_id"] = invoice["order_id"]
+    request.session["order_details_post"] = POST
+    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
+    subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
+    context = {
+        "order_id" : order["id"],
+        "amount" : int(amount * 100), # Stores, Operates in paise
+        "currency" : order_currency,
+        "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
+        "name" : " ".join([request.user.first_name, request.user.last_name]),
+        'email' : request.user.email,
+        'contact' : request.user.contact_no,
+        'razorpay_key' : RAZORPAY_KEY,
+        'group_emails' : group_mails
+    }
+    # except Exception as e:
+    #     logger.error(f"Error Occured : {e}")
+        # return JsonResponse({'Exception' : str(e)})
+    # return JsonResponse(context)
+    return render(request, 'subscriptions/payment.html', context = context)
+
+@login_required(login_url='/subscriptions/plans')
+def create_order2(request):
+    POST = request.session.get('order_details_post')
+    group_mails = request.session.get('data', {}).get('group-mails', request.user.email).split(",")
+    amount = POST.get('total_amount', 1)
     plan_name = POST.get('plan_name')
     group_type = POST.get('group_type')
     plan_type = POST.get('plan_type')
@@ -181,20 +231,18 @@ def create_order(request):
     # return HttpResponse("Your order is " + str(order))
 
 def payment_success(request):
-    POST = request.session.get('order_details_post')
-    verifying_dict = {
-        'razorpay_order_id' : request.POST.get('razorpay_order_id'),
-        'razorpay_payment_id' : request.POST.get('razorpay_payment_id'),
-        'razorpay_signature' : request.POST.get('razorpay_signature'),
-    }
-    try :
-        client.utility.verify_payment_signature(verifying_dict)
-    except SignatureVerificationError:
+    POST = request.session.get('order_details_post') 
+    if request.POST.get("razorpay_invoice_status").lower() != "paid":
         #payment not verified sucessfully
         return HttpResponseRedirect(redirect_to="/subscriptions/plans")
     request.session['order_details_post'] = POST
-    request.session['order_details_post'].update({'order_id' : request.POST.get('razorpay_order_id'), 'payment_id' : request.POST.get('razorpay_payment_id'), 'signature' : request.POST.get('razorpay_signature')})
-    
+    request.session['order_details_post'].update(
+                                            {
+                                                'order_id' : POST.get('razorpay_order_id'), 
+                                                'payment_id' : request.POST.get('razorpay_payment_id'), 
+                                                'signature' : request.POST.get('razorpay_signature')
+                                            }
+                                        )
     return HttpResponseRedirect('/subscriptions/subscribe')
 
 @login_required(login_url='/accounts/login/')
@@ -232,8 +280,8 @@ def subscribe(request):
     order_id = POST.get('order_id')
     payment_id = POST.get('payment_id')
     signature = POST.get('signature')
-
-    payment = subscriptions.functions.register_payment(order_id, payment_id, signature)
+    invoice_id = POST.get('invoice_id')
+    payment = subscriptions.functions.register_payment(order_id, payment_id, signature, invoice_id)
     recepients = []
     logger.info(f"Group mails : {POST.get('group_emails')}")
     if 'group_emails' in POST:    
@@ -302,3 +350,6 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
         message = "You have successfully subscribed to algonauts plan : " + str(plan_name) + "\n" + group_add_link
         subscriptions.functions.send_email(user, recepients, subject, message)
     return subscribed
+
+def terminate_subscription(request):
+    return JsonResponse({"success" : True})
