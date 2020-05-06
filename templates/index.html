@@ -224,7 +224,8 @@
     <div class="row container-fluid">
         <div class="col-md-8">
             <div class="content">
-                <h3 style="text-align:left;color:black;font-size:350%;margin: 2% 0%">About Us</h3>
+                
+                <h1 class="gray-heading" style="text-align:left;margin: 2% 0%">About Us</h1>
                 <p class="banner-text" style="margin: 5% 0%">
                     Algonauts is a team of finance and technology professionals with combined experience over 20 years.
                     We as a firm strongly believe that algorithmic trading is the future, and is a way to trade and make
@@ -269,19 +270,23 @@
                 <div class="col-md-12 text-center">
                     <div class="xx-large light dark-gray">Mercury</div>
                     <div class="row">
-                        <div class=" col-md-8 content-heading card-body flex-column"><p class="productbox-para">Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
-                            live market</p>
+                        <div class=" col-md-8 content-heading card-body flex-column">
+                            <p class="productbox-para">
+                            Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
+                            live market
+                            </p>
                         </div>
                             <div class="col-md-4">
-                                <div class="row"><img src="{% static 'products/callgen.png' %}"></div>
-                                
-                                
+                                <div class="row">
+                                    <img src="{% static 'products/callgen.png' %}"
+                                    style="height: 15vh; width: 15vh;">
+                                </div>                  
                             </div>
                     </div>
                     
                     <div class="knowmore pt-5">
                             <a href="{% url 'plans_page' %}" title="Click to know more">
-                                <p class="productbox-para">Know More&nbsp;&nbsp;</p>
+                                <p class="productbox-para" style="padding-top: 60px;">Know More&nbsp;&nbsp;</p>
                             </a>      
                     </div>  
                 </div>
@@ -291,13 +296,13 @@
 
         <div class="col-md-6 col-sm-12 productsbox">
             <div class="row content h-100">
-                <div class="col-md-12 ">
-                    <div class="xx-large light dark-gray" >Services</div>
+                <div class="col-md-12">
+                    <div class="xx-large light dark-gray text-center">Services</div>
                         <div class="row">
                             <div class="col-md-8 card-body flex-column">
                                 <p>
                                     <ul class="content-para list-group list-group-flush mt-4 ml-2 light-gray  flex-column">
-                                    <li class="list-group-item p-1 border-0 productbox-para "  >&#8226   Automation</li>
+                                    <li class="list-group-item p-1 border-0 productbox-para " >&#8226   Automation</li>
                                     <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Backtesting</li>
                                     <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Algo Development</li>
                                     <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Data Analytics</li>
@@ -306,26 +311,29 @@
                                 </p>
                             </div>
                             <div class="col-md-4">
-                                <div class="row"><img src="{% static 'products/portfoliomanager.png' %}"></div>
+                                <div class="row">
+                                    <img src="{% static 'products/portfoliomanager.png' %}"
+                                    style="height: 15vh; width: 15vh;">
+                                </div>
                                 
                             </div>
                         </div>
                             
-                    <div class="knowmore md-1">
+                    <div class="knowmore pt-5">
                         <a href="{% url 'plans_page' %}" title="Click to know more">
                             <p class="productbox-para">Know More&nbsp;&nbsp;</p>
                         </a>
                     </div>
+                    <div id="testimonials-section"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!--Products and Services Banner Ends-->
-
 <!-- Testimonial Starts -->
-<div class="container mt-2 pb-5" class="text-center">
-	<h1 class="text-center mb-2 ml-4">WHAT OUR CLIENTS SAY </h1>	
+<div class="container mt-2 pb-5" class="text-center" id="">
+	<h1 class="text-center mb-2 ml-4 gray-heading">What Our Clients Say  </h1>	
 	<div class="row justify-content-center">
 
 		<div class="col-md-1 justify-content-center text-center mt-2">
@@ -383,9 +391,9 @@
 	</div> <!-- row ends  -->
 	</div> <!-- container ends -->
 <!-- Tesimonial Ends -->
-
+<div id = "contact-us-section"></div>
 <!--Contact Us Section Starts Here-->
-<div class="container-fluid contactus" >
+<div class="container-fluid contactus" id="">
     <section id="contact" data-aos="fade-up" data-aos-duration="1000">
         <div class="container">
           <div class="heading" style="margin:3% 10%">
@@ -415,7 +423,7 @@
                   <textarea id="ta1" class="form-control" name="" rows="5" placeholder="Message"></textarea>
                 </div>
                 <a id="sendEmail" class="btn btn-light" href ="mailto:coreteam@algonauts.in?subject=Feedback&body=">
-                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Submit</a>
+                    <i class="fa fa-send" aria-hidden="true"></i>&nbsp;Submit</a>
               </form>
             </div>
           </div>

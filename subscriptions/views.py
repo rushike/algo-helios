@@ -424,7 +424,7 @@ class download_invoice(PDFTemplateView):
 
     def get(self, request, *args, **kwargs):
             context = self.get_context_data(**kwargs)
-            self.filename = '-'.join([request.user.first_name.lower(), 'invoice', 'Mercury', str(context['time_of_supply'])] ) + ".pdf"
+            self.filename = '-'.join([context["cust_name"].lower(), 'invoice', 'Mercury', str(context['time_of_supply'])] ) + ".pdf"
             response = super(download_invoice, self).get(request,
                                                     *args, **kwargs)
             return response

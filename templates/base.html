@@ -160,7 +160,7 @@
                 <div class="row">
                     <div class="col-md-8    ">
                         <div class="row p-4 d-flex justify-content-center ">    
-                            <img  src="{% static 'algonautsw.png' %}" width= "90vh" height="auto" />
+                            <img  src="{% static 'algonautsw.png' %}" width= "90vh" height="85vh" />
                         </div>
                         <div class="row pl-4 d-flex justify-content-center justify-content-md-start">
                             <span class="text-justify">We develop algorithms by statistical & mathematical analysis to create portfolios and execute trades.</span>
@@ -193,10 +193,12 @@
                             <a>Resources</a>
                         </div>
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <a>Support Center</a>
+                            <a href="{% url 'index' %}#contact-us-section" class="text-white">
+                            Support Center</a>
                         </div>
                         <div class="row p-1 d-flex justify-content-center justify-content-md-start">
-                            <a>Testimonials</a>
+                            <a href="{% url 'index' %}#testimonials-section" class="text-white">
+                            Testimonials</a>
                         </div>
                         <div class="p-2"></div>
                     </div>
