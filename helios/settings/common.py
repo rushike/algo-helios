@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'webpush',
     'channels',
     'worker',
+    'wkhtmltopdf',  # Dependency for PDF generation
     ]
 
 
@@ -212,3 +213,10 @@ FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
 
 SALES_EMAIL = 'feedback@gmail.com'
 FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
+
+TAXES = {
+    "cgst"  : 9,
+    "sgst"  : 9,
+    "igst"  : 0
+}
+TAXES.update({"total" : sum([v for _, v in TAXES.items()])})

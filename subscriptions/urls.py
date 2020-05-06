@@ -18,5 +18,6 @@ urlpatterns = [
     path('plan-overview/<slug:slug>', views.plan_overview, name='plan_overview_page'),
     path('terminate-subscription', views.terminate_subscription, name='terminate_subscription'),
     path('historical-purchases', views.historical_purchases, name='historical_purchases'),
-    path('download-invoice', views.download_invoice, name='download_invoice'),
+    path('download-invoice2', views.download_invoice2, name='download_invoice2'),
+    path('download-invoice/<slug:invoice_id>', views.download_invoice.as_view()),
 ]

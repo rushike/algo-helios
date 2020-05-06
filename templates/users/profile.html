@@ -216,17 +216,17 @@
 			<div class="row mt-3 justify-content-left">
 				{% for iplan in iplans %}
 					<div class="col-md-4 pb-2">
-						<div class="card h-100 border bg-white text-dark p-3 round_effect">
+						<div class="card h-100 border bg-white text-dark p-3 round_effect"  style="border: 1px solid black !important;">
 							<p class="lead">
 								{% if iplan.1.type_name == "Premium" %}
-									<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+									<h5 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h5>
 								{% else %}
-									<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
+									<h5 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h5>
 								{% endif %}
 											
 							</p>
 							<hr class="mt-0">
-							<ul class="list-group card-body flex-column">
+							<ul class="list-group card-body flex-column" style="padding: 0px;">
 								<li class="list-group-item">
 							<!-- <p class=""> -->
 								{% if iplan.0.subscription_type_id__type_name == "Trial" %}
@@ -243,7 +243,7 @@
 									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
 									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
 								</ul>
-								<div class="row mt-1 pl-0" style="padding: 1.25rem 1.25rem 1.25rem 0rem;">
+								<div class="row" >
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
 										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
@@ -274,7 +274,7 @@
 										</form>
 									</div>
 								</div>
-							</p>
+							<!-- </p> -->
 						</div>
 					</div>	  	
 				{% endfor %}
@@ -293,38 +293,63 @@
 				<div class="row mt-3 justify-content-left">
 					{% for gplan in gplans %}
 						<div class="col-md-4 pb-2">
-							<div class="card h-100 border bg-white text-dark p-3 round_effect">
-								<p class="lead">
+							<div class="card h-100 border bg-white text-dark p-3 round_effect" style="border: 1px solid black !important;">
+								<!-- <p class="lead"> -->
 									{% if gplan.1.type_name == "Premium" %}
-										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} </h4>
+										
+										<div class="justify-content-between h5 pt-1 px-2">
+
+											<span class="badge badge-pill badge-secondary" style="min-width: 20px;">
+												{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+											</span>  
+											
+											<span class="badge badge-pill badge-warning float-right">
+												{{gplan.0.subscription_type_id__type_name}}
+											</span>
+										</div>
+
 									{% else %}
-										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span>  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
+										<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} </h4>
+										<div class="justify-content-between h5 pt-1 px-2">
+											
+											<span class="badge badge-pill badge-secondary float-left" style="min-width: 20px;">
+												{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+											</span>  
+
+											<span class="badge badge-pill badge-warning float-right">
+												{{gplan.0.subscription_type_id__type_name}}
+											</span>
+										
+										</div>
+											
 									{% endif %}
+									
 									<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
 										<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
 											<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
 										</span>
 								
-									<div class="dropdown-menu dropdown-menu-right">
-										<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
-																		trigger_edit_plan(
-																			'{{gplan.0.subscription_type_id__type_name}}', 
-																			'{{gplan.1}}',
-																			'{{gplan.0.plan_id__plan_name}}', 
-																			'{{gplan.0.plan_id__user_group_type_id__type_name}}',
-																		)">Edit</button>
-										<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
-																		trigger_group_add_link(
-																			'{{gplan.0.subscription_type_id__type_name}}', 
-																			'{{gplan.1}}',
-																			'{{gplan.0.plan_id__plan_name}}', 
-																			'{{gplan.0.plan_id__user_group_type_id__type_name}}',
-																		)">Show Link</button>
+										<div class="dropdown-menu dropdown-menu-right">
+											<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
+																			trigger_edit_plan(
+																				'{{gplan.0.subscription_type_id__type_name}}', 
+																				'{{gplan.1}}',
+																				'{{gplan.0.plan_id__plan_name}}', 
+																				'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																			)">Edit</button>
+											<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
+																			trigger_group_add_link(
+																				'{{gplan.0.subscription_type_id__type_name}}', 
+																				'{{gplan.1}}',
+																				'{{gplan.0.plan_id__plan_name}}', 
+																				'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																			)">Show Link</button>
 										</div>
 									</div>				
-								</p>
+								<!-- </p> -->
 								<hr class="mt-0">
-								<ul class="list-group card-body flex-column pl-3">
+								<ul class="list-group card-body flex-column pb-3" style="padding: 0px;">
 									<li class="list-group-item">
 								<!-- <p class=""> -->
 									{% if gplan.0.subscription_type_id__type_name == "Trial" %}
@@ -341,7 +366,7 @@
 										<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ gplan.0.subscription_start }}</span></li>
 										<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ gplan.0.subscription_end }}</span></li>
 								</ul>
-								<div class="row px-3">
+								<div class="row">
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
 										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
@@ -625,33 +650,7 @@
 
 <!-- Exit individual plan modal ends -->
 
-<!-- Exit individual plan modal -->
-
-<!-- <div class="modal fade" id="exit-gplan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-		<div class="modal-dialog modal-sm" role="document">
-			<div class="modal-content">
-	
-				<div class="modal-header">
-					<h5 class="modal-title" id="confim-user-add-header">Enter Password</h5>
-					<button type="button" id="close-group-add-link" class="close-remove" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-	
-				<div class="modal-body text-center">
-					<div class="input-group input-group-sm  mx-auto">
-						<input type="password" class="form-control card" value="" id="">
-						<div class="input-group-append">
-							<span class="input-group-text btn fa fa-check-circle" id=""></span>
-						</div>
-					</div>
-					<small>Note that you will be unscubscribed of this plan</small>
-				</div>
-	
-			</div>
-		</div>
-</div> -->
-	
+<!-- Exit individual plan modal -->	
 <!-- Exit individual plan modal ends -->
 
 <!-- All Scripts after this  -->
@@ -799,16 +798,6 @@ $('.alertx').alert()
 			}
 		});
 
-
-
-		// $("#contact_no_field").focusout(()=>{
-		// 	// if ($('#contact_no_button').html().toLowerCase() != 'save') {
-		// 		console.log("old hi hai : ", current_contact)
-		// 		$('#contact_no_field').html(current_contact)
-		// 		$('#contact_no_button').html("Edit")
-		// 	// }
-		// });
-
 	});
 
 	function remove_member(email, group_type){
@@ -863,27 +852,12 @@ $('.alertx').alert()
 	}
 
 	function download_invoice(invoice_id){
-		var data = $.ajax({
-			type: "POST",
-			url: "{% url 'download_invoice' %}" ,
-			data : {
-				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-				invoice_id : invoice_id
-			},
-			success: function(data)
-			{
-				if(data["url"]){
-					var link = document.createElement('a');
-					link.href = data["url"];
-					link.download = "file.pdf"
-					link.dispatchEvent(new MouseEvent('click'));
-				}
-			},
-			error: function(request, status, error)
-			{
-				alert(request.responseText);
-			}
-		});
+		console.log("download invoice : ", invoice_id)
+		var link = document.createElement('a');
+		link.href = "/subscriptions/download-invoice/" + invoice_id ;
+		link.download = "file.pdf"
+		link.dispatchEvent(new MouseEvent('click'));
+		
 	}
 
 	function exit_from_plan(period, plancode, planname, groupcode){

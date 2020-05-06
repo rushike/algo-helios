@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from catalog import views
 import datetime
-
+from wkhtmltopdf.views import PDFTemplateView
 
 urlpatterns = [
     path('', include('catalog.urls')),
@@ -14,6 +14,5 @@ urlpatterns = [
     path('subscriptions/', include('subscriptions.urls')),
     path('worker/', include('worker.urls')),
     path('webpush/', include('webpush.urls')),
-
-    
+    path('template/', views.TemplateView.as_view(template_name='subscriptions/invoice_template.html')),
 ]
