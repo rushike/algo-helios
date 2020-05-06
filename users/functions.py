@@ -252,6 +252,7 @@ def add_feedback(user, subject, product, message):
 
 
 def remove_user_from_group(user, group_type, admin):
+    user = get_user_object(user)
     group_id = get_user_group(user, group_type)
     if admin == group_id.admin.email:
         logger.debug(f"User admin succefully verified, will remove {user} from group {group_type}")

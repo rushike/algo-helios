@@ -243,7 +243,7 @@
 									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
 									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
 								</ul>
-								<div class="row" >
+								<div class="row mt-3" >
 									<div class="col-6">
 										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
 										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
@@ -269,7 +269,7 @@
 											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
 												<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
 											{% else %}
-												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW NOW</button>
+												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW</button>
 											{% endif %}
 										</form>
 									</div>
@@ -373,7 +373,7 @@
 																									'{{gplan.0.subscription_type_id__type_name}}', 
 																									'{{gplan.1}}',
 																									'{{gplan.0.plan_id__plan_name}}', 
-																									'{{gplan.0.plan_id__user_group_type_id__type_name}}',			
+																									'{{gplan.0.plan_id__user_group_type_id__type_name}}',																										
 																								)">EXIT</button>
 									</div>
 									<div class="col-6">
@@ -619,8 +619,8 @@
 
 <!-- Exit individual plan modal -->
 
-<div class="modal fade" id="exit-plan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-	<div class="modal-dialog modal-sm" role="document">
+<div class="modal fade" id="exit-plan-modal" tabindex="-1" role="dialog" aria-labelledby="exit-plan-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 
 			<div class="modal-header">
@@ -635,8 +635,8 @@
 					Enter password to confirm exit from the group <span id = "exit-plan-name" class="font-weight-bold"></span>.
 				</div>
 				<div class="input-group input-group-sm  mx-auto">
-					<input type="password" class="form-control card" value="" id="" placeholder="Enter Password">
-					<div class="input-group-append">
+					<input type="password" class="form-control card" value="" id="exit-password-input" name="exit-password" placeholder="Enter Password">
+					<div id = "exit-plan-confirm" class="input-group-append" onclick="send_exit_ajax_request()">
 						<span class="input-group-text btn fa fa-check-circle" id=""></span>
 					</div>
 				</div>
@@ -800,6 +800,22 @@ $('.alertx').alert()
 
 	});
 
+	var EXIT_PERIOD = null, EXIT_GROUPCODE = null, EXIT_PLANCODE = null, EXIT_PLANNAME = null;
+
+
+	var input = document.getElementById("exit-password-input");
+		// Execute a function when the user releases a key on the keyboard
+		input.addEventListener("keyup", function(event) {
+			// Number 13 is the "Enter" key on the keyboard
+			if (event.keyCode === 13) {
+				// Cancel the default action, if needed
+				event.preventDefault();
+				// Trigger the button element with a click
+				document.getElementById("exit-plan-confirm").click();
+			}
+		});
+
+
 	function remove_member(email, group_type){
 		$("#confirm-email-id").html(email)
 		$("#confirm-group-type-id").html(group_type)
@@ -860,27 +876,47 @@ $('.alertx').alert()
 		
 	}
 
-	function exit_from_plan(period, plancode, planname, groupcode){
-		console.log("period : ", period, ",  plancode : ", plancode, ",  planname : ", planname, ",  groupcode : ", groupcode)
-		var data = $.ajax({
-			type: "POST",
-			url: "{% url 'terminate_subscription' %}" ,
-			data : {
-				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
-				period : period,
-				plancode : plancode,
-				planname : planname,
-				groupcode : groupcode,
-			},
-			success: function(data)
-			{
+	function update_exit_plan_modal(period, plancode, planname, groupcode){
+		var plan_name = [planname, plancode].join(" | ").replace("#", "-") + `<span class = 'badge badge-secondary px-2'>${groupcode}</span> <span class = 'badge badge-warning px-2'>${period}</span>`
+		$("#exit-plan-name").html(plan_name)
+	}
 
-			},
-			error: function(request, status, error)
-			{
-				alert(request.responseText);
-			}
-		});
+	function send_exit_ajax_request(){
+		password = $("input[name='exit-password']").val()
+		exit_from_plan(EXIT_PERIOD, EXIT_PLANCODE, EXIT_PLANNAME, EXIT_GROUPCODE, ajax = true, password = password)
+	}
+
+	
+	function exit_from_plan(period, plancode, planname, groupcode, ajax = false, password = null){
+		if (ajax){
+			var data = $.ajax({
+				type: "POST",
+				url: "{% url 'terminate_subscription' %}" ,
+				data : {
+					csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+					period : period,
+					plancode : plancode,
+					planname : planname,
+					groupcode : groupcode,
+					password : password
+				},
+				success: function(data)
+				{
+					location.reload() 
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});
+		}
+		else{
+			EXIT_GROUPCODE = groupcode;
+			EXIT_PERIOD = period;
+			EXIT_PLANCODE = plancode;
+			EXIT_PLANNAME = planname;
+			update_exit_plan_modal(period, plancode, planname, groupcode)
+		}
 	}
 	
 	function insert_row_in_edit_plan_table(source_table, data, index, group_type) {

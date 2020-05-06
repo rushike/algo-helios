@@ -253,10 +253,13 @@ def end_subscription(user, plan, subscription_type):
     user_group_id = users.functions.get_user_group(user, plan.user_group_type_id)
     subscription = Subscription.objects.filter(
         user_group_id = user_group_id,
-        plans_id = plan,
+        plan_id = plan,
         subscription_type_id = subscription_type
     )
-
+    subscription.update(
+        subscription_end = datetime.datetime.now(pytz.timezone('UTC')),
+        subscription_active = False
+    )
 
 def get_order_instance(order_id):
     return Order.objects.get(razorpay_order_id = order_id)
