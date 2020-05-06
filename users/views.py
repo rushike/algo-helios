@@ -19,14 +19,14 @@ def profile_page(request):
     iplans, gplans = users.functions.get_user_subs_plans(request.user.id) # return objects of type : Subscriptions
     referral_link = request.build_absolute_uri(users.functions.generate_referral_user_add_link(request.user))
     if_referred = users.functions.if_referred(request.user)
-    iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"))
-    gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"))
-    iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs)
-    gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs)
-    iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in iplans_objs]
+    iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"), preserve_length = True)
+    gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"), preserve_length = True)
+    iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs, preserve_length = True)
+    gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs, preserve_length = True)
+    iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name, return_list = True) for plan_name in iplans_objs]
     iproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in iprod)[0] for iprod in iproduct_list]
 
-    gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in gplans_objs]
+    gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name, return_list = True) for plan_name in gplans_objs]
     gproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in gprod)[0] for gprod in gproduct_list]
     
     iiplans = [[iplans[i], iplans_type[i], iproduct_family[i], remove_hash_from_product(iproduct_list[i][0])] for i in range(len(iplans))]
