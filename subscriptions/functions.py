@@ -57,12 +57,13 @@ def get_subscription_type_id(period):
                         type_name__iexact = period
                     ).first().values("id")
 
-def get_all_products_in_plan(plan_id:Plan):
+def get_all_products_in_plan(plan_id:Plan, return_list = False):
     if type(plan_id) == str:
         now = datetime.datetime.now(pytz.timezone('UTC'))
         plan_id = Plan.objects.filter(plan_name = plan_id, entry_time__lt = now, expiry_time__gt = now).last()
     else : plan_id = plan_id if type(plan_id) == Plan else Plan.objects.get(id = plan_id)
     etc = PlanProductMap.objects.filter(plan_id = plan_id).values('product_id')
+    if return_list: return list(Product.objects.filter(id__in = etc))
     return Product.objects.filter(id__in = etc)
 
 
@@ -82,12 +83,13 @@ def get_product_family_of_products(products : list):
     return ProductFamily.objects.filter(id__in = prod_fam)
 
 
-def get_plan_type_of_plans(plans, nobjects = True): 
+def get_plan_type_of_plans(plans, nobjects = True, preserve_length = False): 
     if not isinstance(plans, Iterable) : return get_plan_type_of_plans([plans])
     if len(plans) != 0 and type(plans[0]) == Plan:
             plans = [plan.id for plan in plans]
 
     plan_typ = Plan.objects.filter(id__in = plans).values('plan_type_id')
+    if preserve_length: plan_typ = [plan_typ.first() for _ in plans]
     if nobjects:
         return [PlanType.objects.get(id = pt['plan_type_id']) for pt in plan_typ]
     return PlanType.objects.filter(id__in = plan_typ)
@@ -113,9 +115,10 @@ def get_plan(plan_type, plan_name, group_type):
         plan_type = PlanType.objects.filter(type_name__iexact = plan_type)
     return  Plan.objects.filter(plan_name__iexact = plan_name, user_group_type_id__in = group_type, plan_type_id__in = plan_type).first()
 
-def get_all_plans_from_ids(plans_ids:list):
-    return Plan.objects.filter(id__in = plans_ids)
-
+def get_all_plans_from_ids(plans_ids:list, preserve_length = False):
+    plans = Plan.objects.filter(id__in = plans_ids)
+    if preserve_length: return [plans.first() for _ in plans_ids]
+    return plans
 
 def get_all_active_plans():
     now = datetime.datetime.now(pytz.timezone('UTC'))
@@ -253,10 +256,13 @@ def end_subscription(user, plan, subscription_type):
     user_group_id = users.functions.get_user_group(user, plan.user_group_type_id)
     subscription = Subscription.objects.filter(
         user_group_id = user_group_id,
-        plans_id = plan,
+        plan_id = plan,
         subscription_type_id = subscription_type
     )
-
+    subscription.update(
+        subscription_end = datetime.datetime.now(pytz.timezone('UTC')),
+        subscription_active = False
+    )
 
 def get_order_instance(order_id):
     return Order.objects.get(razorpay_order_id = order_id)

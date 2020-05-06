@@ -370,9 +370,9 @@ def terminate_subscription(request):
 
         else : # if plan subscribed by non individual group
             group = users.functions.get_user_group(request.user, group_type)
-            users.functions.remove_user_from_group(request.user, group_type, group.admin)
+            users.functions.remove_user_from_group(request.user.email, group_type, group.admin.email)
 
-        JsonResponse({"success" : True})
+        return JsonResponse({"success" : True})
         
     return JsonResponse({"success" : False})
 

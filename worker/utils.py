@@ -19,7 +19,6 @@ class DBManager(metaclass=Singleton):
         self.portfolios = dict(self.db_handler.get_portfolios())  # int --> str
         self.reverse_portfolios = dict([(v.lower(), k) for k, v in self.portfolios.items()]) # key are in lower case, str --> int
         self.instruments = dict([(k, self.get_instruments_from_db(k)) for k in self.portfolios]) # instruments dict initialize once.
-        self.lock = threading.RLock()
 
     def get_instruments_from_db(self, protfolio_id):
         return list(v[0] for v in self.db_handler.get_instruments_from_portfolios(portfolios=[self.portfolios.get(protfolio_id, "Nifty50")])) 
@@ -55,7 +54,7 @@ class DBManager(metaclass=Singleton):
         try:
             return self.db_handler.get_calls_for_today(portfolio_id)
         except psycopg2.InterfaceError as exc:
-            logger.error(f"Cursor closed result not fetched from stored procedured due to exception {exc}")
+            logger.error(f"Cursor closed result not fetched from stored procedure due to exception {exc}")
             self.db_handler.conn = psycopg2.connect(self.db_handler.dsn)
             return self.get_calls_for_today(portfolio_id)
 

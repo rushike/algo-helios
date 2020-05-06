@@ -2,6 +2,7 @@ import users.functions
 import json, logging
 import threading
 import time
+import sys
 import cachetools
 import datetime
 from collections import Iterable
@@ -30,7 +31,7 @@ def get_user_filter_for_product(user, product):
             "tickers" : None,
             "sides": None,
             "risk_reward": [0, 5], 
-            "profit_percentage": [0, 5], 
+            "profit_percentage": [0, 50], 
             "signal_item": None,
         }
     return json.loads(user_product_filter.filter_attributes)
@@ -78,10 +79,12 @@ def filter(user,  data_list, products_filter = None):
             if call_type != 'tick' and  user_filter["sides"] and len(user_filter["sides"]) != 0 and data['signal'].upper() not in user_filter['sides']:
                 logger.debug(f"Signal in data is not in User Filer 'sides'  of Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
-            if call_type != 'tick' and not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= user_filter["profit_percentage"][1]):
+            upper_profit_bound = user_filter["profit_percentage"][1] if user_filter["profit_percentage"][1] < 50 else sys.maxsize
+            if call_type != 'tick' and not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= upper_profit_bound):
                 logger.debug(f"Profit percentage {data['profit_percent']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
-            if call_type != 'tick' and not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
+            upper_risk_bound =  user_filter["risk_reward"][1] if user_filter["risk_reward"][1] < 5 else sys.maxsize
+            if call_type != 'tick' and not (user_filter["risk_reward"][0] <= data['risk_reward'] <= upper_risk_bound):
                 logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                 continue # will not add in data list
             result_data.append(data)
@@ -144,10 +147,12 @@ def filter_calls_from_db(user, calls_dict):
                 if user_filter["sides"] and len(user_filter["sides"]) != 0 and data['signal'].upper() not in user_filter['sides']:
                     logger.debug(f"Signal in data is not in User Filer 'sides'  of Portfolio : {data['portfolio_id']}")
                     continue # will not add in data list
-                if not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= user_filter["profit_percentage"][1]):
+                upper_profit_bound = user_filter["profit_percentage"][1] if user_filter["profit_percentage"][1] < 50 else sys.maxsize
+                if not (user_filter["profit_percentage"][0] <= data["profit_percent"] <= upper_profit_bound):
                     logger.debug(f"Profit percentage {data['profit_percent']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                     continue # will not add in data list
-                if not (user_filter["risk_reward"][0] <= data['risk_reward'] <= user_filter["risk_reward"][1]):
+                upper_risk_bound =  user_filter["risk_reward"][1] if user_filter["risk_reward"][1] < 5 else sys.maxsize
+                if not (user_filter["risk_reward"][0] <= data['risk_reward'] <= upper_risk_bound):
                     logger.debug(f"Risk Reward : {data['risk_reward']} not according to as specified in filter for Portfolio : {data['portfolio_id']}")
                     continue # will not add in data list
                 data.update({'signal' : data['signal'],  'status' : data['status'], 'time' : data['time'], 

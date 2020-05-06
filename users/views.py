@@ -19,14 +19,14 @@ def profile_page(request):
     iplans, gplans = users.functions.get_user_subs_plans(request.user.id) # return objects of type : Subscriptions
     referral_link = request.build_absolute_uri(users.functions.generate_referral_user_add_link(request.user))
     if_referred = users.functions.if_referred(request.user)
-    iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"))
-    gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"))
-    iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs)
-    gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs)
-    iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in iplans_objs]
+    iplans_objs = subscriptions.functions.get_all_plans_from_ids(iplans.values("plan_id"), preserve_length = True)
+    gplans_objs = subscriptions.functions.get_all_plans_from_ids(gplans.values("plan_id"), preserve_length = True)
+    iplans_type = subscriptions.functions.get_plan_type_of_plans(iplans_objs, preserve_length = True)
+    gplans_type = subscriptions.functions.get_plan_type_of_plans(gplans_objs, preserve_length = True)
+    iproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name, return_list = True) for plan_name in iplans_objs]
     iproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in iprod)[0] for iprod in iproduct_list]
 
-    gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name) for plan_name in gplans_objs]
+    gproduct_list = [subscriptions.functions.get_all_products_in_plan(plan_id = plan_name, return_list = True) for plan_name in gplans_objs]
     gproduct_family = [list(subscriptions.functions.get_product_family_of_products(products = [prod])[0] for prod in gprod)[0] for gprod in gproduct_list]
     
     iiplans = [[iplans[i], iplans_type[i], iproduct_family[i], remove_hash_from_product(iproduct_list[i][0])] for i in range(len(iplans))]
@@ -66,7 +66,7 @@ def join_to_group(request, group_id, hash_): #slug in format  str(group_id)<==>m
 
 def send_user_add_link(request):
     group_type = request.POST.get("groupcode", 'enterprise')
-    email = request.POST.get("email", 'vikas.naik@gmail.com')
+    email = request.POST.get("email")
     logger.debug(f"Got the group-type : {group_type},  email : {email}, admin : {request.user.email}")
     link = users.functions.get_user_add_group_link(request.user.email, group_type)
     if link:
@@ -80,7 +80,7 @@ def send_user_add_link(request):
 
 def get_user_group_add_link(request):
     group_type = request.POST.get("groupcode", 'enterprise')
-    email = request.POST.get("email", 'vikas.naik@gmail.com')
+    email = request.POST.get("email")
     logger.debug(f"Got the group-type : {group_type},  email : {email}, admin : {request.user.email}")
     link = users.functions.get_user_add_group_link(request.user.email, group_type)
     if link:
@@ -90,14 +90,14 @@ def get_user_group_add_link(request):
 
 @login_required(login_url = '/accounts/login/')
 def remove_user_from_group(request):
-    email = request.POST.get("email", 'vikas.naik@gmail.com')
+    email = request.POST.get("email")
     group_type = request.POST.get("groupcode", 'enterprise')
     logger.debug(f"user remove requested for user email : {email},  group_type : {group_type}")
     users.functions.remove_user_from_group(email, group_type, request.user.email)
     return HttpResponse("ok")
 
 
-# @login_required(login_url = '/accounts/signup/')
+@login_required(login_url = '/accounts/signup/')
 def join_via_referral_link(request, referral_code):
     if not request.user.is_authenticated:
         return render(request,'account/before-signup.html', context = {'referral_code' : referral_code})
@@ -120,7 +120,6 @@ def register_feedback(request):
 @receiver(user_signed_up)
 def redirect_after_signup(request, user, **kwargs):
     request.session["REDIRECT_URL"] = "/subscriptions/plans"
-    # referral_code = request.session.get('data', {'referral-code' : ""}).get("referral-code", "")
     referral_code = request.POST.get("referral-code", "")
     email =  request.POST.get("email", "")
     logged_user = users.functions.get_user_object(email)
@@ -133,10 +132,7 @@ def redirect_after_signup(request, user, **kwargs):
 def contact_no_edit(request):
     contact_no =  request.POST.get("contact_no", request.user.contact_no)
     users.functions.contact_no_edit(request.user, contact_no)  #function call
-    print("___________ contact is ", contact_no)
-    print("___________", request.POST)
-    logger.info(f"{contact_no}")
-    logger.info(f"{request.POST}")
+    logger.info(f"contact no edited successfully for user : {request.user.email}")
     return JsonResponse({"success":True, "contact_no":contact_no})
 
 
