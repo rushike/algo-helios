@@ -89,11 +89,6 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'normal.log',
         },
-        'file_4': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'normal.log',
-        },
         
     },
     'loggers': {
@@ -112,11 +107,6 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'dblogger': {
-            'handlers': ['file_4'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
     },
 }
 
@@ -126,13 +116,6 @@ DEFAULT_LOGGING['loggers'][''] = {
     'propagate': True
 }
 
-
-# Setting InMemory Channel Layer, since default self.channel_layer, channels.layers.get_channel_layer() was having output none
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels.layers.InMemoryChannelLayer',
-#     },
-# }
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

@@ -91,8 +91,8 @@ def get_calls_from_db(request):
         now = time.time()
         calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
         logger.debug(f"time required to fetch through cache or db : {time.time() - now}\n \
-            calls for protfolio {portfolio_id}, calls : {calls}")
-        logger.debug(f"calls for protfolio {portfolio_id}, calls : {calls}")
+            calls for portfolio {portfolio_id}, calls : {calls}")
+        logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
     subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
     return JsonResponse({'calls' : worker.functions.filter_calls_from_db(user, all_calls), 'subs-active' : subs_active}, safe= False)
