@@ -59,7 +59,7 @@
 				</span>
 				<span class="">
 					<img src="/static/img/address.png" class="mr-3" style="height: 25px; width: 25px;">Address
-					<p class="float-right"><a href="" data-toggle="modal" data-target="#address-modal">Add</a></p>
+					<p class="float-right"><a href="" id = "add-address-btn" data-toggle="modal" data-target="#address-modal">Add</a></p>
 				</span>
 			</div>
 		</div>
@@ -657,36 +657,37 @@
 		  </button>
 		</div>
 		<div class="modal-body">
-			<form>
+			<form method="POST" action="{% url 'address_edit' %}">
+				{% csrf_token %}
 				<div class="form-group">
 				  <label for="inputAddress1">Flat, Street</label>
-				  <input type="text" class="form-control" id="inputAddress1" placeholder="1234 Main St">
+				  <input type="text" class="form-control" id="inputAddress1" name = "inputAddress1" placeholder="1234 Main St" required>
 				</div>
 				<div class="form-group">
 				  <label for="inputAddress2">Area</label>
-				  <input type="text" class="form-control" id="inputAddress2" placeholder="Area Name">
+				  <input type="text" class="form-control" id="inputAddress2" name = "inputAddress2" placeholder="Area Name" required>
 				</div>
 				<div class="form-row">
 				  <div class="form-group col-md-4">
 					<label for="inputCity">City</label>
-					<input type="text" class="form-control" id="inputCity" placeholder="">
+					<input type="text" class="form-control" id="inputCity" name = "inputCity" placeholder="" required>
 				  </div>
 				  <div class="form-group col-md-4">
 					<label for="inputState">State</label>
-					<select id="inputState" class="form-control">
+					<select id="inputState" name = "inputState" class="form-control" required>
 					  <option selected>Choose...</option>
 					  <option>Maharashtra</option>
 					  <option>...</option>
 					</select>
 				  </div>
 				  <div class="form-group col-md-4">
-					<label for="inputZip">Zip</label>
-					<input type="text" class="form-control" id="inputZip">
+					<label for="inputZip">Pin Code</label>
+					<input type="text" class="form-control" id="inputZip" name="inputZip" required>
 				  </div>
 				</div>
-		</div>
+			</div>
 				<div class="modal-footer">
-					<button type="button" action="submit" class="btn btn-light">Save</button>
+					<button type="submit" action="submit" class="btn btn-light">Save</button>
 				</div>
 	</form>
 
@@ -695,34 +696,6 @@
   </div>
 <!-- address modal ends -->
 
-
-
-<!-- Exit individual plan modal -->
-
-<!-- <div class="modal fade" id="exit-gplan-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-		<div class="modal-dialog modal-sm" role="document">
-			<div class="modal-content">
-	
-				<div class="modal-header">
-					<h5 class="modal-title" id="confim-user-add-header">Enter Password</h5>
-					<button type="button" id="close-group-add-link" class="close-remove" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-	
-				<div class="modal-body text-center">
-					<div class="input-group input-group-sm  mx-auto">
-						<input type="password" class="form-control card" value="" id="">
-						<div class="input-group-append">
-							<span class="input-group-text btn fa fa-check-circle" id=""></span>
-						</div>
-					</div>
-					<small>Note that you will be unscubscribed of this plan</small>
-				</div>
-	
-			</div>
-		</div>
-</div> -->
 	
 <!-- Exit individual plan modal -->	
 <!-- Exit individual plan modal ends -->
@@ -751,11 +724,63 @@ $('.alertx').alert()
 </script>
 
 <script type="text/javascript">
-
 	var current_contact = document.getElementById("contact_no_field").innerHTML
 	// console.log("juna contact is ", current_contact)
 
 	$(document).ready(()=>{
+		
+		$.ajax({
+			type: "POST",
+			url: "{% url 'indian_states' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+			},
+			success: function(data)
+			{
+				insert_states_in_dropdown(data["states"])
+				
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+		
+		$("#add-address-btn").click(()=>{
+			$.ajax({
+				type: "POST",
+				url: "{% url 'get_address' %}" , // "/user/get-all-users-in-group",
+				data : {
+					csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+				},
+				success: function(data)
+				{
+					console.log(data)
+					$(`#inputAddress1`).val(data["line1"])
+					$(`#inputAddress2`).val(data["line2"])
+					$(`#inputState`).val(data["state"])
+					$("#inputCity").val(data["city"])
+					$(`#inputZip`).val(data["zipcode"])
+					// insert_states_in_dropdown(data["states"])
+					
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});
+		
+
+		})	
+		function insert_states_in_dropdown(states = []){
+			var states_option_str = ""
+			states.forEach(element => {
+				if( element[0] == "MH"){
+					states_option_str += `<option selected>${element[1]}</option>`
+				}else states_option_str += `<option>${element[1]}</option>`
+			});$("#inputState").html(states_option_str)
+		}
+
 		$("#close-confirm").click(()=>{
 			$('#edit-plan').modal('toggle');
 		});

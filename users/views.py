@@ -1,12 +1,14 @@
 from django.shortcuts import render, HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from localflavor.in_.in_states import STATE_CHOICES
 from django.dispatch import receiver
 import logging, json
 from allauth.account.signals import user_signed_up, user_logged_in
 import users
 import users.functions, subscriptions.functions
 from django.core import serializers
+
 
 logger = logging.getLogger('normal')
 
@@ -135,4 +137,19 @@ def contact_no_edit(request):
     logger.info(f"contact no edited successfully for user : {request.user.email}")
     return JsonResponse({"success":True, "contact_no":contact_no})
 
+def get_address(request):
+    return JsonResponse(users.functions.get_address(request.user))
+
+def address_edit(request):
+    logger.info(f"request post : {request.POST}")
+    line1 = request.POST.get("inputAddress1")
+    line2 = request.POST.get("inputAddress2")
+    city = request.POST.get("inputCity")
+    state = request.POST.get("inputState")
+    zipcode = request.POST.get("inputZip")
+    users.functions.update_address(request.user, line1, line2, city, state, zipcode)
+    return HttpResponseRedirect("/user/profile/info")
+
+def get_indian_states(request):
+    return JsonResponse({"states" : STATE_CHOICES})
 

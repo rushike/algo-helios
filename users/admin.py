@@ -1,9 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral, UserFeedback
+from .models import AlgonautsUser, Address, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral, UserFeedback
 
 admin.site.site_header = "Algonauts Administration"
 
+class AddressAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('email', 'line1', 'line2', 'city', 'state', 'zipcode')}),
+    )
+    list_display = ('email', 'line1', 'line2', 'city', 'state', 'zipcode')
+    list_filter = ('city', 'state')
+    search_fields = ('state', )
+    ordering = ('email', 'line1', 'line2', 'city', 'state', 'zipcode')
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
@@ -89,6 +97,7 @@ class GroupTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AlgonautsUser, UserAdmin) 
+admin.site.register(Address, AddressAdmin) 
 admin.site.register(UserGroup, GroupAdmin)
 admin.site.register(UserGroupMapping, GroupMappingAdmin)
 admin.site.register(UserGroupType, GroupTypeAdmin)
