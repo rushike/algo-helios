@@ -289,3 +289,6 @@ def get_all_subscriptions_of_user(user):
                             user_group_id__in = user_all_groups, 
                             subscription_end__gt = now, 
                             subscription_start__lt = now)
+
+def get_subscriptions_from_invoice_id(invoice_id):
+    return Subscription.objects.filter(payment_id__invoice_id = invoice_id).first()

@@ -41,3 +41,4 @@ def update_session(request):
     data = json.loads(request.GET.get("data"))
     request.session['data'] = data
     return HttpResponse(f'{data} : {request.GET}')
+    

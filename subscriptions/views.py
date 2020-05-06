@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 
 import datetime, pytz, re, logging
 from razorpay.errors import SignatureVerificationError
+import wkhtmltopdf
+from wkhtmltopdf.views import PDFTemplateView
 
 import users.functions 
 from helios.settings import EMAIL_HOST_USER, client, RAZORPAY_KEY
@@ -225,7 +227,7 @@ def create_order2(request):
         }
     except Exception as e:
         logger.error(f"Error Occured : {e}")
-        # return JsonResponse({'Exception' : str(e)})
+        return JsonResponse({'Exception' : str(e)})
     # return JsonResponse(context)
     return render(request, 'subscriptions/payment.html', context = context)
     # return HttpResponse("Your order is " + str(order))
@@ -405,8 +407,33 @@ def historical_purchases(request):
 
     return JsonResponse({"data" : data})
 
-def download_invoice(request):
+def download_invoice2(request):
     invoice_id = request.POST.get("invoice_id")
     if invoice_id:
         return JsonResponse({"url" : f"https://invoices.razorpay.com/v1/invoices/{invoice_id}/pdf?download=1&key_id={RAZORPAY_KEY}"})
     return JsonResponse({"url" : None})
+
+class download_invoice(PDFTemplateView):
+    """
+    PDFTemplateView with the addition of unicode content in his context.
+    Used in unicode content view testing.
+    """
+    template_name = "subscriptions/invoice_template.html"
+
+    filename = "ouououououo.pdf"
+
+    def get(self, request, *args, **kwargs):
+            context = self.get_context_data(**kwargs)
+            self.filename = '-'.join([request.user.first_name.lower(), 'invoice', 'Mercury', str(context['time_of_supply'])] ) + ".pdf"
+            response = super(download_invoice, self).get(request,
+                                                    *args, **kwargs)
+            return response
+
+    def get_context_data(self, **kwargs): 
+        # test link : http://localhost:8000/subscriptions/download-invoice2/inv_EmfFMS3NzaWUA0
+        Base = super(download_invoice, self)
+        context = Base.get_context_data(**kwargs)
+        invoice_id = context["invoice_id"]
+        context.update(subscriptions.razorpay.create_invoice_context(invoice_id))
+        return context
+
