@@ -211,12 +211,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 FEEDBACK_EMAIL_USER = 'feedback@gmail.com'
 FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
 
-SALES_EMAIL = 'feedback@gmail.com'
-FEEDBACK_EMAIL_PASSWORD = 'algonauts@123'
 
+# For invoice
 TAXES = {
     "cgst"  : 9,
     "sgst"  : 9,
-    "igst"  : 0
+    "igst"  : 0,
+    "total" : 18
 }
-TAXES.update({"total" : sum([v for _, v in TAXES.items()])})
+
+GSTIN_NO = "27AARCA7772K1ZV"
+
+PAN_ID = "AARCA7772K"
