@@ -103,7 +103,7 @@ class DataPublisher(AsyncConsumer):
         response = event.get('message')
         data = json.loads(response)
         if data['dtype'] == 'signal' : data = await worker.functions.filter_async(user, data, self.products_filter)
-        if 'dtype' in data and data['dtype'] == 'tick' and data['ticker'] not in self.users_tickers: data = None
+        if data['dtype'] == 'tick' and data['ticker'] not in self.users_tickers: data = None
         if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({

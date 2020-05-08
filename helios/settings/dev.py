@@ -19,6 +19,7 @@ RAZORPAY_KEY = "rzp_test_mORiHoyolnJdWj"
 client = Client(auth=(RAZORPAY_KEY, "1HoPO6AkWpoZC5NG3vgN83zp"))
 
 
+ADMINS = [('Test', 'algonauts.test@gmail.com'), ('Test2', 'algonautsheroku@gmail.com')]
 
 """
 Allowed Host for sites
@@ -70,24 +71,30 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'normal.log',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
         
     },
     'loggers': {
         'django': {
-            'handlers': ['file_1'],
+            'handlers': ['file_1', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'normal': {
-            'handlers': ['file_3'],
+            'handlers': ['file_3', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': True,
         },
         'worker': {
-            'handlers': ['file_2'],
+            'handlers': ['file_2', 'mail_admins'],
             'level': 'DEBUG',
             'propagate': True,
         },
+
     },
 }
 
