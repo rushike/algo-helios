@@ -161,6 +161,9 @@ def create_order(request):
                 "receipt" : order_receipt,
                 "notes" : notes,
                 "payment_capture" : 0, 
+                "offers" : [
+                    "offer_EnUE7s7BW9TC4r"
+                ]
             }
     POST["group_emails"] = group_mails
     try : 
@@ -169,6 +172,7 @@ def create_order(request):
         order = client.order.fetch(invoice["order_id"])
         order["receipt"] = order_receipt
         POST["invoice_id"] = invoice["id"]
+        
         POST["razorpay_order_id"] = invoice["order_id"]
         request.session["order_details_post"] = POST
         user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
@@ -182,12 +186,14 @@ def create_order(request):
             'email' : request.user.email,
             'contact' : request.user.contact_no,
             'razorpay_key' : RAZORPAY_KEY,
-            'group_emails' : group_mails
+            'group_emails' : group_mails,
+            'notes' : notes
         }
     except Exception as e:
         logger.error(f"Error Occured : {e}")
         return JsonResponse({'Exception' : str(e)})
-    return render(request, 'subscriptions/payment.html', context = context)
+    # return render(request, 'subscriptions/payment.html', context = context)
+    return JsonResponse(context)
 
 @login_required(login_url='/subscriptions/plans')
 def create_order2(request):

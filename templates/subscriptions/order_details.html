@@ -223,6 +223,7 @@
                                 
                             </script>
                             <form>  
+                                {% csrf_token %}
                                 <div>
                                     <input type="text" value="" name="group-mails" />
                                 </div>
@@ -238,6 +239,10 @@
     </div>
 
 </div>
+<form action="/subscriptions/payment/success" method="POST">
+    {% csrf_token %}
+    <script src="https://checkout.razorpay.com/v1/checkout.js"> </script>
+</form>
 
 <script>
     $(document).ready(function(){
@@ -263,17 +268,93 @@
 
     }
 
-    $(".payonline").click(()=>{
+    $(".payonline").click((e)=>{
+            console.log(e)
             $.ajax({
             type : "GET",
             url: '{% url "update_session" %}',
             data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
             success : function(response){
                 console.log(response);
-                location.href = "{% url 'create_order' %}"
+                // location.href = "{% url 'create_order' %}"
+                create_razorpay_dialog(e)
             },   
         });
     });
+
+    function create_razorpay_dialog(e){
+        $.ajax({
+			type: "POST",
+			url: "{% url 'create_order' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+			},
+			success: function(data)
+			{
+                console.log("data : ", data)
+				insert_data_in_razorpay(data, e)
+				
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+    }
+
+    
+    function insert_data_in_razorpay(data, e){
+        var options = {
+            "key": data["razorpay_key"], 
+            "amount": data["amount"],
+            "currency": data["currency"],
+            "order_id": data["order_id"],
+            "offer_id": "offer_EnUE7s7BW9TC4r",
+            "buttontext" : "Pay Online",
+            "name" : "Algonauts",
+            "description" : data["plan_details"],
+            "image" : "{% static 'algonauts.png' %}",
+            "handler": function (response){
+                console.log("response : ", response)
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'payment_success' %}" , // "/user/get-all-users-in-group",
+                    data : {
+                        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,	                    
+                        razorpay_payment_id : response.razorpay_payment_id,
+                        razorpay_order_id : response.razorpay_order_id,
+                        razorpay_signature : response.razorpay_signature,
+                        razorpay_invoice_id: response.razorpay_invoice_id, 
+                        razorpay_invoice_status: response.razorpay_invoice_status,
+                    },
+                    success: function(data)
+                    {
+                        location.href = "/worker/mercury"
+                    },
+                    error: function(request, status, error)
+                    {
+                        alert(request.responseText);
+                    }
+                });
+            },
+            "prefill": {
+                "name": data["name"],
+                "email": data["email"],
+                "contact": data["contact"],
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#7DDCFF",
+            }
+        }
+        var rzp1 = new Razorpay(options);
+        rzp1.open();    
+        e.preventDefault()
+    }
+
+    
 
     $(".neft").click(()=>{
         sessionStorage.setItem("group-mails", $('input[name="group-mails"]').val());

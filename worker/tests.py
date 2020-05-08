@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from django.test import TestCase
-
 from users.models import AlgonautsUser, UserGroupType
 from subscriptions.models import Order, Payment, Subscription
 from worker.views import mercury
