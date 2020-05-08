@@ -1,8 +1,9 @@
-from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral, UserFeedback
+from users.models import AlgonautsUser, Address, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral, UserFeedback
 from subscriptions.models import Plan, Subscription, SubscriptionType
 from products.models import Product, ProductCategory, PlanProductMap
 from allauth.account.admin import EmailAddress
 from django.contrib.auth import authenticate
+from localflavor.in_.in_states import STATE_CHOICES
 import pytz, datetime
 from hashlib import md5
 import subscriptions.functions
@@ -13,6 +14,8 @@ import logging
 
 logger = logging.getLogger('normal')
 
+STATE_DICT = dict([(v[1], v[0]) for v in STATE_CHOICES])
+REV_STATE_DICT = dict([(v[0], v[1]) for v in STATE_CHOICES])
 
 def get_user_object(user):
     if hasattr(user,'_wrapped') :
@@ -277,4 +280,45 @@ def contact_no_edit(user, contact_no):
     AlgonautsUser.objects.filter(id = user.id).update(contact_no = contact_no)
     logger.debug(f"contact number changed sucessfully to {contact_no}")
 
+def get_address(user):
+    user = get_user_object(user)
+    address = Address.objects.filter(email = user).first()
+    if address:
+        return {
+            "line1" : address.line1,
+            "line2" : address.line2,
+            "city" : address.city,
+            "state" : REV_STATE_DICT[address.state],
+            "zipcode" : address.zipcode,      
+        }
+    else:
+        return {
+            "line1" : "",
+            "line2" : "",
+            "city" : "",
+            "state" : "",
+            "zipcode" : "",
+        }
 
+def update_address(user, line1, line2, city, state, zipcode):
+    user = get_user_object(user)
+    exists = Address.objects.filter(email = user)
+    state = STATE_DICT[state]
+    if not exists.exists():
+        Address.objects.create(
+            email = user,
+            line1 = line1,
+            line2 = line2,
+            city = city,
+            state = state,
+            zipcode = zipcode
+        )
+    else :
+        exists.update(
+            line1 = line1,
+            line2 = line2,
+            city = city,
+            state = state,
+            zipcode = zipcode
+        )
+        

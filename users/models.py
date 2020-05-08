@@ -1,4 +1,6 @@
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser, Group
+# from django.contrib.localflavor._in.models import INStateField, INZipCodeField
+from localflavor.in_.models import  INStateField
 from django.db import models
 from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
@@ -7,6 +9,7 @@ from django.db.models.signals import post_save, pre_save
 import datetime, random, string, time, os, base64, pytz
 from hashlib import md5
 import pytz, datetime
+
 
 """
 Constants or Functions
@@ -90,6 +93,14 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
 
+
+class Address(models.Model):
+	email = models.ForeignKey(AlgonautsUser, on_delete = models.CASCADE,related_name="a_email")
+	line1 = models.CharField(max_length = 64)
+	line2 = models.CharField(max_length = 64)
+	city = models.CharField(max_length = 32)
+	state = INStateField()
+	zipcode = models.CharField(max_length = 12)
 
 class UserGroupTypeManager(models.Manager):
 	def create_user_group_type(self):

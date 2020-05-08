@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.db.models import query
 from django.contrib.auth.decorators import login_required
 
+import requests
 import datetime, pytz, re, logging
 from razorpay.errors import SignatureVerificationError
 import wkhtmltopdf
@@ -153,7 +154,7 @@ def create_order(request):
     plan_type = POST.get('plan_type')
     order_currency = 'INR'
     order_receipt = 'order_rcptid_11'
-    notes = {'plan_name': plan_name, 'plan_type' : plan_type, 'group_type' : group_type}   # OPTIONALclient.order.create(amount=order_amount, currency=order_currency, receipt=order_receipt, notes=notes, payment_capture='0')
+    notes = {'plan_name': plan_name, 'plan_type' : plan_type, 'group_type' : group_type} 
     DATA = {
                 "amount" : int(amount * 100), # Stores, Operates in paise
                 "currency" : order_currency,
@@ -162,32 +163,30 @@ def create_order(request):
                 "payment_capture" : 0, 
             }
     POST["group_emails"] = group_mails
-    # try : # xakotob974@fft-mail.com, gojavik450@mailboxt.com
-    # order = client.order.create(data = DATA)
-    plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
-    invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
-    order = client.order.fetch(invoice["order_id"])
-    order["receipt"] = order_receipt
-    POST["invoice_id"] = invoice["id"]
-    POST["razorpay_order_id"] = invoice["order_id"]
-    request.session["order_details_post"] = POST
-    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
-    subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
-    context = {
-        "order_id" : order["id"],
-        "amount" : int(amount * 100), # Stores, Operates in paise
-        "currency" : order_currency,
-        "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
-        "name" : " ".join([request.user.first_name, request.user.last_name]),
-        'email' : request.user.email,
-        'contact' : request.user.contact_no,
-        'razorpay_key' : RAZORPAY_KEY,
-        'group_emails' : group_mails
-    }
-    # except Exception as e:
-    #     logger.error(f"Error Occured : {e}")
-        # return JsonResponse({'Exception' : str(e)})
-    # return JsonResponse(context)
+    try : 
+        plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
+        invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
+        order = client.order.fetch(invoice["order_id"])
+        order["receipt"] = order_receipt
+        POST["invoice_id"] = invoice["id"]
+        POST["razorpay_order_id"] = invoice["order_id"]
+        request.session["order_details_post"] = POST
+        user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
+        subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
+        context = {
+            "order_id" : order["id"],
+            "amount" : int(amount * 100), # Stores, Operates in paise
+            "currency" : order_currency,
+            "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
+            "name" : " ".join([request.user.first_name, request.user.last_name]),
+            'email' : request.user.email,
+            'contact' : request.user.contact_no,
+            'razorpay_key' : RAZORPAY_KEY,
+            'group_emails' : group_mails
+        }
+    except Exception as e:
+        logger.error(f"Error Occured : {e}")
+        return JsonResponse({'Exception' : str(e)})
     return render(request, 'subscriptions/payment.html', context = context)
 
 @login_required(login_url='/subscriptions/plans')
@@ -210,7 +209,7 @@ def create_order2(request):
             }
     POST["group_emails"] = group_mails
     request.session["order_details_post"] = POST
-    try : # xakotob974@fft-mail.com, gojavik450@mailboxt.com
+    try :
         order = client.order.create(data = DATA)
         user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
         subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
@@ -228,9 +227,7 @@ def create_order2(request):
     except Exception as e:
         logger.error(f"Error Occured : {e}")
         return JsonResponse({'Exception' : str(e)})
-    # return JsonResponse(context)
     return render(request, 'subscriptions/payment.html', context = context)
-    # return HttpResponse("Your order is " + str(order))
 
 def payment_success(request):
     POST = request.session.get('order_details_post') 
@@ -371,9 +368,7 @@ def terminate_subscription(request):
         else : # if plan subscribed by non individual group
             group = users.functions.get_user_group(request.user, group_type)
             users.functions.remove_user_from_group(request.user.email, group_type, group.admin.email)
-
-        return JsonResponse({"success" : True})
-        
+        return JsonResponse({"success" : True})        
     return JsonResponse({"success" : False})
 
 def historical_purchases(request):
@@ -400,8 +395,7 @@ def historical_purchases(request):
             "plan-type"     : subscription["plan_id__plan_type_id__type_name"], 
             "group-members" : subscription["plan_id__user_group_type_id__max_members"],
             "start-date"    : subscription["subscription_start"].date(),
-            "end-date"      : subscription["subscription_end"].date(),
-            "download-link" : f"https://invoices.razorpay.com/v1/invoices/{subscription['payment_id__invoice_id']}/pdf?download=1&key_id={RAZORPAY_KEY}",
+            "end-date"      : subscription["subscription_end"].date(),        
             "invoice-id"    : subscription['payment_id__invoice_id']
         })
 
@@ -410,7 +404,11 @@ def historical_purchases(request):
 def download_invoice2(request):
     invoice_id = request.POST.get("invoice_id")
     if invoice_id:
-        return JsonResponse({"url" : f"https://invoices.razorpay.com/v1/invoices/{invoice_id}/pdf?download=1&key_id={RAZORPAY_KEY}"})
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+ request.user.first_name + "-"  + invoice_id + '.pdf"'
+        fill = requests.get(f"https://invoices.razorpay.com/v1/invoices/{invoice_id}/pdf?download=1&key_id={RAZORPAY_KEY}").content
+        response.write(fill)
+        return response
     return JsonResponse({"url" : None})
 
 class download_invoice(PDFTemplateView):
@@ -420,8 +418,6 @@ class download_invoice(PDFTemplateView):
     """
     template_name = "subscriptions/invoice_template.html"
 
-    filename = "ouououououo.pdf"
-
     def get(self, request, *args, **kwargs):
             context = self.get_context_data(**kwargs)
             self.filename = '-'.join([context["cust_name"].lower(), 'invoice', 'Mercury', str(context['time_of_supply'])] ) + ".pdf"
@@ -430,7 +426,6 @@ class download_invoice(PDFTemplateView):
             return response
 
     def get_context_data(self, **kwargs): 
-        # test link : http://localhost:8000/subscriptions/download-invoice2/inv_EmfFMS3NzaWUA0
         Base = super(download_invoice, self)
         context = Base.get_context_data(**kwargs)
         invoice_id = context["invoice_id"]

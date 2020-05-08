@@ -179,7 +179,7 @@ socket.onmessage = function (e) {
                 if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
 
                 if(data_dict["profit_percent"]) {
-                    inst.cells.namedItem("profit_percent").innerHTML = Math.abs(data_dict["profit_percent"]).toFixed(2);
+                    inst.cells.namedItem("profit_percent").innerHTML = (data_dict["profit_percent"]).toFixed(2);
                 }else{
                     inst.cells.namedItem("profit_percent").innerHTML = ((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
                 }

@@ -2,7 +2,7 @@ import logging
 import datetime
 import num2words
 
-from helios.settings import client, RAZORPAY_KEY, TAXES
+from helios.settings import client, RAZORPAY_KEY, TAXES, GSTIN_NO, PAN_ID
 import users.functions
 import subscriptions.functions
 import products.functions
@@ -28,7 +28,6 @@ class Items(Resource):
             Plan Dict which was created
         """
         url = self.base_url
-        print("url : ", url)
         return self.post_url(url, data, **kwargs)
 
     def fetch(self, plan_id, data={}, **kwargs):
@@ -148,7 +147,6 @@ def create_or_update_razorpay_plan(force = False):
     all_plans = subscriptions.functions.get_all_active_plans()
     plans = client.plan.all()
     for plan in all_plans:
-        print(f"name : {plan.plan_name}, month : {plan.price_per_month}, year : {plan.price_per_year}")
         if force or plan.razorpay_plan_per_month_id == None:
             razor_plan = client.plan.create(data = {
                 "period": "monthly",
@@ -219,8 +217,8 @@ def create_invoice_context(invoice_id):
 
     # outer details
     context.update({
-        "gstin_no"        : "27AARCA7772K1ZV",
-        "pan_id"          : "AARCA7772K",
+        "gstin_no"        : GSTIN_NO,
+        "pan_id"          : PAN_ID,
         "time_of_supply"  : datetime.datetime.fromtimestamp(context["paid_at"]).date(),
         "place_of_supply" : "Mumbai",
         "invoice_number"  : context["id"],

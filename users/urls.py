@@ -14,4 +14,7 @@ urlpatterns = [
     path('feedback', views.get_feedback, name= "feedback"),
     path('register-feedback', views.register_feedback, name= "register_feedback"),
     path('contact-no-edit', views.contact_no_edit, name= "contact_no_edit"),
+    path('address-edit', views.address_edit, name= "address_edit"),
+    path('get-address', views.get_address, name= "get_address"),
+    path('indian-states', views.get_indian_states, name= "indian_states"),
 ]

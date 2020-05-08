@@ -4,19 +4,11 @@ import users.functions
 from channels.db import database_sync_to_async
 
 from worker.utils import DBManager
+from algonautsutils.templates import Singleton
 from helios.settings import DATABASES
 
 logger = logging.getLogger('worker')
 logger.info(f'Initializing CONSUMER MANAGER on thread {threading.get_ident()}')
-
-
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
 
 
 class ConsumerManager(metaclass=Singleton):
