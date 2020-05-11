@@ -46,9 +46,18 @@
             <h4>We develop algorithms by statistical & mathematical
                 analysis to </span>create portfolios and execute trades.</h4>
         </div>
-        <a href='/accounts/signup'>
-            <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
-        </a>
+        <!-- Fix for Get Started Button on Landing Page -->
+        {% if user.is_anonymous %}
+            <a href='/accounts/signup'>
+                <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
+            </a>
+        {% else %}
+            <a href='/worker/mercury'>
+                <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
+            </a>
+        {% endif %}
+
+
     </div>
 </section>
 <!--Landing Page Banner Starts-->
