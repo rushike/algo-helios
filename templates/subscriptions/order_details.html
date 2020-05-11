@@ -2,15 +2,13 @@
 {% load static %}
 {% load define_action %}
 
-{% block js_imports %}
-    <!-- <script src="{% static '/js/bootstrap-input-spinner.js' %}" ></script> -->
+{% block js_imports %}    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script src="{% static '/js/jquery.amsify.suggestags.js' %}" ></script>
 {% endblock %}
 
 
-{% block css_imports %}
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css"/> -->
+{% block css_imports %}    
     <link rel="stylesheet" type="text/css" href="{% static '/css/amsify.suggestags.css' %}">    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 {% endblock %}
@@ -285,7 +283,7 @@
     function create_razorpay_dialog(e){
         $.ajax({
 			type: "POST",
-			url: "{% url 'create_order' %}" , // "/user/get-all-users-in-group",
+			url: "{% url 'create_order' %}",
 			data : {
 				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
 			},
@@ -318,7 +316,7 @@
                 console.log("response : ", response)
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'payment_success' %}" , // "/user/get-all-users-in-group",
+                    url: "{% url 'payment_success' %}",
                     data : {
                         csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,	                    
                         razorpay_payment_id : response.razorpay_payment_id,

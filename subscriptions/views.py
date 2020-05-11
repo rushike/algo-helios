@@ -160,10 +160,7 @@ def create_order(request):
                 "currency" : order_currency,
                 "receipt" : order_receipt,
                 "notes" : notes,
-                "payment_capture" : 0, 
-                "offers" : [
-                    "offer_EnUE7s7BW9TC4r"
-                ]
+                "payment_capture" : 1, 
             }
     POST["group_emails"] = group_mails
     try : 
@@ -172,8 +169,7 @@ def create_order(request):
         order = client.order.fetch(invoice["order_id"])
         order["receipt"] = order_receipt
         POST["invoice_id"] = invoice["id"]
-        
-        POST["razorpay_order_id"] = invoice["order_id"]
+        POST["razorpay_order_id"] = order["id"]
         request.session["order_details_post"] = POST
         user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
         subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
@@ -237,7 +233,8 @@ def create_order2(request):
 
 def payment_success(request):
     POST = request.session.get('order_details_post') 
-    if request.POST.get("razorpay_invoice_status").lower() != "paid":
+    logger.info(f"{request.user.email} : verifying the payment, payment status")
+    if request.POST.get("razorpay_invoice_status").lower() not in ["paid", "partially_paid"]:
         #payment not verified sucessfully
         return HttpResponseRedirect(redirect_to="/subscriptions/plans")
     request.session['order_details_post'] = POST
@@ -248,6 +245,7 @@ def payment_success(request):
                                                 'signature' : request.POST.get('razorpay_signature')
                                             }
                                         )
+    logger.info(f"{request.user.email} : Payment verified successfully, no will be redirected to '/subscriptions/subscribe'")
     return HttpResponseRedirect('/subscriptions/subscribe')
 
 @login_required(login_url='/accounts/login/')
@@ -288,7 +286,7 @@ def subscribe(request):
     invoice_id = POST.get('invoice_id')
     payment = subscriptions.functions.register_payment(order_id, payment_id, signature, invoice_id)
     recepients = []
-    logger.info(f"Group mails : {POST.get('group_emails')}")
+    logger.info(f"{request.user.email} : group mails added for subscriptions are --> {POST.get('group_emails')}")
     if 'group_emails' in POST:    
         email_list = [v.strip() for v in POST['group_emails']]
         recepients.extend(email_list)
@@ -349,6 +347,7 @@ def subscribe_common(user, group_type, plan_type, plan_name, period, payment_id,
                     period = period,
                     payment_id = payment_id,
                 )
+    logger.info(f"{request.user.email} : Subscription added for user {user} for plan : {plan_name}, group : {group_type}, plan_type : {plan_type}")
     if subscribed:
         group_add_link = request.build_absolute_uri(users.functions.generate_group_add_link(subscribed.user_group_id))
         subject = "Regarding Algonauts Subscription"
@@ -394,8 +393,7 @@ def historical_purchases(request):
                                 'subscription_end'
                                 )
     data = [] # list of dictionaries
-    for subscription in subs_dict:
-        logger.info(f'end date {subscription["subscription_start"]},  type : {type(subscription["subscription_start"])}')
+    for subscription in subs_dict:    
         data.append({
             "plan-name"     : subscription["plan_id__plan_name"].replace("#", "-"), 
             "plan-type"     : subscription["plan_id__plan_type_id__type_name"], 
