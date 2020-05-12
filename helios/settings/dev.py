@@ -116,7 +116,7 @@ CHANNEL_LAYERS = {
 }
 
 CRONJOBS = [
-    ('*/1 * * * *', 'subscriptions.cron.check_data_consistency', '>> worker.log')
+    ('*/1 * * * *', 'subscriptions.cron.check_data_consistency', '>> django.log')
 ]
 
 CRONTAB_COMMAND_SUFFIX = '2>&1'

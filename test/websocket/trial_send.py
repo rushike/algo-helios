@@ -25,12 +25,12 @@ class store:
             json.dump(cls.instruments_list, f)
     @classmethod
     def get(cls):
-        with open('test/pywebsocket/instrument_send.json', 'r') as f:
+        with open('test/websocket/instrument_send.json', 'r') as f:
             cls.instruments_list = json.load(f)
     @classmethod
     def empty(cls):
         cls.instruments_list = []
-        with open('test/pywebsocket/instrument_send.json', 'w') as f:
+        with open('test/websocket/instrument_send.json', 'w') as f:
             json.dump(cls.instruments_list, f)
 
 parser = argparse.ArgumentParser()
@@ -73,7 +73,7 @@ args.cat = False
 print(args)
 
 CAT = {"4" : "Longterm", "1" : "Intraday", '3' : "Positional", '2' : "BTST"}
-with open("test/pywebsocket/instruments.json", "r") as f:
+with open("test/instruments.json", "r") as f:
     instruments = json.load(f)
 
 def gen_signal():

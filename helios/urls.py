@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 from catalog import views
 import datetime
-from wkhtmltopdf.views import PDFTemplateView
 
 urlpatterns = [
     path('', include('catalog.urls')),

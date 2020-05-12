@@ -29,6 +29,5 @@ self.addEventListener('notificationclick', function(event) {
   });
 
 function do_things_on_click(data){
-    // console.log("did the so much job ")
     clients.openWindow(data.url);        
 };

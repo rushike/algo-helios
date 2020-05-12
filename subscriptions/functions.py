@@ -3,7 +3,7 @@ from channels.db import database_sync_to_async
 
 import threading, asyncio, logging
 import time, datetime, pytz
-from collections import Iterable, Iterator
+from collections.abc import Iterable, Iterator
 from users.models import AlgonautsUser, UserGroup, UserGroupType, UserGroupMapping, ReferralOffer, Referral
 from subscriptions.models import Plan, Subscription, PlanType, SubscriptionType, Order, Payment
 from products.models import Product, ProductCategory, PlanProductMap, ProductFamily
@@ -219,7 +219,6 @@ def send_email(user, recepients, subject, message, to = None):
 
 
 def send_mail_async(user, recepients, subject, message):
-    # user = users.functions.get_user_object(user)
     for to in recepients:
         send_mail(subject, message, EMAIL_HOST_USER, [to], fail_silently=False,)
 

@@ -130,7 +130,6 @@ def redirect_after_signup(request, user, **kwargs):
     return HttpResponseRedirect("/products/")
 
 # EDIT section 
-
 def contact_no_edit(request):
     contact_no =  request.POST.get("contact_no", request.user.contact_no)
     users.functions.contact_no_edit(request.user, contact_no)  #function call

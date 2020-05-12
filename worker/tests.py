@@ -11,7 +11,7 @@ class SimpleTest(TestCase):
     def setUp(self):
         # Every test needs access to the request factory.
         self.factory = RequestFactory()
-        self.user = user = AlgonautsUser.objects.create_user(
+        self.user = AlgonautsUser.objects.create_user(
                     first_name = "Test",
                     last_name = "Algonauts",
                     email = f"test{random.randint(1000, 1000000)}.algonauts@gmail.com",
@@ -26,13 +26,13 @@ class SimpleTest(TestCase):
         # Giving request to mercury 
         response = mercury(request)
         print(f"Response Obtain : {response}")
-        # self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
     def delete(self):
         self.user.delete()
 
 
-# tester = SimpleTest()
-# tester.setUp()
-# tester.test_details()
-# tester.delete() 
+tester = SimpleTest()
+tester.setUp()
+tester.test_details()
+tester.delete() 
 

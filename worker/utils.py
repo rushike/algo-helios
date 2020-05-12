@@ -54,8 +54,7 @@ class DBManager(metaclass=Singleton):
         try:
             return self.db_handler.get_calls_for_today(portfolio_id)
         except psycopg2.InterfaceError as exc:
-            logger.error(f"Cursor closed result not fetched from stored procedure due to exception {exc}")
-            self.db_handler.conn = psycopg2.connect(self.db_handler.dsn)
+            logger.error(f"Cursor closed result not fetched from stored procedure due to exception {exc}")            
             return self.get_calls_for_today(portfolio_id)
 
     def filter_calls(self, calls_dict):
