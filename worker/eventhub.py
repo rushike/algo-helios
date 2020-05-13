@@ -1,8 +1,9 @@
-import logging, os, threading, json, copy
+import logging, os, threading, json, copy, threading
 from collections.abc import Iterable
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+from algonautsutils.templates import Singleton
 from algonautsutils.connhandler.eventhubconnect import EventHubConnect, ClientMode
 from helios.settings import EVENTHUB_CONNECTION_STRING, EVENTHUB_NAME, EVENTHUB
 from worker.consumermanager import ConsumerManager
@@ -13,7 +14,7 @@ logger = logging.getLogger('worker')
 logger.info(f'Initializing EventHub on {threading.get_ident()} {os.getpid()}')
 
 
-class  EventHub:
+class EventHub(metaclass = Singleton):
     def __init__(self, conn_str = EVENTHUB_CONNECTION_STRING,
                         eh_name = EVENTHUB_NAME):
         self.conn_str = conn_str
@@ -24,20 +25,17 @@ class  EventHub:
                                 self.eh_name, 
                                 ClientMode.RECEIVER, 
                                 self.receive
-                                )                           # initiating EventHub object as reciever
-        self.eventhub.start_receiver(True, False)            # starting EventHub as reciever 
+                                )                              # initiating EventHub object as reciever
+        self.eventhub.start_receiver(True, False)              # starting EventHub as reciever 
 
-        self.channel_layer = get_channel_layer()            # getting channel name
-
+        self.channel_layer = get_channel_layer()               # getting channel name
 
     def receive(self, event):
         """Callback sent to EventHub, which is called on occurrence of any event
         """
         logger.info(f"eventhub receive callback received event : {event}")
-        # data = json.loads(event) # loading into object from json
-        data = event
+        data = event["data"]            
         data_type = data.get('dtype')
-        
         if not data_type and data_type not in ['tick', 'signal', 'signal_update']: # initial check, dtype must present in dictionary, i.e. {'dtype' : ['tick' | 'signal' | 'signal_update'], ...}
             logger.error(f"Incorrect data [{data}] received")
             return
@@ -76,5 +74,8 @@ class  EventHub:
             async_to_sync(self.channel_layer.group_send)(group_name, {
                                                                         "type": 'send.message',
                                                                         'message': json.dumps(data)
-                                                                    })  
-if EVENTHUB: eventhub = EventHub()                                                                    
+                                                                   })  
+eventhub = None 
+if EVENTHUB: 
+    eventhub = EventHub()
+    logger.info(f"Event hub initialize object : {eventhub}")
