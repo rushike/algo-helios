@@ -221,5 +221,11 @@ TAXES = {
 }
 
 GSTIN_NO = "27AARCA7772K1ZV"
-
 PAN_ID = "AARCA7772K"
+
+# Event Hub connect properties
+EVENTHUB = True
+EVENTHUB_CONNECTION_STRING = "Endpoint=sb://eh-algonautsdev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Luh9306fwRWBuS+OA3UFOaVbJKLhWGVEhxQ2P4SMtxU="
+EVENTHUB_NAME = "sysadmin"
+
+
