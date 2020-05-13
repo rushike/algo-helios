@@ -21,7 +21,7 @@ class store:
     @classmethod
     def push(cls, value):
         cls.instruments_list.append(value)
-        with open('test/pywebsocket/instrument_send.json', 'w') as f:
+        with open('test/websocket/instrument_send.json', 'w') as f:
             json.dump(cls.instruments_list, f)
     @classmethod
     def get(cls):
@@ -183,7 +183,7 @@ def gen_tick():
 # All calls fetched
 async def send_signal(bulk_send=False):
     if args.env == 'dev':
-        url = "ws://dev.algonauts.in/datalink/"
+        url = "ws://localhost:8000/datalink/"
     elif args.env == 'prod':
         url = "wss://www.algonauts.in/datalink/"
     else:

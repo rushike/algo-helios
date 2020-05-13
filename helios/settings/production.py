@@ -19,7 +19,7 @@ ALLOWED_HOSTS = [
 
 SECURE_SSL_REDIRECT = True
 
-ADMINS = [('Gaurav', 'gaurav.mane@algonauts.in')]
+ADMINS = [('Gaurav', 'algonauts.tech@gmail.com')]
 
 LOGGING = {
     'version': 1,
