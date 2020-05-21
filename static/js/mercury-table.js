@@ -107,6 +107,23 @@ function updateCount(activeTab) {
     document.getElementById(activeTab + '_partial_hit_count').innerHTML = partial_count;
 }
 
+function update_the_tick(data_dict){
+    class_name = data_dict['instrument_token']
+    instruments = document.getElementsByClassName(class_name)
+    for(var i = 0; i < instruments.length; i++){
+        inst = instruments[i]
+        if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+
+        if(data_dict["profit_percent"]) {
+            inst.cells.namedItem("profit_percent").innerHTML = (data_dict["profit_percent"]).toFixed(2);
+        }else{
+            inst.cells.namedItem("profit_percent").innerHTML = ((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
+        }
+        if(status) inst.cells.namedItem("status").innerHTML = status
+    };
+        
+}
+
 socket.onmessage = function (e) {
     // console.log("message ", e);
 
@@ -175,22 +192,16 @@ socket.onmessage = function (e) {
                 }
             }
         }
-        else if(dataType == "tick"){
-            console.log(data_dict)
-            class_name = data_dict['instrument_token']
-            instruments = document.getElementsByClassName(class_name)
-            for(var i = 0; i < instruments.length; i++){
-                inst = instruments[i]
-                if(data_dict["last_price"]) inst.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-
-                if(data_dict["profit_percent"]) {
-                    inst.cells.namedItem("profit_percent").innerHTML = (data_dict["profit_percent"]).toFixed(2);
-                }else{
-                    inst.cells.namedItem("profit_percent").innerHTML = ((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
-                }
-                if(status) inst.cells.namedItem("status").innerHTML = status
-            };
-            
+        else if(dataType == "tick"){            
+            if (data_dict.data && Array.isArray(data_dict.data)){
+                // if dictionary of tick
+                data_dict.data.forEach(value =>{
+                    update_the_tick(value)
+                })
+            }
+            else if(data_dict.constructor == Object) {
+                update_the_tick(data_dict)
+            }
         }
     }
     else {

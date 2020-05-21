@@ -48,7 +48,7 @@ def get_signal():
             'target_price': random.randint(0, 1000), 'stop_loss': random.randint(0, 1000), 'signal': random.choice(['SELL', 'BUY']), 'trade_strategy': 'SuperTrend_Longterm', 
             'algo_category': random.choice(['Longterm', 'Intraday', 'Postitional', 'BTST']), 'signal_time': datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), 'algo_source': 'STAnalysis', 
             'portfolio_id': random.sample([5, 2, 3, 4], k = random.randint(1, 4)), 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': status, 'call_id': ri[1], 
-            'dtype': random.choice(['signal',]), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
+            'dtype': random.choice(['signal', 'signal_update']), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
     print(data)
     if ri not in signal_sent:
         signal_sent.append(ri)
@@ -58,9 +58,15 @@ def get_ticks():
     global signal_sent
     global instruments
     if signal_sent == []: time.sleep(1)
-    ri = random.choice(signal_sent)
-    # ri = random.choice(instruments)
-    data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
+    # ri = random.choice(signal_sent)
+    ri = random.choice(instruments)
+    data = {
+        "dtype" : "tick", 
+        "data" : []
+    }
+    for ri in instruments:
+        data["data"].append({"last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]})
+    # data =  {"dtype": "tick","data" : [{"last_price": random.randint(0, 1000), "instrument_token":  340481, "ticker": "HDFC"}]}
     print(data)
     return data
 
@@ -88,7 +94,7 @@ def send_ticks():
             # if input("Do you want to exit. Y/n") == 'Y':
             #     break
             ite = 0
-        time.sleep(0.02)
+        time.sleep(1)
 
 sig = None
 tick = None

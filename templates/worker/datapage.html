@@ -112,7 +112,7 @@ input:checked + .slider:before {
 					// if (sessionStorage.getItem("portfolio") != 'Section' + (index + 1)) toggle_dict(sessionStorage.getItem("portfolio"))
 					sessionStorage.setItem("portfolio", 'Section' + (index + 1));
 
-					switch_btn_update()
+					// switch_btn_update()
 				})
 			})
     });
@@ -156,24 +156,24 @@ input:checked + .slider:before {
 	// });	
 
 	function update_from_db(data_dictionary){
-		  // data_dictionary.forEach((data, i) => {
-			// 	var status = data['status']
-			// 	var active = data['active']
-			// 	var portfolioId = data["portfolio_id"];
-			// 	console.log("portfolio_id : ", portfolioId)
-			// 	var activeTab = getEligibleTab(portfolioId);
-			// 	var dataTable = document.getElementById(activeTab + "_data-table")
+		  data_dictionary.forEach((data, i) => {
+				var status = data['status']
+				var active = data['active']
+				var portfolioId = data["portfolio_id"];
+				console.log("portfolio_id : ", portfolioId)
+				var activeTab = getEligibleTab(portfolioId);
+				var dataTable = document.getElementById(activeTab + "_data-table")
 
-			// 	newRow = insert_new_row_for_equity(dataTable, data, 0, status);
-			// 	if (active != 1) {
-			// 		newRow.className = "disabled";
-			// 	}
-			// })
+				newRow = insert_new_row_for_equity(dataTable, data, 0, status);
+				if (active != 1) {
+					newRow.className = "disabled";
+				}
+			})
 
-			// allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
-			// for (var i = 0, max = allTabs.length; i < max; i++) {
-			// 	updateCount(allTabs[i].getAttribute("id"))
-			// }
+			allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
+			for (var i = 0, max = allTabs.length; i < max; i++) {
+				updateCount(allTabs[i].getAttribute("id"))
+			}
 			// updateCount(activeTab)		
 		}
 	})
@@ -205,7 +205,7 @@ input:checked + .slider:before {
                 <div class="row">
                     <div class="col-md-2">
 						<div id = "eq-op-toggle-btn" style="margin-top: 1rem;">
-							<input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info">
+							<!-- <input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info"> -->
 						</div>
 						
 					</div>
@@ -223,14 +223,6 @@ input:checked + .slider:before {
                             <li role="presentation" id="longterm">
                                 <a href="#Section4" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs product-tabs">Long Term</a>
                             </li>
-                            <!-- <li style="display: absolute; margin-top: 10vh;">
-                              <div class="float-right" style="margin-top: 1rem; position: abosolute;" role="presentation" id="notification">
-                                <label class="switch">
-                                  <input type="checkbox">
-                                  <span class="slider round"></span>
-                                </label>
-                              </div>
-                            </li> -->
                         </ul>                    
 					</div>	
 					<div class="col-md-2">
@@ -514,26 +506,23 @@ input:checked + .slider:before {
       return port[index - 1]
     }
     function update_toggle_dict(){
-		// var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
-		// TABLE_TOGGLE
-
         toggle_dict(sessionStorage.getItem('portfolio'))
     }
 
 		$(document).ready(()=>{
 			
 			switch_btn_update
-			$("#eq-op-toggle-btn").click(()=>{
-				console.log(TABLE_TOGGLE)
-				update_toggle_dict()
-				console.log(TABLE_TOGGLE)
-				var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
-				if(TABLE_TOGGLE[value] == EQUITY){
-					add_equity_table_header(`#${value}_data-table`, value)
-				}else {
-					add_options_table_header(`#${value}_data-table`, value)
-				}
-			});
+			// $("#eq-op-toggle-btn").click(()=>{
+			// 	console.log(TABLE_TOGGLE)
+			// 	update_toggle_dict()
+			// 	console.log(TABLE_TOGGLE)
+			// 	var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
+			// 	if(TABLE_TOGGLE[value] == EQUITY){
+			// 		add_equity_table_header(`#${value}_data-table`, value)
+			// 	}else {
+			// 		add_options_table_header(`#${value}_data-table`, value)
+			// 	}
+			// });
 		});
     </script>
     {% endblock mercury %}
