@@ -322,3 +322,7 @@ def update_address(user, line1, line2, city, state, zipcode):
             zipcode = zipcode
         )
         
+def toggle_notification(user):
+    user = get_user_object(user)
+    AlgonautsUser.objects.filter(id = user.id).update(allow_notification = not user.allow_notification)    
+    return not user.allow_notification

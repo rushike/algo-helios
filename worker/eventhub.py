@@ -29,42 +29,15 @@ class EventHub():
                                 )                            # initiating EventHub object as reciever
         self.eventhub.start_receiver(True, False)            # starting EventHub as reciever 
 
-
-        # self.eventhub = EventHubConsumerClient.from_connection_string(
-        #                     conn_str=EVENTHUB_CONNECTION_STRING,
-        #                     consumer_group='$Default',
-        #                     eventhub_name=EVENTHUB_NAME,
-        #                 )                                      # initiating EventHub object as reciever
-        # threading.Thread(target = self.start_receiver).start() # starting EventHub as reciever 
-        # self.start_receiver()
-        # self.eventhub.start_receiver(True, False)           
-
         self.channel_layer = get_channel_layer()               # getting channel name
-
-    def start_receiver(self):
-        try:
-            # with self.eventhub:
-            #     self.eventhub.receive(
-            #             on_event = self.receive,
-            #             on_partition_initialize = self.on_partition_initialize,
-            #             on_partition_close = self.on_partition_close,
-            #             on_error = self.on_error,
-            #             # starting_position="-1",  # "-1" is from the beginning of the partition.
-            #     )
-            pass
-        except Exception:
-            print('Stopped receiving.')
 
 
     def receive(self,  event):
         """Callback sent to EventHub, which is called on occurrence of any event
         """
         logger.info(f"eventhub receive callback received event : {event}")
-        # event = event.body_as_json()        
-        # data = event["data"]    
         data = event
-        data_type = data.get('dtype')
-        # if data_type == 'tick': return
+        data_type = data.get('dtype')        
         if not data_type and data_type not in ['tick', 'signal', 'signal_update']: # initial check, dtype must present in dictionary, i.e. {'dtype' : ['tick' | 'signal' | 'signal_update'], ...}
             logger.error(f"Incorrect data [{data}] received")
             return
@@ -103,29 +76,6 @@ class EventHub():
                                                                         'message': json.dumps(data)
                                                                    })  
     
-    def on_partition_initialize(self, partition_context):
-        # Put your code here.
-        print("Partition: {} has been initialized.".format(partition_context.partition_id))
-
-
-    def on_partition_close(self, partition_context, reason):
-        # Put your code here.
-        print("Partition: {} has been closed, reason for closing: {}.".format(
-            partition_context.partition_id,
-            reason
-        ))
-
-
-    def on_error(self, partition_context, error):
-        # Put your code here. partition_context can be None in the on_error callback.
-        if partition_context:
-            print("An exception: {} occurred during receiving from Partition: {}.".format(
-                partition_context.partition_id,
-                error
-            ))
-        else:
-            print("An exception: {} occurred during the load balance process.".format(error))
-
 eventhub = None 
 if EVENTHUB: 
     eventhub = EventHub()

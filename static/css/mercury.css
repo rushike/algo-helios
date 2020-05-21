@@ -43,6 +43,14 @@ nav{
     outline: none;
 }
 
+.notify{
+    color: black !important;
+}
+
+.notify:active{
+    content: "\f0f3";
+}
+
 .table_details {
     margin-top: 10px;
 }

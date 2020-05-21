@@ -2,6 +2,7 @@ import asyncio
 import websockets
 import argparse
 import time
+import threading
 import json
 import random, datetime
 from algonautsutils.connhandler.eventhubconnect import EventHubConnect, ClientMode
@@ -32,9 +33,9 @@ print(eventhubsender.send)
 
 CAT = {"4" : "Longterm", "1" : "Intraday", '3' : "Positional", '2' : "BTST"}
 with open("test/instruments.json", "r") as f:
-    instruments = json.load(f)
+    instruments = json.load(f) 
 
-signal_sent = set() # will store data in instrument_tokens 
+signal_sent = [] # will store data in instrument_tokens 
 
 def get_signal():
     global signal_sent
@@ -42,21 +43,25 @@ def get_signal():
     global instruments
     # instrument_token =  random.randrange(100000, 100100) if args.inst == 0 else args.inst
     ri = random.choice(instruments)
-    status = random.choices(['HIT' , 'MISS' , 'Active' , 'Partial HIT', 'Inactive'], weights=[0.16, 0.16, 0.26, 0.26, 0.16])[0]
+    status = random.choices(['HIT' , 'MISS' , 'Active' , 'Partial HIT', 'Inactive'], weights=[0.01, 0.01, 0.47, 0.48, 0.01])[0]
     data = {'instrument_token': ri[1], 'ticker': ri[2], 'interval': 'week', 'price': random.randint(0, 1000), 
             'target_price': random.randint(0, 1000), 'stop_loss': random.randint(0, 1000), 'signal': random.choice(['SELL', 'BUY']), 'trade_strategy': 'SuperTrend_Longterm', 
             'algo_category': random.choice(['Longterm', 'Intraday', 'Postitional', 'BTST']), 'signal_time': datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), 'algo_source': 'STAnalysis', 
             'portfolio_id': random.sample([5, 2, 3, 4], k = random.randint(1, 4)), 'db_fetched': False, 'profit_percent': 50.0, 'ltp': 94.5, 'status': status, 'call_id': ri[1], 
-            'dtype': random.choice(['signal', 'signal_update']), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
+            'dtype': random.choice(['signal',]), 'active': True if status in ['Active', 'Partial HIT'] else False, 'override': False, 'risk_reward': 2 }
     print(data)
-    signal_sent.add(ri[1])
+    if ri not in signal_sent:
+        signal_sent.append(ri)
     return data
 
 def get_ticks():
+    global signal_sent
     global instruments
-    if signal_sent == []: time.sleep(3)
+    if signal_sent == []: time.sleep(1)
     ri = random.choice(signal_sent)
+    # ri = random.choice(instruments)
     data = {"dtype": "tick", "last_price": random.randint(0, 1000), "instrument_token":  ri[1], "ticker": ri[2]}
+    print(data)
     return data
 
 def send_signal():
@@ -67,9 +72,10 @@ def send_signal():
         eventhubsender.send(data)
         ite += 1
         if ite >= args.mrange:
-            if input("Do you want to exit. Y/n : " ) == 'Y':
-                break
+            # if input("Do you want to exit. Y/n : " ) == 'Y':
+            #     break
             ite = 0
+        time.sleep(20)
 
 def send_ticks():
     print("sending ticks")
@@ -79,10 +85,21 @@ def send_ticks():
         eventhubsender.send(data)
         ite += 1
         if ite >= args.mrange:
-            if input("Do you want to exit. Y/n") == 'Y':
-                break
+            # if input("Do you want to exit. Y/n") == 'Y':
+            #     break
             ite = 0
+        time.sleep(0.02)
 
+sig = None
+tick = None
+if args.signal: 
+    sig = threading.Thread(target = send_signal)
+    sig.start()
+    
+if args.tick : 
+    tick = threading.Thread(target = send_ticks)
+    tick.start()
+    
 
-if args.signal: send_signal()
-if args.tick : send_ticks()
+if sig : sig.join()
+if tick : tick.join()

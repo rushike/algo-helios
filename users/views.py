@@ -42,7 +42,6 @@ def profile_page(request):
             }
     return render(request, 'users/profile.html', context= context)
 
-
 @login_required(login_url = '/accounts/login/')
 def add_referral_credits(request, referral_code):
     logged_user = request.user._wrapped if hasattr(request.user,'_wrapped') else request.user
@@ -136,9 +135,11 @@ def contact_no_edit(request):
     logger.info(f"contact no edited successfully for user : {request.user.email}")
     return JsonResponse({"success":True, "contact_no":contact_no})
 
+@login_required(login_url = '/accounts/login/')
 def get_address(request):
     return JsonResponse(users.functions.get_address(request.user))
 
+@login_required(login_url = '/accounts/login/')
 def address_edit(request):
     logger.info(f"request post : {request.POST}")
     line1 = request.POST.get("inputAddress1")
@@ -151,4 +152,10 @@ def address_edit(request):
 
 def get_indian_states(request):
     return JsonResponse({"states" : STATE_CHOICES})
+
+
+@login_required(login_url = '/accounts/login/')
+def toggle_notification(request):
+    allow_notification = users.functions.toggle_notification(request.user)
+    return JsonResponse({"allow_notification" : allow_notification})
 

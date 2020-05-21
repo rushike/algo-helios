@@ -72,6 +72,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
 	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code)
+	allow_notification = models.BooleanField(default=False)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
