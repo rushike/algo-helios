@@ -20,14 +20,13 @@ logger.debug(f"DOMAIN :  {DOMAIN}, URL : {''.join([DOMAIN, '/worker/mercury/'])}
 class DataConsumer(AsyncConsumer):
 
     async def websocket_connect(self, event):
-        logger.info(f"DATA CONSUMER Connected: {event}")
+        logger.info(f"Data Consumer Connected: {event}")
         await self.send({
             "type": "websocket.accept"
         })
 
-    async def websocket_receive(self, event):
-        logger.debug(f"Received event [{event}]")
-        logger.debug(f"DATA FETCHER Received: {event}")
+    async def websocket_receive(self, event):        
+        logger.debug(f"Data Consumer Received: {event}")
 
         data = json.loads(event['text'])
         data_type = data.get('dtype')
@@ -54,7 +53,7 @@ class DataConsumer(AsyncConsumer):
                             'message': json.dumps(datax)
                         }
                     )
-                    worker.functions.send_notification_for_signal_or_signal_update(data)
+                    await worker.functions.send_notification_for_signal_or_signal_update(data)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
         elif data_type == 'tick':
@@ -75,7 +74,7 @@ class DataConsumer(AsyncConsumer):
         })   
 
     async def websocket_disconnect(self, event):
-        logger.info(f"DATA CONSUMER Disconnected: , {event}")
+        logger.info(f"Data Consumer Disconnected: , {event}")
         await self.send({
             "type": "websocket.close"
         })

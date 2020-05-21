@@ -51,16 +51,6 @@ class DataPublisher(AsyncConsumer):
                         for prod in products
                         ])
         logger.debug(f"self products_filter : {self.products_filter}")
-        self.users_tickers = set()
-        [
-            self.users_tickers.update(
-                    v['tickers'] 
-                    if v and v['tickers'] 
-                    else DBManager().get_instruments(DBManager().get_portfolio_from_product(product))
-                ) 
-            for product, v in self.products_filter.items()
-            ]
-        logger.debug(f"self user tickers : {self.users_tickers}")
 
     async def websocket_receive(self, event):
         try:
@@ -101,10 +91,9 @@ class DataPublisher(AsyncConsumer):
     async def send_message(self, event):
         user = self.user
         response = event.get('message')
-        data = json.loads(response)
+        data = json.loads(response)        
         if data['dtype'] == 'signal' : data = await worker.functions.filter_async(user, data, self.products_filter)
-        # to this point data may be list of dictionary
-        if isinstance(data, dict) and data['dtype'] == 'tick' and data['ticker'] not in self.users_tickers: data = None
+        logger.info(f"data after filtering {data}")
         if data:
             logger.info(f"Sending data to client throrugh /channel/ {event}")
             await self.send({

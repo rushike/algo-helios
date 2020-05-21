@@ -9,9 +9,13 @@ from collections.abc import Iterable
 from django.contrib.sites.models import Site
 from channels.db import database_sync_to_async
 from webpush import send_group_notification
+from webpush.utils import _send_notification
+from webpush.models import Group, PushInformation
 from worker.utils import DBManager, MercuryCache
 from products.models import UserProductFilter, Product
+from users.models import AlgonautsUser
 from worker.consumermanager import ConsumerManager
+
 
 logger = logging.getLogger('worker')
 
@@ -168,12 +172,27 @@ def filter_calls_from_db(user, calls_dict):
                 logger.error(f"{E} Exception Occured while filtering  data {data}:")
     return calls
 
-def send_notification_for_signal_or_signal_update(data):
+@database_sync_to_async
+def send_push_notification_on_check(group_name = "mercury-btst", payload = "test", ttl=0):
+    # Get all the subscription related to the group
+    payload = json.dumps(payload)
+    group = Group.objects.filter(name=group_name)
+    push_infos = PushInformation.objects.filter(group__in = group)
+    for push_info in push_infos: 
+        logger.info(f"push_info.user.allow_notification : {push_info.user.allow_notification} push_info.subscription : {push_info.subscription}")
+        if push_info.user.allow_notification:
+            logger.info(f"push_info.user.allow_notification : {push_info.user.allow_notification} push_info.subscription : {push_info.subscription}")
+            _send_notification(push_info.subscription, payload, ttl)
+
+
+async def send_notification_for_signal_or_signal_update(data):
     # Send a notification
+    logger.info(":{:PP{" * 50)
     payload = None
     ticker = data.get('ticker')
     data_type = data.get('dtype')
     signal, portfolio_ids = data.get('signal'), data.get('portfolio_id')
+    logger.info(f"signakjkh portfolios , {signal}, {portfolio_ids}")
     for portfolio_id in portfolio_ids:
         group_name = ConsumerManager().get_mapped_group(portfolio_id)
         if data_type == 'signal' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
@@ -185,11 +204,17 @@ def send_notification_for_signal_or_signal_update(data):
                         "icon":  ''.join([DOMAIN, '/static/img/algonauts.jpg']), 
                         'url': ''.join([DOMAIN, '/worker/mercury/'])
                         }
-            send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+            logger.info("notification send")
+            await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)
+            # send_group_notification(group_name=group_name, payload=payload, ttl=1000)
         elif data_type == 'signal_update' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
             payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                     'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
                     "icon": ''.join([DOMAIN, '/static/img/algonauts.jpg']),
                     'url': ''.join([DOMAIN, '/worker/mercury/'])
                     }
-            send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+            logger.info("notification send")
+            await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)
+            # send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+            # threading.Thread(target = send_push_notification_on_check, kwargs = {"group_name":group_name, "payload":payload, "ttl":1000})
+            
