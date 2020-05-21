@@ -204,28 +204,6 @@ socket.onmessage = function (e) {
             }
         }
     }
-    else {
-        //Create table from received data from database
-        data_dict.forEach(data => {
-
-            var status = data['status']
-            var active = data['active']
-            var portfolioId = data["portfolio_id"];
-            var activeTab = getEligibleTab(portfolioId);
-            var dataTable = document.getElementById(activeTab + "_data-table")
-
-            newRow = insert_new_row_for_equity(dataTable, data, 0, status);
-            if (active != 1) {
-                newRow.className = "disabled";
-            }
-        })
-
-        allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
-        for (var i = 0, max = allTabs.length; i < max; i++) {
-            updateCount(allTabs[i].getAttribute("id"))
-        }
-        return
-    }
 
     updateCount(activeTab)
 }

@@ -256,7 +256,6 @@ function add_options_table_header(id, tab){
 
 $(document).ready(function() {
         $(".user-notify").click(() =>{            
-            console.log("Notification Dataaaaaa user notify clicked ...")
             make_notification_ajax_call()
         });
 
@@ -706,8 +705,7 @@ function request_permission(){
           permissionResult.then(resolve, reject);
         }
     }).then(function(permissionResult) {
-            if (permissionResult !== 'granted') {
-                console.log("gandksjdnfksjdffffffffffjkkkkkkkkkk")
+            if (permissionResult !== 'granted') {                
                 const sub = reg.pushManager.subscribe(options);
                 sendSubData(sub)
             }

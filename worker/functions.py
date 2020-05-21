@@ -145,8 +145,7 @@ def filter_calls_from_db(user, calls_dict):
                         'portfolio_id' : k, 
                         'profit_percent' : round(data['profit_percent'], 2)
                         })
-            if not user_filter_call_type:
-                # logger.debug(f"User Filter not set.")
+            if not user_filter_call_type:                
                 calls.append(data)
                 continue
 
@@ -167,7 +166,7 @@ def filter_calls_from_db(user, calls_dict):
                     continue # will not add in data list
                 data.update({'signal' : data['signal'],  'status' : data['status'], 'time' : data['time'], 
                     'active' :data['active'], 'portfolio_id' : k})
-                calls.append(data)
+                calls.append(data)  
             except Exception as E :
                 logger.error(f"{E} Exception Occured while filtering  data {data}:")
     return calls
@@ -192,7 +191,6 @@ async def send_notification_for_signal_or_signal_update(data):
     ticker = data.get('ticker')
     data_type = data.get('dtype')
     signal, portfolio_ids = data.get('signal'), data.get('portfolio_id')
-    logger.info(f"signakjkh portfolios , {signal}, {portfolio_ids}")
     for portfolio_id in portfolio_ids:
         group_name = ConsumerManager().get_mapped_group(portfolio_id)
         if data_type == 'signal' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
@@ -205,8 +203,7 @@ async def send_notification_for_signal_or_signal_update(data):
                         'url': ''.join([DOMAIN, '/worker/mercury/'])
                         }
             logger.info("notification send")
-            await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)
-            # send_group_notification(group_name=group_name, payload=payload, ttl=1000)
+            await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)        
         elif data_type == 'signal_update' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
             payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
                     'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
@@ -215,6 +212,4 @@ async def send_notification_for_signal_or_signal_update(data):
                     }
             logger.info("notification send")
             await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)
-            # send_group_notification(group_name=group_name, payload=payload, ttl=1000)
-            # threading.Thread(target = send_push_notification_on_check, kwargs = {"group_name":group_name, "payload":payload, "ttl":1000})
             

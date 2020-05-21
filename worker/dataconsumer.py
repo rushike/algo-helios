@@ -56,8 +56,7 @@ class DataConsumer(AsyncConsumer):
                     await worker.functions.send_notification_for_signal_or_signal_update(data)
             else:
                 logger.error(f"Received INCORRECT Signal {data}")
-        elif data_type == 'tick':
-            logger.debug(f"Received Tick Updates {data}")
+        elif data_type == 'tick':            
             await self.channel_layer.group_send(
                 ConsumerManager().get_broadcast_group(),
                 {

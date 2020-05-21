@@ -55,8 +55,7 @@ class EventHub():
                     group_names.append(ConsumerManager().get_mapped_group(portfolio_id))
                     data_list.append(datax)
                 worker.functions.send_notification_for_signal_or_signal_update(data)                               
-        elif data_type == 'tick': # Will send to Broadcast group
-            logger.debug(f"tick recieved {data}")
+        elif data_type == 'tick': # Will send to Broadcast group            
             data_list = [data]
             group_names = ConsumerManager().get_broadcast_group(),
 

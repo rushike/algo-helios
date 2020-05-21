@@ -19,7 +19,7 @@ RAZORPAY_KEY = "rzp_test_mORiHoyolnJdWj"
 client = Client(auth=(RAZORPAY_KEY, "1HoPO6AkWpoZC5NG3vgN83zp"))
 
 
-ADMINS = [('Test', 'algonauts.test@gmail.com'), ('Test2', 'algonautsheroku@gmail.com')]
+ADMINS = [('Test', 'algonauts.test@gmail.com'), ('Test2', 'algonautsheroku@gmail.com'), ('Tech', 'algonauts.tech@gmail.com')]
 
 """
 Allowed Host for sites
