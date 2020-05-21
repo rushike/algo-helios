@@ -4,31 +4,32 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                 <input type="text" id="{}_search" class="search form-control"
                                     placeholder="Search . . . " style="border-radius: 20px;">
                             </div>
-                            <!-- <div class = "col-md-7 col-xs-12">
-                                <div class = "row"> -->
-                                    <div class="col-md-2 col-xs-6 count_display">
+                            <div class = "col-md-7 col-xs-12 text-center">
+                                <div class = "row">
+                                    <div class="col-md-3 col-xs-6 count_display">
                                         <label class="param">Total Calls </label>
                                         <label class="value" id="{}_total_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-3 col-xs-6 count_display">
                                         <label class="param">Hits </label>
                                         <label class="value" id="{}_hit_count">0</label>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-3 col-xs-6 count_display">
                                         <a href="#" data-toggle="tooltip" data-placement="top"
                                             title="Partially Successful Calls, Hitting 60% of Target">
                                             <label class="param">Partial Hits </label>
                                             <label class="value" id="{}_partial_hit_count">0</label>
                                         </a>
                                     </div>
-                                    <div class="col-md-2 col-xs-6 count_display">
+                                    <div class="col-md-3 col-xs-6 count_display">
                                         <label class="param">Miss </label>
                                         <label class="value" id="{}_miss_count">0</label>
                                     </div>
-                                <!-- </div>
-                            </div>-->
-                            <div class="col-md-2 col-xs-12 text-center btn-group btn-group-lg ">
-                                <span id = "{}_filter"><a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
+                                 </div>
+                            </div>
+                            <div class="col-md-3 col-xs-12 text-center btn-group btn-group-lg ">
+                                <span id = "{}_filter">
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="Filter">
                                     <button class="btn filter get_filter"  data-toggle="modal" data-target="#{}_filter_modal">
                                         <small><span class="fa fa-filter"></span></small>
                                     </button>
@@ -43,6 +44,12 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                         <small><span class="fa fa-refresh"></span></small>
                                     </button>
                                 </a>
+
+                                <span href="#" data-toggle="tooltip" onclick="make_notification_ajax_call()" data-placement="top" title="Notify">
+                                    <button class="btn refresh user-notify"  title="Refresh">
+                                        <small><span class="fa fa-bell-slash notify"></span></small>
+                                    </button>
+                                </span>
                             </div>
                         </div>
 
@@ -125,7 +132,7 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
 
                             </div>
                         </div>
-
+                        <div id = "{}_data-table-wrapper">
                         <table id="{}_data-table" class="table">
                             <thead>
                                 <tr id="t-headers">
@@ -146,7 +153,10 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                             </thead>
                             <tbody id="{}_data-table-rows"/>
                         </table>
+                        </div>
                     </div>`
+
+var ALLOW_NOTIFICATION = false
 
 String.prototype.format = function () {
     var i = 0, args = arguments;
@@ -162,8 +172,95 @@ function option_tag_list(list){
     }return op_str
 }
 
+function make_notification_ajax_call(){
+    $.ajax({
+        type: "GET",
+        url: "/user/toggle-notification",
+        data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
+        success: function(data)
+        {
+            ALLOW_NOTIFICATION = data["allow_notification"]
+            if(ALLOW_NOTIFICATION){
+                $(".user-notify").html(
+                    `<small><span class="fa fa-bell notify"  style = "color : black !important"></span></small>`
+                )
+            }else{
+                $(".user-notify").html(
+                    `<small><span class="fa fa-bell-slash notify"  style = "color : white!important"></span></small>`
+                )
+            }
+
+        },
+        error: function(request, status, error)
+        {
+            alert(request.responseText);
+        }
+    });
+}
+
+function add_equity_table_header(id, tab){
+    console.log("adding equity header ...", id, tab)
+    $(id).html(
+        `
+            <table id="${tab}_data-table" class="table">
+                <thead>
+                    <tr id="t-headers">
+                        <th>Ticker  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>LTP</a></th>
+                        <th>Signal  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>Signal Time  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>Signal Price  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>Target Price</a></th>
+                        <th>Stop Loss</th>
+                        <!-- <th><b>Risk/Reward</b>  <a><i class="fa fa-fw fa-sort"/></a></th> -->
+                        <th><a href="#" data-toggle="tooltip" data-placement="top"
+                        title="Expected Profit with respect to LTP if entered now">Profit %</a> <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>Status <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <!-- <th>Action</th> -->
+                        <!-- TODO: Display hit/miss number -->
+                    </tr>
+                </thead>
+                <tbody id="${tab}_data-table-rows"/>
+            </table>
+        `
+    )
+}
+
+function add_options_table_header(id, tab){
+    console.log("adding options header ...", id, tab)
+    $(id).html(
+        `
+            <table id="${tab}_data-table" class="table">
+                <thead>
+                    <tr id="t-headers">
+                        <th>Ticker  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>LTP</a></th>
+                        <th>Signal  <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <!-- <th>Signal Time  <a><i class="fa fa-fw fa-sort"/></a></th> -->
+                        <!-- <th>Signal Price  <a><i class="fa fa-fw fa-sort"/></a></th> -->
+                        <th>Target Price</a></th>
+                        <th>Stop Loss</th>
+                        <!-- <th><b>Risk/Reward</b>  <a><i class="fa fa-fw fa-sort"/></a></th> -->
+                        <th><a href="#" data-toggle="tooltip" data-placement="top"
+                        title="Expected Profit with respect to LTP if entered now">Profit %</a> <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <th>Status <a><i class="fa fa-fw fa-sort"/></a></th>
+                        <!-- <th>Action</th> -->
+                        <!-- TODO: Display hit/miss number -->
+                    </tr>
+                </thead>
+                <tbody id="${tab}_data-table-rows"/>
+            </table>
+        `
+    )
+}
 
 $(document).ready(function() {
+        $(".user-notify").click(() =>{            
+            console.log("Notification Dataaaaaa user notify clicked ...")
+            make_notification_ajax_call()
+        });
+
+        
 
         $.ajax({
             type: "GET",
@@ -224,7 +321,7 @@ $(document).ready(function() {
 
     $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
         $("#" + value + "_content").html(data_table.format(value).replace("{{~~~~~|||~~~~~}}", fetch_instruments_for_portfolio(value)));
-
+        add_equity_table_header(`#${value}_data-table`, value)
         $( "#" + value + "_rr_slider_range" ).slider({
                 range: true,
                 min: 0,
@@ -302,7 +399,7 @@ $(document).ready(function() {
         data_dictionary.forEach((data, i) => {
               var status = data['status']
               var active = data['active']
-              newRow = inserNewRow(dataTable, data, 0, status);
+              newRow = insert_new_row_for_equity(dataTable, data, 0, status);
               if (active != 1) {
                   newRow.className = "disabled";
               }
@@ -599,6 +696,24 @@ function urlB64ToUint8Array(base64String) {
     return outputData;
 }
 
+function request_permission(){
+    return new Promise(function(resolve, reject) {
+        const permissionResult = Notification.requestPermission(function(result) {
+            resolve(result);
+        });
+    
+        if (permissionResult) {
+          permissionResult.then(resolve, reject);
+        }
+    }).then(function(permissionResult) {
+            if (permissionResult !== 'granted') {
+                console.log("gandksjdnfksjdffffffffffjkkkkkkkkkk")
+                const sub = reg.pushManager.subscribe(options);
+                sendSubData(sub)
+            }
+        });
+}
+
 const subscribe = async (reg) => {
     const subscription = await reg.pushManager.getSubscription();
     console.log("Subscribe : subscriptions : ", subscription)
@@ -617,8 +732,11 @@ const subscribe = async (reg) => {
     if(key) {
         options.applicationServerKey = urlB64ToUint8Array(key)
     }
+
+    // request_permission()
     const sub = await reg.pushManager.subscribe(options);
     sendSubData(sub)
+    
 };
 
 // TODOs

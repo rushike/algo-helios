@@ -3,13 +3,15 @@
 
 {% block css_imports %}
     <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
-    <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
+	<link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
+	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
 	{% endblock %}
 
 {% block js_imports %}
     <script src="{% static 'js/mercury.js' %}?version=1"></script>
 	<script src="{% static 'js/mercury-table.js' %}?version=1"></script>
 	<script src="{% static 'js/landing-page.js' %}?version=1"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 {% endblock %}
 
 {% block mercury %}
@@ -20,6 +22,83 @@
 		width: 100%;
 		height: 100%;
     }
+
+    /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 5rem;
+  height: 2rem;
+}
+
+.toggle.btn {
+    min-width: 10rem;
+    min-height: 3rem;
+}
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* .btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus{
+	background-color: #004B96;
+}
+
+.btn-info, .btn-info:active, .btn-info:hover .btn-info:focus{
+	background-color: #7DDCFF;
+} */
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+
 	</style>
 	
     <script>
@@ -28,15 +107,29 @@
 			['intraday', 'btst', 'positional', 'longterm'].forEach((value, index)=>{
 				console.log("#", value,", ", index ,", will resistor click event ...")
 				$("#" + value).click(()=>{
-					console.log("#", 'Section' + index, ", clicked ...")
+					// console.log("#", 'Section' + index, ", clicked ...")
 					$('meta[name=active-tab]').attr('content', 'Section' + (index + 1));
+					// if (sessionStorage.getItem("portfolio") != 'Section' + (index + 1)) toggle_dict(sessionStorage.getItem("portfolio"))
 					sessionStorage.setItem("portfolio", 'Section' + (index + 1));
+
+					switch_btn_update()
 				})
 			})
     });
     
     $(document).ready(()=>{
       
+		var ALLOW_NOTIFICATION = "{{user.allow_notification}}"
+		// console.log("ALLOW_NOTIFIACTION : ", ALLOW_NOTIFICATION, ALLOW_NOTIFICATION.toLowerCase())
+		if(ALLOW_NOTIFICATION.toLowerCase() == "true"){
+			$(".user-notify").html(
+				`<small><span class="fa fa-bell notify" style = "color : black !important"></span></small>`
+			)
+		}else{
+			$(".user-notify").html(
+				`<small><span class="fa fa-bell-slash notify" style = "color : white !important"></span></small>`
+			)
+		}
 	  //Create table from received data from database
 	//   $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
 			var data = $.ajax({
@@ -63,27 +156,29 @@
 	// });	
 
 	function update_from_db(data_dictionary){
-		  data_dictionary.forEach((data, i) => {
-				var status = data['status']
-				var active = data['active']
-				var portfolioId = data["portfolio_id"];
-				console.log("portfolio_id : ", portfolioId)
-				var activeTab = getEligibleTab(portfolioId);
-				var dataTable = document.getElementById(activeTab + "_data-table")
+		  // data_dictionary.forEach((data, i) => {
+			// 	var status = data['status']
+			// 	var active = data['active']
+			// 	var portfolioId = data["portfolio_id"];
+			// 	console.log("portfolio_id : ", portfolioId)
+			// 	var activeTab = getEligibleTab(portfolioId);
+			// 	var dataTable = document.getElementById(activeTab + "_data-table")
 
-				newRow = inserNewRow(dataTable, data, 0, status);
-				if (active != 1) {
-					newRow.className = "disabled";
-				}
-			})
+			// 	newRow = insert_new_row_for_equity(dataTable, data, 0, status);
+			// 	if (active != 1) {
+			// 		newRow.className = "disabled";
+			// 	}
+			// })
 
-			allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
-			for (var i = 0, max = allTabs.length; i < max; i++) {
-				updateCount(allTabs[i].getAttribute("id"))
-			}
+			// allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
+			// for (var i = 0, max = allTabs.length; i < max; i++) {
+			// 	updateCount(allTabs[i].getAttribute("id"))
+			// }
 			// updateCount(activeTab)		
 		}
 	})
+
+
 	</script>
 	
     <div id = "algonauts-fire" class="container text-center" style="margin-top : 20vh;">
@@ -96,18 +191,25 @@
 							  after_div_classes : "containerm",
                             })
     </Script>
-	
     <div class="containerm" style="text-align: center;display: none;" >
 
         
         <div id="container" style="text-align: center; min-height: 830px;">
+
+                  
 
         <div class="container-fluid wrapper">
             <div class="tab" role="tabpanel">
                 <h2 style="color: white; letter-spacing: 2px;">MERCURY</h2>
                 <!-- Nav tabs -->
                 <div class="row">
-                    <div class="col-md-12 col-12">
+                    <div class="col-md-2">
+						<div id = "eq-op-toggle-btn" style="margin-top: 1rem;">
+							<input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info">
+						</div>
+						
+					</div>
+                    <div class="col-md-8 col-12">
                         <ul class="nav nav-tabs tabs_start_position" id="ordertypes" role="tablist">
                             <li role="presentation" id="intraday">
                                 <a href="#Section1" aria-controls="home" role="tab" data-toggle="tab" class="product_tabs product-tabs">Intraday</a>
@@ -121,8 +223,19 @@
                             <li role="presentation" id="longterm">
                                 <a href="#Section4" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs product-tabs">Long Term</a>
                             </li>
-                        </ul>
-                    </div>	
+                            <!-- <li style="display: absolute; margin-top: 10vh;">
+                              <div class="float-right" style="margin-top: 1rem; position: abosolute;" role="presentation" id="notification">
+                                <label class="switch">
+                                  <input type="checkbox">
+                                  <span class="slider round"></span>
+                                </label>
+                              </div>
+                            </li> -->
+                        </ul>                    
+					</div>	
+					<div class="col-md-2">
+
+					</div>
                 </div>
 
                 <!-- Tab panes -->
@@ -279,6 +392,15 @@
 
 
     <script>
+		const EQUITY = "equity"
+		const OPTIONS = "options"
+		const TABLE_TOGGLE = {
+			intraday : EQUITY, // two options EQUITY and OPTIONS
+			btst : EQUITY,
+			positional : EQUITY,
+			longterm : EQUITY
+		}
+
 		document.body.scrollTop = 0;
   		document.documentElement.scrollTop = 0;
 		document.querySelector('.containerm').style.display = "none";
@@ -333,6 +455,85 @@
 
             // Download CSV file
             downloadCSV(csv.join("\n"), filename);
-        }
+		}
+
+		function toggle_btn_for_eq_op(key){
+			if(TABLE_TOGGLE[key] == EQUITY){
+				TABLE_TOGGLE[key] = OPTIONS
+			}else if (TABLE_TOGGLE[key] == OPTIONS){
+				TABLE_TOGGLE[key] = EQUITY
+			}
+		}
+
+		function toggle_dict(porfolio){
+			console.log("toggle_dict portfolio : ", porfolio)
+			if(porfolio == "Section1"){
+				toggle_btn_for_eq_op("intraday")
+			}else if (porfolio == "Section2"){
+				toggle_btn_for_eq_op("btst")
+			}
+		}
+		
+		function switch_btn_update(){
+			if(["Section1", "Section2"].includes(sessionStorage.getItem("portfolio"))){
+				// console.log(sessionStorage.getItem("portfolio"))
+				$("#eq-op-toggle-btn").html(
+					`<input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info">`				
+					)
+					$('#eq-op-toggle-btn-input').bootstrapToggle()
+					if(sessionStorage.getItem("portfolio") == "Section1"){				
+						if(TABLE_TOGGLE.intraday == EQUITY){
+							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
+							
+						}else if (TABLE_TOGGLE.intraday == OPTIONS){
+							$('#eq-op-toggle-btn-input').bootstrapToggle('off')
+							
+						}
+					} 
+					if(sessionStorage.getItem("portfolio") == "Section2"){				
+						if(TABLE_TOGGLE.btst == EQUITY){
+							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
+							
+						}else if (TABLE_TOGGLE.btst == OPTIONS){
+							$('#eq-op-toggle-btn-input').bootstrapToggle('off')
+							
+						}
+					}
+				}else{
+				$('#eq-op-toggle-btn-input').bootstrapToggle('destroy')
+				$("#eq-op-toggle-btn").html(
+					``
+				)
+				
+			}
+    }
+    function get_portfolio_from_section(section){
+      console.log("section : ", section)
+      var port = [ "intraday", "btst", "positional", "longterm" ]
+      var index = parseInt(section.charAt(section.length-1))
+      return port[index - 1]
+    }
+    function update_toggle_dict(){
+		// var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
+		// TABLE_TOGGLE
+
+        toggle_dict(sessionStorage.getItem('portfolio'))
+    }
+
+		$(document).ready(()=>{
+			
+			switch_btn_update
+			$("#eq-op-toggle-btn").click(()=>{
+				console.log(TABLE_TOGGLE)
+				update_toggle_dict()
+				console.log(TABLE_TOGGLE)
+				var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
+				if(TABLE_TOGGLE[value] == EQUITY){
+					add_equity_table_header(`#${value}_data-table`, value)
+				}else {
+					add_options_table_header(`#${value}_data-table`, value)
+				}
+			});
+		});
     </script>
     {% endblock mercury %}

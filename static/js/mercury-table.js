@@ -26,13 +26,17 @@ function getStatus(status) {
     return "Active"
 }
 
-function inserNewRow(source_table, data, position, status) {
+function insert_new_row_for_options(source_table, data, position, status){
+    
+}
+
+function insert_new_row_for_equity(source_table, data, position, status) {
     let newRow = source_table.getElementsByTagName("tbody")[0].insertRow(0);
     status = getStatus(status)
     newRow.innerHTML =
     `<td id="ticker" data-label="Ticker">`+data["ticker"]+`</td>
     <td id="ltp" data-label="LTP">`+data["price"]+`</td>
-    <td id="signal" data-label="Signal"><button type="button" class="` + data['signal'] + `_btn trade btn-xs" data-toggle="modal"
+    <td id="signal" data-label="Signal"><button type="button" class="` + data['signal'] + `_btn trade " data-toggle="modal"
         data-target="#trade_modal">` + data["signal"] + `</button></td>
     <td id="signal_time" data-label="Signal Time">`+timeFormat(data["signal_time"], data["portfolio_id"])+`</td>
     <td id="price" data-label="Signal Price">`+data["price"]+`</td>
@@ -136,7 +140,7 @@ socket.onmessage = function (e) {
                     }
                     
                     status = getStatus(status)
-                    row = inserNewRow(dataTable, data, 0, status)
+                    row = insert_new_row_for_equity(dataTable, data, 0, status)
                     if(!active){
                         console.log("Will disable row with call id in --signal: ", call_id)
                         row.className = "disabled";
@@ -146,7 +150,7 @@ socket.onmessage = function (e) {
             }
             else {
                 status = getStatus(status)
-                row = inserNewRow(dataTable, data, 0, status);
+                row = insert_new_row_for_equity(dataTable, data, 0, status);
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
@@ -172,6 +176,7 @@ socket.onmessage = function (e) {
             }
         }
         else if(dataType == "tick"){
+            console.log(data_dict)
             class_name = data_dict['instrument_token']
             instruments = document.getElementsByClassName(class_name)
             for(var i = 0; i < instruments.length; i++){
@@ -198,7 +203,7 @@ socket.onmessage = function (e) {
             var activeTab = getEligibleTab(portfolioId);
             var dataTable = document.getElementById(activeTab + "_data-table")
 
-            newRow = inserNewRow(dataTable, data, 0, status);
+            newRow = insert_new_row_for_equity(dataTable, data, 0, status);
             if (active != 1) {
                 newRow.className = "disabled";
             }
