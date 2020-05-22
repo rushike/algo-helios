@@ -36,6 +36,8 @@ class EventHub():
         """Callback sent to EventHub, which is called on occurrence of any event
         """
         logger.info(f"eventhub receive callback received event : {event}")
+        if not isinstance(event, dict): 
+            logger.error(f"Event recieved via EventHub is not a dictionary object.")
         data = event
         data_type = data.get('dtype')        
         if not data_type and data_type not in ['tick', 'signal', 'signal_update']: # initial check, dtype must present in dictionary, i.e. {'dtype' : ['tick' | 'signal' | 'signal_update'], ...}

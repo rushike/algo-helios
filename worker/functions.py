@@ -185,8 +185,7 @@ def send_push_notification_on_check(group_name = "mercury-btst", payload = "test
 
 
 async def send_notification_for_signal_or_signal_update(data):
-    # Send a notification
-    logger.info(":{:PP{" * 50)
+    # Send a notification    
     payload = None
     ticker = data.get('ticker')
     data_type = data.get('dtype')
@@ -202,7 +201,7 @@ async def send_notification_for_signal_or_signal_update(data):
                         "icon":  ''.join([DOMAIN, '/static/img/algonauts.jpg']), 
                         'url': ''.join([DOMAIN, '/worker/mercury/'])
                         }
-            logger.info("notification send")
+            logger.info(f"notification sent for signal, ticker : {ticker}")
             await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)        
         elif data_type == 'signal_update' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
             payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
@@ -210,6 +209,6 @@ async def send_notification_for_signal_or_signal_update(data):
                     "icon": ''.join([DOMAIN, '/static/img/algonauts.jpg']),
                     'url': ''.join([DOMAIN, '/worker/mercury/'])
                     }
-            logger.info("notification send")
+            logger.info(f"notification sent for signal update, ticker : {ticker}")
             await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)
             

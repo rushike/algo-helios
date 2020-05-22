@@ -179,12 +179,17 @@ socket.onmessage = function (e) {
             console.log("Signal Update : data_dict = ", data_dict)
             if (dataTable && row) {
                 
-                if(data_dict['last_price']) row.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
-                if(data_dict['profit_percent']) row.cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
-                if(data_dict['status']) row.cells.namedItem("status").innerHTML = getStatus(status);
-                if(data_dict['signal']) row.cells.namedItem("signal").innerHTML = `<button type="button" class="` + data_dict['signal'] + `_btn trade btn-xs" data-toggle="modal"
+                if(data_dict['last_price']) 
+                    row.cells.namedItem("ltp").innerHTML = data_dict["last_price"];
+                if(data_dict['profit_percent']) 
+                    row.cells.namedItem("profit_percent").innerHTML = data_dict['profit_percent'];
+                if(data_dict['status']) 
+                    row.cells.namedItem("status").innerHTML = getStatus(status);
+                if(data_dict['signal']) 
+                    row.cells.namedItem("signal").innerHTML = `<button type="button" class="` + data_dict['signal'] + `_btn trade btn-xs" data-toggle="modal"
                                                                                     data-target="#trade_modal">` + data_dict["signal"] + `</button>`
-                if(data_dict['price']) row.cells.namedItem("price").innerHTML = data_dict['price'];
+                if(data_dict['price']) 
+                    row.cells.namedItem("price").innerHTML = data_dict['price'];
                 
                 if (!active) {
                     console.log("Will disable row with call id : ", call_id)
