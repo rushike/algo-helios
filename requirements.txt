@@ -1,5 +1,5 @@
 asgiref==3.2.3
--e git+https://admin:ddcfirn6srgstignsyrzqcryxrda377xevuxlpbmvh7go2r6abda@dev.azure.com/algonauts/algonautsutils/_git/algonautsutils@saurabh/algonautsutils#egg=algonautsutils
+-e git+https://admin:ddcfirn6srgstignsyrzqcryxrda377xevuxlpbmvh7go2r6abda@dev.azure.com/algonauts/algonautsutils/_git/algonautsutils@master#egg=algonautsutils
 astroid==2.3.3
 attrs==19.3.0
 autobahn==20.2.1
