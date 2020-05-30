@@ -25,6 +25,7 @@ ADMINS = [('Test', 'algonauts.test@gmail.com'), ('Test2', 'algonautsheroku@gmail
 Allowed Host for sites
 """
 ALLOWED_HOSTS = [
+    'mercury-vue.herokuapp.com',
     'localhost',
     '127.0.0.1',
 ]
