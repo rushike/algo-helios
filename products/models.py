@@ -47,14 +47,28 @@ class PlanProductMap(models.Model):
     def __str__(self):
         return "#".join([str(self.product_id), str(self.plan_id)])
 
+class UserProductFilterManager(models.Manager):
+    def update_filter(self, user_id : AlgonautsUser, product_id : Product, filter_attributes : str):
+        objs = UserProductFilter.objects.filter(user_id = user_id, product_id = product_id)
+        if objs.exists():
+            objs.update(filter_attributes = filter_attributes)
+            objs = objs.first()
+        else: 
+            objs = self.create(
+                user_id = user_id,
+                product_id = product_id,
+                filter_attributes = filter_attributes,
+            )
+            objs.save(using = self._db)
+        return objs
 
 class UserProductFilter(models.Model):
     user_id = models.ForeignKey(AlgonautsUser, on_delete= models.CASCADE, related_name="upf_user_id")
     product_id = models.ForeignKey(Product, on_delete = models.CASCADE, related_name="upf_product_id")
-    filter_attributes = models.CharField(max_length=200)
-    
+    filter_attributes = models.CharField(max_length=8192)
+    objects = UserProductFilterManager()
     def __str__(self):
-        return "#".join([str(self.user_id), self.product_id])
+        return "#".join([str(self.user_id), str(self.product_id)])
 
 
 def create_individual_plan(sender, instance, **kwargs):

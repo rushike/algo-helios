@@ -17,7 +17,12 @@ postgres.txt
 .history
 .test.py
 test.py
+generate.py
 consideration.txt
 stunnel/
 *.sql
+!scripts/*
 *.pgsql
+*.xml
+staticfiles/*
+src/*

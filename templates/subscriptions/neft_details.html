@@ -1,20 +1,9 @@
 {% extends 'subscriptions/base.html' %}
 {% load define_action %}
 {% block subscriptions_content %}
-<br>
-<br>
-
-    <!-- 
-        Company Name : Algonauts Technologies Private Limited
-        Bank Name    : Kotak Mahindra Bank, Mulund East
-        IFSC Code    : KKBK0001432
-        Account No   : 3713222189
-        Account Type : Current Account  
-
-     -->
 
 <div class="container mt-5">
-    <div class="row mb-4 justify-content-center">
+    <!-- <div class="row mb-4 justify-content-center">
         <div class="col-md-7 card ">
             <form method="POST" action="{% url 'create_order' %}">
                 {% csrf_token %}
@@ -52,6 +41,16 @@
                     
                     <div class="row card-title">
                         <div class="col-md-6 font-weight-bold content-para">
+                           Group Type
+                        </div>
+                        <div class="col-md-6 content-para ">
+                            {{order_details.group_type | title}}
+                            <input type="text" hidden></input>
+                        </div>
+                    </div>
+                    
+                    <div class="row card-title">
+                        <div class="col-md-6 font-weight-bold content-para">
                            Period
                         </div>
                         <div class="col-md-6 content-para ">
@@ -71,7 +70,7 @@
                     </div>
                     <div class="row ">
                         <button class="btn btn-success btn-lg btn-block" type="submit">
-                            <span href=""  role="button" class="link-unstyled white-fr">Pay Online</a>
+                            <span href=""  role="button" class="link-unstyled white">Pay Online</a>
                         </button>
                         
                     </div>
@@ -79,11 +78,11 @@
                 </div>
             </form>
         </div>
-    </div>
+    </div> -->
     <div class="row justify-content-center mb-4">
-        <div class="col-md-7 text-center">
+        <!-- <div class="col-md-7 text-center">
             <span class="xx-large dark-gray"> OR</span>
-        </div>
+        </div> -->
     </div>
     <div class="row  justify-content-center ">
         <div class="col-md-7 card rounded">

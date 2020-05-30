@@ -6,9 +6,9 @@ DEBUG = False
 """
 Razorpay Variable and Declaration
 """
-RAZORPAY_KEY = "rzp_test_FwV0DxK207WiS4"
+RAZORPAY_KEY = "rzp_test_mORiHoyolnJdWj"
 
-client = Client(auth=(RAZORPAY_KEY, "f82D3I70VdLkWPPOzlKteAhK"))
+client = Client(auth=(RAZORPAY_KEY, "1HoPO6AkWpoZC5NG3vgN83zp"))
 
 
 
@@ -19,7 +19,7 @@ ALLOWED_HOSTS = [
 
 SECURE_SSL_REDIRECT = True
 
-ADMINS = [('Gaurav', 'gaurav.mane@algonauts.in')]
+ADMINS = [('Gaurav', 'support@algonauts.in')]
 
 LOGGING = {
     'version': 1,
@@ -36,25 +36,11 @@ LOGGING = {
         }
     },
     'handlers': {
-        # 'applogfile': {
-        #     'level': 'INFO',
-        #     'class': 'logging.handlers.RotatingFileHandler',
-        #     'filename': 'helios.log',
-        #     'maxBytes': 1024*1024*15,  # 15MB
-        #     'backupCount': 10,
-        # },
-        # 'workerlogfile': {
-        #     'level': 'INFO',
-        #     'class': 'logging.handlers.RotatingFileHandler',
-        #     'filename': 'worker.log',
-        #     'maxBytes': 1024*1024*15,  # 15MB
-        #     'backupCount': 10,
-        # },
         'console': {
             'level': 'INFO',
             # 'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'standard',
+            #'formatter': 'standard',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -64,14 +50,25 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
         },
         'worker': {
-            'handlers': ['console'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
+        },
+    },
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.environ.get('REDIS_ADDRESS', '127.0.0.1'), os.environ.get('REDIS_PORT', 6379))],
+            "capacity":1000, 
+            "expiry": 2,
         },
     },
 }

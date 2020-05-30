@@ -137,7 +137,7 @@
     <div class="col-md-8">
     <div class="card mb-4">
       <div class="card-body">
-        <h1 style="font-size: 3rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
+        <h1 style="font-size: 2rem; font-weight: 800;">{% block title %} {{ post.title }} {% endblock title %}</h1>
         <p class=" text-muted" style="text-align: right; font-size: small;">{{ post.author }} | {{ post.created_on }}</p>
         <hr style="margin-top:10px; margin-bottom:10px; border-top-style: solid; border-width: medium;">
         <p class="card-text" style="font-size: 1.2rem;">{{ post.content | safe }}</p>
@@ -148,17 +148,17 @@
     <div class="comment-card card mb-4">
       <div class="card-body">
         <!-- comments -->
-        <h2 style="font-size: 2.1rem; font-weight: 800;">{{ comments.count }} comments</h2>
+        <h2 style="font-size: 1rem;">{{ comments.count }} comments</h2>
 
         {% for comment in comments %}
         <div class="comments" style="padding: 10px; padding: 10px; background:#F7F7F7; border-radius: 2rem; margin-bottom: 1rem;">
-          <p class="font-weight-bold" style="font-size: 1.6rem; margin-left:2rem;font-weight: bold;">
+          <p class="font-weight-bold" style="font-size: 1rem; margin-left:2rem;font-weight: bold;">
             {{ comment.name }}
-            <span class=" text-muted font-weight-normal" style="font-size: 1.2rem; margin-left:1rem; margin-top: 0.4rem; float: right;">
+            <span class=" text-muted font-weight-normal" style="font-size: 1rem; margin-left:1rem; margin-top: 0.4rem; float: right;">
               {{ comment.created_on }}
             </span>
           </p>
-          <h4 style="font-size: 1.5rem; margin-left:5rem;">{{ comment.body | linebreaks }}</h4>
+          <h4 style="font-size: 1rem; margin-left:2rem;">{{ comment.body | linebreaks }}</h4>
         </div>
         {% endfor %}
       </div>
@@ -171,7 +171,7 @@
           Your comment is awaiting moderation
         </div>
         {% else %}
-        <h3 style="font-size: 2.1rem; font-weight: 800;">Leave a comment</h3>
+        <h3 style="font-size: 1rem; font-weight: 800;">Leave a comment</h3>
         <form method="post" style="margin-top: 1.3em; font-size:1.4rem;">
           {{ comment_form | crispy }}
           {% csrf_token %}

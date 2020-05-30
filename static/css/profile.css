@@ -1,3 +1,6 @@
+html{
+    scroll-behavior: smooth;
+}
 .closex {
     float: right;
     font-size: 1.5rem;
@@ -30,4 +33,124 @@ button.closex {
     right: 0;
     padding: 0.75rem 1.25rem;
     color: inherit;
+}
+
+*{
+    font-family: 'Roboto', sans-serif;
+}
+.round_effect{
+    border-radius: 20px;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color:  rgb(236, 250, 255);
+}
+.table-striped tbody tr:nth-of-type(odd):hover {
+    color: #212529;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+.modal-footerx{
+    background-color: #004B96;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: calc(0.3rem - 1px);
+    border-bottom-left-radius: calc(0.3rem - 1px);
+}
+
+.close-table{
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+.close-table, .close-table:focus {
+    color: #000;
+    text-decoration: none;
+    opacity: .75;
+}
+
+.close-table:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+.close-remove{
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    background-color: transparent;
+    border: 0;
+    -webkit-appearance: none;
+}
+.close-remove, .close-remove:focus {
+    color: #000;
+    text-decoration: none;
+    opacity: .75;
+}
+
+.close-remove:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+#add-members-container{
+    position: relative;
+    cursor: pointer;
+}
+#add-members-style{
+    left: 1.67rem;
+    z-index: 4;
+    top: -0.6rem;
+    position: absolute;
+}
+#add-members-plus-style{
+    font-size: medium;
+    z-index: 10;
+    top: -0.9rem;
+    position: absolute;
+}
+
+.plans-view-btn{
+    color: #004B96;
+    border-color: #004B96;
+}
+
+.plans-view-btn:hover, .plans-view-btn:active{
+    background-color: #004B96 !important;
+}
+
+.plans-view-btn:focus{
+    box-shadow: 0 0 0 0rem transparent !important;;
+}
+
+.plans-view-btn-danger{
+    color: rgb(240, 16, 0);
+    border-color: rgb(240, 16, 0);
+}
+
+.plans-view-btn-danger:hover, .plans-view-btn-danger:active{
+    background-color: rgb(240, 16, 0) !important;
+    border-color: rgb(240, 16, 0) !important;
+}
+
+.plans-view-btn-danger:focus{
+    box-shadow: 0 0 0 0rem transparent !important;;
+}
+.fa-whatsapp{
+	width:40px;
+	height:40px;
+    padding:7px;
+    /* padding: 0px; */
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:30px;
+	text-align:center;
+    font-size:25px;
+	box-shadow: 2px 2px 3px #999;
+    z-index:100;
 }

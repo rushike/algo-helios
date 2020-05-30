@@ -1,13 +1,21 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import AlgonautsUser, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral, UserFeedback
+from .models import AlgonautsUser, Address, UserGroup, UserGroupMapping, UserGroupType, UserManager, ReferralOffer, Referral, UserFeedback
 
 admin.site.site_header = "Algonauts Administration"
 
+class AddressAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('email', 'line1', 'line2', 'city', 'state', 'zipcode')}),
+    )
+    list_display = ('email', 'line1', 'line2', 'city', 'state', 'zipcode')
+    list_filter = ('city', 'state')
+    search_fields = ('state', )
+    ordering = ('email', 'line1', 'line2', 'city', 'state', 'zipcode')
 
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits','referral_code' )}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name' ,'contact_no', 'last_login', 'algo_credits','referral_code' , 'allow_notification')}),
         ('Permissions', {'fields': (
             'is_active', 
             'is_staff', 
@@ -26,7 +34,7 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits','referral_code' )
+    list_display = ('first_name', 'last_name', 'email', 'contact_no', 'is_staff', 'last_login', 'algo_credits','referral_code', 'allow_notification' )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email',)
     ordering = ('first_name', 'last_name', 'email', 'contact_no', 'algo_credits', 'referral_code' )
@@ -89,6 +97,7 @@ class GroupTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(AlgonautsUser, UserAdmin) 
+admin.site.register(Address, AddressAdmin) 
 admin.site.register(UserGroup, GroupAdmin)
 admin.site.register(UserGroupMapping, GroupMappingAdmin)
 admin.site.register(UserGroupType, GroupTypeAdmin)

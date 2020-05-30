@@ -1,178 +1,409 @@
 {% extends "users/base.html" %}
+{% load static %}
 {% load define_action %}
 {% block profile_content %}
 
 <link rel="stylesheet" type="text/css" href="/static/css/profile.css">
 <link rel="stylesheet" type="text/css" href="/static/css/style.css">
-<div class="container mb-5">
-<br>
-<br>
-<br>
-<br>
-<br>
-<!-- <h3>DashBoard</h3> -->
-{% if not is_verified %}
-	<div class="alertx alert alert-warning alert-dismissible fade show" role="alertx">
-	<strong>Check Your Email ! Click On Verify Me</strong>
-	<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
-	</div>
-{% endif %}
-  
-  <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link text-dark active" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="true">Profile</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link text-dark" id="MyPlans-tab" data-toggle="tab" href="#MyPlans" role="tab" aria-controls="MyPlans" aria-selected="false">My Plans</a>
-	</li>
-	<!-- <li class="nav-item">
-		<a class="nav-link text-dark" id="MyOrders-tab" data-toggle="tab" href="#MyOrders" role="tab" aria-controls="MyOrders" aria-selected="false">My Orders</a>
-	</li> -->
-  </ul>
 
-  <div class="tab-content" id="myTabContent" style="min-height: 30rem;">
-    <div class="tab-pane fade show active mt-5" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="flush-left">
-						<div class="card rounded">
-							<div class="card-body p-2">
-								<ul class="list-group list-group-flush">
-									<li class="list-group-item"><b>Name : </b>{{ user.first_name }} {{user.last_name}} </li>
-									<li class="list-group-item"><b>Email : </b>{{ user.email }} </li>
-									<li class="list-group-item"><b>Credits :</b> <span style="font-size: large;"><span class="badge badge-pill badge-warning ">₹   {{ user.algo_credits }} </span> </span></li>
-									<li class="list-group-item"><b>Last Login : </b>{{ user.last_login }}</li>
-									<li class="list-group-item"><b>Your Referral Code : </b>
-									<span class="badge badge-pill badge-dark p-2"> {{ user.referral_code }} </span>
-										<div class="input-group input-group-sm w-75 mx-auto">
-											<input type="text" class="form-control card" value="{{ referral_link }}" id="myInput">
-											<div class="input-group-append">
-												<span class="input-group-text btn btn-sm" id="basic-addon1"  onclick="copyTextFunction()">copy</span>
-											</div><br>
+<!--  -->
+
+	<!-- <link rel="stylesheet" type="text/css" href="/static/css/fullpage.css"> -->
+	<script src="{% static 'js/onepage-scroll.js' %}"></script>
+
+<script>
+	if (screen && screen.width > 480) {
+		document.write(`<link rel="stylesheet" type="text/css" href="/static/css/onepage-scroll.css">`);
+	}
+</script>
+<!-- <link rel="stylesheet" type="text/css" href="/static/css/fullpage.css">
+<script src="{% static 'js/fullpage.js' %}"></script> -->
+
+<!-- <script type="text/javascript" src="https://raw.githubusercontent.com/alvarotrigo/fullPage.js/2.9.7/jquery.fullPage.js"></script> -->
+<div id = "profile-id" class="container onepagescroll  mb-5" style="margin-top: 15vh;">
+	  
+	
+	<style>
+		
+	</style>
+
+	<section>
+	<div class="container  section" style="min-height: 85vh;">
+		
+		
+		{% if not is_verified %}
+		<div class="alertx alert alert-dismissible fade show" role="alertx" style="background-color: rgb(246,248,248);">
+		<strong>Check Your Email ! Click On Verify Me</strong>
+		<button type="button btn btn-dark" class="closex" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+		</div>
+		{% endif %}
+		<h1>Hello {{ user.first_name|title }} !</h1>
+        <p class="text-dark"><small>Your previous login : {{ user.last_login }}</small></p>
+      <hr>
+      
+      <div class="row mt-3 justify-content-center">
+
+        <div class="col-md-4 pb-2">
+			<div class="card h-100 border bg-white text-dark p-3 round_effect">
+				<p class="lead">Personal Information</p>
+				<hr class="mt-0">
+				<p class="">
+					<img src="/static/img/email-box.png" class="mr-3" style="height: 25px; width: 25px;">{{ user.email }}
+				</p>
+				<span class="">
+					<img src="/static/img/phone.png" class="mr-3" style="height: 25px; width: 25px;">
+					<span id="contact_no_field">{{ user.contact_no }}</span>
+					<p class="float-right"><a href="" data-toggle="modal" id="contact_no_button">Edit</a></p>
+				</span>
+				<span class="">
+					<img src="/static/img/address.png" class="mr-3" style="height: 25px; width: 25px;">Address
+					<p class="float-right"><a href="" id = "add-address-btn" data-toggle="modal" data-target="#address-modal">Add</a></p>
+				</span>
+			</div>
+		</div>
+		
+
+			<div class="col-md-4 pb-2">
+			<div class="card h-100 border bg-white text-dark p-3 round_effect">
+				<p class="lead" id = "credit-head"></p>
+				<hr class="mt-0">
+				<div id="credits-content">
+
+				</div>
+				{% if if_referred %}
+					<div id = 'if-referred' style="display: none;">no</div>
+				{% else %}
+					<div id = 'if-referred' style="display: none;">yes</div>
+				{% endif %}
+				<script>
+					var win_refer = `<form class="form-inline justify-content-center" action="/user/refer/user=" method="POST">
+										{% csrf_token %}
+										<div class="input-group input-group-sm">
+											<input type="text" id="" name = "rcode" maxlength="8" class="form-control pl-2 light-blue-focus" style="border-radius: 7px;" placeholder="Enter Referral Code" required>
+											<button class="btn btn-dark btn-sm ml-2" type="submit">Ok</button>
 										</div>
-										<small>Share link to avail 30 Credits (Applicable only Once)</small>
-									</li>
-									{% if not if_referred %}
-										<li class="list-group-item">
-										<form class="form-inline" action="/user/refer/user={{ user.referal_code }}" method="POST">
-											{% csrf_token %}
-											<div class="form-group">
-												<label for=""><b>Enter Referal Code</b></label>
-												<input type="text" id="" maxlength="6" class="mt-1 form-control mx-sm-3" aria-describedby="passwordHelpInline">
-												<button class="btn btn-dark btn-sm mt-1" type="submit">Ok</button>
-											</div>
-											</form>
-										</li>
-									{% endif %}
-								</ul>
-							</div> 
-						</div>
+									</form>`
+					var refer_credits = `<div>
+												<div class = "mb-4">
+													<img src="/static/img/credits.png" class="mr-3" class="img-fluid p-1" style="height: 27px; width: 27px;" />
+													<span class = "float-right h5">{{ user.algo_credits }}</span>
+												</div>
+											<small class="ml-4">Share Referral Code to Gain Credits !</small>
+										</div>`
+					var lead_head = `<span class="pr-2" onclick="put_content('credit')" style="cursor: pointer;">Credits</span>`
+					lead_head += $("#if-referred").html() == 'yes' ? ` | <span class="pl-2 pr-2" onclick = "put_content('win')" style="cursor: pointer;"> Win by refer </span>` : ``;
+					
+					function put_content(head_bool){
+						console.log("head-bool : ", head_bool)
+						if (head_bool == 'credit'){
+							$("#credits-content").html(refer_credits);
+						}
+						if (head_bool == 'win'){
+						
+							
+							$("#credits-content").html(win_refer);
+						}
+						if (head_bool == 'head'){
+							$("#credits-content").html(refer_credits);
+							$("#credit-head").html(lead_head)
+						}
+					}
+					put_content('head')
+
+				</script>
+			</div>
+			</div>
+
+			<div class="col-md-4 pb-2">
+			<div class="card h-100 border text-dark p-3 round_effect" style="background-color: rgb(246,248,248); ">
+				<p class="lead">Referral Code</p>
+				<hr class="mt-0">
+					<p class="text-inline" id="p2">
+						<img src="/static/img/ref-code.png" class="mr-3" class="img-fluid p-1" style="height: 28px; width: 28px;" />
+						<span class="float-right h5" style="display: inline;"><kbd>{{user.referral_code}}</kbd></span>
+					</p>
+					<p type="text" class="d-none" id="ref-code">{{ user.referral_code }}</p>
+					<p type="text" class="d-none" id="ref-link">{{ referral_link }}</p>
+					<div class="btn-group btn-group-sm" role="group">
+						<button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-code')" data-toggle="tooltip" 
+						data-placement="bottom" title="Click To Copy">
+							Copy Code
+						</button>
+						<button type="button" class="btn btn-outline-dark" onclick="copyToClipboard('#ref-link')" data-toggle="tooltip" 
+						data-placement="bottom" title="Click To Copy">
+							Copy Shareable Link
+						</button>
+						<a type="button" class="btn btn-outline-dark" data-toggle="tooltip" 
+						data-placement="bottom" title="" 
+						href="https://wa.me/?text=Hello,%20join%20my%20Algonauts
+						%20Group%20for%20Mercury%20Product%20using%20Referral%20Code:%0D%0A
+						{{ user.referral_code }}%0D%0Aor%20Refferral%20Link%20as%20%0D%0A
+						{{ referral_link }}">
+						<i class="fab fa-whatsapp wa">
+						</i>
+						</a>
+					</div>
+					</p>
+			</div>
+			</div>
+		
+		</div> <!-- row ends -->
+
+		<!-- row 2 starts -->
+		<div class="row mt-3 pb-3">
+
+			<div class="col-md-4 pb-2">
+				<div class="card h-100 p-3 round_effect" onclick="get_all_historical_purchases()">
+					<p class="lead">Billing</p>
+					<hr class="mt-0">
+					<p class="text">Generate Invoice</p>
+					<a href="" class="stretched-link" data-toggle="modal" data-target="#invoice-modal"></a>  
+						<img src="/static/img/arrow-black.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+						 <!-- RAZOR PAY invoice for    -->
+					</a>
 				</div>
 			</div>
-		</div> 
-	</div> <!-- profile tab ends-->
-    <!-- ------------------------------------------------------------------------------------------ -->
-    
-    <div class="tab-pane fade" id="MyPlans" role="tabpanel" aria-labelledby="MyPlans-tab">
-		<div class="container mt-5">
 
-			  {% if iplans %}
-			  		<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Personal Plans</h3></div>
-			  		
-          			<div class="row mt-3">
-          				{% for iplan in iplans %}
-              				<div class="mb-3 col-md-5 offset-md-1">
-								
-                				<div class="card h-100 border-dark shadow-sm">     
-                  					<div class="card-header">
-                    					<h4 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} <br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h4>
-									</div>
-									  
-                  					<div class="card-body flex-column">
-											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
-											<p class="lead"> Subscribe With the following Plan</p>
-											<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-										  {% elif iplan.0.subscription_type_id__type_name == "Monthly" %}
-											<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-										  {% else %}
-											<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-										  {% endif %}
-											<ul class="list-group mb-4">
-											  <li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ iplan.0.subscription_start }}</li>
-											  <li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ iplan.0.subscription_end }}</li>
-											</ul>
-									</div>
-									<div class="mt-1 p-4">
-										{% if iplan.0.subscription_type_id__type_name == "Trial" %}
-											<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-										{% else %}
-											<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-										{% endif %}
-									</div>
+			<div class="col-md-4 pb-2">
+			<div class="card h-100 p-3 round_effect">
+				<p class="lead">Go To Mercury
+					<!-- <a href="www.google.com"><button class="float-right btn btn-dark">bill</button></a> -->
+				</p>
+				<hr class="mt-0">
+				<p class="text">Your Personal Technical Analyst!</p>
+				<a href="/worker/mercury" class="stretched-link"></a>  
+					<img src="/static/img/arrow-black.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+				</a>
+			</div>
+			</div>
+
+			<div class="col-md-4">
+			<div class="card h-100 text-white p-3 round_effect" style="background-color:#004B96">
+				<p class="lead">Browse Premium & Basic Plans</p>
+				<hr class="mt-0">
+				<p class="text-white">Subscribe or Avail Free Premium Plan</p>
+				<a href="/subscriptions/plans" class="stretched-link">
+				<img src="/static/img/arrow.png" class="mr-3" class="img-fluid p-1" style="height: 50px; width: 50px;" />
+				</a>  
+			</div>
+			</div>
+
+		</div> <!-- row 2  -->
+
+		<hr>
+	
+	</div> <!--Info container ends , also onepagescroll ends here-->
+	</section>
+
+	<div class=" section">
+
+		<!-- --------------------------------------Your Plans section starts---------------------------- -->
+		<!-- Individual Plans -->
+		
+		<div class="container mt-2">
+		
+			{% if iplans %}
+			<section>
+			<div class="card card-header mt-2 border-0 bg-light"><h3 class="x-large font-weight-bold">Individual Plans</h3></div>
+				
+			<div class="row mt-3 justify-content-left">
+				{% for iplan in iplans %}
+					<div class="col-md-4 pb-2">
+						<div class="card h-100 border bg-white text-dark p-3 round_effect"  style="border: 1px solid black !important;">
+							<p class="lead">
+								{% if iplan.1.type_name == "Premium" %}
+									<h5 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h5>
+								{% else %}
+									<h5 class="my-0 font-weight-normal">{{iplan.2}} - {{iplan.1}} - {{iplan.3}}  <span class="content-para font-weight-bold"></span> <br> <span class="badge badge-pill badge-warning">{{iplan.0.subscription_type_id__type_name}}</span><br></h5>
+								{% endif %}
 											
+							</p>
+							<hr class="mt-0">
+							<ul class="list-group card-body flex-column" style="padding: 0px;">
+								<li class="list-group-item">
+							<!-- <p class=""> -->
+								{% if iplan.0.subscription_type_id__type_name == "Trial" %}
+									<p class="lead"> Subscribe With the following Plan</p>
+									<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+								{% elif iplan.0.subscription_type_id__type_name == "Monthly" %}
+									<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+								{% else %}
+									<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{iplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+								{% endif %}
+								</li>
+								<!-- <ul class="list-group mb-4"> -->
+									<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ iplan.0.subscription_start }}</span></li>
+									<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ iplan.0.subscription_end }}</span></li>
+								</ul>
+								<div class="row mt-3" >
+									<div class="col-6">
+										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
+										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
+																							'{{iplan.0.subscription_type_id__type_name}}', 
+																							'{{iplan.1}}',
+																							'{{iplan.0.plan_id__plan_name}}', 
+																							'{{iplan.0.plan_id__user_group_type_id__type_name}}',			
+																						)">EXIT</button>
+									</div>
+									<div class="col-6">
+										<form method="POST" action="/subscriptions/plan-renew">
+											{% csrf_token %}
+											<!-- <input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input> -->
+											{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
+												<input class="periodcode" name = "period" value="Monthly"hidden></input>
+											{% else %}
+												<input class="periodcode" name = "period" value="{{iplan.0.subscription_type_id__type_name}}"hidden></input>
+											{% endif %}
+											<input class="plancode" name= "plancode" value="{{iplan.1}}" hidden></input>
+											<input class="planname" name= "planname" value="{{iplan.0.plan_id__plan_name}}" hidden></input>
+											<input class="groupcode" name= "groupcode" value="{{iplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
+											<input class="super" name = "super" value="super" hidden/>
+											{% if iplan.0.subscription_type_id__type_name == "Trial" %}
+												<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
+											{% else %}
+												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW</button>
+											{% endif %}
+										</form>
+									</div>
 								</div>
-								
-              				</div>
-          				{% endfor %}
-		  			</div>
-      			
-			{% else %}
-				<!-- <h6>No Personal Plans Yet</h6> -->
-			{% endif %}
-			
+							<!-- </p> -->
+						</div>
+					</div>	  	
+				{% endfor %}
+				</section>		
+				{% endif %}
+
+			</div> <!-- Individual Plan tab ends-->
 		</div>
 
-      <!-- ------------------------------- -->
-      
-      	<div class="container mt-5">
-		
-		{% if gplans %}
-		<div class="card card-header mt-5"><h3 class="x-large font-weight-bold">Group Plans</h3></div>	  			
-			<div class="row mt-3">
-				{% for gplan in gplans %}
-					<div class="mb-3 col-md-5 offset-md-1">
+		<!------------ Group plans starts ------------- -->			
+		<div class="container mt-2">
+			{% if gplans %}
+			<section>
+				<div class="card card-header border-0 bg-light"><h3 class="x-large font-weight-bold">Group Plans</h3></div>
 					
-					<div class="card h-100 border-dark shadow-sm">     
-							<div class="card-header">
-							<h4 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} <span class="badge badge-pill badge-secondary" style="min-width: 20px;">{{gplan.0.plan_id__user_group_type_id__max_members}} Members</span><br><span class="content-para font-weight-bold">Period :</span> <span class="badge badge-pill badge-warning">{{gplan.0.subscription_type_id__type_name}}</span><br></h4>
-						</div>
-							
-							<div class="card-body flex-column">
-								{% if gplan.0.subscription_type_id__type_name == "Trial" %}
-								<p class="lead"> Subscribe With the following Plan</p>
-								<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : ₹</b> {{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-								<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-								{% elif gplan.0.subscription_type_id__type_name == "Monthly" %}
-								<p class="card-title pricing-card-title"><b>Monthly Price :  ₹ </b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small></p>
-								{% else %}
-								<p class="card-title pricing-card-title"><b>Yearly Price : ₹ </b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small></p>
-								{% endif %}
-								<ul class="list-group mb-4">
-									<li class="list-group-item list-group-item-info mb-3"><b>Start Date : </b>{{ gplan.0.subscription_start }}</li>
-									<li class="list-group-item list-group-item-danger"><b>End Date : </b>{{ gplan.0.subscription_end }}</li>
-								</ul>
-						</div>
-						<div class="mt-1 p-4">
-							{% if gplan.0.subscription_type_id__type_name == "Trial" %}
-								<button type="button" class="btn btn-block btn-outline-primary">Subscribe</button>
-							{% else %}
-								<button type="button" class="btn btn-block btn-outline-primary">Renew</button>
-							{% endif %}
-						</div>
+				<div class="row mt-3 justify-content-left">
+					{% for gplan in gplans %}
+						<div class="col-md-4 pb-2">
+							<div class="card h-100 border bg-white text-dark p-3 round_effect" style="border: 1px solid black !important;">
+								<!-- <p class="lead"> -->
+									{% if gplan.1.type_name == "Premium" %}
+										<h5 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} </h5>
+										
+										<div class="justify-content-between h5 pt-1 px-2">
+
+											<span class="badge badge-pill badge-secondary" style="min-width: 20px;">
+												{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+											</span>  
+											
+											<span class="badge badge-pill badge-warning float-right">
+												{{gplan.0.subscription_type_id__type_name}}
+											</span>
+										</div>
+
+									{% else %}
+										<h5 class="my-0 font-weight-normal">{{gplan.2}} - {{gplan.1}} - {{gplan.3}} </h5>
+										<div class="justify-content-between h5 pt-1 px-2">
+											
+											<span class="badge badge-pill badge-secondary float-left" style="min-width: 20px;">
+												{{gplan.0.plan_id__user_group_type_id__max_members}} Members
+											</span>  
+
+											<span class="badge badge-pill badge-warning float-right">
+												{{gplan.0.subscription_type_id__type_name}}
+											</span>
+										
+										</div>
+											
+									{% endif %}
+									
+									<div class="btn-group dropdown" style="position: absolute;right: 1rem;top: 1rem;">
+										<span class="float-right" style="cursor: pointer;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0" role="button" aria-pressed="false" style="position: absolute;right: 1rem;top: 1rem;">
+											<i class='fa fa-ellipsis-v fa-2x' style="color: #6c757d;"></i>
+										</span>
 								
-					</div>
-					
-					</div>
-				{% endfor %}
-			</div>
-      {% else %}
-        <!-- <h6>No Group Plans Yet</h6> -->
-	
-		{% endif %}
+										<div class="dropdown-menu dropdown-menu-right">
+											<button id = "edit-plan-btn" class="dropdown-item" href="#" data-toggle="modal" data-target="#edit-plan" onclick="
+																			trigger_edit_plan(
+																				'{{gplan.0.subscription_type_id__type_name}}', 
+																				'{{gplan.1}}',
+																				'{{gplan.0.plan_id__plan_name}}', 
+																				'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																			)">Edit</button>
+											<button   class="dropdown-item show-add-link" href="#" data-toggle="modal" data-target="#group-add-link" onclick="
+																			trigger_group_add_link(
+																				'{{gplan.0.subscription_type_id__type_name}}', 
+																				'{{gplan.1}}',
+																				'{{gplan.0.plan_id__plan_name}}', 
+																				'{{gplan.0.plan_id__user_group_type_id__type_name}}',
+																			)">Show Link</button>
+										</div>
+									</div>				
+								<!-- </p> -->
+								<hr class="mt-0">
+								<ul class="list-group card-body flex-column pb-3" style="padding: 0px;">
+									<li class="list-group-item">
+								<!-- <p class=""> -->
+									{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+										<p class="lead"> Subscribe With the following Plan</p>
+										<p class="card-title pricing-card-title text-weight-bold"> <b> Monthly Price : </b> <span class="float-right"><b>₹</b><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+									{% elif gplan.0.subscription_type_id__type_name == "Monthly" %}
+										<p class="card-title pricing-card-title"><b>Monthly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_month}} <small class="text-muted">/ mo</small> </span> </p>
+									{% else %}
+										<p class="card-title pricing-card-title"><b>Yearly Price :  </b> <span class="float-right"><b>₹</b>{{gplan.0.plan_id__price_per_year}}<small class="text-muted">/ yr</small> </span> </p>
+									{% endif %}
+									</li>
+									<!-- <ul class="list-group mb-4"> -->
+										<li class="list-group-item "><b>Start Date : </b><span class="text-info font-weight-bold float-right">{{ gplan.0.subscription_start }}</span></li>
+										<li class="list-group-item "><b>End Date : </b><span class="text-danger font-weight-bold float-right">{{ gplan.0.subscription_end }}</span></li>
+								</ul>
+								<div class="row">
+									<div class="col-6">
+										<button  class="btn btn-block btn-outline-primary plans-view-btn-danger" 
+										data-toggle="modal" data-target="#exit-plan-modal" onclick="exit_from_plan(
+																									'{{gplan.0.subscription_type_id__type_name}}', 
+																									'{{gplan.1}}',
+																									'{{gplan.0.plan_id__plan_name}}', 
+																									'{{gplan.0.plan_id__user_group_type_id__type_name}}',																										
+																								)">EXIT</button>
+									</div>
+									<div class="col-6">
+										<form method="POST" action="/subscriptions/plan-renew">
+											{% csrf_token %}
+											<!-- <input class="periodcode" name = "period" value="{{gplan.0.subscription_type_id__type_name}}"hidden></input> -->
+											{% if iplan.0.subscription_type_id__type_name|lower == 'trial' %}
+												<input class="periodcode" name = "period" value="Monthly"hidden></input>
+											{% else %}
+												<input class="periodcode" name = "period" value="{{gplan.0.subscription_type_id__type_name}}"hidden></input>
+											{% endif %}
+											<input class="plancode" name= "plancode" value="{{gplan.1}}" hidden></input>
+											<input class="planname" name= "planname" value="{{gplan.0.plan_id__plan_name}}" hidden></input>
+											<input class="groupcode" name= "groupcode" value="{{gplan.0.plan_id__user_group_type_id__type_name}}" hidden required></input>
+											<input class="super" name = "super" value="super" hidden/>
+											{% if gplan.0.subscription_type_id__type_name == "Trial" %}
+												<button  type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >SUBSCRIBE</button>
+											{% else %}
+												<button type="submit" class="btn btn-block btn-outline-primary plans-view-btn" >RENEW</button>
+											{% endif %}
+										</form>
+									</div>
+								</div>
+								
+							</div>
+						</div>	  	
+					{% endfor %}		
+				</div> 
+			</section>
+			{% endif %}
+		</div> <!--Group  Plan  ends-->
+
+
 		{% if not gplans and not iplans %}
+		<section>
 			<div>
 				<div class="alert alert-secondary" role="alert">
 					<h4 class="alert-heading">Not Subscribed to any of plans</h4>
@@ -182,15 +413,294 @@
 					<hr>
 				</div>
 			</div>
+		</section>
 		{% endif %}
-
-		</div> <!-- Plan tab ends-->
 		<!-- ------------------------------------------------------------------------------------------ -->
-
-
-	</div> <!-- Tab Content ends -->
-  </div> <!-- Container ends -->
+	
+	</div> <!-- Container ends, OnePageScroll ends for your plans -->
+	<!-- </div>  -->
 </div> 
+
+
+<div class="modal fade" id="edit-plan" tabindex="-1" role="dialog" aria-labelledby="edit-plan-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div type="text" id = "edit-group-type-id" style="display: none;"></div>
+				<h5 class="modal-title" id="edit-plan-label">Edit Plan</h5>
+				<button type="button" class="close-table" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div id = "add-members-container">
+					<span id = "add-members-plus-style" class="badge badge-warning badge-pill">+</span>
+					<span id="add-members-style" class="badge badge-danger" >
+						add members
+					</span>
+				</div>
+				<table id = "edit-plan-table" class="table table-striped table-hover">
+					<thead>
+					  <tr>
+						<th scope="col">#</th>
+						<th scope="col">Name</th>
+						<th scope="col">Email</th>
+						<th scope="col" >Action</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<th scope="row">1</th>
+						<td>{{user.first_name}}</td>
+						<td>{{user.last_name}}</td>
+						<td >
+							<span class="fa fa-times red-danger" style="cursor: pointer;">
+
+							</span>
+						</td>
+					  </tr>
+					</tbody>
+				  </table>
+			</div>
+			<div class="modal-footerx">
+				<!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Send message</button> -->
+				<div id = "modal-plan-full-name" class="font-weight-bold float-left" style="color: azure;">
+					
+				</div>
+				<div id = "modal-period" class="font-weight-bold float-right" style="color: azure;"> 
+
+				</div>
+			</div>
+		</div>
+	</div>
+  </div>
+
+<div class="modal fade" id="confim-user-remove" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-remove-header">Confim User Remove</h5>
+				<button type="button" id="close-confirm" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h6>Enter the email address of user to removed from the group <span id = "confirm-group-type-id" class="font-weight-bold"></span>. 
+					Enter <span id = "confirm-email-id" class="font-weight-bold"></span> to confirm remove.</h6>
+				<div>
+					<div class="form-row form-inline">
+						<label for="removed-user-email" class="col-md-3"><span class="badge badg-secondary"> Email address</span></label>
+						<input type="email" name = "entered-email-id" class="form-control col-md-9" id="removed-user-email" aria-describedby="emailHelp" placeholder="Enter email">
+					</div>
+					<div class="form-row form-inline text-center">
+						<button id = "removed-verified" class="btn btn-primary text-center" style="margin-left:10%;width: 80%;">Submit</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> 
+
+<div class="modal fade" id="confim-user-add" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-add-header">Add User</h5>
+				<button type="button" id="close-confirm-add" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<h6>Enter the email address of user to added to the group <span id = "add-group-type-id" class="font-weight-bold"></span>. 
+					Group add link will sent to email given.
+				<div>
+					<div class="form-row form-inline">
+						<label for="removed-user-email" class="col-md-3"><span class="badge badg-secondary"> Email address</span></label>
+						<input type="email" name = "add-email-id" class="form-control col-md-9" id="add-user-email" aria-describedby="emailHelp" placeholder="Enter email">
+					</div>
+					<div class="form-row form-inline text-center">
+						<button id = "send-mail-to-user" class="btn btn-primary text-center" style="margin-left:10%;width: 80%;">Send Mail</button>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="group-add-link" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-add-header">Group : <span id="group-name" class="badge badge-warning"></span></h5>
+				<button type="button" id="close-group-add-link" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="input-group input-group-sm  mx-auto">
+					<input type="text" class="form-control card" value="" id="group-add-link-input" readonly>
+					<div class="input-group-append">
+						<span class="input-group-text btn fa fa-clipboard" id="basic-addon1"  onclick="copyTextFunction('group-add-link-input', 'group-add-link', 'close-group-add-link')"></span>
+					</div><br>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- invoice modal -->
+<div class="modal fade" id="invoice-modal" tabindex="-1" role="dialog" aria-labelledby="edit-plan-label" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div type="text" id = "edit-group-type-id" style="display: none;"></div>
+					<h5 class="modal-title" id="edit-plan-label">Invoice</h5>
+					<button type="button" class="close-table" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					
+					<table id = "edit-invoice-table" class="table table-striped table-hover">
+						<thead>
+						  <tr>
+							<th scope="col">#</th>
+							<th scope="col">Name</th>
+							<th scope="col">Start Date</th>
+							<th scope="col">End Date</th>
+							<th scope="col">Download</th>
+						  </tr>
+						</thead>
+						<tbody>
+						  <tr>
+							<th scope="row">1</th>
+							<td>Mercury Basic<br>Positional Individual 1 Member</td>
+							<td>01 august 1998</td>
+							<td>03 february 1999</td>
+							<td>
+								<span class="fa fa-arrow-alt-circle-down fa-2x" style="cursor: pointer;">
+								</span>
+							</td>
+						  </tr>
+						  <!--  -->
+						  <tr>
+							<th scope="row">2</th>
+							<td>Mercury Premium<br> Individual 20 Members</td>
+							<td>01 august 1998</td>
+							<td>03 february 1999</td>
+							<td>
+								<span class="fa fa-download" style="cursor: pointer;"></span>
+							</td>
+						  </tr>
+						</tbody>
+					  </table>
+				</div>
+				<div class="modal-footerx">
+					<!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Send message</button> -->
+					<div id = "modal-plan-full-name" class="font-weight-bold float-left" style="color: azure;">
+						
+					</div>
+					<div id = "modal-period" class="font-weight-bold float-right" style="color: azure;"> 
+	
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+	
+<!-- invoice modal ends -->
+
+<!-- Exit individual plan modal -->
+
+<div class="modal fade" id="exit-plan-modal" tabindex="-1" role="dialog" aria-labelledby="exit-plan-label" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h5 class="modal-title" id="confim-user-add-header">Enter Password</h5>
+				<button type="button" id="close-group-add-link" class="close-remove" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body text-center">
+				<div class="text-left">
+					Enter password to confirm exit from the group <span id = "exit-plan-name" class="font-weight-bold"></span>.
+				</div>
+				<div class="input-group input-group-sm  mx-auto">
+					<input type="password" class="form-control card" value="" id="exit-password-input" name="exit-password" placeholder="Enter Password">
+					<div id = "exit-plan-confirm" class="input-group-append" onclick="send_exit_ajax_request()">
+						<span class="input-group-text btn fa fa-check-circle" id=""></span>
+					</div>
+				</div>
+				<small>Note that you will be unscubscribed of this plan</small>
+				
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- Exit individual plan modal ends -->
+
+<!-- address modal -->
+<!-- Modal -->
+<div class="modal fade" id="address-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Address</h5>
+		  <button type="button" class="closex" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<form method="POST" action="{% url 'address_edit' %}">
+				{% csrf_token %}
+				<div class="form-group">
+				  <label for="inputAddress1">Flat, Street</label>
+				  <input type="text" class="form-control" id="inputAddress1" name = "inputAddress1" placeholder="1234 Main St" required>
+				</div>
+				<div class="form-group">
+				  <label for="inputAddress2">Area</label>
+				  <input type="text" class="form-control" id="inputAddress2" name = "inputAddress2" placeholder="Area Name" required>
+				</div>
+				<div class="form-row">
+				  <div class="form-group col-md-4">
+					<label for="inputCity">City</label>
+					<input type="text" class="form-control" id="inputCity" name = "inputCity" placeholder="" required>
+				  </div>
+				  <div class="form-group col-md-4">
+					<label for="inputState">State</label>
+					<select id="inputState" name = "inputState" class="form-control" required>
+					  <option selected>Choose...</option>
+					  <option>Maharashtra</option>
+					  <option>...</option>
+					</select>
+				  </div>
+				  <div class="form-group col-md-4">
+					<label for="inputZip">Pin Code</label>
+					<input type="text" class="form-control" id="inputZip" name="inputZip" required>
+				  </div>
+				</div>
+			</div>
+				<div class="modal-footer">
+					<button type="submit" action="submit" class="btn btn-light">Save</button>
+				</div>
+	</form>
+
+	  </div>
+	</div>
+  </div>
+<!-- address modal ends -->
+
+	
+<!-- Exit individual plan modal -->	
+<!-- Exit individual plan modal ends -->
+
+<!-- All Scripts after this  -->
 
 <script type="text/javascript">
 
@@ -199,16 +709,399 @@ $('.alertx').alert()
     $('[data-toggle="tooltip"]').tooltip()
   })
 
+	function copyToClipboard(element) {
+		var $temp = $("<input>");
+		$("body").append($temp);
+		$temp.val($(element).text()).select();
+		document.execCommand("copy");
+		$temp.remove();
+	}
+
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+  
+	var current_contact = document.getElementById("contact_no_field").innerHTML
+	// console.log("juna contact is ", current_contact)
+
+	$(document).ready(()=>{
+		
+		$.ajax({
+			type: "POST",
+			url: "{% url 'indian_states' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+			},
+			success: function(data)
+			{
+				insert_states_in_dropdown(data["states"])
+				
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+		
+		$("#add-address-btn").click(()=>{
+			$.ajax({
+				type: "POST",
+				url: "{% url 'get_address' %}" , // "/user/get-all-users-in-group",
+				data : {
+					csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+				},
+				success: function(data)
+				{
+					console.log(data)
+					$(`#inputAddress1`).val(data["line1"])
+					$(`#inputAddress2`).val(data["line2"])
+					$(`#inputState`).val(data["state"])
+					$("#inputCity").val(data["city"])
+					$(`#inputZip`).val(data["zipcode"])
+					// insert_states_in_dropdown(data["states"])
+					
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});
+		
+
+		})	
+		function insert_states_in_dropdown(states = []){
+			var states_option_str = ""
+			states.forEach(element => {
+				if( element[0] == "MH"){
+					states_option_str += `<option selected>${element[1]}</option>`
+				}else states_option_str += `<option>${element[1]}</option>`
+			});$("#inputState").html(states_option_str)
+		}
+
+		$("#close-confirm").click(()=>{
+			$('#edit-plan').modal('toggle');
+		});
+
+		$("#close-confirm-add").click(()=>{
+			$('#edit-plan').modal('toggle');
+		});
+
+		$("#removed-verified").click(()=>{
+			console.log($("input[name='entered-email-id']").val(), $("#confirm-email-id").html(), ",   condition : ", $("input[name='entered-email-id']").val() == $("#confirm-email-id").html())
+			if($("input[name='entered-email-id']").val() == $("#confirm-email-id").html()){
+				console.log("Will remove ", $("#confirm-email-id").html() ," user from group")
+				$.ajax({
+					type: "POST",
+					url: "{% url 'remove_user_from_group' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						email : $("input[name='entered-email-id']").val(),
+						groupcode : $("#confirm-group-type-id").html(),
+					},
+					success: function(data)
+					{
+						console.log(data)
+						$('#confim-user-remove').modal('toggle');
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+			}else{
+				console.log("Incorrect Match")
+			}
+		});
+
+		$("#add-members-container").click(()=>{
+			$('#edit-plan').modal('toggle');
+			$("#confim-user-add").modal()
+		});
+
+		$("#send-mail-to-user").click(()=>{
+			$.ajax({
+					type: "POST",
+					url: "{% url 'send_user_add_link' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						email : $("input[name='add-email-id']").val(),
+						groupcode : $("#edit-group-type-id").html(),
+					},
+					success: function(data)
+					{
+						console.log(data)
+						$("#confim-user-add").modal('toggle')
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+		});
+
+		console.log($(window).height(), $(window).width(), $(window).width() > 450)
+		if($(window).width() > 450){
+			$(".onepagescroll").onepage_scroll({
+				sectionContainer: "section",    
+				easing: "ease",                 
+												
+				animationTime: 1000,            
+				pagination: true,               
+				updateURL: true,               
+				beforeMove: function(index) {}, 
+				afterMove: function(index) {},  
+				loop: false,                    
+				keyboard: true,                 
+				responsiveFallback: false,       											
+				direction: "vertical"           
+			});
+			// $(".onepage-pagination").attr("style", "left:10px;right:none;");
+		}
+		$("#contact_no_button").click(()=>{
+
+			var edit_contact_var = `<input type="tel" maxlength="10" minlength="10" id="edit_contact_no_id" name="contact_no_input" required>`
+			var contact_no =  $("input[name='contact_no_input']").val()
+			if ($('#contact_no_button').html().toLowerCase() == 'save' && contact_no.length == 10) { 
+			
+			// $("#edit_contact_no_id").click()
+			
+			$.ajax({
+					type: "POST",
+					url: "{% url 'contact_no_edit' %}" , // "/user/get-all-users-in-group",
+					data : {
+						csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+						contact_no : contact_no			
+					},
+					success: function(data)
+					{
+						console.log("changed contact success : ", data)
+						$('#contact_no_field').html(data.contact_no)
+						$('#contact_no_button').html("Edit")
+					},
+					error: function(request, status, error)
+					{
+						alert(request.responseText);
+					}
+				});
+			}
+			else if(contact_no && contact_no.length < 10){
+				$("#contact_no_input").click()
+				document.getElementById("contact_no_input").click();
+			}
+			else{
+				$('#contact_no_field').html(edit_contact_var)
+				$('#contact_no_button').html("Save")
+			}
+		});
+
+	});
+
+	var EXIT_PERIOD = null, EXIT_GROUPCODE = null, EXIT_PLANCODE = null, EXIT_PLANNAME = null;
+
+
+	var input = document.getElementById("exit-password-input");
+		// Execute a function when the user releases a key on the keyboard
+		input.addEventListener("keyup", function(event) {
+			// Number 13 is the "Enter" key on the keyboard
+			if (event.keyCode === 13) {
+				// Cancel the default action, if needed
+				event.preventDefault();
+				// Trigger the button element with a click
+				document.getElementById("exit-plan-confirm").click();
+			}
+		});
+
+
+	function remove_member(email, group_type){
+		$("#confirm-email-id").html(email)
+		$("#confirm-group-type-id").html(group_type)
+		$('#edit-plan').modal('toggle');
+		$("#confim-user-remove").modal()
+	}
+	
+	function insert_row_in_invoice_table(source_table, data, index, group_type) {
+		let row = source_table.getElementsByTagName("tbody")[0].insertRow(-1);
+
+		row.innerHTML = `<th scope="row">` + index + `</th>` + 
+						`<td class = "font-weight-bold">` + `${data["plan-name"]} | ${data["plan-type"]} | <span class = "badge badge-secondary" >${data["group-members"]}</span>` + `</td>` + 
+						`<td>` + data['start-date'] + `</td>` +
+						`<td>` + data['end-date'] + `</td>` +
+						`<td id = "download-invoice-id" onclick="download_invoice('${data['invoice-id']}')">` + 
+							// `<button type="button" class="btn" data-toggle="modal" data-target="#confim-user-remove">` + 
+								`<span class="fa fa-download" style="cursor: pointer;"></span>` +
+							// `</button>` +
+						`</td>`
+		row.setAttribute('class', "none")
+		return row
+	}
+
+	function update_invoice_table(data){
+		console.log("invoice data : ", data)
+		var table = document.getElementById("edit-invoice-table")
+		$("#edit-invoice-table").find("tr:not(:first)").remove();
+		data.forEach((row, index) => {
+			insert_row_in_invoice_table(table, row, index + 1)
+		});
+	}
+
+	function get_all_historical_purchases(){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'historical_purchases' %}" ,
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				
+			},
+			success: function(data)
+			{
+				return update_invoice_table(data["data"]);
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+	}
+
+	function download_invoice(invoice_id){
+		console.log("download invoice : ", invoice_id)
+		var link = document.createElement('a');
+		link.href = "/subscriptions/download-invoice/" + invoice_id ;
+		link.download = "file.pdf"
+		link.dispatchEvent(new MouseEvent('click'));
+		
+	}
+
+	function update_exit_plan_modal(period, plancode, planname, groupcode){
+		var plan_name = [planname, plancode].join(" | ").replace("#", "-") + `<span class = 'badge badge-secondary px-2'>${groupcode}</span> <span class = 'badge badge-warning px-2'>${period}</span>`
+		$("#exit-plan-name").html(plan_name)
+	}
+
+	function send_exit_ajax_request(){
+		password = $("input[name='exit-password']").val()
+		exit_from_plan(EXIT_PERIOD, EXIT_PLANCODE, EXIT_PLANNAME, EXIT_GROUPCODE, ajax = true, password = password)
+	}
+
+	
+	function exit_from_plan(period, plancode, planname, groupcode, ajax = false, password = null){
+		if (ajax){
+			var data = $.ajax({
+				type: "POST",
+				url: "{% url 'terminate_subscription' %}" ,
+				data : {
+					csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+					period : period,
+					plancode : plancode,
+					planname : planname,
+					groupcode : groupcode,
+					password : password
+				},
+				success: function(data)
+				{
+					location.reload() 
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});
+		}
+		else{
+			EXIT_GROUPCODE = groupcode;
+			EXIT_PERIOD = period;
+			EXIT_PLANCODE = plancode;
+			EXIT_PLANNAME = planname;
+			update_exit_plan_modal(period, plancode, planname, groupcode)
+		}
+	}
+	
+	function insert_row_in_edit_plan_table(source_table, data, index, group_type) {
+		let row = source_table.getElementsByTagName("tbody")[0].insertRow(-1);
+		row.innerHTML = `<th scope="row">` + index + `</th>` + 
+						`<td>` + data['first_name'] + ` ` + data['last_name'] + `</td>` + 
+						`<td>` + data['email'] + `</td>` +
+						`<td id = "remove-member" onclick="remove_member('` + data['email'] +`','` + group_type + `')">` + 
+							// `<button type="button" class="btn" data-toggle="modal" data-target="#confim-user-remove">` + 
+								`<span class="fa fa-times red-danger" style="cursor: pointer;" data-toggle="modal" data-target="#confim-user-remove"></span>` +
+							// `</button>` +
+						`</td>`
+		row.setAttribute('class', "none")
+		return row
+	}
+	
+	function update_edit_plan_table(data, extras){
+		console.log( typeof data, ",  ", data, ", group type : ", extras.group_type)
+		$("#edit-group-type-id").html(extras.group_type)
+		var table = document.getElementById("edit-plan-table")
+		$("#edit-plan-table").find("tr:not(:first)").remove();
+		data.forEach((row, index) => {
+			insert_row_in_edit_plan_table(table, row, index + 1, extras.group_type)
+		});
+	}
+
+	function trigger_edit_plan(period, plancode, planname, groupcode){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				period : period,
+				plancode : plancode,
+				planname : planname,
+				groupcode : groupcode,
+			},
+			success: function(data)
+			{
+				return update_edit_plan_table(data, {group_type:groupcode});
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+		$("#modal-plan-full-name").html(planname.toLowerCase() + "-" + plancode.toLowerCase() + "  <span class='badge badge-secondary'>" + groupcode + "</span>")
+		$("#modal-period").html("<span class='badge badge-warning'>" + period + "</span>")
+	}
+
+	function trigger_group_add_link(period, plancode, planname, groupcode){
+		var data = $.ajax({
+			type: "POST",
+			url: "{% url 'get_user_group_add_link' %}" , // "/user/get-all-users-in-group",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+				period : period,
+				plancode : plancode,
+				planname : planname,
+				groupcode : groupcode,
+			},
+			success: function(data)
+			{
+				console.log("group - add link : ", data)
+				$("#group-add-link-input").val(data['link'])
+				$('#group-name').html(data['groupcode'])
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+	}
+
+  function copyTextFunction(id = 'myInput', modal_id = null, modal_close = null) {
+	var copyText = document.getElementById(id);
+	copyText.select();
+	copyText.setSelectionRange(0, 99999);
+	document.execCommand("copy");
+	if(modal_id){
+		$(`#${modal_id}`).modal('toggle');
+		$(`#${modal_close}`).click();
+		
+
+	}
+	// alert("Copied the text: " + copyText.value);
+	}
 </script>
 
-<script type="text/javascript">
-  function copyTextFunction() {
-  var copyText = document.getElementById("myInput");
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  document.execCommand("copy");
-  alert("Copied the text: " + copyText.value);
-}
-</script>
+<!-- All Scripts ends  -->
 
 {% endblock %}

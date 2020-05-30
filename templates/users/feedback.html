@@ -5,38 +5,33 @@
 <br>
 
 <div class="container" style="height:50rem;">
-    <h3 class="xx-large">Feedback</h3>
+    <h3 class="mt-5" style="font-family: 'Roboto', sans-serif;">Feedback</h3>
     <hr>
     <form method="POST" action="/user/register-feedback">
         {% csrf_token %}
         <div class="form-group">
-        <label for="exampleFormControlInput1">Your Email address</label>
-        <input type="email" value="{{ user.email }}" name="email" class="form-control bg-light" id="exampleFormControlInput1" placeholder="name@example.com" readonly>
+            <label for="exampleFormControlInput1">Your Email address</label>
+            <input type="email" value="{{ user.email }}" name="email" class="form-control bg-light" id="exampleFormControlInput1" placeholder="name@example.com" readonly>
         </div>
         <div class="form-group">
             <label for="exampleFormControlInput2">Subject</label>
             <input type="text" value="Query" name= "subject" class="form-control" id="exampleFormControlInput2" placeholder="Enter subject ...">
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Select Product</label>
+                <select class="form-control" name="product-name" id="exampleFormControlSelect1" required>
+                <option>BTST</option>
+                <option>Positional</option>
+                <option>Intra Day</option>
+                <option>Long Term</option>
+                </select>
             </div>
-        <div class="form-group">
-        <div class="form-group">
-        <label for="exampleFormControlSelect1">Select Product</label>
-        <select class="form-control" name="product-name" id="exampleFormControlSelect1" required>
-        <option>BTST</option>
-        <option>Positional</option>
-        <option>Intra Day</option>
-        <option>Long Term</option>
-        </select>
-        </div>
-
-        
-        
             <label for="exampleFormControlTextarea1">Enter Feedback</label>
-        <textarea rows = "12" class="form-control" name="feedback-message" placeholder="Start typing here....." 
-        rows="3" required></textarea>
+            <textarea rows = "12" class="form-control" name="feedback-message" placeholder="Start typing here....." 
+            rows="3" required></textarea>
         </div>
-
-        <button class="btn btn-outline-dark mb-4" type="submit">Submit</button>
-
+        <button class="btn btn-outline-dark mb-1" type="submit">Submit</button>
     </form>
 </div>
 {% endblock %}

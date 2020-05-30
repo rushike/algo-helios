@@ -5,6 +5,7 @@
 
 {% block css_imports %}
 	<link rel="stylesheet" type="text/css" href="{% static '/css/plans.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/css/services.css' %}">
 {% endblock %}
 {% block js_imports %}	
 	<!-- <script src="{% static '/js/plans.js' %}" type="text/javascript"></script> -->
@@ -16,7 +17,19 @@
 
 {% block subscriptions_content %}
 
-<div class="container-fluid mb-4  tabbable boxed parentTabs" style="padding-top: 120px;">
+<div class="container mb-4 tabbable boxed parentTabs">
+	
+	{% if alert %}	
+		<div>
+			<div class="alert alert-warning" role="alert">
+				<h4 class="alert-heading">Already Subscribed</h4>
+				<p class="content-para-sm">You Can Renew through Dashbord Plans &nbsp;&nbsp;<a href="/user/profile/info" class="alert-link content-heading">Dashboard</a>.</p>
+				
+				<hr>
+			</div>
+		</div>
+		
+	{% endif %}
     <div class="row ">
         <div class="col text-center">
 
@@ -35,13 +48,20 @@
 	
 	<div class="tab-content" id = "pricing-page">
 		<div class="tab-pane active" id="plans" role="tabpanel">
+			<div class="card text-black bg-white pt-4 mt-1 border-0">
+				<p class="text-center text-justify">
+					Your personal technical analyst! A product tailor-made for investors and traders 
+					that desire investing lesser time and efforts in stock market and aim to keep reaping 
+					greater benefits. Please try out our premium product for free.
+				</p>
+			</div>
 			<div class="tabbable">
 				<div class="row mt-4 ">
 					<div class="col-md-12">
-						<div class="text-dar font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
+						<div class="font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
 						<div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
 							
-							<div id = "group-header" class="btn-group " role="group" aria-label="First group">
+							<div id = "group-header" class="text-center" class="btn-group " role="group" aria-label="First group">
 								<script>
 									$(document).ready(() => {
 										var active = "#head-{{group_type.0.1}}";
@@ -57,13 +77,16 @@
 									});
 								</script>
 								{% for group_type in details %}	
-									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn  dark-blue shadow-lg text-light " style="border-color:#23527c" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
-										<span class="font-weight-bold dark-blue pl-2 pr-2">{{ group_type.1.max_members }}<span>
+									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn dark-blue text-light " style="border-color:#23527c; min-width: 4rem;" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
+										<span class="font-weight-bold dark-blue p-2">{{ group_type.1.max_members }}<span>
 									</a>
 									<script>
 										$(document).ready(() => {
 											var non_active = "#head-{{df}}";
+											var groupcode_clicked = 0
+									
 											active = "#head-{{group_type.1}}"
+											
 											$("#head-{{ group_type.1 }}").click(() =>{
 												var current_clicked_id = "#head-{{ group_type.1 }}"
 												if(active != "#head-{{ group_type.1 }}"){
@@ -71,6 +94,7 @@
 													$("#head-{{ group_type.1 }}").css("background-color", "#daedf4")
 													$(active).css("background-color", "white");
 													active =  "#head-{{ group_type.1 }}"
+													groupcode_clicked = "#head-{{ group_type.1 }}"
 													$('input[name="groupcode"]').val("{{group_type.1}}");
 												}
 												
@@ -87,17 +111,17 @@
 					</div>
 				</div>
 			
-				<div class="row">
-					<div class="col">
-						<div class="card-body text-dark text-center">
-							<ul class="list-group mr-5 ml-5">
-								<div class="form-check list-group_item ">
+				<div class="row text-center">
+					<div class="col-md-12">
+						<div class="card-body text-dark shadow-none">
+							<ul class="list-group mr-5 ml-5 shadow-none">
+								<div class="form-control border-0 shadow-none list-group_item ">
 									<span class="badge badge-pill badge-warning">Choose Period</span><br>
 									<div class="btn-group btn-group-toggle" data-toggle="buttons">
-										<label class="btn btn-primary" id = "period-monthly-label">
+										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
 										</label>
-										<label class = "btn btn-primary" id = "period-yearly-label">
+										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
 											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
 										</label>
 									</div>
@@ -125,15 +149,14 @@
 						</div>
 					</div>
 				</div>
-			
+
 				<div class="row">
 					<div class="col">
 						
-			
 						<div class="tab-content" id="pills-tabContent">                
 						{% for group_type in details %}
 							<div class="tab-pane" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
-								<div class="row">
+								<div class="row justify-content-center">
 									{% for plan_type in group_type.0 %}
 										<script>
 											$(document).ready(function(){
@@ -149,13 +172,13 @@
 													});
 											});
 										</script>
-										<div class="col-md-5 offset-sm-1">     
-											<form method = "POST" action="/subscriptions/order-details"> 
+										<div class="col-md-4" style="padding: 20px;">     
+											<form method = "POST" action="/subscriptions/plan-data"> 
 												{% csrf_token %}        
 												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">
 													
 													{% if plan_type.1|upper == "PREMIUM" %}
-														<span class = "star-premium text-right" style="position: absolute; top:0px; right: 8px;"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white-fr"><br><br></span></span></span>
+														<span class = "star-premium text-right" style="position: absolute; top:0px; right: 8px;"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white"><br><br></span></span></span>
 													{% else %}
 					
 													{% endif %}
@@ -179,11 +202,11 @@
 									
 													<div class="card-body text-dark ">
 				
-														<ul class="font-weight-bold list-group mr-5 ml-5">
+														<ul class="font-weight-bold list-group">
 															{% for plan in plan_type.0 %}
 																
 																{% if plan_type.1.products_count == 1 %}
-																		<div class="form-check list-group-item pl-5">
+																		<div class="form-check list-group-item pl-5 border-0 border-0">
 																			<input class="form-check-input" type="radio" name="plan_name" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
 																			<label class="form-check-label" for="{{plan.1}}">
 																				{{plan.0.0.product_name | _split:'1??#' }}
@@ -204,7 +227,7 @@
 																		</script>
 																{% elif plan_type.1.products_count == 0 %} 
 																		{% for product in plan.0 %}
-																			<div class="form-check list-group-item pl-5">
+																			<div class="form-check list-group-item pl-5 border-0">
 																				<input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
 																				<label class="form-check-label" for="{{plan.1}}" style="color: black;">    
 																					{{product.product_name | _split:"1??#"}}
@@ -213,13 +236,13 @@
 																			<script>
 																				$(document).ready(()=>{
 																					$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					}, function(){
 																						console.log("{{group_type.1}}-{{product.product_name}}")
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					});
 																					$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
-																						$('input[name="planname"]').val("{{product.product_name}}");
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					});
 																				});
 																			</script>
@@ -232,14 +255,15 @@
 														<div class="row justify-content-center">
 															<div class="">
 																{% if group_type.1.eligible_for_trial and plan_type.1.trial_applicable %}
-																	<button type='submit' class="col btn  btn-primary plancode-div font-weight-bold"> Try Now</button>
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Try Now</button>
 																{% else %}
-																	<button type='submit' class="col btn  btn-primary plancode-div font-weight-bold"> Subscribe</button>
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Subscribe</button>
 																{% endif %}
 															</div>
 														</div>		
 
 													</div>
+													
 												</div>
 												<input class="periodcode" name = "period" value=""hidden></input>
 												<input class="plancode" name= "plancode" value="" hidden></input>
@@ -282,67 +306,103 @@
 			</div>
 			
 		</div>
+		
 		<div class="tab-pane" id="services" role="tabpanel">
-			<div class="row mt-3 mt-1">
-				<div class="col-md-12">
-					<div class="card">
-						<div class="x-large dark-blue card-header rounded">
-							Automation :
-						</div>
-						<div class="card-body">
+			<div class="">
+					<p class="text-center text-justify mt-4">
+							We offer customized trading solutions that are user-friendly, and 
+							fine-tuned to your particular needs, and provide swift execution
+					</p>
 
+				<div class="row mb-2 justify-content-center">
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/automation.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+		
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Automation</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We can fully automate your trading strategies with smooth and robust execution.  
+							</p>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row mt-4">
-				<div class="col-md-12">
-					<div class="card">
-						<div class="x-large dark-blue card-header rounded">
-							Backtesting :
-						</div>
-						<div class="card-body">
-
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row mt-4">
-				<div class="col-md-12">
-					<div class="card">
-						<div class="x-large dark-blue card-header rounded">
-							Algorithm Development :
-						</div>
-						<div class="card-body">
-
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/backtesting.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Backtesting</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We backtest your strategies within a few seconds and cover many instruments and market.
+							</p>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row mt-4">
-				<div class="col-md-12">
-					<div class="card">
-						<div class="x-large dark-blue card-header rounded">
-							Data Analytics :
-						</div>
-						<div class="card-body">
-
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row mt-4">
-				<div class="col-md-12">
-					<div class="card">
-						<div class="x-large dark-blue card-header rounded">
-							Custom Strategies :
-						</div>
-						<div class="card-body">
-
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/algorithm-development.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Algorithm Development</h5>
+								</div>
+							<!-- <br> -->
+							<p class="card-text text-justify p-2">                
+								We deliver optimized algorithms that enables you to automate any quantitative trading strategy for the market.
+							</p>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+		
+		
+				</div> <!-- row 1 ends -->
+				<!-- </div> container-fluid ends -->
+		
+				<!-- --------------------------------------------------------------- -->
+				<!-- <div class="container-fluid"> -->
+				<div class="row text-justify justify-content-center">
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/custom-strategies.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Custom Strategies</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We also provide custom strategies to improve the accuracy with a variety of algorithms to fine tune your parameters.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/data-analytics.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Data Analytics</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								This service helps brokers to enhance and synchronize their trading related quality management capability.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+				</div> <!-- row 2 ends -->
+		
+			</div> <!-- container ends -->
 		</div>
 	</div>
 </div>
@@ -350,14 +410,18 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>		
+	<script>	
+		function validate(){
+			if($("input[name='groupcode']").val() == ""){
+				$("#group-header").css("border-color", "#ff9797")
+				}
+		}	
 		$(document).ready(()=>{
 
 			// $("div.group-header a").click(function (e) {
 			// 	e.preventDefault();  
 			// 		$(this).tab('show');
 			// });
-
 			$("div.header a").click(function (e) {
 				e.preventDefault();  
 					$(this).tab('show');
@@ -392,14 +456,29 @@
 			});
 			// var a = document.getElementById("#ah-center-a")
 			// a.click()
-
+			$(".plancode-div").click(()=>{
+				if(plancode_clicked == 0){
+					console.log("plancode val = ", plancode_clicked)
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797", "border-width":"1.6px"})
+				}
+			});
 			$('input[required]').on('invalid', function(e){
 				console.log("errr : ", e, e.target, e.target.name)
 				if(e.target.name == "groupcode"){
 					console.log("changing border")
-					$("#group-header").css({"border-style": "solid", "border-color": "red"})
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797"})
 				}
 			});
+
+			/**
+			 * select individual group by default 
+			*/
+			$("#head-{{ details.0.1 }}").fadeIn("slow");
+			$("#head-{{ details.0.1 }}").css("background-color", "#daedf4")
+			$(active).css("background-color", "white");
+			active =  "#head-{{ details.0.1 }}"
+			groupcode_clicked = "#head-{{ details.0.1 }}"
+			$('input[name="groupcode"]').val("{{details.0.1}}");
 		});
     </script>
 {% endblock %}

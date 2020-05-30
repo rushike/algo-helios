@@ -54,9 +54,10 @@ nav{
 }
 
 #myNavbar li a{
-    font-size: 18px !important;
+    /* font-size: 18px !important;
     color:#515252 !important;
-    transition-duration: .2s;
+    transition-duration: .2s; */
+    color: #0056b3 !important;
 }
 
 #myNavbar li a:hover{
@@ -230,6 +231,15 @@ nav{
     width: -webkit-max-content;
 }
 
+.below-border{
+    border-bottom: 4px solid #7DDCFF;
+    width: max-content;
+    width: -moz-fit-content;
+    width: intrinsic;           /* Safari/WebKit uses a non-standard name */
+    width: -moz-max-content;    /* Firefox/Gecko */
+    width: -webkit-max-content;
+}
+
 .knowmore p
 {
     font-size:24px;
@@ -296,6 +306,11 @@ nav{
     margin: 0.5vw 38%;
 }
 
+.classic_hr{ 
+    border-bottom: 5.5px solid #7DDCFF;
+    /* margin: 0.5vw 30%; */
+    width: 50px;
+}
 .howwedobann
 {
     padding:0.5% 5%;
@@ -314,7 +329,7 @@ nav{
 }
 
 .howwedobann .col-md-4 .content{
-    padding:5% 8%;
+    padding:5% 10%;
     /*border : 2px solid lightgray;*/
     border-radius:10px;
     text-align:left;
@@ -374,6 +389,13 @@ nav{
 .pheading{
     margin: 0 auto;
     width: max-content;
+}
+
+.gray-heading{
+    font-family: 'Roboto', sans-serif;
+    color: #515151;
+    font-size:3.5vmax;
+    font-weight:450;
 }
 
 .pheading h1{

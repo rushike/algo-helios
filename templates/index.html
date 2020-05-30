@@ -17,6 +17,35 @@
         font-size:1.3vmax;
     }
     
+    p{
+		font-size: 15px;
+	}
+	#card_hover:hover{
+		background-color:rgb(0, 75,150);
+		/*margin-top: -0.5%;*/
+		z-index: 1;
+		/* margin-inline: -5%; */
+		/*padding: 5px;*/
+		color: white;
+		transition-duration: 300ms;
+		text-align: justify;
+		border-radius: 7px !important;
+	}
+    
+    .image_resize{
+        height: 36vh !important;
+        width: 45vh !important;
+      }
+    .card{
+        transition: 5 ease;
+        cursor: pointer;        
+      }
+    .card:hover {
+        transform: scale(1.01);
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.6);
+        /*transition-delay: 200ms;*/
+      }
+
 
 </style>
 
@@ -30,7 +59,18 @@
             <h4>We develop algorithms by statistical & mathematical
                 analysis to </span>create portfolios and execute trades.</h4>
         </div>
-        <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
+        <!-- Fix for Get Started Button on Landing Page -->
+        {% if user.is_anonymous %}
+            <a href='/accounts/signup'>
+                <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
+            </a>
+        {% else %}
+            <a href='/worker/mercury'>
+                <button id="downarrow" class="btn btn-lg btn-default">Get Started</button>
+            </a>
+        {% endif %}
+
+
     </div>
 </section>
 <!--Landing Page Banner Starts-->
@@ -121,11 +161,11 @@
                     <div class="content">
                         <img src="{% static 'whatwedo/variationanalysis.png' %}">
                         <h2>Variation Analysis</h2>
-                        <p>Not just returns but its variation over time too is taken into consideration to reduce
-                            volatility.
+                        <p class="text-justify">Not just returns but its variation over time too is 
+                            taken into consideration to reduce volatility.
                         </p>
                         <div class="knowmore">
-
+                            
                             <p>Know More&nbsp;&nbsp;</p>
 
                         </div>
@@ -206,7 +246,8 @@
     <div class="row container-fluid">
         <div class="col-md-8">
             <div class="content">
-                <h3 style="text-align:left;color:black;font-size:350%;margin: 2% 0%">About Us</h3>
+                
+                <h1 class="gray-heading" style="text-align:left;margin: 2% 0%">About Us</h1>
                 <p class="banner-text" style="margin: 5% 0%">
                     Algonauts is a team of finance and technology professionals with combined experience over 20 years.
                     We as a firm strongly believe that algorithmic trading is the future, and is a way to trade and make
@@ -236,80 +277,153 @@
 </div>
 <!--About Us Banner Ends-->
 
-<!--Products and Services Banner Starts-->
-<div class="container-fluid pcontainer" id="productscont">
 
-    <div class="pheading">
+<!--Products and Services Banner Starts-->
+<div class="container" id = "productscont">
+    <div class="pheading pt-5 pb-3">
         <h1 data-aos="fade-up" data-aos-duration="500">Products & Services</h1>
         <hr data-aos="fade-up" data-aos-duration="700"class="classichr">
     </div>
+    <div class="card-deck pt-3" data-aos="fade-up" data-aos-duration="1000">
 
-
-    <div data-aos="fade-up" data-aos-duration="1000" class="row productsb" >
-        <div class="col-md-6 col-sm-12 productsbox">
-            <div class="row content h-100">
-                <div class="col-md-12">
-                    <div class="xx-large light dark-gray">Mercury</div>
-                    <div class="row">
-                        <div class=" col-md-8 content-heading card-body flex-column"><p class="productbox-para">Generates Buy/Sell/Wait calls along with the target price and stop loss which can be traded in
-                            live market</p>
-                        </div>
-                            <div class="col-md-4">
-                                <div class="row"><img src="{% static 'products/callgen.png' %}"></div>
-                                
-                                
-                            </div>
-                    </div>
-                    
-                    <div class="knowmore pt-5">
-                            <a href="{% url 'plans_page' %}" title="Click to know more">
-                                <p class="productbox-para">Know More&nbsp;&nbsp;</p>
-                            </a>      
-                    </div>  
-                </div>
-
+        <div class="card p-2" onclick="location.href='/subscriptions/plans'">
+            <img src="{% static 'img/mercury-wallet.png' %}" class="card-img-top img-fluid p-3 image_resize text-center" alt="...">
+            <div class="card-body  d-flex flex-column">
+                <h5 class="card-title text-center">MERCURY</h5>
+                <p class="card-text text-justify">
+                    A product tailor-made for investors and traders that desire investing lesser time and efforts in stock market and aim to keep reaping greater benefits
+                </p>
+                <div class="text-center mt-auto">
+                    <a class = "text-center" href="">Know More</a>
+                </div>    
             </div>
         </div>
-
-        <div class="col-md-6 col-sm-12 productsbox">
-            <div class="row content h-100">
-                <div class="col-md-12 ">
-                    <div class="xx-large light dark-gray" >Services</div>
-                        <div class="row">
-                            <div class="col-md-8 card-body flex-column">
-                                <p>
-                                    <ul class="content-para list-group list-group-flush mt-4 ml-2 light-gray  flex-column">
-                                    <li class="list-group-item p-1 border-0 productbox-para "  >&#8226   Automation</li>
-                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Backtesting</li>
-                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Algo Development</li>
-                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Data Analytics</li>
-                                    <li class="list-group-item p-1 border-0 productbox-para"  >&#8226   Custom Strategies</li>
-                                    </ul>
-                                </p>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row"><img src="{% static 'products/portfoliomanager.png' %}"></div>
-                                
-                            </div>
-                        </div>
-                            
-                    <div class="knowmore md-1">
-                        <a href="{% url 'plans_page' %}" title="Click to know more">
-                            <p class="productbox-para">Know More&nbsp;&nbsp;</p>
-                        </a>
-                    </div>
-                </div>
+        <div class="card p-2">
+            <img src="{% static 'img/jupiter.png' %}" class="card-img-top img-fluid p-3 image_resize text-center" alt="...">
+            <div class="card-body  d-flex flex-column">
+                <h5 class="card-title text-center">JUPITER</h5>
+                <p class="card-text text-justify">
+                Take a simple step towards investing
+                with an Index Fund. Introducing Jupiter Smart Index fund, a machine driven fund management strategy.
+                </p>
+                <div class="text-center mt-auto">
+                    <a class = "text-center" href="">Know More</a>
+                </div>    
             </div>
         </div>
+        <div class="card p-2">
+            <img src="{% static 'img/solutions.png' %}" class="card-img-top img-fluid p-3 image_resize text-center" alt="...">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-center">TRADING SOLUTIONS</h5>
+                    <!-- <p class="card-text text-justify"> -->
+                    <div class="row ml-1">
+                        <div class="col-md-6">
+                            <ul style="padding-left: 0px;">
+                                <li>Automation</li>
+                                <li>Algo Development</li>
+                                <li>Data Analytics</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul style="padding-left: 0px;">
+                                <li>Backtesting</li>
+                                <li>Consulting</li>
+                                <li>Custom Strategies</li>
+                            </ul>
+                        </div>
+                    </div>
+                
+                <!-- <div class="row justify-content-between px-2">
+                    <p>• Automation</p> <p>• Backtesting </p>
+                </div>
+
+                <div class="row justify-content-between px-2">
+                    <p>• Algorithm Development </p> <p>• Consulting </p>
+                </div>
+
+                <div class="row justify-content-between px-2">
+                    <p>• Data Analytics</p> <p>• Custom Strategies </p>
+                </div> -->
+
+                <!-- </p> -->
+                <div class="text-center mt-auto">
+                    <a class = "text-center" href="">Know More</a>
+                </div>    
+            </div>
+            
+        </div>
+
     </div>
 </div>
 <!--Products and Services Banner Ends-->
 
+
+<!-- Testimonial Starts -->
+<div class="container  pt-4 pb-5" class="text-center" id="" style="margin-top:6rem">
+	<h1 class="text-center mb-2 ml-4 gray-heading">What Our Clients Say  </h1>	
+	<div class="row justify-content-center">
+
+		<div class="col-md-1 justify-content-center text-center mt-2">
+		<!-- <img src="quote-left.png"/> -->
+		<img src="https://img.icons8.com/ios-filled/50/000000/quote-left.png"/>
+		</div>
+
+		<div class="col-md-6">
+
+		<div id="carouselExampleInterval" class="carousel slide border-0" data-ride="carousel">
+		  <div class="carousel-inner justify-content-center">
+
+		    <div class="carousel-item active" data-interval="3000">
+		    	<div class="card border-0 rounded" id="card_hover">
+		    	  <div class="card-body text-center">
+		    	    <p class="text-justify">
+		    	    	I made significant losses when I first started trading and moved from Cash Market to Options. Maybe that was because of the lack of experience or knowledge. Mercury provided me confidence in trading with its quality calls (60-65% Hit-rate). Mercury made my losses go down and rose my profits.
+		    	    </p>
+	    	    	<p class="lead">- Shubham Gupta 25, Delhi Individual
+	    	    	</p>
+		    	    
+		    	  </div>
+		    	</div>
+		    </div>
+
+		    <div class="carousel-item" data-interval="3000">
+		    	<div class="card border-0 rounded" id="card_hover">
+		    	  <div class="card-body text-center">
+    	    	    <p class="text-justify">
+    	    	    	As a premium member of Algonauts, I have been getting excellent trading Calls and advice based on Technical Analysis is timely, accurate and implementable. I will strongly recommend MERCURY to anyone who is serious about becoming a better investor.
+    	    	    </p>
+        	    	<p class="lead">- Shrinil Shah 51, Mumbai Sub-broker 
+        	    	</p>
+		    	  </div>
+		    	</div>
+		    </div>
+
+		    <div class="carousel-item" data-interval="3000">
+		    	<div class="card border-0 rounded" id="card_hover">
+		    	  <div class="card-body text-center">
+    	    	    <p class="text-justify">
+    	    	    	 I am using Mercury from last 2 months and I have made a significant profit by executing the trading calls. Technical Calls provided by Mercury, costs much less as compared to other Competitors. The quality of Calls on Volatile Market days is very good.
+    	    	    </p>
+        	    	<p class="lead">- Nirav Modi 29, Mumbai Individual
+        	    	</p>
+		    	  </div>
+		    	</div>
+		    </div>
+
+
+		  </div>
+		</div>
+
+	</div> <!-- col carao ends -->
+	</div> <!-- row ends  -->
+	</div> <!-- container ends -->
+<!-- Tesimonial Ends -->
+<div id = "contact-us-section"></div>
 <!--Contact Us Section Starts Here-->
-<div class="container-fluid contactus" >
+<div class="container-fluid contactus" id="">
     <section id="contact" data-aos="fade-up" data-aos-duration="1000">
         <div class="container">
-          <div class="heading" style="margin:3% 10%">
+          <div class="heading" style="padding:3% 10%">
             <h3 style="color: white;
             font-size: 3vmax !important;
             text-align: center;">Contact Us</h3>
@@ -336,7 +450,7 @@
                   <textarea id="ta1" class="form-control" name="" rows="5" placeholder="Message"></textarea>
                 </div>
                 <a id="sendEmail" class="btn btn-light" href ="mailto:coreteam@algonauts.in?subject=Feedback&body=">
-                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>&nbsp;Submit</a>
+                    <i class="fa fa-send" aria-hidden="true"></i>&nbsp;Submit</a>
               </form>
             </div>
           </div>

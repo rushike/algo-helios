@@ -1,24 +1,370 @@
 {% extends 'subscriptions/base.html' %}
+{% load static %}
+{% load define_action %}
+
+{% block js_imports %}    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="{% static '/js/jquery.amsify.suggestags.js' %}" ></script>
+{% endblock %}
+
+
+{% block css_imports %}    
+    <link rel="stylesheet" type="text/css" href="{% static '/css/amsify.suggestags.css' %}">    
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+{% endblock %}
+
 
 {% block subscriptions_content %}
-<br>
-<br>
+<style>
+    .rounded-2x{
+            border-radius: 0.5rem;
+        }
 
-<div class="container mt-5">
-    <div class="display-2">
-        This page will contain order detail (editable)  with payment amount
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+</style>
+
+<div class="container-fluid" style="background-color: #f6f9f9; height: 100%;" >
+    
+    <div class="row container">
+            <div class="col-md-12 pt-3">
+                <div class="row mb-2">
+            
+                    <div class="col-md-6">
+                        <div class="row bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative">
+                            <div class="col p-4 d-flex flex-column" style="min-height: 30vh;">
+            
+                            
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text">Plans</span>
+                            </h4>
+                            <ul class="card-body d-flex flex-column list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-condensed text-left">
+                                    <div>
+                                        <h6 class="my-0 item-text">{{plan_name | _replace:"#??-"}} - <span class="badge badge-warning p-1">{{period | title}}</span></h6>
+                                        <small class="text-muted"><b>Group : </b> {{group_type | title}} </small>
+                                        <span id = "group-type-text" hidden>{{group_type}}</span>
+                                    </div>
+                                    <span class="text-muted item-text">₹ {{amount}}</span>
+                                    </li>
+            
+                                    <li class="list-group-item d-flex justify-content-between">
+                                    <strong>Total (₹)</strong>
+                                    <strong class="item-text">₹ {{amount}}</strong>
+                                    </li>
+                            </ul>
+            
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-md-6">
+                        <div class="row bg-white no-gutters border rounded flex-md-row mb-4 shadow-lg">
+                                <div class="col-md-12 p-4 d-flex flex-column" style="min-height: 30vh; height: 34vh!important;">
+                                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text">Pricing Details</span>
+                                    </h4>
+                                    <ul class="list-group list-group-flush mb-3">
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">Price</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">{{amount}}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">GST</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">{{gst}}</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between lh-condensed p-1">
+                                                <div>
+                                                    <h6 class="my-0 item-text">Discount</h6>
+                                                </div>
+                                            
+                                                <span class="text-muted item-text">--</span>
+                                            </li>
+                                            <li class="list-group-item d-flex justify-content-between p-2">
+                                            <div class="text-left">
+                                                <h6 class="my-0 item-text">Total (₹)</h6>
+                                                <small class="text-muted text-danger">Incl GST</small>
+                                            </div>
+                                            <strong class="item-text">{{total_amount}}</strong>
+                                            </li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+
+
+
+    <div class="row container">
+        <div class="col-md-12">
+            <div class="row mb-2">
+        
+                <div class="col-md-6">
+                    <!-- bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative -->
+                    <div class="row mb-4 shadow-lg position-relative m-2">
+                        <div class="col p-4 d-flex flex-column position-static bg-white " style="min-height: 17rem;">
+        
+                        
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text">Payment</span>
+                        </h4>
+        
+                        <div class="mb-1 text-muted p-4">Available Payment Gateways</div>
+                        <!-- <p class="mb-auto"></p> -->
+                        <!-- <div class="btn-toolbar justify-content-center text-responsive" role="toolbar"> -->
+                            <div class="btn-group flex-wrap" role="group" aria-label="First group">
+                                <button type="button" class="text-black btn btn-outline-dark neft">NEFT</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">Credit/Debit Card</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">NetBanking</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">Wallet</button>
+                                <button type="button" class="text-black btn btn-outline-dark payonline">UPI</button>
+                            </div>
+                        <!-- </div> -->
+        
+                        </div>
+                        <!--  -->
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <!-- bg-white no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-lg position-relative -->
+                    <div class="row mb-4 shadow-lg position-relative m-2">
+                            <div class="col-md-12 bg-white p-4 d-flex flex-column" style="min-height: 17rem;">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text">Add Members <small class="badge badge-warning">Max : {{group_max_members}}</small></span>
+                                </h4>
+                            <!-- <div class="row">
+                                <div class="col-md-12 text-left">
+                                    Emails
+                                </div>
+                            </div> -->
+                            <div class="font-weight-bold row">
+                                <div class="col-7">Emails</div>
+                                <div class="col-5 text-right"><small> <b>ENTER</b> to add</small></div>
+                            </div>
+                            <div class="mb-1 row text-muted">
+                                <div class="col-md-8">
+                                    <!-- <input type="text" class="form-control" name="gemail" placeholder="example@gmail.com"> -->
+                                </div>
+                                <div class="col-md-4 text-right p-1">
+                                    
+                                    <!-- <button id="gemail-btn" class="btn btn-sm btn-secondary m-2" style="padding: 4px; margin-top: 0rem !important;"><i class="fa fa-plus"></i></button> -->
+                                    <!-- <i class="fa fa-plus"></i> -->
+                                </div> 
+                            </div>
+                            <script>
+                                // Use this ajax to get all members in group
+
+                                var data = $.ajax({
+                                    type: "POST",
+                                    url: "{% url 'get_all_users_in_group' %}" , // "/user/get-all-users-in-group",
+                                    data : {
+                                        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                                        groupcode : $(`#group-type-text`).html(),
+                                    },
+                                    success: function(data)
+                                    {
+                                        console.log("data : ", data)
+                                        var datamap = data.map(x => x.email)
+                                    
+                                        datastr = datamap.join(",")
+                                        console.log("datamap : ", datamap, ", datastr : ", datastr)
+                                        $("input[name='group-mails']").val(datastr);
+                                        console.log("val : - group-mails : ", $("input[name='group-mails]").val())
+                                        // return update_add_members(data, {group_type:groupcode});
+
+                                        $(document).ready(()=>{                                                                                
+                                            $('input[name="group-mails"]').amsifySuggestags({
+                                                type : 'materialize',
+                                                tagLimit :"{{group_max_members}}"
+                                            });
+
+                                            $(".amsify-suggestags-input").css({
+                                                    "top": "6rem",
+                                                    "left": "2rem",
+                                                    "position": "absolute",
+                                            })
+                                
+                                            $(".amsify-suggestags-area").addClass("mt-4")
+                                            $(".amsify-suggestags-input-area").attr({                
+                                                "style":
+                                                "padding :5px;overflow-y: auto;max-height: 15vh;min-height: 15vh;"
+                                            });
+                                        })                                    
+                                    },
+                                    error: function(request, status, error)
+                                    {
+                                        alert(request.responseText);
+                                    }
+                                });
+                                
+                                
+                            </script>
+                            <form>  
+                                {% csrf_token %}
+                                <div>
+                                    <input type="text" value="" name="group-mails" />
+                                </div>
+                                <script>
+                                    
+                                </script>                 
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-  
-    </form>
-    <h1>
-        <button type="submit" class="btn btn-dark mt-3" onclick="location.href='/subscriptions/subscribe'">Go to payment</button>
-    </h1>
 </div>
-<br>
-<br>
+<form action="/subscriptions/payment/success" method="POST">
+    {% csrf_token %}
+    <script src="https://checkout.razorpay.com/v1/checkout.js"> </script>
+</form>
+
+<script>
+    $(document).ready(function(){
+        max = document.getElementById("group-member-add").getAttribute("max")
+        console.log("Max : ", max)
+        str_html = ""
+        for(var i = 0; i < max; i++){
+            str_html += ('<div class="form-row p-1">' + 
+            '<div class="col">' +
+                '<span type="text" class="form-control border-0">Email Address</span>' + 
+            '</div>' + 
+            '<div class="col">' +
+                '<input type="text" class="form-control" placeholder="example@gmail.com">' +
+            '</div>' +
+        '</div>')
+        }
+        console.log("str + HTML : ", str_html)
+        var g = document.getElementById("group-member-add")
+        g.innerHTML = str_html
+    });
+
+    function neft(){
+
+    }
+
+    $(".payonline").click((e)=>{
+            console.log(e)
+            $.ajax({
+            type : "GET",
+            url: '{% url "update_session" %}',
+            data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
+            success : function(response){
+                console.log(response);
+                // location.href = "{% url 'create_order' %}"
+                create_razorpay_dialog(e)
+            },   
+        });
+    });
+
+    function create_razorpay_dialog(e){
+        $.ajax({
+			type: "POST",
+			url: "{% url 'create_order' %}",
+			data : {
+				csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,					
+			},
+			success: function(data)
+			{
+                console.log("data : ", data)
+				insert_data_in_razorpay(data, e)
+				
+			},
+			error: function(request, status, error)
+			{
+				alert(request.responseText);
+			}
+		});
+    }
+
+    
+    function insert_data_in_razorpay(data, e){
+        var options = {
+            "key": data["razorpay_key"], 
+            "amount": data["amount"],
+            "currency": data["currency"],
+            "order_id": data["order_id"],
+            "offer_id": "offer_EnUE7s7BW9TC4r",
+            "buttontext" : "Pay Online",
+            "name" : "Algonauts",
+            "description" : data["plan_details"],
+            "image" : "{% static 'algonauts.png' %}",
+            "handler": function (response){
+                console.log("response : ", response)
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'payment_success' %}",
+                    data : {
+                        csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,	                    
+                        razorpay_payment_id : response.razorpay_payment_id,
+                        razorpay_order_id : response.razorpay_order_id,
+                        razorpay_signature : response.razorpay_signature,
+                        razorpay_invoice_id: response.razorpay_invoice_id, 
+                        razorpay_invoice_status: response.razorpay_invoice_status,
+                    },
+                    success: function(data)
+                    {
+                        location.href = "/worker/mercury"
+                    },
+                    error: function(request, status, error)
+                    {
+                        alert(request.responseText);
+                    }
+                });
+            },
+            "prefill": {
+                "name": data["name"],
+                "email": data["email"],
+                "contact": data["contact"],
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#7DDCFF",
+            }
+        }
+        var rzp1 = new Razorpay(options);
+        rzp1.open();    
+        e.preventDefault()
+    }
+
+    
+
+    $(".neft").click(()=>{
+        sessionStorage.setItem("group-mails", $('input[name="group-mails"]').val());
+        location.href = "{% url 'neft_details' %}"
+    });
+
+    function online(){
+        document.getElementsByClassName("razorpay-payment-button")[0].click()
+        $(".razorpay-payment-button").attr('type', 'hidden')
+        $("#logo1").css({"background-color" : "rgba(255, 115, 220,1.0)"})
+    }
+</script>
+
 
 {% endblock %}

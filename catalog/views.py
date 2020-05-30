@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView # Import TemplateView
 from django.http import HttpResponse,  HttpResponseRedirect
 
+import json
 
 class AboutUsPageView(TemplateView):
     template_name = "aboutus.html"
@@ -34,3 +35,10 @@ def index_view(request):
 
 def ERR404(request, slug):
     return render(request,"404page.html")
+
+
+def update_session(request):
+    data = json.loads(request.GET.get("data"))
+    request.session['data'] = data
+    return HttpResponse(f'{data} : {request.GET}')
+    

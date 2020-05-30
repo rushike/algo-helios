@@ -1,4 +1,6 @@
 from django.contrib.auth.models import BaseUserManager, PermissionsMixin, AbstractBaseUser, Group
+# from django.contrib.localflavor._in.models import INStateField, INZipCodeField
+from localflavor.in_.models import  INStateField
 from django.db import models
 from django.core.validators import RegexValidator,MinLengthValidator
 from django.utils import timezone
@@ -6,6 +8,8 @@ from django.db.models.fields import DateTimeField
 from django.db.models.signals import post_save, pre_save
 import datetime, random, string, time, os, base64, pytz
 from hashlib import md5
+import pytz, datetime
+
 
 """
 Constants or Functions
@@ -68,6 +72,7 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 	date_joined = models.DateTimeField(auto_now_add=True)
 	algo_credits = models.IntegerField(default=0)
 	referral_code = models.CharField(max_length=REFERRAL_CODE_LEN, validators=[MinLengthValidator(4)], default=get_unique_referral_code)
+	allow_notification = models.BooleanField(default=False)
 
 	USERNAME_FIELD = 'email'
 	EMAIL_FIELD = 'email'
@@ -86,22 +91,17 @@ class AlgonautsUser(AbstractBaseUser, PermissionsMixin):
 		mapper = UserGroupMapping.objects.create_user_group_mapping(user_profile_id= self, user_group_id=user_group_id, group_admin= False)
 		return mapper
 
-	def get_user_subs_plans(self):
-		iGroupType = UserGroupType.objects.get(type_name = 'individual') # get the individual object from moddles
-		eGroupType = UserGroupType.objects.exclude(type_name = 'individual') # get rest group types available from model
-		#one user linked with multiple groups
-		user_all_groups = UserGroupMapping.objects.all() \
-				.values('user_profile_id', 'user_group_id', 'user_group_id__user_group_type_id') \
-				.values('user_group_id__user_group_type_id')
-		indivdual =	user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id = iGroupType) \
-				.values('user_group_id__user_group_type_id')
-		group = user_all_groups.filter(user_profile_id=self, user_group_id__user_group_type_id__in = eGroupType) # filter out all groups of profile with non individual group type 
-		indivdual_plans = Plan.objects.filter(user_group_type_id__in = indivdual)
-		group_plans = Plan.objects.filter(user_group_type_id__in = group)		
-
 	def __str__(self):
 		return "_".join((str(self.email)).split("@"))
 
+
+class Address(models.Model):
+	email = models.ForeignKey(AlgonautsUser, on_delete = models.CASCADE,related_name="a_email")
+	line1 = models.CharField(max_length = 64)
+	line2 = models.CharField(max_length = 64)
+	city = models.CharField(max_length = 32)
+	state = INStateField()
+	zipcode = models.CharField(max_length = 12)
 
 class UserGroupTypeManager(models.Manager):
 	def create_user_group_type(self):
@@ -198,10 +198,17 @@ class UserGroupMappingManager(models.Manager):
 
 	def create_user_group_mapping(self, user_profile_id, user_group_id, group_admin): # delta period in number of weeks
 		if user_group_id is None: return # if group is not form due to some err, don't add user_group_mapping 
-		mems = UserGroupMapping.objects.filter(user_group_id = user_group_id).count() # neccessary to check how many members currently present in group
-		unq = UserGroupMapping.objects.filter(user_group_id = user_group_id, user_profile_id = user_profile_id).exists() # to check if duplicate entry 
+		mems = UserGroupMapping.objects.filter(
+											user_group_id = user_group_id, 
+											time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))
+											).count() # neccessary to check how many members currently present in group
+		unq = UserGroupMapping.objects.filter(
+											user_group_id = user_group_id, 
+											user_profile_id = user_profile_id, 
+											time_removed__gt = datetime.datetime.now(pytz.timezone('UTC'))
+											).exists() # to check if duplicate entry 
 		if unq: return # allow one user to be admin of only one user group of particular type
-		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members * user_group_id.multiplier # checks the maximum number allowed by particular group, includes multiplier in it
+		mzx = UserGroupType.objects.filter(type_name = user_group_id.user_group_type_id)[0].max_members # checks the maximum number allowed by particular group
 		if mzx < mems: return # do not add more than max number specified
 		mapper = self.create(
 				user_group_id = user_group_id, 
@@ -212,6 +219,31 @@ class UserGroupMappingManager(models.Manager):
 		mapper.save(using = self._db)
 		return mapper
 	
+	def delete_user_from_all_groups(self, user_profile_id, group_admin):
+		if not user_profile_id and not group_admin: return # if group is not form due to some err, don't add user_group_mapping 
+		user_profile_id = user_profile_id if isinstance(user_profile_id, AlgonautsUser) else AlgonautsUser.objects.filter(email = user_profile_id).first()
+		group_map = UserGroupMapping.objects.filter(user_profile_id = user_profile_id)
+		user_groups_id = group_map.values("user_group_id")
+		admin = AlgonautsUser.objects.filter(email = group_admin) if not isinstance(group_admin, AlgonautsUser) else group_admin
+		user_group = UserGroup.objects.filter(id__in = user_groups_id, admin__in = admin)
+		if user_group.exists():
+			group_map = group_map.filter(user_group_id__in = user_group)
+			group_map.update(time_removed = datetime.datetime.now(pytz.timezone('UTC')))
+
+	def delete_user_from_group(self, user_profile_id, group_id, group_admin):
+		if not user_profile_id or not group_admin or not group_id: return # if group is not form due to some err, don't add user_group_mapping 
+		user_profile_id = user_profile_id \
+							if isinstance(user_profile_id, AlgonautsUser) \
+							else AlgonautsUser.objects.filter(email = user_profile_id).first()
+		group_map = UserGroupMapping.objects.filter(user_profile_id = user_profile_id, user_group_id = group_id)
+		admin = AlgonautsUser.objects.filter(email = group_admin).first() \
+						if not isinstance(group_admin, AlgonautsUser) \
+						else group_admin
+
+		if admin.email == group_id.admin.email:
+			group_map = group_map.filter(time_removed__gt = datetime.datetime.now(pytz.timezone('UTC')))
+			group_map.update(time_removed = datetime.datetime.now(pytz.timezone('UTC')))
+
 
 class UserGroupMapping(models.Model):
 	user_group_id = models.ForeignKey(UserGroup, on_delete=models.CASCADE, related_name="ugm_user_group_id")
@@ -250,17 +282,18 @@ def create_individual_user_group(sender, instance, **kwargs):
 	if group is None : return
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = group, user_profile_id = instance, group_admin = True)
 
-def create_usergrou_mapping(sender, instance, **kwargs):
+def create_usergroup_mapping(sender, instance, **kwargs):
 	group_map = UserGroupMapping.objects.create_user_group_mapping(user_group_id = instance, user_profile_id = instance.admin, group_admin = True)
+
 def active_referral_offer_checks(sender, instance, **kwargs):
 	# ReferralOffer.
 	offer_active = instance.offer_active
 	if offer_active:
-			ReferralOffer.objects.filter(offer_active = True).update(offer_active = False)
+		ReferralOffer.objects.filter(offer_active = True).update(offer_active = False)
 			
 # DB Signals 
 post_save.connect(create_individual_user_group, sender=AlgonautsUser, dispatch_uid="users.models.AlgonautsUser") # to create users individual group after user creation
 
-post_save.connect(create_usergrou_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
+post_save.connect(create_usergroup_mapping, sender=UserGroup, dispatch_uid="users.models.UserGroup")
 
 pre_save.connect(active_referral_offer_checks, sender=ReferralOffer, dispatch_uid='users.models.ReferralOffer')
