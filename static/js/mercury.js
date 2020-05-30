@@ -91,8 +91,8 @@ var data_table = `  <div id="table-wrapper" class="tab-content">
                                         <div class="col-md-6" style="padding-bottom: 15px;">
                                         <label style="padding-right: 10px;">Side</label>
                                             <select name="sides" class="side_filter" id="{}_side_filter" multiple="multiple">
-                                            <option value="BUY">BUY</option>
-                                            <option value="SELL">SELL</option>
+                                                <option value="BUY">BUY</option>
+                                                <option value="SELL">SELL</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -263,7 +263,7 @@ $(document).ready(function() {
 
         $.ajax({
             type: "GET",
-            url: "/worker/get-filters",
+            url: "/worker/get-filters/",
             // data: {},
             data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
             success: function(data)
@@ -304,7 +304,7 @@ $(document).ready(function() {
         var data = $.ajax({
             type: "POST",
             async: false,
-            url: "/worker/get-instrument-from-portfolio",           
+            url: "/worker/get-instrument-from-portfolio/",           
             data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : portfolio},
             success: function(data)
             {

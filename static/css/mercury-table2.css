@@ -58,38 +58,23 @@ html, body{
     border-radius: 20px;
 }
 
-.table{
+/* .table{
     max-height: 100vh;
     margin-bottom: 0px;
     display: inline-block;
     overflow-y: fixed;
-}
+} */
 
-.table>tbody{
+/* .table>tbody{
     max-height: 80vh;
     overflow-y: auto;
     overflow-x: auto;
     display: inline-block;
-}
+} */
 
-.table>thead>tr>th, .table>tbody>tr>td{
-    padding: 0px;
-    height: 35px;
-    width: 11vw;
-    box-sizing: border-box;
-    vertical-align: middle;
-    text-align: center;
-    font-size: 14px;
-    color: dimgray;
-}
 
-.table > thead > tr > th{
-    color: #004b96;
-    height: 40px;
-    border: none;
-    font-weight: 500 !important;
-    font-size: 16px;
-    letter-spacing: 0.05em;
+.rounded {
+    border-radius: 20px !important;
 }
 
 .trade_action {
@@ -165,8 +150,9 @@ html, body{
 
 .active_status, .inactive_status, .hit_status, .miss_status, .partialhit_status {
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 1px;
+    color: white;
 }
 
 .active_status {
@@ -174,7 +160,7 @@ html, body{
 }
 
 .miss_status {
-    background: #cc0000;
+    background: #cc0000;    
 }
 
 .hit_status {
@@ -218,134 +204,13 @@ html, body{
     padding-right: 12px !important;
 }
 
-/* 
- @media only screen and (max-width: 800px) {
+.multiselect.invalid .multiselect__tags,
+.multiselect.invalid .multiselect__tags span,
+.multiselect.invalid .multiselect__tags input {
+    background-color: #7DDCFF;
+}
 
-    .wrapper {
-        width: 100% !important;
-    }
-
-    .horizontal-tab .nav-tabs, .horizontal-tab .tab-content {
-        padding: 0 0 !important;
-    }
-
-    .table_details {
-        padding: 10px 10px 0 10px !important;
-    }
-
-    .horizontal-tab .nav-tabs li a {
-        text-align: center !important;
-    }
-
-    #table-wrapper {
-        margin: 10px 0 0 0 !important;
-        width: auto !important;
-    }
-
-    .tab .nav-tabs {
-        border-radius: 20px;
-        width: 80%;
-    }
-
-    .tab .nav-tabs li {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 2px;
-        border-radius: 15px;
-    }
-
-    .tab .nav-tabs li a{
-        font-size: 14px;
-    }
-
-    .tab .tab-content, .container {
-        padding: 0;
-        border-radius: 0;
-    }
-
-    table {
-      border: 0;
-    }
-
-    table>tbody {
-      width: 100%;
-    }
-
-    table thead {
-      display: none;
-    }
-
-    .table>thead>tr>th, .table>tbody>tr>td {
-        margin: 0.1em;
-    }
-
-    table tr {
-      margin-bottom: 10px;
-      display: grid;
-      border: 2px solid #ddd;
-      border-radius: 10px !important;
-      padding: 5px 0 10px 0;
-    }
-
-    table td {
-      display: block;
-      text-align: right !important;
-      font-size: 12px;
-      border: none !important;
-      width: 100% !important;
-      height: 15px !important;
-      padding-right: 10px !important;
-      padding-left: 10px !important;
-      line-height: 1.2 !important;
-    }
-
-    table td:last-child {
-      border-bottom: 0;
-    }
-
-    table td::before {
-      content: attr(data-label);
-      float: left !important;
-      font-weight: bold;
-      font-size: 16px;
-    }
-
-    tbody {
-      line-height: 0 !important;
-    }
-
-    .modal-dialog {
-        margin: 0;
-    }
-
-    .modal-body {
-        padding: 20px;
-    }
-
-    .form-horizontal .control-label {
-        padding-top: 20px !important;
-        margin-bottom: 10px;
-    }
-
-    hr {
-        margin: 0;
-    }
-
-    .inputGroupContainer {
-        padding: 0 !important;
-    }
-
-    .input-group {
-        display: block;
-    }
-
-    .count_display {
-        color: Gray;
-        padding-top: 0px !important;
-    }
-
-    .count_display label {
-        font-size: 14px;
-        margin-bottom: 0 !important;
-    }
-  } */
+.active-head{
+    background: #004b96 !important;
+    color: white !important;
+}

@@ -118,8 +118,7 @@ function update_the_tick(data_dict){
             inst.cells.namedItem("profit_percent").innerHTML = (data_dict["profit_percent"]).toFixed(2);
         }else{
             inst.cells.namedItem("profit_percent").innerHTML = ((parseFloat(inst.cells.namedItem("ltp").innerHTML) - inst.cells.namedItem("target_price").innerHTML) / inst.cells.namedItem("price").innerHTML * 100).toFixed(2)
-        }
-        if(status) inst.cells.namedItem("status").innerHTML = status
+        }        
     };
         
 }

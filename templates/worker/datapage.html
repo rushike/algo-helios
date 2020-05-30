@@ -384,13 +384,13 @@ input:checked + .slider:before {
 
 
     <script>
-		const EQUITY = "equity"
+		const STOCKS = "equity"
 		const OPTIONS = "options"
 		const TABLE_TOGGLE = {
-			intraday : EQUITY, // two options EQUITY and OPTIONS
-			btst : EQUITY,
-			positional : EQUITY,
-			longterm : EQUITY
+			intraday : STOCKS, // two options STOCKS and OPTIONS
+			btst : STOCKS,
+			positional : STOCKS,
+			longterm : STOCKS
 		}
 
 		document.body.scrollTop = 0;
@@ -450,10 +450,10 @@ input:checked + .slider:before {
 		}
 
 		function toggle_btn_for_eq_op(key){
-			if(TABLE_TOGGLE[key] == EQUITY){
+			if(TABLE_TOGGLE[key] == STOCKS){
 				TABLE_TOGGLE[key] = OPTIONS
 			}else if (TABLE_TOGGLE[key] == OPTIONS){
-				TABLE_TOGGLE[key] = EQUITY
+				TABLE_TOGGLE[key] = STOCKS
 			}
 		}
 
@@ -474,7 +474,7 @@ input:checked + .slider:before {
 					)
 					$('#eq-op-toggle-btn-input').bootstrapToggle()
 					if(sessionStorage.getItem("portfolio") == "Section1"){				
-						if(TABLE_TOGGLE.intraday == EQUITY){
+						if(TABLE_TOGGLE.intraday == STOCKS){
 							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
 							
 						}else if (TABLE_TOGGLE.intraday == OPTIONS){
@@ -483,7 +483,7 @@ input:checked + .slider:before {
 						}
 					} 
 					if(sessionStorage.getItem("portfolio") == "Section2"){				
-						if(TABLE_TOGGLE.btst == EQUITY){
+						if(TABLE_TOGGLE.btst == STOCKS){
 							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
 							
 						}else if (TABLE_TOGGLE.btst == OPTIONS){
@@ -517,7 +517,7 @@ input:checked + .slider:before {
 			// 	update_toggle_dict()
 			// 	console.log(TABLE_TOGGLE)
 			// 	var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
-			// 	if(TABLE_TOGGLE[value] == EQUITY){
+			// 	if(TABLE_TOGGLE[value] == STOCKS){
 			// 		add_equity_table_header(`#${value}_data-table`, value)
 			// 	}else {
 			// 		add_options_table_header(`#${value}_data-table`, value)

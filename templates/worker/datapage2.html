@@ -1,0 +1,284 @@
+{% load static %}
+
+<html>
+  <head>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+    <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
+    <link href="{% static 'css/mercury-table2.css' %}" rel="stylesheet"></link>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex@3.4.0/dist/vuex.js"></script>
+    <!-- <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script> -->
+    <!-- <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.1.2"></script>
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+      
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <script src="{% static 'js/data/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/templates/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/plugins/multi-filter.js' %}"></script>
+    <script src="{% static 'js/vue/store/mercury.js' %}"></script>    
+    <script src="{% static 'js/vue/components/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/app/mercury.js' %}"></script>
+  </head>
+  <body>
+
+	{% csrf_token %}
+    <div id="test" class="container">
+      {% verbatim %}
+      <template>
+        <b-container fluid>
+          <!-- User Interface controls -->
+          <b-row>
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Sort"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                label-for="sortBySelect"
+                class="mb-0"
+              >
+                <b-input-group size="sm">
+                  <b-form-select v-model="sortBy" id="sortBySelect" :options="sortOptions" class="w-75">
+                    <template v-slot:first>
+                      <option value="">-- none --</option>
+                    </template>
+                  </b-form-select>
+                  <b-form-select v-model="sortDesc" size="sm" :disabled="!sortBy" class="w-25">
+                    <option :value="false">Asc</option>
+                    <option :value="true">Desc</option>
+                  </b-form-select>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
+      
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Initial sort"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                label-for="initialSortSelect"
+                class="mb-0"
+              >
+                <b-form-select
+                  v-model="sortDirection"
+                  id="initialSortSelect"
+                  size="sm"
+                  :options="['asc', 'desc', 'last']"
+                ></b-form-select>
+              </b-form-group>
+            </b-col>
+      
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Filter"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                label-for="filterInput"
+                class="mb-0"
+              >
+                <b-input-group size="sm">
+                  <b-form-input
+                    v-model="filter"
+                    type="search"
+                    id="filterInput"
+                    placeholder="Type to Search"
+                  ></b-form-input>
+                  <b-input-group-append>
+                    <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                  </b-input-group-append>
+                </b-input-group>
+              </b-form-group>
+            </b-col>
+      
+            <b-col lg="6" class="my-1">
+              <b-form-group
+                label="Filter On"
+                label-cols-sm="3"
+                label-align-sm="right"
+                label-size="sm"
+                description="Leave all unchecked to filter on all data"
+                class="mb-0">
+                <b-form-checkbox-group v-model="filterOn" class="mt-1">
+                  <b-form-checkbox value="name">Name</b-form-checkbox>
+                  <b-form-checkbox value="age">Age</b-form-checkbox>
+                  <b-form-checkbox value="isActive">Active</b-form-checkbox>
+                </b-form-checkbox-group>
+              </b-form-group>
+            </b-col>
+      
+            <b-col sm="5" md="6" class="my-1">
+              <b-form-group
+                label="Per page"
+                label-cols-sm="6"
+                label-cols-md="4"
+                label-cols-lg="3"
+                label-align-sm="right"
+                label-size="sm"
+                label-for="perPageSelect"
+                class="mb-0"
+              >
+                <b-form-select
+                  v-model="perPage"
+                  id="perPageSelect"
+                  size="sm"
+                  :options="pageOptions"
+                ></b-form-select>
+              </b-form-group>
+            </b-col>
+      
+            <b-col sm="7" md="6" class="my-1">
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="totalRows"
+                :per-page="perPage"
+                align="fill"
+                size="sm"
+                class="my-0"
+              ></b-pagination>
+            </b-col>
+          </b-row>
+      
+          <!-- Main table element -->
+          <b-table
+            show-empty          
+            small
+			stacked="md"
+			ref = "b_table"
+            :items="items"
+            :fields="fields"
+            :current-page="currentPage"
+            :per-page="perPage"
+            :filter="filter"
+            :filterIncludedFields="filterOn"
+            :sort-by.sync="sortBy"
+            :sort-desc.sync="sortDesc"
+            :sort-direction="sortDirection"
+            @filtered="onFiltered"
+          >
+            <!-- Ticker -->
+            <template v-slot:cell(ticker)="data">
+              <span>
+                      {{ data.item.ticker }}
+              </span>        
+          </template>
+
+          <!-- LTP  -->
+          <template v-slot:cell(ltp)="data">
+              <span>
+                      {{ data.item.ltp }}
+              </span>
+          </template>
+          
+          <!-- Signal  -->
+          <template v-slot:cell(signal)="data">
+              <b-button  type="button" :class="data.item.signal + '_btn trade'"  data-toggle="modal" 
+                      data-target="#trade_modal">
+                      {{ data.item.signal }}
+              </b-button>        
+          </template>
+
+          <!-- Time -->
+          <template v-slot:cell(time)="data">
+              <span>
+
+                      {{ data.item.time }}
+              </span>
+          </template>
+
+          <!-- Signal Price -->
+          <template v-slot:cell(price)="data">
+              <span>                       
+                      {{ data.item.price }}
+              </span>
+          </template>
+
+          <!-- Target Price -->
+          <template v-slot:cell(target_price)="data">
+              <span>                       
+                      {{ data.item.target_price }}
+              </span>
+          </template>
+
+          <!-- Stop Loss -->
+          <template v-slot:cell(stop_loss)="data">
+              <span>                       
+                      {{ data.item.stop_loss }}
+              </span>
+          </template>
+
+          <!-- Profit Percentage -->
+          <template v-slot:cell(profit)="data">
+              <span>                       
+                      {{ data.item.profit }}
+              </span>
+          </template>
+
+          <!-- Status -->
+          <template v-slot:cell(status)="data">
+              <b-badge pill variant="primary" :class = "'badge white ' + data.item.status.toLowerCase() + '_status'">
+                  {{ data.item.status }}</b-badge>
+          </template>
+          </b-table>
+      
+          <!-- Info modal -->
+          <b-modal :id="infoModal.id" :title="infoModal.title" ok-only @hide="resetInfoModal">
+            <pre>{{ infoModal.content }}</pre>
+          </b-modal>
+        </b-container>
+      </template>
+      {% endverbatim %}
+    </div>
+    <script>
+      
+		var mercury = new MercuryTable({id  : "test"})
+		mercury.render()
+
+		var data = $.ajax({
+				type: "POST",
+				url: "/worker/calls-from-db/",           
+				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : ['intraday', 'btst', 'positional', 'longterm']},
+				success: function(data)
+				{
+					console.log("Success  : ", data) 
+					mercury.data.load_calls("longterm", null, data.calls, mercury)        		
+				},
+				error: function(request, status, error)
+				{
+					alert(request.responseText);
+				}
+			});  
+    </script>
+
+  </body>
+</html>
+ Run code snippet

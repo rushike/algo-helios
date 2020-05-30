@@ -51,6 +51,25 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'helios_db',
+        'USER': 'sysadmin',
+        'PASSWORD': 'A@lg0@dm!n#2@1',
+        'HOST': '104.211.115.250',
+        'PORT': '5432',
+    },
+    'janus' : {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'janus_db',
+        'USER': 'sysadmin',
+        'PASSWORD': 'A@lg0@dm!n#2@1',
+        'HOST': '104.211.115.250',
+        'PORT': '5432',
+    }
+}
+
 
 LOGGING = {
     'version': 1,
