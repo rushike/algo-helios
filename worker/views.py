@@ -24,6 +24,12 @@ def mercury(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
 
+# @login_required(login_url='/accounts/login/')
+def mercury2(request):
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+    return render(request, 'worker/datapage2.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
+
 @login_required(login_url='/accounts/login/')
 def apply_filters(request):
     GET = request.GET.dict()
@@ -60,6 +66,7 @@ def get_filters(request):
     for dl_item in dict_list:
         if dl_item['call_type'] and dl_item['call_type'].lower() in ['intraday', 'btst', 'positional', 'longterm']:
             key_val_dict[dl_item['call_type'].lower()] = dl_item
+    logger.info(f"User : {request.user} filter are : {key_val_dict}")
     return JsonResponse(key_val_dict, safe=False)
 
 @login_required(login_url = '/worker/mercury/')
@@ -73,6 +80,14 @@ def get_instruments_from_portfolio(request):
     portfolio_id = request.POST.get("portfolio_id", 1)
     instruments = DBManager().get_instruments(portfolio_id)
     return JsonResponse(instruments, safe= False)
+
+@login_required(login_url = '/accounts/login/')
+def get_instruments_for_portfolios(request):
+    all_instruments = {}
+    for p in range(2, 6):
+        instruments = DBManager().get_instruments(p)
+        all_instruments[p] = instruments
+    return JsonResponse(all_instruments, safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db(request):
@@ -95,6 +110,7 @@ def get_calls_from_db(request):
         logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
     subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
+    logger.debug(f"{list((k, len(v)) for k, v in all_calls.items(   ))}")
     return JsonResponse({'calls' : worker.functions.filter_calls_from_db(user, all_calls), 'subs-active' : subs_active}, safe= False)
 
 @login_required(login_url = '/accounts/login/')
