@@ -109,8 +109,7 @@ def get_calls_from_db(request):
             calls for portfolio {portfolio_id}, calls : {calls}")
         logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
-    subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
-    logger.debug(f"{list((k, len(v)) for k, v in all_calls.items(   ))}")
+    subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False    
     return JsonResponse({'calls' : worker.functions.filter_calls_from_db(user, all_calls), 'subs-active' : subs_active}, safe= False)
 
 @login_required(login_url = '/accounts/login/')
