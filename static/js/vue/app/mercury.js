@@ -33,10 +33,10 @@ class Profit{
 }
 
 class Signal{
-    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward){        
-        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward)        
+    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active){        
+        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward, active)        
     }
-    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward){
+    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active){
         var self = this
         this.call_id = call_id
         this.ticker = ticker
@@ -53,11 +53,12 @@ class Signal{
                 }
         this.status = status
         this.risk_reward = risk_reward
-        this.isActive = true
+        this.active = active
     }
-    update(signal, status){
+    update(signal, status, active){
         if(signal) this.signal = signal
         if(status) this.status = status
+        if(active) this.active = active
     }
 }
 
@@ -103,12 +104,14 @@ class Data{
                     value["target_price"],
                     value["stop_loss"],                    
                     value["status"],
-                    value['risk_reward']
+                    value['risk_reward'],
+                    value['active']
                 )
             }else {
                 this.calls[value["call_id"]].update(
                     value["signal"],
-                    value["status"]
+                    value["status"],
+                    value['active']
                 )
             }
             
@@ -173,6 +176,7 @@ class MercuryTable{
             el: `#${this.id}`,
             store,
             vuetify: new Vuetify(),
+
             data : {
                 state : storex.state,
                 // items: storex.items,

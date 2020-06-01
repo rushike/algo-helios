@@ -35,9 +35,28 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 </v-responsive>
 `
 
+const M_OPTIONSTABLE_TEMPLATE_STRING = `
+    <v-data-table
+        
+        :headers="headers"
+        :items="filter_items"     
+        :items-per-page = "items.length"
+        :search = "search"        
+        fixed-header
+        height="70vh"
+        class="elevation-1"        
+        style="max-height: calc(100vh ); backface-visibility: hidden;">
+        
+    </v-data-table>  
+`
+
 const M_EQUITY_TEMPLATE_STRING = `
-<m-stocks-table ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+<div>
+<m-stocks-table v-if = "state.type == 'stocks'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
+<m-stocks-table v-if = "state.type == 'options'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+</m-stocks-table>
+</div>
 `
 
 const M_INDIAN_MARKET_TEMPLATE_STRING = `
@@ -226,17 +245,15 @@ const M_TABLE_WRAPPER = `
     </div>
 `
 const M_NAVIGATOR = `
-<div>
-
     <v-card
     flat
     class=""
     >
-        <v-card-text>
+        
             <v-row
                 align="center"
                 justify="center"
-            >
+            >                
                 <v-btn-toggle
                     v-model="toggle_exclusive"            
                     mandatory
@@ -245,7 +262,8 @@ const M_NAVIGATOR = `
                     @change="change_state"
                 >
                     <v-btn active-class="active-head" >
-                        Intraday
+                        
+                                <span > Intraday </span>
                     </v-btn>
                     <v-btn active-class="active-head">
                         BTST
@@ -258,15 +276,24 @@ const M_NAVIGATOR = `
                     </v-btn>
                 </v-btn-toggle>
             </v-row>
-        </v-card-text>
+        
     </v-card>
-</div>
 `
 
 const M_APP = `
 <v-app>
 <div>
     <m-navigator></m-navigator>
+    <v-col cols="6">
+        <v-select
+          v-model="type"
+          :items="equity_type"
+          menu-props="auto"
+          label="Select"
+          hide-details          
+          single-line
+        ></v-select>
+      </v-col>
     <m-table-wrapper ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
 </div>
 </v-app>

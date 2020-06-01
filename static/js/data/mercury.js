@@ -86,7 +86,9 @@ const FILTER = {
  *                      ...
  *                  }
  *                  product : {
- *                      data : []
+ *                      data : [],
+ *                      filter : {}
+ *                      instrument : []
  *                  }
  *              }
  *          }

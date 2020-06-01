@@ -76,11 +76,6 @@ const MStockTable = Vue.component("m-stocks-table", {
             }
 
             return false
-
-
-            // Its time to run all created filters.
-            // Will be executed in the order thay were defined.
-            
         },
         
         filter_on_search(val) {
@@ -92,7 +87,81 @@ const MStockTable = Vue.component("m-stocks-table", {
 
 
 /**
- * Stock Table
+ * Options Table
+ */
+const MOptionsTable = Vue.component("m-options-table", {    
+    props : ['state', 'items', 'fields', 'headers'],
+    data: () => {
+        return {
+            transProps: {
+                // Transition name
+                name: 'flip-list'
+            },
+            filterOn : [],
+            fields0 : "JUJ",
+        }
+    },
+    computed :{
+        search : {
+            get(){
+                return this.$store.getters.search
+            },
+            set(value){
+                console.log(value)
+                this.$store.commit("update_search", value);
+            }
+        },
+        filter : {
+            get(){
+                return this.$store.getters.filter
+            },
+            set(value){
+                console.log(value)
+                this.$store.commit("update_filter", value);
+            }
+        },
+        filter_items(){
+            return this.items.filter(d => {                
+                if(Array.isArray(this.filter.profit_percentage) && 
+                            this.filter.profit_percentage.length == 2 && 
+                            !( this.filter.profit_percentage[0] < d.profit * 100 && 
+                            this.filter.profit_percentage[1] > d.profit * 100 ))
+                    return false                
+                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.side.toLowerCase()).includes(d.signal.toLowerCase()))
+                    return false
+
+                else if(Array.isArray(this.filter.tickers) && 
+                        this.filter.tickers.length != 0 && 
+                        !this.filter.tickers.map(v=>v.name.toLowerCase()).includes(d.ticker.toLowerCase()))
+                    return false
+                
+                else if(Array.isArray(this.filter.risk_reward) && 
+                        this.filter.risk_reward.length == 2 && 
+                        !( this.filter.risk_reward[0] < d.risk_reward && 
+                        this.filter.risk_reward[1] > d.risk_reward))
+                    return false            
+                return true
+            })
+        }
+    },
+    methods : {                
+        forceRerender : function() {            
+            this.tablekey += 1        
+        },  
+        onFiltered : function(filteredItems) {            
+            this.totalRows = filteredItems.length
+        },
+        
+        filter_on_search(val) {
+            this.filter = this.$MultiFilters.updateFilters(this.filter, {search: val});
+        },
+    },
+    template : M_OPTIONSTABLE_TEMPLATE_STRING,
+});
+
+
+/**
+ * Equity Table
  */
 const MEquity = Vue.component("m-equity", {    
     props : ['state', 'items', 'fields', 'headers'],
@@ -378,8 +447,24 @@ const MApp = Vue.component('m-app', {
                 name: 'flip-list'
             },
             fields0 : "JUJ",
+            equity_type : [
+                "STOCKS", 
+                "OPTIONS",
+            ]
         }
-    },    
+    },
+    computed : {
+        type : {
+            get(){
+                return this.$store.state.state.type.toUpperCase()
+            },
+            set(value){
+                var type = value.toLowerCase()
+                console.log("radio toggle | value : ", value, ", type : ", type)
+                this.$store.dispatch('change_state', {'type' : type})
+            }
+        }
+    },
     methods : {                
         forceRerender : function() {            
             this.tablekey += 1        
