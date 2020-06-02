@@ -214,3 +214,20 @@ html, body{
     background: #004b96 !important;
     color: white !important;
 }
+
+.header-btn{
+    background-color: white;
+    color : black;
+}
+
+.as_checkbox {
+    -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+    -moz-appearance: checkbox;    /* Firefox */
+    -ms-appearance: checkbox;     /* not currently supported */
+}
+
+.as_radio {
+    -webkit-appearance: radio; /* Chrome, Safari, Opera */
+    -moz-appearance: radio;    /* Firefox */
+    -ms-appearance: radio;     /* not currently supported */
+}

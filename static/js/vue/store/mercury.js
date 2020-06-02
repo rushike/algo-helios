@@ -157,7 +157,7 @@ const store = new Vuex.Store({
              db_fetch = true
             console.log("port : ",mstate, mstate.portfolio)
             let instruments = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].tickers
-            instruments = instruments.map(v=>{return {name : v}})
+            // instruments = instruments.map(v=>{return {name : v}})
             context.commit('update_instruments', instruments)
         },
         async load_filters(context){ // this loads all filter for only particular market type

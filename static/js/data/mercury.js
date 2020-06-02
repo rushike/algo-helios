@@ -56,21 +56,15 @@ const FILTER = {
         // console.log("props : ", props, db_fetch)        
         if(!props) return this
         if(props.tickers) this.tickers = props.tickers
-        else this.tickers = null
         if(props.sides){ 
             this.sides = props.sides
             if(db_fetch) { 
-                this.sides = this.sides.map(v=>{return {side : v}})
-            }            
+                this.sides = props.sides.map(v=>v.toUpperCase())
+            }
         }
-        else this.sides = null
         if(props.profit_percentage) this.profit_percentage = props.profit_percentage
-        else this.profit_percentage = null
         if(props.risk_reward) this.risk_reward = props.risk_reward
-        else this.risk_reward = null
         if(props.search) this.search = props.search
-        else this.search = null
-        // console.log("this : ", this)
         return this
     }
 }

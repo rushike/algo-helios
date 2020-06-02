@@ -35,18 +35,18 @@ const MStockTable = Vue.component("m-stocks-table", {
             }
         },
         filter_items(){
-            return this.items.filter(d => {                
+            return this.items.filter(d => {
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
                             !( this.filter.profit_percentage[0] < d.profit * 100 && 
                             this.filter.profit_percentage[1] > d.profit * 100 ))
-                    return false                
-                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.side.toLowerCase()).includes(d.signal.toLowerCase()))
+                    return false
+                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase()))
                     return false
 
                 else if(Array.isArray(this.filter.tickers) && 
                         this.filter.tickers.length != 0 && 
-                        !this.filter.tickers.map(v=>v.name.toLowerCase()).includes(d.ticker.toLowerCase()))
+                        !this.filter.tickers.map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase()))
                     return false
                 
                 else if(Array.isArray(this.filter.risk_reward) && 
@@ -127,7 +127,7 @@ const MOptionsTable = Vue.component("m-options-table", {
                             !( this.filter.profit_percentage[0] < d.profit * 100 && 
                             this.filter.profit_percentage[1] > d.profit * 100 ))
                     return false                
-                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.side.toLowerCase()).includes(d.signal.toLowerCase()))
+                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase()))
                     return false
 
                 else if(Array.isArray(this.filter.tickers) && 
@@ -232,10 +232,24 @@ const MDataTable = Vue.component('m-data-table', {
 const MDataTableInfo = Vue.component('m-data-table-info', {       
     data: () => {
         return {
-            lsearch : this.filter
+            lsearch : this.filter,        
+            equity_type : [
+                "STOCKS", 
+                "OPTIONS",
+            ]
         }
     },
     computed : {
+        type : {
+            get(){
+                return this.$store.state.state.type.toUpperCase()
+            },
+            set(value){
+                var type = value.toLowerCase()
+                // console.log("radio toggle | value : ", value, ", type : ", type)
+                this.$store.dispatch('change_state', {'type' : type})
+            }
+        },
         search : {
             get(){
                 return this.$store.getters.search
@@ -287,13 +301,6 @@ const MFILTER_INLINE = Vue.component('m-filter-inline', {
             max__profit_percentage : 50,
             min__risk_reward : 0,
             max__risk_reward : 5,
-            options: [
-                {	language: 'JavaScript', name: 'Vue.js' },
-                { language: 'JavaScript', name: 'Vue-Multiselect' },
-                { language: 'JavaScript', name: 'React' },
-                { language: 'JavaScript', name: 'Go' },
-                { language: 'JavaScript', name: 'PHP' }
-            ],
             side_options : [
                 {
                     side : "BUY",                    
@@ -328,7 +335,7 @@ const MFILTER_INLINE = Vue.component('m-filter-inline', {
                 return this.filter.tickers
             },
             set(value){
-                // console.log("ticks valuess :", this.filter.tickers, value);
+                console.log("ticks valuess :", this.filter.tickers, value);
                 let filter = {"tickers" : value,}
                 Vue.set(this, 'filter', filter)
             }
@@ -438,6 +445,144 @@ const MNavigator = Vue.component('m-navigator', {
     components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}
 })
 
+const MMultiselect = Vue.component('m-multiselect', {
+    props : ['items', 'search', 'height'],
+    data : ()=>{
+        return {
+            selected : [],
+            headers : [
+                {
+                    key : "name",
+                    label : "Select All",
+                    text : "Select All",
+                    sortable : false,
+                    value : "name"
+                }
+            ]
+        }
+    },
+    computed : {
+        __m_items(){            
+            return this.items.map(v => {return {"name" : v}})
+        },
+        __m_height(){
+            return this.height ? this.height : "200"
+        },
+    },
+    methods :{
+        row_clicked(item){            
+            // this.$emit("item-selected", {item : item, value : true})
+            // this.selected.push(item.name)
+        },
+        item_selected(item, value){
+            // console.log("item, value : ", this.selected)
+        }
+    },
+    watch : {
+        selected(){
+            this.$emit('change', this.selected.map(v=>v.name))
+        }
+    },
+    template : M_MULTISELECT
+})
+
+const MFiterSidebar = Vue.component('m-filter-sidebar', {
+    data: () => {
+        return {
+            transProps: {
+                // Transition name
+                name: 'flip-list'
+            },
+            fields0 : "JUJ",            
+            search : "",
+            selected_tickers: [],
+            min__profit_percentage : 0,
+            max__profit_percentage : 50,
+            min__risk_reward : 0,
+            max__risk_reward : 5,
+        }
+    },
+    computed : {
+        filter : {
+            get(){
+                return this.$store.getters.filter
+            },
+            set(filter){
+                let db_fetch = false
+                // console.log("Changes filter value ", filter, db_fetch)
+                this.$store.commit("update_filter", {filter, db_fetch});
+            }
+        },
+        ticker_options : {
+            get(){
+                return this.$store.getters.instruments
+            },
+            set(value){
+                // console.log("Filter set value : ", value)
+            }
+        },
+        ticker_values:{
+            get(){
+                // console.log("values copmputed: ", this.filter.tickers)
+                return this.filter.tickers || []
+            },
+            set(value){
+                // console.log("ticks valuess :", this.filter.tickers, value);
+                let filter = {"tickers" : value,}
+                Vue.set(this, 'filter', filter)
+            }
+        },
+        side_values:{
+            get(){
+                // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
+                return this.filter.sides || ["SELL", "BUY"]
+            },
+            set(value){
+                // console.log("value : ", value);
+                let filter = {"sides" : value}
+                Vue.set(this, 'filter', filter)
+            }
+        },
+        pp_range:{
+            get(){
+                return this.filter.profit_percentage || [0, 50]
+            },
+            set(value){
+                let filter = {"profit_percentage" : value}
+                Vue.set(this, 'filter', filter)
+            }
+        },
+        rr_range:{
+            get(){
+                return this.filter.risk_reward || [0, 5]
+            },
+            set(value){
+                let filter = {"risk_reward" : value}
+                Vue.set(this, 'filter', filter)
+            }
+        },
+    },
+    methods : {                
+        forceRerender : function() {            
+            this.tablekey += 1        
+        },        
+        update_selected_tickers(sel_tickers){
+            this.ticker_values = sel_tickers
+        },
+        select (option) {
+            option.selected = !option.selected
+        },
+        ticker_name(option){
+            return option.name
+        },
+        side_name(option){
+            return option.side
+        },
+    },
+    template : M_FILTER_SIDEBAR,
+    // components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}
+})
+
 const MApp = Vue.component('m-app', {   
     props : ['state', 'items', 'fields', 'headers'],
     data: () => {
@@ -447,10 +592,6 @@ const MApp = Vue.component('m-app', {
                 name: 'flip-list'
             },
             fields0 : "JUJ",
-            equity_type : [
-                "STOCKS", 
-                "OPTIONS",
-            ]
         }
     },
     computed : {

@@ -42,7 +42,11 @@ class Signal{
         this.ticker = ticker
         this.ltp = ltp
         this.signal = signal
-        this.time = time
+        this.time = {
+            toString(){
+                return time
+            }
+        }
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
