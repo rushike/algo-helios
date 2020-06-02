@@ -458,7 +458,7 @@ const MMultiselect = Vue.component('m-multiselect', {
                     sortable : false,
                     value : "name"
                 }
-            ]
+            ],
         }
     },
     computed : {
@@ -500,6 +500,7 @@ const MFiterSidebar = Vue.component('m-filter-sidebar', {
             max__profit_percentage : 50,
             min__risk_reward : 0,
             max__risk_reward : 5,
+            drawer : true,
         }
     },
     computed : {

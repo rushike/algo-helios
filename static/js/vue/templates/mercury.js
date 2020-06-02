@@ -74,7 +74,7 @@ const M_DATA_TABLE_INFO = `
         class="m-3"
         no-gutters
         >
-        <v-col cols="2" >
+        <v-col cols="12" md = "2" >
                 <v-select
                 class = "px-1"
                 v-model="type"
@@ -85,7 +85,7 @@ const M_DATA_TABLE_INFO = `
                 single-line
                 ></v-select>
             </v-col>
-        <v-col cols ="12" md = "2" >
+        <v-col cols ="12" md = "2" class = "mb-2" >
             <v-text-field
                 v-model="search"
                 class = "px-1"
@@ -117,7 +117,7 @@ const M_DATA_TABLE_INFO = `
                     </v-row>
                 </v-col>
 
-                <v-col cols = "6">
+                <v-col cols = "12" md = "6">
                     <v-row>
                         <v-col cols ="6" class = "text-center">
                             <v-badge pill color="green lighten-1"  :content = "'HIT'" class = "green--text darken-4--text font-weight-bold headline">{{meta.hit}}</v-badge>
@@ -166,10 +166,6 @@ const M_DATA_TABLE_INFO = `
                 </v-row>            
         </v-col>            
     </v-row>
-    <div id="filter-collapse" class = "collapse">
-        <hr>
-        <m-filter-inline></m-filter-inline>
-    </div>
     </div>
 `
 
@@ -262,10 +258,12 @@ const M_MULTISELECT =  `
         disable-pagination
         item-key="name"
         show-select
-        class="elevation-1"
+        clipped
+        fixed-header
+        :class="this.$vuetify.theme.dark "
         hide-default-footer
         @click:row = "row_clicked"
-        @item-selected="item_selected"
+        @item-selected="item_selected"        
         >
     </v-data-table>
 </div>
@@ -287,16 +285,17 @@ const M_FILTER_SIDEBAR = `
             dense
             >
             <v-col
-            dense
-            >   <h6>  
+                class = "mt-2"
+                dense
+            >
                     <span class = "align-bottom font-weight-bold">
                         Tickers
-                    </span>
-                </h6>
+                    </span>             
             </v-col>
-            <v-col 
-            dense
-            >
+            <v-col
+                cols  = "8"
+                dense
+                >
                 <span class = "float-right">
                     <v-text-field 
                         v-model="search"
@@ -337,7 +336,7 @@ const M_FILTER_SIDEBAR = `
             class = "py-0"
                 dense
                 >
-                    <v-row>
+                    <v-row class = "px-3">
                         <v-col dense
                         class = "py-0"
                         >
@@ -498,11 +497,38 @@ const M_FILTER_SIDEBAR = `
 `
 
 const M_TABLE_WRAPPER = `
-    <div class = "border white elevation-13" style = "border-radius : 0.7rem">
+    <div class = "border" >
         <m-data-table-info ></m-data-table-info> 
         <m-data-table ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" ></m-data-table>
     </div>
 `
+
+const M_DRAWER_FILTER = `
+
+<v-navigation-drawer
+        v-model="drawer"
+        :expand-on-hover="true"
+        :permanent="true"
+        width = "30vw"
+        absolute
+        style = "z-index:100;"
+        floating
+      >
+        <v-list-item
+            link
+            >
+            <v-list-item-icon class = "mr-1">
+              <v-icon class="fa fa-filter blue--text darken-4--text" aria-hidden="true"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content collapse>
+
+                ${M_FILTER_SIDEBAR}
+            </v-list-item-content>
+        </v-list-item>   
+    
+</v-navigation-drawer>
+`
+
 const M_NAVIGATOR = `
     <v-card
     flat
@@ -543,15 +569,20 @@ const M_NAVIGATOR = `
 const M_APP = `
 <v-app>
 <v-container fluid class = "blue lighten-5">
+    <m-navigator></m-navigator>
     <v-row>
-        <v-col cols = "12" md = "3">
-            <m-filter-sidebar class = "elevation-5" style = "border-radius : 0.7rem"></m-filter-sidebar>
-        </v-col>
-        <v-col cols = "12" md = "9">
-            <m-navigator ></m-navigator>
-            <m-table-wrapper ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
-        </v-col>
+        <v-col cols = "12" md = "3"> 
+            <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
+         </v-col>
+        <v-col cols = "12" md = "9"> 
+            <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
+         </v-col>
     </v-row>
+    <!-- <m-filter-sidebar ></m-filter-sidebar>
+    <div style = "margin-left : 5vw !important;">
+        <m-navigator ></m-navigator>
+        <m-table-wrapper ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
+    </div> -->
 </v-container>
 </v-app>
 `
