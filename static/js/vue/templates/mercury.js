@@ -7,6 +7,10 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :items-per-page = "items.length"
         :search = "search"
         :custom-filter = "portfolio_filter"
+        :loading = 'loading'
+        loading-text="Loading... Please wait"
+        disable-pagination = "true"
+        hide-default-footer
         fixed-header
         height="70vh"
         class="elevation-1"        
@@ -14,7 +18,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         
         
         <template v-slot:item.ticker="{ item }">
-            <span>
+            <span style = "font-size : 12px">
                 {{ item.ticker }}
             </span>
         </template>
@@ -22,12 +26,14 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         <template v-slot:item.signal="{ item }">
             <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
                 data-target="#trade_modal">
-                {{ item.signal }}
+                <span style="font-size: 12px">            
+                    {{ item.signal }}
+                </span>
             </button> 
         </template>
 
         <template v-slot:item.status="{ item }">
-            <span class = "'badge white rounded  ' + item.status.toLowerCase() + '_status'">
+            <span :class = "'badge rounded  ' + item.status.toLowerCase() + '_status'" style = "font-size : 12px">
                 {{ item.status }}
             </span>
         </template>
@@ -42,7 +48,11 @@ const M_OPTIONSTABLE_TEMPLATE_STRING = `
         :items="filter_items"     
         :items-per-page = "items.length"
         :search = "search"        
+        loading = 'loading'
+        loading-text="Loading... Please wait"
         fixed-header
+        disable-pagination = "true"
+        hide-default-footer
         height="70vh"
         class="elevation-1"        
         style="max-height: calc(100vh ); backface-visibility: hidden;">
@@ -254,10 +264,13 @@ const M_MULTISELECT =  `
         :items="__m_items"
         :search = "search"
         :height = "__m_height"
+        :loading = "loading"
+        loading-text="Loading... Please wait"
         mobile-breakpoint = 0
         disable-pagination
         item-key="name"
         show-select
+        dense
         clipped
         fixed-header
         :class="this.$vuetify.theme.dark "
@@ -288,7 +301,7 @@ const M_FILTER_SIDEBAR = `
                 class = "mt-2"
                 dense
             >
-                    <span class = "align-bottom font-weight-bold">
+                    <span class = "align-bottom font-weight-bold" style = "font-size : 14px">
                         Tickers
                     </span>             
             </v-col>
@@ -309,7 +322,7 @@ const M_FILTER_SIDEBAR = `
             </v-col>        
         </v-row>
         <v-row >
-            <v-col>
+            <v-col class = "py-0">
                 <v-container fluid>
                     <m-multiselect
                         :search = "search"
@@ -323,6 +336,7 @@ const M_FILTER_SIDEBAR = `
 
         <v-row dense>
             <v-col
+                class = "py-0"
                 dense>   
                 <h6 class = "px-3">  
                     <span class = "align-bottom font-weight-bold">
@@ -340,7 +354,7 @@ const M_FILTER_SIDEBAR = `
                         <v-col dense
                         class = "py-0"
                         >
-                        <v-checkbox v-model = "side_values" class = "as_radio" value = "BUY">
+                        <v-checkbox v-model = "side_values" class = "as_radio mt-0" value = "BUY">
                             <template v-slot:label>
                                 <span class = "BUY_btn trade">
                                     BUY
@@ -351,7 +365,7 @@ const M_FILTER_SIDEBAR = `
                         <v-col dense
                         class = "py-0"
                         >
-                        <v-checkbox v-model = "side_values" class = "as_radio" value = "SELL">
+                        <v-checkbox v-model = "side_values" class = "as_radio mt-0" value = "SELL">
                             <template v-slot:label>
                                 <span class = "SELL_btn trade">
                                     SELL
@@ -532,7 +546,7 @@ const M_DRAWER_FILTER = `
 const M_NAVIGATOR = `
     <v-card
     flat
-    class="m-1"
+    class="m-0 p-0"
     style= "background : transparent"
     >
             <v-row
@@ -545,7 +559,7 @@ const M_NAVIGATOR = `
                     @change="change_state"
                     rounded
                     
-                    class = "mb-4"
+                    class = "mb-1"
                 >
                     <v-btn active-class="active-head" class = "p-4">
                         
@@ -569,10 +583,14 @@ const M_NAVIGATOR = `
 const M_APP = `
 <v-app>
 <v-container fluid class = "blue lighten-5">
-    <m-navigator></m-navigator>
+    <m-navigator class = "p-0"></m-navigator>
     <v-row>
-        <v-col cols = "12" md = "3"> 
-            <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
+        <v-col cols = "12" md = "3" class = "p-0">
+            <v-row>
+                <v-col cols = "12" md = "11" class = "float-left">
+                    <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
+                </v-col>
+            </v-row>
          </v-col>
         <v-col cols = "12" md = "9"> 
             <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    

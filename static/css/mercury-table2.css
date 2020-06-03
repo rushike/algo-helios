@@ -126,7 +126,7 @@ html, body{
     border-radius: 10px;
     letter-spacing: 1px;
     border: none;
-    font-size: 13px;
+    font-size: 12px;
     padding: 0 10px 0 10px;
  }
 
@@ -232,6 +232,17 @@ html, body{
     -ms-appearance: radio;     /* not currently supported */
 }
 
+.v-data-table th {
+    font-size: 13px !important;
+}
+
+.v-data-table td {
+    font-size: 12px !important;
+}
+
+h6 {
+    font-size: 14px;
+}
 
 /* width */
 ::-webkit-scrollbar {

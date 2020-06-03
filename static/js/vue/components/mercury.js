@@ -56,7 +56,10 @@ const MStockTable = Vue.component("m-stocks-table", {
                     return false            
                 return true
             })
-        }
+        },
+        loading(){
+            return this.filter_items.length == 0
+        },
     },
     methods : {                
         forceRerender : function() {            
@@ -142,7 +145,10 @@ const MOptionsTable = Vue.component("m-options-table", {
                     return false            
                 return true
             })
-        }
+        },
+        loading(){
+            return this.filter_items.length == 0
+        },
     },
     methods : {                
         forceRerender : function() {            
@@ -466,7 +472,10 @@ const MMultiselect = Vue.component('m-multiselect', {
             return this.items.map(v => {return {"name" : v}})
         },
         __m_height(){
-            return this.height ? this.height : "200"
+            return this.height ? this.height : "160"
+        },
+        loading(){
+            return this.__m_items.length == 0
         },
     },
     methods :{

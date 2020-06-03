@@ -33,20 +33,18 @@ class Profit{
 }
 
 class Signal{
-    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active){        
-        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward, active)        
+    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){        
+        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward, active, signal_time = signal_time)
     }
-    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active){
+    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){
         var self = this
         this.call_id = call_id
         this.ticker = ticker
         this.ltp = ltp
         this.signal = signal
-        this.time = {
-            toString(){
-                return time
-            }
-        }
+        // signal_time = 2020-05-26T11:59:46.212353+05:30
+        // time = 05/26/2020, 11:59:46        
+        this.time = moment(signal_time, moment.ISO_8601).format('Do MMMM YYYY, h:mm')
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
@@ -109,7 +107,8 @@ class Data{
                     value["stop_loss"],                    
                     value["status"],
                     value['risk_reward'],
-                    value['active']
+                    value['active'],
+                    value["signal_time"],
                 )
             }else {
                 this.calls[value["call_id"]].update(
