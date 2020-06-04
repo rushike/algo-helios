@@ -108,9 +108,12 @@ html, body{
  }
 
  .disabled {
-     background-color: #E8E8E8;
-     color: #c6c6c6;
-     opacity: 0.5;
+     background-color: #E8E8E8 !important;
+     color: #000000 !important;
+     opacity: 0.5 !important;
+ }
+ .follow_trade {
+     background-color: #e3f2fd!important;
  }
 
  #trade_form {
@@ -233,11 +236,11 @@ html, body{
 }
 
 .v-data-table th {
-    font-size: 13px !important;
+    font-size: 15px !important;
 }
 
 .v-data-table td {
-    font-size: 12px !important;
+    font-size: 13px !important;
 }
 
 h6 {

@@ -9,6 +9,7 @@ const store = new Vuex.Store({
         // table : Table,
         state : STATE,
         items : [],
+        selected_fields : [],
         fields : [],        
         filter : FILTER,
         instruments : [],
@@ -24,6 +25,9 @@ const store = new Vuex.Store({
         },
         fields : (state, getters) =>{
             return state.fields
+        },
+        selected_fields : (state, getters)=>{
+            return state.selected_fields
         },
         search : function(state, getters){
             return state.search
@@ -49,7 +53,6 @@ const store = new Vuex.Store({
          */
         change_state : (state, state_dict)=>{        
             Object.entries(state_dict).forEach(([key, value])=>{
-
                 state.state[key] = value;
             });
         },
@@ -81,10 +84,11 @@ const store = new Vuex.Store({
         update_fields : (state, fields)=>{
             Vue.set(state, "fields", fields)
         },
+        update_selected_fields : (state, selected_fields)=>{
+            Vue.set(state, 'selected_fields', selected_fields)
+        },
         update_meta :(state, meta)=>{
-            console.log("meta setting : ", meta)
             meta = META.set(meta)
-            console.log("after : ", meta)
             Vue.set(state, "meta", meta)
         },
         update_search(state, value){
@@ -119,7 +123,15 @@ const store = new Vuex.Store({
                     }
                 )
             });
+            head_list.push({
+                key : 'action', 
+                value : 'action', 
+                text : 'Action',
+                label : 'Action',
+                sortable : false
+            })
             context.commit('update_fields', head_list)
+            context.commit('update_selected_fields', head_list)
         },
         load_meta(context){
             let mstate = context.getters.state
@@ -139,7 +151,7 @@ const store = new Vuex.Store({
         },
         load_items(context){
             let mstate = context.getters.state
-            var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data            
+            var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data
             context.commit('update_items', items)        
         },
         async load_all_instruments(context){ // this loads all filter for only particular market type
@@ -178,7 +190,7 @@ const store = new Vuex.Store({
             context.commit('update_filter', {filter, db_fetch})
         },
         change_state : (context, state_dict)=>{
-            // console.log("Vuex$action#change_state =: context ", context, ", state_dict : ", state_dict)
+            // console.log("Vuex$action#change_state =: context ", ", state_dict : ", state_dict)
             context.commit("change_state", state_dict);
             context.dispatch('propogate_state_change')
         },
@@ -187,19 +199,14 @@ const store = new Vuex.Store({
             context.dispatch('load_fields')
             context.dispatch('load_items')
             context.dispatch('load_meta')
+        },
+        update_selected_fields(context, selected_fields){
+            context.commit('update_selected_fields', selected_fields)
+            context.commit('change_state', {update : !context.getters.state.update})
+        },
+        update_items(context, items){
+            context.commit('update_items', items)
         }
-        // add_entry : (context, payload)=>{
-        //     console.log("Vuex$action#add_entry =: context ", context, ", payload : ", payload)
-        //     context.commit("add_entry", payload);
-        // },
-        // refresh_table : (context, payload)=>{
-        //     console.log("Vuex$action#refresh_table =: context ", context, ", payload : ", payload)
-        //     context.commit("refresh_table", payload);
-        // },
-        // update_fields : (context, payload)=>{
-        //     console.log("Vuex$action#refresh_table =: context ", context, ", payload : ", payload)
-        //     context.commit("update_fields", payload);
-        // },
     }
 });
 

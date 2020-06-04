@@ -15,6 +15,9 @@ const MStockTable = Vue.component("m-stocks-table", {
             fields0 : "JUJ",
         }
     },
+    created(){
+        console.log("stocks table created : ", this.fields);        
+    },
     computed :{
         search : {
             get(){
@@ -53,7 +56,7 @@ const MStockTable = Vue.component("m-stocks-table", {
                         this.filter.risk_reward.length == 2 && 
                         !( this.filter.risk_reward[0] < d.risk_reward && 
                         this.filter.risk_reward[1] > d.risk_reward))
-                    return false            
+                    return false
                 return true
             })
         },
@@ -68,6 +71,12 @@ const MStockTable = Vue.component("m-stocks-table", {
         onFiltered : function(filteredItems) {            
             this.totalRows = filteredItems.length
         }, 
+        is_row_active(item){
+            return item.active ? '' : 'disabled'
+        },
+        follow_my_trade(item, follow){            
+            item.set_follow(follow)
+        },
         portfolio_filter(val, search, item, headers){
             if(search.length < 3 ){
                 return true
@@ -238,11 +247,11 @@ const MDataTable = Vue.component('m-data-table', {
 const MDataTableInfo = Vue.component('m-data-table-info', {       
     data: () => {
         return {
-            lsearch : this.filter,        
+            lsearch : this.filter,
             equity_type : [
-                "STOCKS", 
+                "STOCKS",
                 "OPTIONS",
-            ]
+            ],
         }
     },
     computed : {
@@ -280,8 +289,23 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             set(meta){                                
                 this.$store.commit("update_meta", meta);
             }
+        },
+        fields(){
+            return this.$store.getters.fields
+        },
+        selected_fields : {
+            get(){
+                return this.$store.getters.selected_fields
+            },
+            set(selected_fields){
+                var selected_fields_ = []
+                selected_fields.forEach(v=>{
+                    var el = this.$store.getters.fields.find(element => element.key == v);
+                    selected_fields_.push(el)
+                });
+                this.$store.dispatch("update_selected_fields", selected_fields_)
+            }
         }
-       
     },
     methods : {                
         forceRerender : function() {            
@@ -405,7 +429,7 @@ const MTableWrapper = Vue.component('m-table-wrapper', {
             },
             fields0 : "JUJ",
         }
-    },    
+    },
     methods : {                
         forceRerender : function() {            
             this.tablekey += 1        

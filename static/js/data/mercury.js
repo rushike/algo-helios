@@ -25,6 +25,7 @@ const STATE = {
     type : STOCKS,
     market : "equity",
     market_type : "indian_market",
+    update : true,
 }
 
 const META = {

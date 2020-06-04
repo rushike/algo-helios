@@ -9,41 +9,66 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :custom-filter = "portfolio_filter"
         :loading = 'loading'
         loading-text="Loading... Please wait"
-        disable-pagination = "true"
-        hide-default-footer
-        fixed-header
+        :disable-pagination = "true"
+        :group-desc = "true"
+        group-by = "follow"
+        
         height="70vh"
         class="elevation-1"        
-        style="max-height: calc(100vh ); backface-visibility: hidden;">
+        style="max-height: calc(100vh ); backface-visibility: hidden;"
+        hide-default-footer
+        fixed-header>
         
         
-        <template v-slot:item.ticker="{ item }">
-            <span style = "font-size : 12px">
-                {{ item.ticker }}
-            </span>
+        <template v-slot:group.header="{group, groupBy}" >
+              {{group}} {{groupBy}}
         </template>
 
-        <template v-slot:item.signal="{ item }">
-            <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
-                data-target="#trade_modal">
-                <span style="font-size: 12px">            
-                    {{ item.signal }}
-                </span>
-            </button> 
-        </template>
+        <template v-slot:group="{group, options, items, headers}" >             
+            <tr v-for = "item in items" :class = "( group ? 'follow_trade ' : ' ') + is_row_active(item)" >
+                <td v-for = "header in headers" >
+                    <span v-if = "header.key == 'signal'">
+                        <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
+                            data-target="#trade_modal">
+                            <span >            
+                                {{ item.signal }}
+                            </span>
+                        </button>
+                    </span>
+                    <span v-else-if = "header.key == 'status'">
+                        <span :class = "'badge rounded  ' + item.status + '_status'">
+                            {{ item.status }}
+                        </span>
+                    </span>
+                    <span v-else-if = "header.key == 'action'">
+                        <span v-if = "item.follow">                
+                            <!-- <i  class="fa fa-thumb-tack" aria-hidden="true"></i> -->
+                            <i v-on:click= "follow_my_trade(item, false)" class="fa fa-trash fa-2x p-1" aria-hidden="true"></i>
+                        </span>
+                        <span v-else>
+                            <i v-on:click="follow_my_trade(item, true)"  class="fa fa-thumb-tack fa-2x p-1" style = "cursor:pointer" aria-hidden="true"></i>
+                            
+                            <!-- <i class="fa fa-trash fa-2x p-1" style = "cursor:pointer" aria-hidden="true"></i> -->
+                        </span>
 
-        <template v-slot:item.status="{ item }">
-            <span :class = "'badge rounded  ' + item.status.toLowerCase() + '_status'" style = "font-size : 12px">
-                {{ item.status }}
-            </span>
-        </template>
+                    </span>
+                    <span v-else>                        
+                        {{item[header.key]}}
+                    </span>
+                </td>
+            </tr>
+            
+        </template> 
+
+
+
+       
     </v-data-table>  
 </v-responsive>
 `
 
 const M_OPTIONSTABLE_TEMPLATE_STRING = `
     <v-data-table
-        
         :headers="headers"
         :items="filter_items"     
         :items-per-page = "items.length"
@@ -51,7 +76,7 @@ const M_OPTIONSTABLE_TEMPLATE_STRING = `
         loading = 'loading'
         loading-text="Loading... Please wait"
         fixed-header
-        disable-pagination = "true"
+        :disable-pagination = "true"
         hide-default-footer
         height="70vh"
         class="elevation-1"        
@@ -62,7 +87,9 @@ const M_OPTIONSTABLE_TEMPLATE_STRING = `
 
 const M_EQUITY_TEMPLATE_STRING = `
 <div>
-<m-stocks-table v-if = "state.type == 'stocks'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+<m-stocks-table v-if = "state.update &&  state.type == 'stocks'" :key = "parseFloat(Math.random() * 100)" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+</m-stocks-table>
+<m-stocks-table v-else-if = "!state.update && state.type == 'stocks'" :key = "parseFloat(Math.random() * 100)" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
 <m-stocks-table v-if = "state.type == 'options'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
@@ -84,7 +111,7 @@ const M_DATA_TABLE_INFO = `
         class="m-3"
         no-gutters
         >
-        <v-col cols="12" md = "2" >
+        <v-col cols="12" md = "3" >
                 <v-select
                 class = "px-1"
                 v-model="type"
@@ -93,29 +120,15 @@ const M_DATA_TABLE_INFO = `
                 label="Select"
                 hide-details          
                 single-line
+                dense
+                solo
+                class = "pt-4"
                 ></v-select>
-            </v-col>
-        <v-col cols ="12" md = "2" class = "mb-2" >
-            <v-text-field
-                v-model="search"
-                class = "px-1"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-            ></v-text-field>
-            
-                <!--
-                <v-input-group-append>
-                    <v-button :disabled="!search" @click="search = ''">Clear</v-button>
-                </v-input-group-append> 
-            </v-input-group>
-            </v-form-group> -->
         </v-col>
         
-        <v-col cols ="12" md = "5">
+        <v-col cols ="12" md = "6" class = "text-center">
             <v-row >
-                <v-col cols = "12" md = "6">
+                <v-col cols = "12" md = "6" class = "text-center">
                     <v-row>
                         <v-col cols ="6" class = "text-center">                            
                             <v-badge pill variant="primary" color="blue" :content = "'Total'" class = "blue--text darken-4--text font-weight-bold headline">{{meta.total}}</v-badge>
@@ -127,7 +140,7 @@ const M_DATA_TABLE_INFO = `
                     </v-row>
                 </v-col>
 
-                <v-col cols = "12" md = "6">
+                <v-col cols = "12" md = "6" class = "text-center">
                     <v-row>
                         <v-col cols ="6" class = "text-center">
                             <v-badge pill color="green lighten-1"  :content = "'HIT'" class = "green--text darken-4--text font-weight-bold headline">{{meta.hit}}</v-badge>
@@ -141,9 +154,9 @@ const M_DATA_TABLE_INFO = `
             </v-row>
         </v-col>
 
-        <v-col cols="12" md="3">
-            <v-row align="center" justify="center">
-            <v-col cols = "12" class = "text-center">
+        <v-col cols="12" md="3" class = "pt-3" >
+            <v-row align="center" justify="center" class = "float-right">
+            <v-col cols = "12" >
                 <!-- <span id = "filter">
                     <a data-toggle="tooltip"  data-placement="top" title="Filter">
                         <button data-toggle = "collapse" data-target = "#filter-collapse" class="btn filter get_filter"  aria-expanded="false" aria-controls="filter-collapse">
@@ -175,6 +188,47 @@ const M_DATA_TABLE_INFO = `
                 </v-col>
                 </v-row>            
         </v-col>            
+    </v-row>
+    <v-row
+        class="m-3"
+        no-gutters
+        >
+        <v-col cols = "12" md = "3">        
+            <v-text-field
+                v-model="search"
+                class = "px-1"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols = "12" md = "4" class = "pt-2">
+            <v-select
+                class = "px-1"
+                v-model="selected_fields"
+                :items="fields"
+                menu-props="auto"
+                label="Select"
+                multiple
+                hide-details
+                dense
+                solo
+                single-line
+            >
+                <template v-slot:selection="{ item, index }">
+                    <v-chip v-if="index < 2">
+                        <span>{{ item.text }}</span>
+                    </v-chip>
+                    <span
+                        v-if="index === 2"
+                        class="grey--text caption"
+                        >(+{{ selected_fields.length - 1 }} others)</span>
+                </template>
+            
+            </v-select>
+        </v-col>
     </v-row>
     </div>
 `
@@ -336,7 +390,7 @@ const M_FILTER_SIDEBAR = `
 
         <v-row dense>
             <v-col
-                class = "py-0"
+                class = "py-0 mt-2"
                 dense>   
                 <h6 class = "px-3">  
                     <span class = "align-bottom font-weight-bold">
@@ -392,6 +446,7 @@ const M_FILTER_SIDEBAR = `
     
     <v-row class = "px-5">
         <v-col 
+            class = "pb-0"
             dense
             >
                 <v-range-slider
@@ -444,6 +499,7 @@ const M_FILTER_SIDEBAR = `
 
     <v-row dense>
         <v-col
+            class = "py-0"
             dense>   
             <h6 class = "px-3">  
                 <span class = "align-bottom font-weight-bold">

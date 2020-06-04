@@ -56,12 +56,17 @@ class Signal{
         this.status = status
         this.risk_reward = risk_reward
         this.active = active
+        this.follow = false 
     }
     update(signal, status, active){
         if(signal) this.signal = signal
         if(status) this.status = status
         if(active) this.active = active
     }
+    set_follow(follow){
+        this.follow = follow
+    } 
+    
 }
 
 class Data{
@@ -211,11 +216,11 @@ class MercuryTable{
                     }
                 },
                 fields : {
-                    get(){
-                        return this.$store.getters.fields
+                    get(){                        
+                        return this.$store.getters.selected_fields
                     },
                     set(fields_){
-                        return this.$store.commit("update_fields", fields_);
+                        return this.$store.commit("update_selected_fields", fields_);
                     }
                 },
                 headers : {
