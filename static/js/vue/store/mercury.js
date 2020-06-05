@@ -119,7 +119,7 @@ const store = new Vuex.Store({
                         value : key,
                         text : KEY_2_LABEL[key],                        
                         label : KEY_2_LABEL[key],
-                        sortable : value.sortable || false
+                        sortable : value.sortable || false,                        
                     }
                 )
             });
@@ -128,7 +128,7 @@ const store = new Vuex.Store({
                 value : 'action', 
                 text : 'Action',
                 label : 'Action',
-                sortable : false
+                sortable : false,
             })
             context.commit('update_fields', head_list)
             context.commit('update_selected_fields', head_list)
@@ -201,8 +201,13 @@ const store = new Vuex.Store({
             context.dispatch('load_meta')
         },
         update_selected_fields(context, selected_fields){
-            context.commit('update_selected_fields', selected_fields)
-            context.commit('change_state', {update : !context.getters.state.update})
+            var selected_fields_ = []
+            context.getters.fields.forEach(field =>{                
+                if(selected_fields.some(e => e.key == field.key)){
+                    selected_fields_.push(field)
+                }
+            })
+            context.commit('update_selected_fields', selected_fields_)
         },
         update_items(context, items){
             context.commit('update_items', items)

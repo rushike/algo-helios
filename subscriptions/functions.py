@@ -68,8 +68,8 @@ def get_all_products_in_plan(plan_id:Plan, return_list = False):
 
 
 def get_all_products_in_plans(plans): 
-    if not isinstance(plans, Iterable): return get_product_family_of_products([plans])
-    if len(plans) != 0 and type(plans[0]) == Product:
+    if not isinstance(plans, Iterable): return get_all_products_in_plans([plans])
+    if len(plans) != 0 and type(plans[0]) == Plan:
         plans = [plan.id for plan in plans]
     etc = PlanProductMap.objects.filter(plan_id__in = plans).values('product_id')
     return Product.objects.filter(id__in = etc)

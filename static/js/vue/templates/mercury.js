@@ -2,7 +2,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 
     <v-data-table
         
-        :headers="headers"
+        :headers="fields"
         :items="filter_items"     
         :items-per-page = "items.length"
         :search = "search"
@@ -87,9 +87,7 @@ const M_OPTIONSTABLE_TEMPLATE_STRING = `
 
 const M_EQUITY_TEMPLATE_STRING = `
 <div>
-<m-stocks-table v-if = "state.update &&  state.type == 'stocks'" :key = "parseFloat(Math.random() * 100)" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
-</m-stocks-table>
-<m-stocks-table v-else-if = "!state.update && state.type == 'stocks'" :key = "parseFloat(Math.random() * 100)" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+<m-stocks-table v-if = "state.type == 'stocks'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
 <m-stocks-table v-if = "state.type == 'options'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
@@ -113,7 +111,7 @@ const M_DATA_TABLE_INFO = `
         >
         <v-col cols="12" md = "3" >
                 <v-select
-                class = "px-1"
+                class = "px-1 pt-4"
                 v-model="type"
                 :items="equity_type"
                 menu-props="auto"
@@ -121,8 +119,7 @@ const M_DATA_TABLE_INFO = `
                 hide-details          
                 single-line
                 dense
-                solo
-                class = "pt-4"
+                solo            
                 ></v-select>
         </v-col>
         
