@@ -71,8 +71,13 @@ const MStockTable = Vue.component("m-stocks-table", {
         onFiltered : function(filteredItems) {            
             this.totalRows = filteredItems.length
         }, 
-        is_row_active(item){
-            return item.active ? '' : 'disabled'
+        row_class(group, index, item, items){
+            var class_ = ""
+            var border = group ? "mx-1 follow_trade border " : ' ',
+                active = item.active ? ' ' : 'disabled ',
+                group_highlight = (index == items.length - 1) ? ( index == 0 ? '' : 'border-top-0'  ) : (index == 0 ? 'border-bottom-0' : 'border-top-0 border-bottom-0' )
+            return class_ + border + active + group_highlight
+             
         },
         follow_my_trade(item, follow){            
             item.set_follow(follow)

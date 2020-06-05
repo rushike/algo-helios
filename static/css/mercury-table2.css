@@ -114,6 +114,12 @@ html, body{
  }
  .follow_trade {
      background-color: #e3f2fd!important;
+     border-color: #004B96 !important;
+     border-width: 0.1rem !important;    
+     box-sizing: border-box !important; 
+ }
+ .shadow-bottom {
+    box-shadow: 5px 3px 8px #888888!important
  }
 
  #trade_form {
@@ -154,6 +160,8 @@ html, body{
 .active_status, .inactive_status, .hit_status, .miss_status, .partialhit_status {
     font-size: 12px;
     font-weight: 700;
+    width: 5rem;
+    padding: 3px;
     letter-spacing: 1px;
     color: white;
 }

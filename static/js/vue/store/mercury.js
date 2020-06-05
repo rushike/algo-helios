@@ -126,8 +126,8 @@ const store = new Vuex.Store({
             head_list.push({
                 key : 'action', 
                 value : 'action', 
-                text : 'Action',
-                label : 'Action',
+                text : 'Follow',
+                label : 'Follow',
                 sortable : false,
             })
             context.commit('update_fields', head_list)

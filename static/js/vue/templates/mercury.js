@@ -6,7 +6,6 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :items="filter_items"     
         :items-per-page = "items.length"
         :search = "search"
-        :custom-filter = "portfolio_filter"
         :loading = 'loading'
         loading-text="Loading... Please wait"
         :disable-pagination = "true"
@@ -25,39 +24,40 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         </template>
 
         <template v-slot:group="{group, options, items, headers}" >             
-            <tr v-for = "item in items" :class = "( group ? 'follow_trade ' : ' ') + is_row_active(item)" >
-                <td v-for = "header in headers" >
-                    <span v-if = "header.key == 'signal'">
-                        <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
-                            data-target="#trade_modal">
-                            <span >            
-                                {{ item.signal }}
-                            </span>
-                        </button>
-                    </span>
-                    <span v-else-if = "header.key == 'status'">
-                        <span :class = "'badge rounded  ' + item.status + '_status'">
-                            {{ item.status }}
-                        </span>
-                    </span>
-                    <span v-else-if = "header.key == 'action'">
-                        <span v-if = "item.follow">                
-                            <!-- <i  class="fa fa-thumb-tack" aria-hidden="true"></i> -->
-                            <i v-on:click= "follow_my_trade(item, false)" class="fa fa-trash fa-2x p-1" aria-hidden="true"></i>
-                        </span>
-                        <span v-else>
-                            <i v-on:click="follow_my_trade(item, true)"  class="fa fa-thumb-tack fa-2x p-1" style = "cursor:pointer" aria-hidden="true"></i>
-                            
-                            <!-- <i class="fa fa-trash fa-2x p-1" style = "cursor:pointer" aria-hidden="true"></i> -->
-                        </span>
-
-                    </span>
-                    <span v-else>                        
-                        {{item[header.key]}}
-                    </span>
-                </td>
-            </tr>
             
+                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items)" >
+                    <td v-for = "header in headers" >
+                        <span v-if = "header.key == 'signal'">
+                            <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
+                                data-target="#trade_modal">
+                                <span >            
+                                    {{ item.signal }}
+                                </span>
+                            </button>
+                        </span>
+                        <span v-else-if = "header.key == 'status'">
+                            <span :class = "'badge rounded  ' + item.status + '_status'">
+                                {{ item.status }}
+                            </span>
+                        </span>
+                        <span v-else-if = "header.key == 'action'">
+                            <span v-if = "item.follow">                                            
+                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin-slash.svg" style = "cursor:pointer; opacity : 0.4; height : 30%;" aria-hidden="true"></img>
+                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, false)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
+                            </span>
+                            <span v-else>
+                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
+                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, false)" src="/static/img/bin.svg" style = "cursor:pointer; opacity : 0.4; height : 30%;" aria-hidden="true" ></img>
+                            </span>
+                            
+
+                        </span>
+                        <span v-else>                        
+                            {{item[header.key]}}
+                        </span>
+                    </td>
+                </tr>
+
         </template> 
 
 
