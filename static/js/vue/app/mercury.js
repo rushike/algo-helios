@@ -66,6 +66,10 @@ class Signal{
     set_follow(follow){
         this.follow = follow
     } 
+    toString(){
+        return `${this.ticker},${this.ltp}, ${this.signal}, ${this.time.replace(',', '  ')}, ` + 
+                `${this.price}, ${this.target_price}, ${this.stop_loss}, ${this.profit}, ${this.status},`
+    }
     
 }
 

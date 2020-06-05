@@ -317,7 +317,25 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
         },
         ...Vuex.mapMutations([
             'update_search',
-        ])
+        ]), 
+        download_as_csv(){
+            var fields = this.$store.getters.fields, items = this.$store.getters.items, portfolio = this.$store.getters.state.portfolio
+            var d = new Date();
+            var filename = "AlgonautsCalls_" + portfolio + '_' + d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate() + ".csv"
+            var csv = ['Ticker, Last Price, Signal, Signal Time, Signal Price, Target Price, Stop Loss, Profit %, Status'];        
+            items.forEach(item => {
+				csv.push(item.toString())
+            })
+            var csv_string = csv.join("\n")
+
+            var csvFile = new Blob([csv_string], {type: "text/csv"});   // CSV file
+            var downloadLink = document.createElement("a");             // Download link
+            downloadLink.download = filename;                           // File name
+            downloadLink.href = window.URL.createObjectURL(csvFile);    // Create a link to the file
+            downloadLink.style.display = "none";                        // Hide download link
+            document.body.appendChild(downloadLink);                    // Add the link to DOM
+            downloadLink.click();                                       // Click download link
+        }
     },
     template : M_DATA_TABLE_INFO,
     // components: { 'm-indian-market': MIndianMarket}

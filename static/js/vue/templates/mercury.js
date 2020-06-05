@@ -106,7 +106,7 @@ const M_DATA_TABLE = `
 const M_DATA_TABLE_INFO = `
     <div>
     <v-row
-        class="m-3"
+        class="mx-3"
         no-gutters
         >
         <v-col cols="12" md = "3" >
@@ -164,7 +164,7 @@ const M_DATA_TABLE_INFO = `
 
                 <span id = "download">
                     <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
-                        <button class="btn download" onclick='exportTableToCSV("{}")'>
+                        <button class="btn download" v-on:click='download_as_csv()'>
                             <small><span class="fa fa-download"></span></small>
                         </button>
                     </a>
@@ -187,7 +187,7 @@ const M_DATA_TABLE_INFO = `
         </v-col>            
     </v-row>
     <v-row
-        class="m-3"
+        class="mx-3"
         no-gutters
         >
         <v-col cols = "12" md = "3">        

@@ -433,8 +433,8 @@ input:checked + .slider:before {
 		function exportTableToCSV(tabToDownload) {
 		    var d = new Date();
 		    filename = "AlgonautsCalls_" + tabToDownload + '_' + d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate() + ".csv"
-            var csv = [];
-            var rows = document.querySelectorAll("#" + tabToDownload + "_data-table tr");
+        var csv = [];
+        var rows = document.querySelectorAll("#" + tabToDownload + "_data-table tr");
 			console.log("rows : " , rows)
             for (var i = 0; i < rows.length; i++) {
                 var row = [], cols = rows[i].querySelectorAll("td, th");
