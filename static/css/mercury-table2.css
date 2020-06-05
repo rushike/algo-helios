@@ -107,6 +107,10 @@ html, body{
      visibility: visible;
  }
 
+ .hover-pointer {
+    cursor: pointer;
+ }
+
  .disabled {
      background-color: #E8E8E8 !important;
      color: #000000 !important;

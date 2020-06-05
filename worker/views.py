@@ -91,8 +91,8 @@ def get_instruments_for_portfolios(request):
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db(request):
-    user = request.user.email
-    portfolios = request.POST.getlist("portfolio_id[]", ['intraday', 'btst', 'positional' , 'longterm'])
+    user = request.user.email    
+    portfolios = json.loads(request.body.decode('utf-8')).get("portfolio_id", ['intraday', 'btst', 'positional' , 'longterm'])    
     portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
     groups = ConsumerManager().get_eligible_groups(user) # group-name is product name
 

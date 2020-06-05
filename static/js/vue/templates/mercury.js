@@ -104,7 +104,7 @@ const M_DATA_TABLE = `
 `
 
 const M_DATA_TABLE_INFO = `
-    <div>
+    <div class = "pb-1">
     <v-row
         class="mx-3"
         no-gutters
@@ -171,15 +171,16 @@ const M_DATA_TABLE_INFO = `
                 </span>
                 <span >
                     <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
-                        <button class="btn refresh" id = "{}-refresh"  title="Refresh">
+                        <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh">
                             <small><span class="fa fa-refresh"></span></small>
                         </button>
                     </a>
                 </span>
 
-                <span href="#" data-toggle="tooltip" onclick="make_notification_ajax_call()" data-placement="top" title="Notify">
-                    <button class="btn refresh user-notify"  title="Refresh">
-                        <small><span class="fa fa-bell-slash notify"></span></small>
+                <span href="#" data-toggle="tooltip" data-placement="top" title="Notify">
+                    <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify">
+                        <small v-if = "notification" ><span class="fa fa-bell-slash notify"></span></small>
+                        <small v-else><span class="fa fa-bell notify"></span></small>
                     </button>
                 </span>    
                 </v-col>

@@ -72,7 +72,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             this.totalRows = filteredItems.length
         }, 
         row_class(group, index, item, items){
-            var class_ = ""
+            var class_ = "hover-pointer "
             var border = group ? "mx-1 follow_trade border " : ' ',
                 active = item.active ? ' ' : 'disabled ',
                 group_highlight = (index == items.length - 1) ? ( index == 0 ? '' : 'border-top-0'  ) : (index == 0 ? 'border-bottom-0' : 'border-top-0 border-bottom-0' )
@@ -257,6 +257,7 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
                 "STOCKS",
                 "OPTIONS",
             ],
+            notification : true,
         }
     },
     computed : {
@@ -340,7 +341,15 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             downloadLink.style.display = "none";                        // Hide download link
             document.body.appendChild(downloadLink);                    // Add the link to DOM
             downloadLink.click();                                       // Click download link
-        }
+        },
+        async refresh_table(){
+            var force = false, data = Mercury.data
+            this.$store.dispatch('refresh_table', {force, data})
+        },
+        async allow_notification(){
+            var data =  (await axios.post('/user/toggle-notification/', {})).data
+            this.notification = data['allow_notification']
+        },
     },
     template : M_DATA_TABLE_INFO,
     // components: { 'm-indian-market': MIndianMarket}

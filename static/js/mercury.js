@@ -175,7 +175,7 @@ function option_tag_list(list){
 function make_notification_ajax_call(){
     $.ajax({
         type: "GET",
-        url: "/user/toggle-notification",
+        url: "/user/toggle-notification/",
         data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
         success: function(data)
         {

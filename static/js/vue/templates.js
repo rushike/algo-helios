@@ -240,9 +240,10 @@ const M_DATA_TABLE_INFO = `
                         </a>
                     </span>
 
-                    <span href="#" data-toggle="tooltip" onclick="make_notification_ajax_call()" data-placement="top" title="Notify">
-                        <button class="btn refresh user-notify"  title="Refresh">
-                            <small><span class="fa fa-bell-slash notify"></span></small>
+                    <span href="#" data-toggle="tooltip" data-placement="top" title="Notify">
+                        <button v-on:click = "allow_notification()" class="btn refresh user-notify" title="Refresh">
+                            <small v-if = "notification"><span class="fa fa-bell-slash notify"></span></small>
+                            <small v-else><span class="fa fa-bell notify"></span></small>
                         </button>
                     </span>                
             </v-col>            

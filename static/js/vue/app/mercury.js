@@ -134,7 +134,7 @@ class Data{
             data_list[value["portfolio_id"]].push(this.calls[value["call_id"]])
         })        
         console.log("setting mercury item : ", data_list[STATE.portfolio], STATE.portfolio)
-        // Vue.set(mercury.vue_mercury, "items", data_list[STATE.portfolio])     
+         
     }
 }
 
@@ -182,8 +182,7 @@ class MercuryTable{
     }
     render(){
         this.reinit()
-        this.get_table_header()
-            
+        this.get_table_header()       
         this.vue_mercury = new Vue({ 
             el: `#${this.id}`,
             store,
@@ -197,7 +196,9 @@ class MercuryTable{
             
             created() {
                 // var head_list = this.$store.getters.fields
-                // this.$store.commit('update_fields', head_list)                
+                // this.$store.commit('update_fields', head_list)
+                var force = true, data = Mercury.data
+                this.$store.dispatch('refresh_table', {force, data})
                 this.$store.dispatch('load_filters')                
                 this.$store.dispatch('load_fields')
                 this.$store.dispatch('load_all_instruments')
@@ -245,7 +246,7 @@ class MercuryTable{
                     // Trigger pagination to update the number of buttons/pages due to filtering
                     this.totalRows = filteredItems.length
                     this.currentPage = 1
-                  }
+                  },
             }
         });
     }

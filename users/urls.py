@@ -17,5 +17,5 @@ urlpatterns = [
     path('address-edit', views.address_edit, name= "address_edit"),
     path('get-address', views.get_address, name= "get_address"),
     path('indian-states', views.get_indian_states, name= "indian_states"),
-    path('toggle-notification', views.toggle_notification, name= "toggle_notification"),
+    path('toggle-notification/', views.toggle_notification, name= "toggle_notification"),
 ]

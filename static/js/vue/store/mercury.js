@@ -15,6 +15,7 @@ const store = new Vuex.Store({
         instruments : [],
         meta : META,
         search : null,
+        loaded : false,
     },
     getters: {
         state : (state, getters)=>{
@@ -40,6 +41,9 @@ const store = new Vuex.Store({
         },
         instruments : function(state, getters){
             return state.instruments
+        },
+        loaded : function(state, getters){
+            return state.loaded
         },
     },
     mutations: {
@@ -75,8 +79,43 @@ const store = new Vuex.Store({
          * refreshes entire table with list of objects['signals']
          * used when loading calls from db
          */
-        refresh_table : (state, data)=>{            
-            Vue.set(state, "items", data)
+        refresh_table : (state, {calls, data})=>{
+            var data_list = {} // this.data[STATE.market_type][STATE.market][STATE.type][portfolio_id].data
+            var head = data.data[STATE.market_type][STATE.market][STATE.type].header;
+            data_list.length = 0
+
+            calls.forEach(value=>{
+                if(!data.calls[value["call_id"]]){
+                    data.calls[value["call_id"]] = new Signal(
+                        value["call_id"],
+                        value["ticker"],
+                        value["ltp"],
+                        value["signal"],
+                        value["time"],
+                        value["price"],
+                        value["target_price"],
+                        value["stop_loss"],                    
+                        value["status"],
+                        value['risk_reward'],
+                        value['active'],
+                        value["signal_time"],
+                    )
+                }else {
+                    data.calls[value["call_id"]].update(
+                        value["signal"],
+                        value["status"],
+                        value['active']
+                    )
+                }
+                
+                if(!data_list[value["portfolio_id"]]){
+                    data_list[value["portfolio_id"]] = data.data[STATE.market_type][STATE.market][STATE.type][PORTFOLIOS[value["portfolio_id"]]].data
+                    data_list[value["portfolio_id"]].length = 0
+                }
+                data_list[value["portfolio_id"]].push(data.calls[value["call_id"]])
+            })        
+            // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
+            // Vue.set(state, "items", data)
         },
         update_items : (state, items)=>{
             Vue.set(state, "items", items)
@@ -104,9 +143,26 @@ const store = new Vuex.Store({
         update_instruments(state, instruments){
             // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
             Vue.set(state, "instruments", instruments)
+        }, 
+        update_loaded(state, value){
+            Vue.set(state, "loaded", value)
         }
     },
     actions: {
+        async refresh_table(context, options){
+            console.log("options : ", options)
+            var {force = false, data = new Data()} = options
+            var portfolios = force ? PORTFOLIOS.slice(2) : [context.getters.state.portfolio]
+            var req_data = {portfolio_id : portfolios}
+            console.log("portfolios refreshing data : ", portfolios);            
+            var data_ = (await axios.post('/worker/calls-from-db/', req_data)).data
+            console.log("portfolios data : ", data_)
+            context.commit('refresh_table', {calls : data_.calls, data : data})
+            if(force){
+                context.commit('update_loaded', true)
+            }
+            context.dispatch('change_state', {portfolio : context.getters.state.portfolio})
+        },
         load_fields(context){
             // context.getters.fields
             let mstate = context.getters.state
@@ -157,7 +213,7 @@ const store = new Vuex.Store({
         async load_all_instruments(context){ // this loads all filter for only particular market type
             let mstate = context.getters.state
             let table = Table[mstate.market_type][mstate.market][mstate.type]
-            var response =  await axios.post('/worker/get-instruments-for-portfolios/', {})            
+            var response =  await axios.post('/worker/get-instruments-for-portfolios/', {})
             Object.entries(response.data).forEach(([key, value])=>{
                 console.log(table[PORTFOLIOS[key]].tickers, PORTFOLIOS[key], key)
                 table[PORTFOLIOS[key]]["tickers"] = value
