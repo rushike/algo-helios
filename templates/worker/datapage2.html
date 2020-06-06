@@ -40,13 +40,6 @@
       
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-
-    <script src="{% static 'js/data/mercury.js' %}"></script>
-    <script src="{% static 'js/vue/templates/mercury.js' %}"></script>
-    <script src="{% static 'js/vue/plugins/multi-filter.js' %}"></script>
-    <script src="{% static 'js/vue/store/mercury.js' %}"></script>    
-    <script src="{% static 'js/vue/components/mercury.js' %}"></script>
-    <script src="{% static 'js/vue/app/mercury.js' %}"></script>
   </head>
   <body>
 
@@ -55,25 +48,20 @@
       {% verbatim %}      
       {% endverbatim %}
     </div>
+
+
+    
+    <script src="{% static 'js/data/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/templates/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/plugins/multi-filter.js' %}"></script>
+    <script src="{% static 'js/vue/store/mercury.js' %}"></script>    
+    <script src="{% static 'js/vue/components/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/app/mercury.js' %}"></script>
+    <script src="{% static 'js/mercury-socket.js' %}"></script>
+
     <script>
-      
 		const Mercury = new MercuryTable({id  : "test"})
 		Mercury.render()
-
-		// var data = $.ajax({
-		// 		type: "POST",
-		// 		url: "/worker/calls-from-db/",           
-		// 		data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : ['intraday', 'btst', 'positional', 'longterm']},
-		// 		success: function(data)
-		// 		{
-		// 			console.log("Success  : ", data) 
-		// 			mercury.data.load_calls("longterm", null, data.calls, mercury)        		
-		// 		},
-		// 		error: function(request, status, error)
-		// 		{
-		// 			alert(request.responseText);
-		// 		}
-		// 	});
     </script>
 
   </body>

@@ -25,7 +25,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 
         <template v-slot:group="{group, options, items, headers}" >             
             
-                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items)" >
+                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items) + ' ' + (item.ltp.instrument_id)" >
                     <td v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'">
                             <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 

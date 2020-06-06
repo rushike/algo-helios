@@ -343,8 +343,8 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             downloadLink.click();                                       // Click download link
         },
         async refresh_table(){
-            var force = false, data = Mercury.data
-            this.$store.dispatch('refresh_table', {force, data})
+            var force = false, mercury = Mercury
+            this.$store.dispatch('refresh_table', {force, mercury})
         },
         async allow_notification(){
             var data =  (await axios.post('/user/toggle-notification/', {})).data
