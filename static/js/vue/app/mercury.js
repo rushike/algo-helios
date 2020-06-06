@@ -1,13 +1,11 @@
 Vue.use(MultiFiltersPlugin)
 
 class Tick{
-    constructor(instrument_id = 129, tick = 12){
-        console.log("creating tick ", instrument_id, tick)
+    constructor(instrument_id = 129, tick = 12){        
         this.instrument_id = instrument_id
         this.tick = tick
     }
     update(tick){
-        console.log("updating tick : ", tick);
         this.tick = tick
         return this
     }
@@ -217,7 +215,6 @@ class MercuryTable{
         }
     }
     update_tick(tick_data){
-        console.log("tick data : ", tick_data);
         this.data.update_tick(tick_data['instrument_token'], tick_data['last_price']);
     }
     reinit(){

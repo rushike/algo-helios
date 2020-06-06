@@ -139,13 +139,11 @@ const store = new Vuex.Store({
         },
         add_signal(state, {signal, portfolio_id, empty}){
             var mstate = state.state
-            var data_list = Table[mstate.market_type][mstate.market][mstate.type][portfolio_id].data
-            console.log("dsta list : ", data_list);
+            var data_list = Table[mstate.market_type][mstate.market][mstate.type][portfolio_id].data            
             if(empty){
                 data_list.length = 0
             }
             data_list.push(signal)
-            console.log("dsta list : ", data_list);
             
         },
         update_items : (state, items)=>{

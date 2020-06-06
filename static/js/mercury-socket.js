@@ -145,9 +145,7 @@ socket.onmessage = function (e) {
         data_dict.instrument_id = data_dict.instrument_token
         Mercury.insert_equity_call(data_dict)
     }
-    else if (dataType == "tick"){  
-        console.log(" tick : ", data_dict);
-                  
+    else if (dataType == "tick"){                    
         if (data_dict.data && Array.isArray(data_dict.data)){
             // if dictionary of tick
             data_dict.data.forEach(value =>{
