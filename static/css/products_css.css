@@ -1,0 +1,174 @@
+*{
+	font-family: 'Open Sans', sans-serif;
+}
+.top-banner{
+    position: relative;
+    background-color: #E1EEFC; 
+    min-height: 70vh;
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0 20px;
+    font-size: 1.5em;
+}
+.card-header{
+	max-width: 15rem;
+	margin:0px auto;
+	margin-top: -1rem;
+	padding: 0px auto;
+}
+/*.card-body{
+	margin-bottom: 7rem
+}*/
+.card-footer{
+	min-width: 5rem;
+	margin: 0px auto;
+	/*margin-top: 7rem;*/
+	/*padding: 0px auto;*/
+}
+.img_resize{
+	height: 5rem;
+	width: 5rem;
+}
+.algo_gen_calls{
+	height: 7rem;
+	width: 9rem;
+}
+
+.container-fluid{
+	background-color: #E1EEFC; 
+
+}
+
+
+/* for xl */
+
+.custom-switch.custom-switch-xl .custom-control-label {
+    /* padding-right: 4rem;
+	padding-left: 4rem;
+	padding-bottom: 2.5rem; */
+	/* margin: 1rem 1rem 1rem 2rem; */
+	margin-right: 4rem;
+	margin-left: 2rem;
+	margin-bottom: 5rem;
+	margin-top: -0.5rem;
+}
+
+.custom-switch.custom-switch-xl .custom-control-label::before {
+    height: 2.5rem;
+    width: calc(4rem + 0.75rem);
+    border-radius: 5rem;
+}
+
+.custom-switch.custom-switch-xl .custom-control-label::after {
+    width: calc(2.5rem - 4px);
+    height: calc(2.5rem - 4px);
+    border-radius: calc(4rem - (2.5rem / 2));
+}
+
+.custom-switch.custom-switch-xl .custom-control-input:checked ~ .custom-control-label::after {
+    transform: translateX(calc(2.5rem - 0.25rem));
+}
+
+.list-group{
+	background-color: #E1EEFC;
+}
+.list-group-item{
+	background-color: #E1EEFC !important;
+}
+
+.dark_blue_color{
+	background-color: #004b96 !important;
+}
+
+.btn-group { 
+	display: flex; 
+	flex-direction: row; 
+	/* width:15em; */
+	background-color: white;
+	/* border: 1px solid black; */
+}
+
+.btn-group button {
+	width:4em;
+	background-color: white; 
+	border: 1px solid black; 
+	color: black; 
+	cursor: pointer;
+	float: left; 
+  }
+  
+  /* Clear floats (clearfix hack) */
+  .btn-group:after {
+	content: "";
+	clear: both;
+	display: table;
+  }
+  
+  .btn-group button:not(:last-child) {
+	border-right: none; /* Prevent double borders */
+  }
+  
+  .btn-group button:hover {
+	background-color: #004b96;
+	color: white;
+  }
+
+  .max_font{
+	  font-size: 40px;
+	  font-weight: bold;
+	  border-bottom: 2px solid #004b96;
+  }
+  
+  .accordion {
+	max-width: 100%;
+	margin: 0 auto 100px;
+	/* border-top: 1px solid #004b96; */
+  }
+  .accordion li {
+	border-bottom: 1px solid #004b96;
+	position: relative;
+  }
+  .accordion li p {
+	display: none;
+	padding: 10px 25px 30px;
+	color: #000;
+  }
+  .accordion a {
+	width: 100%;
+	display: block;
+	cursor: pointer;
+	/* font-weight: 600; */
+	line-height: 3;
+	font-size: 14px;
+	font-size: 0.875rem;
+	text-indent: 15px;
+	user-select: none;
+	color : #004b96;
+  }
+  .accordion a:after {
+	width: 8px;
+	height: 8px;
+	border-right: 1px solid #004b96;
+	border-bottom: 1px solid #004b96;
+	position: absolute;
+	right: 10px;
+	content: " ";
+	top: 17px;
+	transform: rotate(-45deg);
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+  }
+  .accordion p {
+	font-size: 13px;
+	font-size: 0.8125rem;
+	line-height: 2;
+	padding: 10px;
+  }
+  
+  a.active:after {
+	transform: rotate(45deg);
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+  }

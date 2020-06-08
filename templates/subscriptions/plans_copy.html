@@ -1,0 +1,591 @@
+{% extends 'subscriptions/base.html' %}
+{% load define_action %}
+
+<!-- {% load static %} -->
+
+{% block css_imports %}
+	<link rel="stylesheet" type="text/css" href="{% static '/css/plans.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/css/services.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static '/css/products_css.css' %}">
+
+{% endblock %}
+{% block js_imports %}	
+	<!-- <script src="{% static '/js/plans.js' %}" type="text/javascript"></script> -->
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    
+   <link
+     type="text/css"
+     rel="stylesheet"
+     href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+   />
+   <link
+     type="text/css"
+     rel="stylesheet"
+     href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+   />
+  
+   <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" ></script>
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+   <script src="https://unpkg.com/vuex@3.4.0/dist/vuex.js"></script>
+   <!-- <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script> -->
+   <!-- <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script> -->
+   <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+   <script src="https://unpkg.com/vue-multiselect@2.1.2"></script>
+   
+
+   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+     
+   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
+   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    <script src="/static/js/template.js"></script>
+    <script src="/static/js/component.js"></script>
+    <script src='/static/js/product-app.js'></script>
+
+{% endblock %}
+
+<style>
+
+</style>
+
+{% block subscriptions_content %}
+
+<div class="top-banner">
+	<div class="container">
+	  <div class="row">
+	  <div class='col-sm-3'>
+		<ul class="list-group list-group-flush">
+		  <li class="list-group-item border-0">
+			<p class=""><span class="max_font">Mercury</span></p>
+		  </li>
+		  <li class="list-group-item border-0">Jupiter</li>
+		  <li class="list-group-item border-0">Trading Solutions</li>
+		</ul>
+	  </div>
+		<div class="col-sm-6">
+		  Spend less time and reap more benefits 
+		  with this tailor-made product for Traders
+		  and Investors
+		  <br>
+		  <button class="btn btn-md text-light mt-5 dark_blue_color">
+			Start Your Free Trial  
+		  </button> 
+		</div>
+		<div class="col-sm-3 bg-dark">
+		  <!-- clip art image -->
+		</div>
+	  </div>
+	</div> <!-- container ends -->
+</div> <!-- top banner ends -->
+
+
+
+<div class="container mb-4 tabbable boxed parentTabs">
+	
+	{% if alert %}	
+		<div>
+			<div class="alert alert-warning" role="alert">
+				<h4 class="alert-heading">Already Subscribed</h4>
+				<p class="content-para-sm">You Can Renew through Dashbord Plans &nbsp;&nbsp;<a href="/user/profile/info" class="alert-link content-heading">Dashboard</a>.</p>
+				
+				<hr>
+			</div>
+		</div>
+		
+	{% endif %}
+    <div class="row ">
+        <div class="col text-center">
+
+				<div class="header text-center ">
+					<div class="row justify-content-center" id="alg-plans-head" role="tablist">
+						
+						<!-- <div id = "ah-left" class="col-md-2 mt-3" ><a id = "ah-left-a" class=" link-unstyled text-dark" role="tab" aria-controls="services" aria-selected="true"></a><br></div> -->
+						<div id = "ah-center" class="col-md-3 xx-large  border-primary border-bottom"      aria-selected="true"><a id = "ah-center-a" href='#plans' class="font-weight-bold dark-blue" role="tab" aria-controls="head">MERCURY</a></div>
+						<div id = "ah-right" class="col-md-3  x-large"><a id = "ah-right-a" class="link-unstyled text-dark" role="tab"  href="#services" aria-controls="services" aria-selected="true">SERVICES</a><br></div>
+						
+					</div>
+				</div>
+        </div>
+
+	</div>
+	
+	<div class="tab-content" id = "pricing-page">
+		<div class="tab-pane active" id="plans" role="tabpanel">
+			<div class="card text-black bg-white pt-4 mt-1 border-0">
+				<p class="text-center text-justify">
+					Your personal technical analyst! A product tailor-made for investors and traders 
+					that desire investing lesser time and efforts in stock market and aim to keep reaping 
+					greater benefits. Please try out our premium product for free.
+				</p>
+			</div>
+			<div class="tabbable">
+				<div class="row mt-4 ">
+					<div class="col-md-12">
+						<div class="font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
+						<div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+							
+							<div id = "group-header" class="text-center" class="btn-group " role="group" aria-label="First group">
+								<script>
+									$(document).ready(() => {
+										var active = "#head-{{group_type.0.1}}";
+										
+										$("#{{details.0.1}}").addClass("show active")  // adding class to show first element
+										$("#head-{{details.0.1}}").addClass("active")  // adding class to active first element head
+
+										$("#group-header").click(()=>{
+											$("#group-header").css({"border-style": "none", "border-color": DARK_BLUE})
+			
+										})
+
+									});
+								</script>
+								{% for group_type in details %}	
+									<a id = "head-{{ group_type.1 }}" type="btn btn-dark" class="btn dark-blue text-light " style="border-color:#23527c; min-width: 4rem;" data-toggle="tab"  href="#{{group_type.1}}" role="tab" aria-controls="tabs-{{group_type.1}}" aria-selected="true">
+										<span class="font-weight-bold dark-blue p-2">{{ group_type.1.max_members }}<span>
+									</a>
+									<script>
+										$(document).ready(() => {
+											var non_active = "#head-{{df}}";
+											var groupcode_clicked = 0
+									
+											active = "#head-{{group_type.1}}"
+											
+											$("#head-{{ group_type.1 }}").click(() =>{
+												var current_clicked_id = "#head-{{ group_type.1 }}"
+												if(active != "#head-{{ group_type.1 }}"){
+													$("#head-{{ group_type.1 }}").fadeIn("slow");
+													$("#head-{{ group_type.1 }}").css("background-color", "#daedf4")
+													$(active).css("background-color", "white");
+													active =  "#head-{{ group_type.1 }}"
+													groupcode_clicked = "#head-{{ group_type.1 }}"
+													$('input[name="groupcode"]').val("{{group_type.1}}");
+												}
+												
+											});
+										});
+									</script>
+								{% endfor %}
+								
+							</div>
+			
+							
+						</div>
+						
+					</div>
+				</div>
+			
+				<div class="row text-center">
+					<div class="col-md-12">
+						<div class="card-body text-dark shadow-none">
+							<ul class="list-group mr-5 ml-5 shadow-none">
+								<div class="form-control border-0 shadow-none list-group_item ">
+									<span class="badge badge-pill badge-warning">Choose Period</span><br>
+									<div class="btn-group btn-group-toggle" data-toggle="buttons">
+										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
+											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
+										</label>
+										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
+											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
+										</label>
+									</div>
+									
+								</div>
+							</ul>
+							<script>
+								$(document).ready(function(){
+									$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									$('input[name="period"]').val("monthly");
+			
+									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									$("#period-monthly-label").click(() =>{
+										$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+										$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									});
+									$("#period-yearly-label").click(() =>{
+										$("#period-yearly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+										$("#period-monthly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									});
+									
+								});
+							</script>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						
+						<div class="tab-content" id="pills-tabContent">                
+						{% for group_type in details %}
+							<div class="tab-pane" id="{{group_type.1}}" role="tabpanel" aria-labelledby="pills-individual-tab">
+								<div class="row justify-content-center">
+									{% for plan_type in group_type.0 %}
+										<script>
+											$(document).ready(function(){
+												$('input[name="plancode"]').val("{{plan_type.1}}");
+												$("#{{group_type.1}}-{{plan_type.1}}-price-in-rupees").html("<p>₹ {{plan_type.0.0.1.price_per_month}} / Month</p>");
+													$("#period-monthly-label").click(()=>{
+														$('input[name="period"]').val("Monthly");
+														$("#{{group_type.1}}-{{plan_type.1}}-price-in-rupees").html("<p>₹ {{plan_type.0.0.1.price_per_month}} / Month</p>");
+													});
+													$("#period-yearly-label").click(()=>{
+														$("#{{group_type.1}}-{{plan_type.1}}-price-in-rupees").html("<p>₹ {{plan_type.0.0.1.price_per_year}} / Year<p>");
+														$('input[name="period"]').val("Yearly");
+													});
+											});
+										</script>
+										<div class="col-md-4" style="padding: 20px;">     
+											<form method = "POST" action="/subscriptions/plan-data"> 
+												{% csrf_token %}        
+												<div class="card border rounded shadow mt-3 border plan-cards" style="min-height: 25rem;">
+													
+													{% if plan_type.1|upper == "PREMIUM" %}
+														<span class = "star-premium text-right" style="position: absolute; top:0px; right: 8px;"><span class="badge  badge-warning mr-4"><span class="fas fa-star fa-3x white"><br><br></span></span></span>
+													{% else %}
+					
+													{% endif %}
+													<a href="#ibasic"> 
+														<div class="text-center pt-4 pb-0 text-dark">
+															<h2 class=" xx-large">{{plan_type.1.type_name}}</h2>
+															<div id = "price-tag">
+																<div class="row">
+																	<div id = "{{group_type.1}}-{{plan_type.1}}-price-in-rupees" class="col-md-12 content-heading">
+																		
+																	</div>
+																</div>
+				
+																<div class="row">
+				
+																</div>
+															</div>
+															{{plan_type.1.type_description}}
+														</div>
+													</a>
+									
+													<div class="card-body text-dark ">
+				
+														<ul class="font-weight-bold list-group">
+															{% for plan in plan_type.0 %}
+																
+																{% if plan_type.1.products_count == 1 %}
+																		<div class="form-check list-group-item pl-5 border-0 border-0">
+																			<input class="form-check-input" type="radio" name="plan_name" id="{{group_type.1}}-{{plan.1}}" value="{{plan.1.plan_name}}" checked>
+																			<label class="form-check-label" for="{{plan.1}}">
+																				{{plan.0.0.product_name | _split:'1??#' }}
+																			</label>
+																		</div>
+																		<script>
+																			$(document).ready(()=>{
+																				$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				}, function(){
+																					console.log("{{group_type.1}}-{{plan.0.0.product_name}}")
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				});
+																				$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
+																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
+																				});
+																			});
+																		</script>
+																{% elif plan_type.1.products_count == 0 %} 
+																		{% for product in plan.0 %}
+																			<div class="form-check list-group-item pl-5 border-0">
+																				<input class="form-check-input" type="checkbox" name="checkbox" id="{{group_type.1}}-{{plan.1}}-{{product.product_name}}" value="{{plan.1}}" checked disabled>
+																				<label class="form-check-label" for="{{plan.1}}" style="color: black;">    
+																					{{product.product_name | _split:"1??#"}}
+																				</label>
+																			</div>
+																			<script>
+																				$(document).ready(()=>{
+																					$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
+																					}, function(){
+																						console.log("{{group_type.1}}-{{product.product_name}}")
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
+																					});
+																					$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
+																						$('input[name="planname"]').val("{{product.product_family_id}}");
+																					});
+																				});
+																			</script>
+																		{% endfor %}
+																{% endif %}
+															{% endfor %}
+														</ul>
+													</div>
+													<div class="border-light mb-3" class = "plancode-div" id = "{{group_type.1}}-{{plan_type.1}}">
+														<div class="row justify-content-center">
+															<div class="">
+																{% if group_type.1.eligible_for_trial and plan_type.1.trial_applicable %}
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Try Now</button>
+																{% else %}
+																	<button type='submit' onsubmit="validate()" class="col btn  btn-primary plancode-div font-weight-bold"> Subscribe</button>
+																{% endif %}
+															</div>
+														</div>		
+
+													</div>
+													
+												</div>
+												<input class="periodcode" name = "period" value=""hidden></input>
+												<input class="plancode" name= "plancode" value="" hidden></input>
+												<input class="planname" name= "planname" value="" hidden></input>
+												<input class="groupcode" name= "groupcode" value="" hidden required></input>
+												
+											</form>
+				
+											<script>
+												$(document).ready(function(){
+													console.log("{{plan_type.1}}")
+													if("{{plan_type.1}}" === "Premium"){
+														$("#star-premium").addClass("badge badge-pill badge-danger")
+													}											
+													$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
+														console.log("{{group_type.1}}-{{plan_type.1}}")
+														$('input[name="plancode"]').val("{{plan_type.1}}");
+													}, function(){
+														console.log("{{group_type.1}}-{{plan.1}}")
+														$('input[name="plancode"]').val("{{plan_type.1}}");
+													});
+													$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
+														$('input[name="plancode"]').val("{{plan_type.1}}");
+													});
+													
+				
+				
+												});
+											</script>
+										</div>
+									{% endfor %}
+								</div>
+								
+							</div>                    
+						{% endfor %}
+					
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div class="tab-pane" id="services" role="tabpanel">
+			<div class="">
+					<p class="text-center text-justify mt-4">
+							We offer customized trading solutions that are user-friendly, and 
+							fine-tuned to your particular needs, and provide swift execution
+					</p>
+
+				<div class="row mb-2 justify-content-center">
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/automation.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+		
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Automation</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We can fully automate your trading strategies with smooth and robust execution.  
+							</p>
+							</div>
+						</div>
+					</div>
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/backtesting.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Backtesting</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We backtest your strategies within a few seconds and cover many instruments and market.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/algorithm-development.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Algorithm Development</h5>
+								</div>
+							<!-- <br> -->
+							<p class="card-text text-justify p-2">                
+								We deliver optimized algorithms that enables you to automate any quantitative trading strategy for the market.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+		
+				</div> <!-- row 1 ends -->
+				<!-- </div> container-fluid ends -->
+		
+				<!-- --------------------------------------------------------------- -->
+				<!-- <div class="container-fluid"> -->
+				<div class="row text-justify justify-content-center">
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/custom-strategies.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Custom Strategies</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								We also provide custom strategies to improve the accuracy with a variety of algorithms to fine tune your parameters.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+					<div class="col-md-4 mt-3">
+						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
+							<div class="card-body">
+							<img class="rounded-circle float-right img-responsive" src="/static/img/data-analytics.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
+								<div class="row"> 
+								<h5 class="mt-3 card-title p-2 font-weight-bold">Data Analytics</h5>
+								</div>
+							<br>
+							<p class="card-text text-justify p-2">                
+								This service helps brokers to enhance and synchronize their trading related quality management capability.
+							</p>
+							</div>
+						</div>
+					</div>
+		
+				</div> <!-- row 2 ends -->
+		
+			</div> <!-- container ends -->
+		</div>
+	</div>
+</div>
+
+
+	
+<div id="app">
+
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+	<script>	
+		function validate(){
+			if($("input[name='groupcode']").val() == ""){
+				$("#group-header").css("border-color", "#ff9797")
+				}
+		}	
+		$(document).ready(()=>{
+
+			// $("div.group-header a").click(function (e) {
+			// 	e.preventDefault();  
+			// 		$(this).tab('show');
+			// });
+			$("div.header a").click(function (e) {
+				e.preventDefault();  
+					$(this).tab('show');
+			});
+			
+			$("#ah-center").click(function (e) {
+				$("#plans").addClass("active")
+				$("#ah-center").addClass("xx-large border-primary border-bottom")
+				$("#ah-center").removeClass("x-large")
+				$("#ah-center-a").addClass("font-weight-bold dark-blue")
+				$("#ah-center-a").removeClass("link-unstyled text-dark")
+				$("#services").removeClass("active")
+				$("#ah-right").removeClass("xx-large border-primary border-bottom")
+				$("#ah-right").addClass("x-large")
+				$("#ah-right-a").addClass("link-unstyled text-dark ")
+				$("#ah-right-a").removeClass("font-weight-bold dark-blue")
+
+			});
+
+			$("#ah-right").click(function (e) {
+				$("#plans").removeClass("active")
+				$("#ah-center").removeClass("xx-large border-primary border-bottom")
+				$("#ah-center").addClass("x-large")
+				$("#ah-center-a").addClass("link-unstyled text-dark")
+				$("#ah-center-a").removeClass("font-weight-bold dark-blue")
+				$("#services").addClass("active")
+				$("#ah-right").addClass("xx-large border-primary border-bottom")
+				$("#ah-right").removeClass("x-large")
+				
+				$("#ah-right-a").addClass("font-weight-bold dark-blue")
+				$("#ah-right-a").removeClass("link-unstyled text-dark")
+			});
+			// var a = document.getElementById("#ah-center-a")
+			// a.click()
+			$(".plancode-div").click(()=>{
+				if(plancode_clicked == 0){
+					console.log("plancode val = ", plancode_clicked)
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797", "border-width":"1.6px"})
+				}
+			});
+			$('input[required]').on('invalid', function(e){
+				console.log("errr : ", e, e.target, e.target.name)
+				if(e.target.name == "groupcode"){
+					console.log("changing border")
+					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797"})
+				}
+			});
+
+			/**
+			 * select individual group by default 
+			*/
+			$("#head-{{ details.0.1 }}").fadeIn("slow");
+			$("#head-{{ details.0.1 }}").css("background-color", "#daedf4")
+			$(active).css("background-color", "white");
+			active =  "#head-{{ details.0.1 }}"
+			groupcode_clicked = "#head-{{ details.0.1 }}"
+			$('input[name="groupcode"]').val("{{details.0.1}}");
+		});
+	</script>
+	
+
+
+<script>start_app()</script>
+<script>
+  (function($) {
+    // $('.accordion > li:eq(0) a').addClass('active').next().slideDown();
+
+    $('.accordion a').click(function(j) {
+        var dropDown = $(this).closest('li').find('p');
+
+        $(this).closest('.accordion').find('p').not(dropDown).slideUp();
+
+        if ($(this).hasClass('active')) {
+            $(this).removeClass('active');
+        } else {
+            $(this).closest('.accordion').find('a.active').removeClass('active');
+            $(this).addClass('active');
+        }
+
+        dropDown.stop(false, true).slideToggle();
+
+        j.preventDefault();
+    });
+})(jQuery);
+  </script>
+
+{% endblock %}

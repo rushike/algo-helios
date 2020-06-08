@@ -27,6 +27,15 @@ def plans(request):
     alert = POST.get('alert')  if POST else False
     context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
     return render(request, 'subscriptions/plans.html', context=context)
+
+
+def plans2(request):
+    POST = request.session.get('order_details_post')
+    if 'order_details_post' in request.session: del request.session['order_details_post']
+    alert = POST.get('alert')  if POST else False
+    context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
+    return render(request, 'subscriptions/plans_copy.html', context=context)
+
 def can_subscribe(request):
     pass
 
