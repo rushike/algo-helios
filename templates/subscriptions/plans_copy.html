@@ -103,32 +103,55 @@
 		</div>
 		
 	{% endif %}
-    <div class="row ">
-        <div class="col text-center">
 
-				<div class="header text-center ">
-					<div class="row justify-content-center" id="alg-plans-head" role="tablist">
-						
-						<!-- <div id = "ah-left" class="col-md-2 mt-3" ><a id = "ah-left-a" class=" link-unstyled text-dark" role="tab" aria-controls="services" aria-selected="true"></a><br></div> -->
-						<div id = "ah-center" class="col-md-3 xx-large  border-primary border-bottom"      aria-selected="true"><a id = "ah-center-a" href='#plans' class="font-weight-bold dark-blue" role="tab" aria-controls="head">MERCURY</a></div>
-						<div id = "ah-right" class="col-md-3  x-large"><a id = "ah-right-a" class="link-unstyled text-dark" role="tab"  href="#services" aria-controls="services" aria-selected="true">SERVICES</a><br></div>
-						
-					</div>
-				</div>
-        </div>
-
-	</div>
-	
 	<div class="tab-content" id = "pricing-page">
 		<div class="tab-pane active" id="plans" role="tabpanel">
 			<div class="card text-black bg-white pt-4 mt-1 border-0">
-				<p class="text-center text-justify">
-					Your personal technical analyst! A product tailor-made for investors and traders 
-					that desire investing lesser time and efforts in stock market and aim to keep reaping 
-					greater benefits. Please try out our premium product for free.
-				</p>
+				
 			</div>
 			<div class="tabbable">
+
+			<div class="row text-center">
+				<div class="col-md-12">
+					<div class="card-body text-dark shadow-none">
+							<ul class="list-group mr-5 ml-5 shadow-none">
+								<div class="form-control border-0 shadow-none list-group_item ">
+									<span class="badge badge-pill badge-warning">Choose Period</span><br>
+									<div class="btn-group btn-group-toggle" data-toggle="buttons">
+										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
+											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
+										</label>
+										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
+											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
+										</label>
+									</div>
+									
+								</div>
+							</ul>
+							<script>
+								$(document).ready(function(){
+									$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									$('input[name="period"]').val("monthly");
+			
+									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									$("#period-monthly-label").click(() =>{
+										$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+										$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									});
+									$("#period-yearly-label").click(() =>{
+										$("#period-yearly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
+										$("#period-monthly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
+									});
+									
+								});
+							</script>
+					</div>
+				</div>
+			</div>
+
+
+
 				<div class="row mt-4 ">
 					<div class="col-md-12">
 						<div class="font-weight-bold mb-3 text-center" style="color: darkblue;"> NUMBER OF USERS</div>
@@ -184,44 +207,7 @@
 					</div>
 				</div>
 			
-				<div class="row text-center">
-					<div class="col-md-12">
-						<div class="card-body text-dark shadow-none">
-							<ul class="list-group mr-5 ml-5 shadow-none">
-								<div class="form-control border-0 shadow-none list-group_item ">
-									<span class="badge badge-pill badge-warning">Choose Period</span><br>
-									<div class="btn-group btn-group-toggle" data-toggle="buttons">
-										<label class="btn btn-primary" id = "period-monthly-label" style="min-width: 5rem;">
-											<input type="radio" name="period" id = "period-monthly-input" autocomplete="off" value="monthly"> <span class="font-weight-bold"> Monthly</span><br>
-										</label>
-										<label class = "btn btn-primary" id = "period-yearly-label" style="min-width: 5rem;">
-											<input type="radio" name="period" id="period-yearly-input" autocomplete="off" value="yearly"> <span class="font-weight-bold"> Yearly</span>
-										</label>
-									</div>
-									
-								</div>
-							</ul>
-							<script>
-								$(document).ready(function(){
-									$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
-									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
-									$('input[name="period"]').val("monthly");
-			
-									$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
-									$("#period-monthly-label").click(() =>{
-										$("#period-monthly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
-										$("#period-yearly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
-									});
-									$("#period-yearly-label").click(() =>{
-										$("#period-yearly-label").css({"background-color": DARK_BLUE, "color" : WHITE})
-										$("#period-monthly-label").css({"background-color": WHITE, "color" : DARK_BLUE});
-									});
-									
-								});
-							</script>
-						</div>
-					</div>
-				</div>
+
 
 				<div class="row">
 					<div class="col">
@@ -379,104 +365,7 @@
 			</div>
 			
 		</div>
-		
-		<div class="tab-pane" id="services" role="tabpanel">
-			<div class="">
-					<p class="text-center text-justify mt-4">
-							We offer customized trading solutions that are user-friendly, and 
-							fine-tuned to your particular needs, and provide swift execution
-					</p>
 
-				<div class="row mb-2 justify-content-center">
-		
-					<div class="col-md-4 mt-3">
-						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
-							<div class="card-body">
-							<img class="rounded-circle float-right img-responsive" src="/static/img/automation.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
-		
-								<div class="row"> 
-								<h5 class="mt-3 card-title p-2 font-weight-bold">Automation</h5>
-								</div>
-							<br>
-							<p class="card-text text-justify p-2">                
-								We can fully automate your trading strategies with smooth and robust execution.  
-							</p>
-							</div>
-						</div>
-					</div>
-		
-					<div class="col-md-4 mt-3">
-						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
-							<div class="card-body">
-							<img class="rounded-circle float-right img-responsive" src="/static/img/backtesting.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
-								<div class="row"> 
-								<h5 class="mt-3 card-title p-2 font-weight-bold">Backtesting</h5>
-								</div>
-							<br>
-							<p class="card-text text-justify p-2">                
-								We backtest your strategies within a few seconds and cover many instruments and market.
-							</p>
-							</div>
-						</div>
-					</div>
-		
-					<div class="col-md-4 mt-3">
-						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
-							<div class="card-body">
-							<img class="rounded-circle float-right img-responsive" src="/static/img/algorithm-development.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
-								<div class="row"> 
-								<h5 class="mt-3 card-title p-2 font-weight-bold">Algorithm Development</h5>
-								</div>
-							<!-- <br> -->
-							<p class="card-text text-justify p-2">                
-								We deliver optimized algorithms that enables you to automate any quantitative trading strategy for the market.
-							</p>
-							</div>
-						</div>
-					</div>
-		
-		
-				</div> <!-- row 1 ends -->
-				<!-- </div> container-fluid ends -->
-		
-				<!-- --------------------------------------------------------------- -->
-				<!-- <div class="container-fluid"> -->
-				<div class="row text-justify justify-content-center">
-		
-					<div class="col-md-4 mt-3">
-						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
-							<div class="card-body">
-							<img class="rounded-circle float-right img-responsive" src="/static/img/custom-strategies.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
-								<div class="row"> 
-								<h5 class="mt-3 card-title p-2 font-weight-bold">Custom Strategies</h5>
-								</div>
-							<br>
-							<p class="card-text text-justify p-2">                
-								We also provide custom strategies to improve the accuracy with a variety of algorithms to fine tune your parameters.
-							</p>
-							</div>
-						</div>
-					</div>
-		
-					<div class="col-md-4 mt-3">
-						<div class="card h-100 shadow-sm" style="border-radius:20px; background-color: rgb(242,248,248);">
-							<div class="card-body">
-							<img class="rounded-circle float-right img-responsive" src="/static/img/data-analytics.svg" style="height:10vh;width: 10vh; margin-right: 0.5vh;" >
-								<div class="row"> 
-								<h5 class="mt-3 card-title p-2 font-weight-bold">Data Analytics</h5>
-								</div>
-							<br>
-							<p class="card-text text-justify p-2">                
-								This service helps brokers to enhance and synchronize their trading related quality management capability.
-							</p>
-							</div>
-						</div>
-					</div>
-		
-				</div> <!-- row 2 ends -->
-		
-			</div> <!-- container ends -->
-		</div>
 	</div>
 </div>
 
