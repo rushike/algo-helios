@@ -7,13 +7,13 @@ if (loc.protocol == "https:") {
 }
 var endpoint = wsStart + loc.host + "/channel/";
 var socket = new WebSocket(endpoint);
-console.log("socket : coonn ,,, ", socket)
+console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'),  " socket : connection ", socket)
 
 console.log(sessionStorage)
 
 
 socket.onopen = function (e) {
-    console.log("Web-socket conn opened ", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " Web-socket conn opened ", e);
     socket.send(JSON.stringify({'load' : true}));
 }
 
@@ -134,36 +134,37 @@ socket.onmessage = function (e) {
         return;
     }
 
-    dataType = data_dict["dtype"]
-    console.log(data_dict, data_dict.dtype);
+    dataType = data_dict["dtype"]    
     if (dataType == "signal_update") {
         data_dict.instrument_id = data_dict.instrument_token
-        Mercury.update_equity_signal(data_dict)
+        // Mercury.update_equity_signal(data_dict)
+        store.dispatch("update_equity_call", data_dict)
     }
     else if (dataType == 'signal'){
         console.log("signal : ", data_dict);        
         data_dict.instrument_id = data_dict.instrument_token
-        Mercury.insert_equity_call(data_dict)
+        // Mercury.insert_equity_call(data_dict)
+        store.dispatch("insert_equity_call", {...data_dict, instrument_id : data_dict.instrument_token})
     }
     else if (dataType == "tick"){                    
         if (data_dict.data && Array.isArray(data_dict.data)){
             // if dictionary of tick
             data_dict.data.forEach(value =>{
-                Mercury.update_tick(value)
+                store.dispatch("update_instrument", {instrument_id : value.instrument_token, ltp : value.last_price})
             })
         }
         else if(data_dict.constructor == Object) {
-            Mercury.update_tick(value)
+            store.dispatch("update_instrument",  {instrument_id : value.instrument_token, ltp : value.last_price})
         }
     }
 }
 
 socket.onerror = function (e) {
-    console.log("error", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " : error", e);
 }
 
 socket.onclose = function (e) {
-    console.log("close", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), "close", e);
 }
 
 window.onbeforeunload = function () {

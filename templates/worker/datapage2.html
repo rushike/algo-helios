@@ -24,6 +24,13 @@
     <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
@@ -35,15 +42,101 @@
     <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
     <script src="https://unpkg.com/vue-multiselect@2.1.2"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>  
-
-      
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment-with-locales.min.js"></script>   -->    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js"></script>  
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+    
+    
+    <script src="{% static 'js/accordion.js' %}"></script>
+    <script src="{% static 'js/colors.js' %}"></script>            
+    <script src="{% static 'js/chatbot.js' %}"></script>
   </head>
   <body>
 
-	{% csrf_token %}
+  {% csrf_token %}
+  
+  <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top font-weight-bold" style="padding: 0px;">
+    <div class="container-fluid">
+      <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
+        <a class="navbarlogo" href="{%url 'index'%}">
+            <img id="logo" src="{% static 'algotext.png' %}" width="130px" height="auto">
+        </a>
+      </div>
+      
+      <div class="collapse navbar-collapse text-center float-left" id="myNavbar">
+        <ul class="nav navbar-nav  ml-auto">
+            <li class="nav-item">
+                <a  class="p-2 nav-link navbar-all" style="cursor: pointer;" href="{% url 'blog' %}">Blog</a>
+            </li>
+            
+            {% if urls %}
+                <li class="nav-item">
+                    <a id="whatwedoicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#whatwedocont">What We Do?</a>
+                </li>
+                <li class="nav-item">
+                <a id="aboutusicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#aboutuscont">About Us</a>
+                </li>
+                <li class="nav-item">
+                <a id="productsicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="{% url 'index' %}#productscont">Products</a>
+                </li>
+                <!-- <li class="nav-item">
+                <a id="pricingicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
+                </li> -->
+            {% else %}
+            <li class="nav-item">
+                <a id="whatwedoicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/whatwedo/">What We Do?</a>
+            </li>
+            <li class="nav-item">
+            <a id="aboutusicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/aboutus/">About Us</a>
+            </li>
+            <!-- <li class="nav-item">
+            <a id="productsicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/products/">Products</a>
+            </li> -->
+            <li class="nav-item">
+            <a id="pricingicon" class="p-2 navbar-all nav-link" style="cursor: pointer;" href="/subscriptions/plans">Products</a>
+            </li>
+            {% endif %}
+            {% if user.is_anonymous %}
+            <li class="nav-item">        
+                <a class="p-2 navbar-all nav-link" href = '/accounts/login'>Login</a>
+            </li>
+                
+            {% else %}
+            <li class="nav-item dropdown" id = "dropdown-li">
+                <a class="nav-link dropdown-toggle dark-gray " id="login" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.first_name}} </a>
+                <ul class="dropdown-menu dropdown-menu-right" id = "dropdown-ul" aria-labelledby="login">
+                    <li class="dropdown-item" href="/user/profile/info"><a class = "link-unstyled dark-gray" href="{% url 'u_profile_page' %}">Dashboard</a></li>
+                    <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
+                    <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="/worker/mercury">Mercury</a></li>
+                    <li class="dropdown-item" href="#">
+                        <a style="margin-left: -0.9rem;">
+                            <form method="post" id = "logout" style="margin-bottom: 0rem;" action="{% url 'account_logout' %}">
+                                {% csrf_token %}
+                                {% if redirect_field_value %}>
+                                    <input  name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"hidden/>    
+                                {% endif %}
+                                <button id = "logout-btn" class="btn n btn-sm border-0" style="font-size: 16px;" type="submit"  >Sign Out</button>
+                            </form>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
     <div id="test" class="container-fluid p-0">
       {% verbatim %}      
       {% endverbatim %}

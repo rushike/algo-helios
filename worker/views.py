@@ -53,7 +53,32 @@ def apply_filters(request):
     }
     logger.debug(f"Sending attributes to store or update in database : [ \n\t{request.user._wrapped} , \n\t{'mercury#{}'.format(call_type)}, \n\t{filter_dict}\n]")
     products.functions.add_user_products_filter(user_id = request.user, product_id = "mercury#{}".format(call_type), filter_attributes =  filter_dict)
-    return HttpResponse(status=500)
+    return HttpResponse(status=200)
+
+@login_required(login_url='/accounts/login/')
+def apply_filters2(request):
+    logger.info(f"request.body : {type(request.body)} {request.body}")
+    POST = json.loads(request.body.decode('utf-8'))
+    call_type = POST.get('portfolio_id')
+    tickers = POST.get('tickers') # tickers is list of strings
+    sides = POST.get('sides') # sides is list of strings 
+    risk_reward = POST.get('risk_reward')
+    profit_percentage = POST.get('profit_percentage')
+    # signal_time = tuple(float(v.strip()) for v in request.GET.get('signal_time', "0 - 1").split("-")) 
+    logger.debug(f"GET data : tickers ==:> {tickers}, call_type ==:> {call_type},  sides ==:> {sides}, \n \
+                    risk-reward-range ==:> {risk_reward}, profit percentage range ==:> {profit_percentage}")
+    filter_dict = {
+        "call_type" : call_type,
+        "tickers" : tickers,
+        "sides" : sides, 
+        "risk_reward" : risk_reward,
+        "profit_percentage" : profit_percentage,
+        "signal_item" : "",
+
+    }
+    logger.debug(f"Sending attributes to store or update in database : [ \n\t{request.user._wrapped} , \n\t{'mercury#{}'.format(call_type)}, \n\t{filter_dict}\n]")
+    products.functions.add_user_products_filter(user_id = request.user, product_id = "mercury#{}".format(call_type), filter_attributes =  filter_dict)
+    return HttpResponse(status=200)
 
 @login_required(login_url='/accounts/login/')
 def get_filters(request):
@@ -91,6 +116,29 @@ def get_instruments_for_portfolios(request):
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db(request):
+    user = request.user.email
+    portfolios = request.POST.getlist("portfolio_id[]", ['intraday', 'btst', 'positional' , 'longterm'])
+    portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
+    groups = ConsumerManager().get_eligible_groups(user) # group-name is product name
+
+    groups = list(set(groups).intersection(portfolios))
+    product_names =  worker.functions.get_product_names_from_groups(groups)
+    all_calls = {}
+    user_portfolios = DBManager().get_portfolio_from_group(groups)
+    logger.debug(f"user subscribed products : {product_names}, and protfolios : {user_portfolios}")
+    for i, product in enumerate(product_names):
+        portfolio_id = DBManager().get_portfolio_from_product(product)
+        now = time.time()
+        calls = worker.functions.fetch_calls_for_today(portfolio_id= portfolio_id)
+        logger.debug(f"time required to fetch through cache or db : {time.time() - now}\n \
+            calls for portfolio {portfolio_id}, calls : {calls}")
+        logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
+        all_calls[portfolio_id] = (calls)
+    subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
+    return JsonResponse({'calls' : worker.functions.filter_calls_from_db(user, all_calls), 'subs-active' : subs_active}, safe= False)
+
+@login_required(login_url = '/accounts/login/')
+def get_calls_from_db2(request):
     user = request.user.email    
     portfolios = json.loads(request.body.decode('utf-8')).get("portfolio_id", ['intraday', 'btst', 'positional' , 'longterm'])    
     portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
@@ -119,3 +167,11 @@ def clear_filter(request):
     logger.debug(f"calling worker function filter for portfolio : {portfolio_id}, product : {product}")
     worker.functions.clear_filter(request.user.email, product)
     return HttpResponse("ok")
+
+@login_required(login_url = '/accounts/login/')
+def clear_filter2(request):
+    portfolio_id = json.loads(request.body.decode('utf-8')).get("portfolio_id", 1)
+    product = DBManager().get_product_from_portfolio(portfolio_id)
+    logger.debug(f"calling worker function filter for portfolio : {portfolio_id}, product : {product}")
+    worker.functions.clear_filter(request.user.email, product)
+    return HttpResponse("ok")    

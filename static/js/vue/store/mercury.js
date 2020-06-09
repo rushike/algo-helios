@@ -12,9 +12,11 @@ const store = new Vuex.Store({
         selected_fields : [],
         fields : [],        
         filter : FILTER,
-        instruments : [],
+        tickers : [],
         meta : META,
         search : null,
+        instruments : {},
+        calls : {},
         loaded : false,
     },
     getters: {
@@ -39,8 +41,14 @@ const store = new Vuex.Store({
         meta : function(state, getters){
             return state.meta
         },
+        tickers : function(state, getters){
+            return state.tickers
+        },
         instruments : function(state, getters){
             return state.instruments
+        },
+        calls : function(state, getters){
+            return state.calls
         },
         loaded : function(state, getters){
             return state.loaded
@@ -79,33 +87,33 @@ const store = new Vuex.Store({
          * refreshes entire table with list of objects['signals']
          * used when loading calls from db
          */
-        refresh_table : (state, {calls, mercury})=>{
+        refresh_table : (state, {calls, force_init = false})=>{
             var data_list = {} // this.data[STATE.market_type][STATE.market][STATE.type][portfolio_id].data
-            var head = mercury.data.data[STATE.market_type][STATE.market][STATE.type].header;
+            var head = Table[STATE.market_type][STATE.market][STATE.type].header;
             // data_list.length = 0
-            var start = true
+            var start = true            
+            var key = null, val = 0, v = 0
             calls.forEach(value=>{
-                if(!mercury.data.calls[value["call_id"]]){
-                    // mercury.insert_equity_call({
-                    //     call_id : value["call_id"],
-                    //     ticker : value["ticker"],
-                    //     ltp : value["ltp"],
-                    //     signal : value["signal"],
-                    //     time : value["time"],
-                    //     price : value["price"],
-                    //     target_price : value["target_price"],
-                    //     stop_loss : value["stop_loss"],
-                    //     status : value["status"],
-                    //     risk_reward : value["risk_reward"],
-                    //     active : value["active"],
-                    //     signal_time : value["signal_time"],
-                    //     portfolios : value["portfolio_id"],
-                    //     instrument_id : value["instrument_token"],
-                    //     empty : start,
-                    // })
-                    // start = false
-                    var ltp = mercury.data.update_tick(value.instrument_token, value.ltp || -1)
-                    mercury.data.calls[value["call_id"]] = new Signal(
+                if(!state.calls[value["call_id"]] || force_init){                
+                    if(!value["active"]){
+                        key = value["call_id"]
+                        state.instruments[key] = {
+                            ltp : new Tick(value.instrument_token, value.ltp || -1)
+                        }
+                        v++
+                    }else {
+                        key = value["instrument_token"]
+                        if(state.instruments[key] && state.instruments[key].ltp) {
+                            state.instruments[key].ltp.update(value.ltp)
+                        }else{
+                            if(!state.instruments[key])state.instruments[key] = {}
+                            state.instruments[key].ltp = new Tick(value.instrument_token, value.ltp || -1)
+                        }
+                        val++
+                    }
+                    var ltp = state.instruments[key].ltp
+
+                    state.calls[value["call_id"]] = new Signal(
                         value["call_id"],
                         value["ticker"],
                         ltp,
@@ -121,7 +129,7 @@ const store = new Vuex.Store({
                     )
                 }
                 else {
-                    data.calls[value["call_id"]].update(
+                    state.calls[value["call_id"]].update(
                         value["signal"],
                         value["status"],
                         value['active']
@@ -129,22 +137,28 @@ const store = new Vuex.Store({
                 }
                 
                 if(!data_list[value["portfolio_id"]]){
-                    data_list[value["portfolio_id"]] = mercury.data.data[STATE.market_type][STATE.market][STATE.type][PORTFOLIOS[value["portfolio_id"]]].data
+                    data_list[value["portfolio_id"]] = Table[STATE.market_type][STATE.market][STATE.type][PORTFOLIOS[value["portfolio_id"]]].data
                     data_list[value["portfolio_id"]].length = 0
                 }
-                data_list[value["portfolio_id"]].push(mercury.data.calls[value["call_id"]])
-            })        
+                data_list[value["portfolio_id"]].push(state.calls[value["call_id"]])
+            })   
+            console.log("active L : ", val, ", non active : ", v);     
             // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
             // Vue.set(state, "items", data)
         },
         add_signal(state, {signal, portfolio_id, empty}){
             var mstate = state.state
+            state.calls[signal.call_id] = signal
             var data_list = Table[mstate.market_type][mstate.market][mstate.type][portfolio_id].data            
             if(empty){
                 data_list.length = 0
             }
             data_list.push(signal)
             
+        },
+        update_signal(state, signal_update){
+            console.log("signal_update : ", signal_update)
+            state.calls[signal_update.call_id].update(signal_update)
         },
         update_items : (state, items)=>{
             Vue.set(state, "items", items)
@@ -169,13 +183,31 @@ const store = new Vuex.Store({
             filter = FILTER.set(filter, db_fetch)
             Vue.set(state, "filter", filter)
         },
-        update_instruments(state, instruments){
+        clear_filter(state){
+            state.filter.init()
+        },
+        update_tickers(state, tickers){
             // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
-            Vue.set(state, "instruments", instruments)
+            Vue.set(state, "tickers", tickers)
         }, 
         update_loaded(state, value){
             Vue.set(state, "loaded", value)
-        }
+        },
+        update_instrument(state, {key, ltp, active, call_id}){
+            // console.log("update instrument : ", key, ltp, active, call_id)
+            if(!active){
+                state.instruments[key] = {ltp : new Tick(key, ltp)}
+            }
+            else if(state.instruments[key] && state.instruments[key].ltp) {
+                state.instruments[key].ltp.update(ltp)
+            }else {
+                if(!state.instruments[key]) {
+                    state.instruments[key] = {}        
+                }
+                state.instruments[key].ltp = new Tick(key, ltp)
+            } 
+            return state.instruments[key].ltp
+        },
     },
     actions: {
         async refresh_table(context, options){
@@ -184,9 +216,9 @@ const store = new Vuex.Store({
             var portfolios = force ? PORTFOLIOS.slice(2) : [context.getters.state.portfolio]
             var req_data = {portfolio_id : portfolios}
             console.log("portfolios refreshing data : ", portfolios);            
-            var data_ = (await axios.post('/worker/calls-from-db/', req_data)).data
+            var data_ = (await axios.post('/worker/calls-from-db2/', req_data)).data
             console.log("portfolios data : ", data_)
-            context.commit('refresh_table', {calls : data_.calls, mercury : mercury})
+            context.commit('refresh_table', {calls : data_.calls, force_init : true})
             if(force){
                 context.commit('update_loaded', true)
             }
@@ -239,7 +271,7 @@ const store = new Vuex.Store({
             var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data
             context.commit('update_items', items)        
         },
-        async load_all_instruments(context){ // this loads all filter for only particular market type
+        async load_all_tickers(context){ // this loads all filter for only particular market type
             let mstate = context.getters.state
             let table = Table[mstate.market_type][mstate.market][mstate.type]
             var response =  await axios.post('/worker/get-instruments-for-portfolios/', {})
@@ -247,15 +279,15 @@ const store = new Vuex.Store({
                 console.log(table[PORTFOLIOS[key]].tickers, PORTFOLIOS[key], key)
                 table[PORTFOLIOS[key]]["tickers"] = value
             });
-            context.dispatch('load_instruments')
+            context.dispatch('load_tickers')
         },
-        load_instruments(context){
+        load_tickers(context){
             let mstate = context.getters.state,
              db_fetch = true
             console.log("port : ",mstate, mstate.portfolio)
-            let instruments = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].tickers
-            // instruments = instruments.map(v=>{return {name : v}})
-            context.commit('update_instruments', instruments)
+            let tickers = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].tickers
+            // tickers = tickers.map(v=>{return {name : v}})
+            context.commit('update_tickers', tickers)
         },
         async load_filters(context){ // this loads all filter for only particular market type
             let mstate = context.getters.state
@@ -273,6 +305,9 @@ const store = new Vuex.Store({
             let filter = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].filter
             console.log("filter should change : ", filter)
             context.commit('update_filter', {filter, db_fetch})
+        },
+        clear_filter(context){
+            context.commit("clear_filter")
         },
         change_state : (context, state_dict)=>{
             // console.log("Vuex$action#change_state =: context ", ", state_dict : ", state_dict)
@@ -296,7 +331,44 @@ const store = new Vuex.Store({
         },
         update_items(context, items){
             context.commit('update_items', items)
-        }
+        },
+        update_instrument(context, options){
+            // options = {instrument_id, ltp, active, call_id}
+            // console.log("options : ", options);
+            
+            var {key = null, ltp = null, active = true, call_id = null} = options
+            key = options.instrument_id
+            context.commit('update_instrument', {key, ltp, active, call_id})
+        },
+        insert_equity_call(context, data){
+            var portfolio_id = PORTFOLIOS[data.portfolio_id || 2]
+            // console.log("m data : ", this.data, ", m data data : ", this.data.data, portfolio_id);
+            // console.log("signal data : ", data);
+            // var ltp = this.data.update_tick(data.instrument_id, data.ltp || -1)
+            var key = data.active ? data.instrument_id : data.call_id, ltp = data.ltp || -1;
+            // console.log("instrument id : ", key, ", ltp : ", ltp)
+            context.commit('update_instrument', {key, ltp})            
+            // console.log("instrument id : ", key, ", ltp : ", ltp)
+            var signal = new Signal(
+                                    data.call_id,
+                                    data.ticker,
+                                    ltp,
+                                    data.signal,
+                                    data.time,
+                                    data.price,
+                                    data.target_price,
+                                    data.stop_loss,
+                                    data.status,
+                                    data.risk_reward,
+                                    data.active,
+                                    data.signal_time,
+                                )
+            var empty = data.empty
+            context.commit('add_signal', {signal, portfolio_id, empty})
+        },
+        update_equity_call(context, signal_update){
+            context.commit("update_signal", signal_update)
+        },
     }
 });
 

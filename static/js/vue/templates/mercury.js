@@ -25,7 +25,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 
         <template v-slot:group="{group, options, items, headers}" >             
             
-                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items) + ' ' + (item.ltp.instrument_id)" >
+                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items) + ' ' + (item.ltp.instrument_id)" :id = "item.call_id">
                     <td v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'">
                             <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
@@ -341,7 +341,7 @@ const M_FILTER_SIDEBAR = `
             <v-col>
                 <h5 class = "p-1">
                     <span class = "font-weight-bold"> Filters </span>
-                    <span class = "float-right text-danger">Clear</span>
+                    <span class = "float-right text-danger" v-on:click = "clear_filter()" style = "cursor:pointer">Clear</span>
                 </h5> 
             </v-col>
         </v-row>

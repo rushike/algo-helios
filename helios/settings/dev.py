@@ -26,6 +26,7 @@ Allowed Host for sites
 """
 ALLOWED_HOSTS = [
     'mercury-vue.herokuapp.com',
+    'algonauts-test.herokuapp.com',
     'localhost',
     '127.0.0.1',
 ]

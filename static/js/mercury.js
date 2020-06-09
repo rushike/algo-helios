@@ -336,7 +336,7 @@ $(document).ready(function() {
             $.ajax({
                 type: "POST",
                 async: false,
-                url: "/worker/clear-filter/",           
+                url: "/worker/clear-filter/",
                 data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : value},
                 success: function(data)
                 {
