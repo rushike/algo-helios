@@ -577,15 +577,12 @@ const MFiterSidebar = Vue.component('m-filter-sidebar', {
                 let db_fetch = false
                 // console.log("Changes filter value ", filter, db_fetch)
                 this.$store.commit("update_filter", {filter, db_fetch});
+                this.apply_filters()
+                
             }
         },
-        ticker_options : {
-            get(){
-                return this.$store.getters.instruments
-            },
-            set(value){
-                // console.log("Filter set value : ", value)
-            }
+        ticker_options () {            
+                return this.$store.getters.tickers
         },
         ticker_values:{
             get(){
@@ -635,6 +632,13 @@ const MFiterSidebar = Vue.component('m-filter-sidebar', {
         update_selected_tickers(sel_tickers){
             this.ticker_values = sel_tickers
         },
+        async clear_filter(){
+            await axios.post("/worker/clear-filter2/", {portfolio_id : STATE.portfolio})
+            this.$store.dispatch("clear_filter")
+        },
+        apply_filters : _.debounce(async function(){
+                await axios.post("/worker/apply-filters2/", {portfolio_id : STATE.portfolio, ...FILTER})
+            }, 10000),
         select (option) {
             option.selected = !option.selected
         },

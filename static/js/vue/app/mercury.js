@@ -1,79 +1,5 @@
 Vue.use(MultiFiltersPlugin)
 
-class Tick{
-    constructor(instrument_id = 129, tick = 12){        
-        this.instrument_id = instrument_id
-        this.tick = tick
-    }
-    update(tick){
-        this.tick = tick
-        return this
-    }
-    toString(){
-        return this.tick
-    }
-}
-
-class Profit{
-    constructor(instrument_id = 129, tick = 12, target_price, price){
-        
-        this.instrument_id = instrument_id
-        this.tick = tick
-        this.target_price = target_price
-        this.price = price
-    }
-    update(tick, target_price, price){        
-        this.tick = tick
-        this.target_price = target_price
-        this.price = price
-        return this
-    }
-    toString(){        
-        return ((this.tick - this.target_price) / this.price).toFixed(2)
-    }
-}
-
-class Signal{
-    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){        
-        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward, active, signal_time = signal_time)
-    }
-    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){
-        var self = this
-        this.call_id = call_id
-        this.ticker = ticker
-        this.ltp = ltp
-        this.signal = signal
-        // signal_time = 2020-05-26T11:59:46.212353+05:30
-        // time = 05/26/2020, 11:59:46        
-        this.time = moment(signal_time, moment.ISO_8601).format('Do MMMM YYYY, h:mm')
-        this.price = price
-        this.target_price = target_price.round(2)
-        this.stop_loss = stop_loss.round(2)
-        this.profit = {
-                    toString(){
-                        return (Math.abs(self.ltp - self.target_price) / self.price).toFixed(2)
-                    }
-                }
-        this.status = status
-        this.risk_reward = risk_reward
-        this.active = active
-        this.follow = false 
-    }
-    update(signal, status, active){
-        if(signal) this.signal = signal
-        if(status) this.status = status
-        if(active) this.active = active
-    }
-    set_follow(follow){
-        this.follow = follow
-    } 
-    toString(){
-        return `${this.ticker},${this.ltp}, ${this.signal}, ${this.time.replace(',', '  ')}, ` + 
-                `${this.price}, ${this.target_price}, ${this.stop_loss}, ${this.profit}, ${this.status},`
-    }
-    
-}
-
 class Data{
     constructor(){
         this.data = Table;
@@ -95,8 +21,7 @@ class Data{
             }        
         }else if (!this.instruments[instrument_id].ltp){
             this.instruments[instrument_id].ltp = new Tick(instrument_id, ltp)
-        }
-        
+        }        
         return this.instruments[instrument_id].ltp
     }
 
@@ -207,7 +132,7 @@ class MercuryTable{
                                                     data.signal_time,
                                                 )
         var signal = this.data.calls[data.call_id], empty = data.empty
-        store.commit('add_signal', {signal, portfolio_id, empty})        
+        store.commit('add_signal', {signal, portfolio_id, empty})
     }
     update_equity_signal(data = {}){
         if(this.data.calls[data.call_id]){
@@ -242,7 +167,7 @@ class MercuryTable{
                 this.$store.dispatch('refresh_table', {force, data})
                 this.$store.dispatch('load_filters')                
                 this.$store.dispatch('load_fields')
-                this.$store.dispatch('load_all_instruments')
+                this.$store.dispatch('load_all_tickers')
             },
             computed: {
                 sortOptions() {

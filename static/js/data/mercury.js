@@ -53,6 +53,13 @@ const FILTER = {
     profit_percentage : null, // null or float
     risk_reward : null, // null or float
     search : null,
+    init(){
+        this.tickers = null,
+        this.sides = null,
+        this.profit_percentage = null,
+        this.risk_reward = null,
+        this.search = null
+    },
     set(props, db_fetch = false){
         // console.log("props : ", props, db_fetch)        
         if(!props) return this
@@ -160,4 +167,60 @@ const Table = {
 
 Number.prototype.round = function(places) {
     return +(Math.round(this + "e+" + places)  + "e-" + places);
+}
+
+class Tick{
+    constructor(instrument_id = 129, tick = 12){        
+        this.instrument_id = instrument_id
+        this.tick = tick
+    }
+    update(tick){
+        this.tick = tick
+        return this
+    }
+    toString(){
+        return this.tick
+    }
+}
+
+class Signal{
+    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){        
+        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status, risk_reward, active, signal_time = signal_time)
+    }
+    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status, risk_reward, active, signal_time = null){
+        var self = this
+        this.call_id = call_id
+        this.ticker = ticker
+        this.ltp = ltp
+        this.signal = signal
+        // signal_time = 2020-05-26T11:59:46.212353+05:30
+        // time = 05/26/2020, 11:59:46        
+        this.time = moment(signal_time, moment.ISO_8601).format('Do MMMM YYYY, h:mm')
+        this.price = price
+        this.target_price = target_price.round(2)
+        this.stop_loss = stop_loss.round(2)
+        this.profit = {
+                    toString(){                        
+                        return (Math.abs(self.ltp - self.target_price) / self.price).toFixed(2)
+                    }
+                }
+        this.status = status
+        this.risk_reward = risk_reward
+        this.active = active
+        this.follow = false 
+    }
+    update(data){
+        console.log("signal update : ", data );        
+        if(data.signal) this.signal = data.signal
+        if(data.status) this.status = data.status
+        if(data.active == true || data.active == false) this.active = data.active
+    }
+    set_follow(follow){
+        this.follow = follow
+    } 
+    toString(){
+        return `${this.ticker},${this.ltp}, ${this.signal}, ${this.time.replace(',', '  ')}, ` + 
+                `${this.price}, ${this.target_price}, ${this.stop_loss}, ${this.profit}, ${this.status},`
+    }
+    
 }
