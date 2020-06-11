@@ -127,6 +127,23 @@ def fetch_calls_for_today(*args, **kwargs):
 def fetch_calls_for_today_async(*args, **kwargs):
     return fetch_calls_for_today(*args, **kwargs)
 
+def serialize_data(calls_dict):    
+    calls = []
+    logger.debug(f"call_dict : {calls_dict}")
+    for k, v in calls_dict.items():        
+        for data in v: # iterating over calls in each porfolio
+            data.update({
+                        'signal' : data['signal'] if isinstance(data['signal'], str) else data['signal'].name,
+                        'status' : data['status'] if isinstance(data['status'], str) else  data['status'].value, 
+                        'time' : data['time'] if isinstance(data['time'], str) else  data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+                        'active' :data['active'], 
+                        'product_type' : data['product_type'] if isinstance(data['product_type'], str) else data['product_type'].value,
+                        'portfolio_id' : k, 
+                        'profit_percent' : round(data['profit_percent'], 2)
+                        })
+            calls.append(data)
+    logger.debug(f"calls : {calls}")
+    return calls
 
 def filter_calls_from_db(user, calls_dict):
     calls = []

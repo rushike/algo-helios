@@ -6,29 +6,58 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :items="filter_items"     
         :items-per-page = "items.length"
         :search = "search"
+        
         :loading = 'loading'
         loading-text="Loading... Please wait"
         :disable-pagination = "true"
         :group-desc = "true"
         group-by = "follow"
-        
+        mobile-breakpoint = "500"
         height="70vh"
         class="elevation-1"        
         style="max-height: calc(100vh ); backface-visibility: hidden;"
         hide-default-footer
         fixed-header>
-        
+
+        <template v-slot:header.action="{header}" >
+            Action
+            <span v-on:click = "table_settings_toggle()" class = "pl-2" style = "font-size : 1rem; cursor : pointer;">   
+                <v-menu bottom left>
+                    <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        dark
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                        <img src = "/static/img/edit-pencil.svg" class = "fa-2x" style = "color:rgb(0, 0, 0, 0.6);height:30%"></img>
+                    </v-btn>
+                    </template>
+                
+                    <v-container fluid class = "white">
+                        
+                        <m-multiselect
+                            :search = "search"
+                            :items = "fields_"
+                            :selected_all = "selected_fields_"
+                            @change = "update_selected_fields"
+                            >
+                        </m-multiselect>
+                    </v-container>
+
+                </v-menu>
+            </span>
+        </template>
         
         <template v-slot:group.header="{group, groupBy}" >
               {{group}} {{groupBy}}
         </template>
 
         <template v-slot:group="{group, options, items, headers}" >             
-            
-                <tr v-for = "(item, index) in items" :class = "row_class(group, index, item, items) + ' ' + (item.ltp.instrument_id)" :id = "item.call_id">
-                    <td v-for = "header in headers" >
+                <tr v-for = "(item, index) in items" v-if = "item.visible" :class = "row_class(group, index, item, items)  + (item.ltp.instrument_id)" :id = "item.call_id">
+                    <td  v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'">
-                            <button rounded type="button" :class="item.signal + '_btn trade'"  data-toggle="modal" 
+                            <button rounded type="button" :class="item.signal + '_btn trade elevation-7 ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
                                 data-target="#trade_modal">
                                 <span >            
                                     {{ item.signal }}
@@ -36,33 +65,27 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </button>
                         </span>
                         <span v-else-if = "header.key == 'status'">
-                            <span :class = "'badge rounded  ' + item.status + '_status'">
+                            <span :class = "'badge elevation-7 ' + item.status + '_status'">
                                 {{ item.status }}
                             </span>
                         </span>
-                        <span v-else-if = "header.key == 'action'">
+                         <span v-else-if = "header.key == 'action'" style = "width = '3rem'">
                             <span v-if = "item.follow">                                            
-                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin-slash.svg" style = "cursor:pointer; opacity : 0.4; height : 30%;" aria-hidden="true"></img>
-                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, false)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
+                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin-slash.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true"></img>
+                                <img class = "px-1 fa-2x" v-on:click="delte_call(item)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
                             </span>
                             <span v-else>
                                 <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
-                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, false)" src="/static/img/bin.svg" style = "cursor:pointer; opacity : 0.4; height : 30%;" aria-hidden="true" ></img>
+                                <img class = "px-1 fa-2x" v-on:click="delete_call(item)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
                             </span>
                             
-
-                        </span>
+                        </span> 
                         <span v-else>                        
                             {{item[header.key]}}
                         </span>
                     </td>
-                </tr>
-
-        </template> 
-
-
-
-       
+                </tr>            
+        </template>        
     </v-data-table>  
 </v-responsive>
 `
@@ -109,9 +132,62 @@ const M_DATA_TABLE_INFO = `
         class="mx-3"
         no-gutters
         >
-        <v-col cols="12" md = "3" >
-                <v-select
-                class = "px-1 pt-4"
+        <v-col cols="12" md = "5"  class="p-2">
+            <v-row >
+                <v-col cols = "6" md = "6" class = "text-center p-3">
+                    <span class = "head-tickers px-2">
+                        NIFTY 50
+                    </span>
+                    <span class = "head-ticks px-2">{{nifty_50_tick()}}</span>
+                </v-col>
+                <v-col cols = "6" md = "6" class = "text-center p-3">
+                    <span class = "head-tickers px-2">
+                        NIFTY BANK
+                    </span>
+                    <span class = "head-ticks px-1">{{nifty_bank_tick()}}</span>
+                </v-col>
+            </v-row>
+        </v-col>
+        
+        <v-col cols ="12" md = "7" class = "text-center">
+            <v-row >
+                <v-col cols = "12" md = "6" class = "text-center p-2">
+                    <v-row>
+                        <v-col cols ="6" class = "text-center">                            
+                            <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold headline">{{meta.total}}</span>
+                            <span class = "total--text px-2"> Total</span>
+                        </v-col>
+
+                        <v-col cols ="6" class = "text-center">                                                  
+                            <span pill color="green accent-3" :content = "'Partial HIT'" class = "partialhit_status--text font-weight-bold headline">{{meta.partial_hit}}</span>
+                            <span class = "partialhit_status--text px-2"> Partial Hits</span>
+                        </v-col>
+                    </v-row>
+                </v-col>
+
+                <v-col cols = "12" md = "6" class = "text-center p-2">
+                    <v-row>
+                        <v-col cols ="6" class = "text-center">
+                            <span pill color="green lighten-1"  :content = "'HIT'" class = "hit_status--text font-weight-bold headline">{{meta.hit}}</span>
+                            <span class = "hit_status--text px-2">Hits</span>
+                        </v-col>
+
+                        <v-col cols ="6" class = "text-center">
+                            <span pill color="red" :content = "'MISS'" class = "miss_status--text font-weight-bold headline">{{meta.miss}}</span>
+                            <span class = "miss_status--text px-2"> Miss</span>
+                        </v-col>
+                    </v-row>
+                </v-col>
+            </v-row>
+        </v-col>
+    </v-row>
+    <v-row
+        class="mx-3"
+        no-gutters
+        >
+        <v-col cols = "12" md = "3" lg = "2" class = "mx-1">    
+            <v-select
+                class = "mx-1 elevation-7"
                 v-model="type"
                 :items="equity_type"
                 menu-props="auto"
@@ -120,90 +196,57 @@ const M_DATA_TABLE_INFO = `
                 single-line
                 dense
                 solo            
-                ></v-select>
-        </v-col>
-        
-        <v-col cols ="12" md = "6" class = "text-center">
-            <v-row >
-                <v-col cols = "12" md = "6" class = "text-center">
-                    <v-row>
-                        <v-col cols ="6" class = "text-center">                            
-                            <v-badge pill variant="primary" color="blue" :content = "'Total'" class = "blue--text darken-4--text font-weight-bold headline">{{meta.total}}</v-badge>
-                        </v-col>
-
-                        <v-col cols ="6" class = "text-center">                                                  
-                            <v-badge pill color="green accent-3" :content = "'Partial HIT'" class = "light-green--text accent-3--text font-weight-bold headline">{{meta.partial_hit}}</v-badge>
-                        </v-col>
-                    </v-row>
-                </v-col>
-
-                <v-col cols = "12" md = "6" class = "text-center">
-                    <v-row>
-                        <v-col cols ="6" class = "text-center">
-                            <v-badge pill color="green lighten-1"  :content = "'HIT'" class = "green--text darken-4--text font-weight-bold headline">{{meta.hit}}</v-badge>
-                        </v-col>
-
-                        <v-col cols ="6" class = "text-center">
-                            <v-badge pill color="red" :content = "'MISS'" class = "deep-orange--text darken-4--text font-weight-bold headline">{{meta.miss}}</v-badge>                        
-                        </v-col>
-                    </v-row>
-                </v-col>
-            </v-row>
-        </v-col>
-
-        <v-col cols="12" md="3" class = "pt-3" >
-            <v-row align="center" justify="center" class = "float-right">
-            <v-col cols = "12" >
-                <!-- <span id = "filter">
-                    <a data-toggle="tooltip"  data-placement="top" title="Filter">
-                        <button data-toggle = "collapse" data-target = "#filter-collapse" class="btn filter get_filter"  aria-expanded="false" aria-controls="filter-collapse">
-                            <small><span class="fa fa-filter"></span></small>
-                        </button>
-                    </a>
-                </span> -->
-
-                <span id = "download">
-                    <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
-                        <button class="btn download" v-on:click='download_as_csv()'>
-                            <small><span class="fa fa-download"></span></small>
-                        </button>
-                    </a>
-                </span>
-                <span >
-                    <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
-                        <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh">
-                            <small><span class="fa fa-refresh"></span></small>
-                        </button>
-                    </a>
-                </span>
-
-                <span href="#" data-toggle="tooltip" data-placement="top" title="Notify">
-                    <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify">
-                        <small v-if = "notification" ><span class="fa fa-bell-slash notify"></span></small>
-                        <small v-else><span class="fa fa-bell notify"></span></small>
-                    </button>
-                </span>    
-                </v-col>
-                </v-row>            
-        </v-col>            
-    </v-row>
-    <v-row
-        class="mx-3"
-        no-gutters
-        >
-        <v-col cols = "12" md = "3">        
+                >
+            </v-select>    
+        </v-col>        
+        <v-col cols = "12" md = "4" lg = "3" class = "mx-1">
             <v-text-field
                 v-model="search"
-                class = "px-1"
+                class = "px-1 p-1  blue lighten-5"
+                rounded
                 append-icon="mdi-magnify"
                 label="Search"
                 single-line
                 hide-details
+                dense
             ></v-text-field>
         </v-col>
         <v-spacer></v-spacer>
-        <v-col cols = "12" md = "4" class = "pt-2">
-            <v-select
+        <v-col cols = "12" md = "4"  >
+            <v-row align="center" justify="center" :class = "is_mobile() ? 'text-center ' : 'float-right ' ">
+                <v-col cols = "12" class = "p-1" >
+                    <!-- <span id = "filter">
+                        <a data-toggle="tooltip"  data-placement="top" title="Filter">
+                            <button data-toggle = "collapse" data-target = "#filter-collapse" class="btn filter get_filter"  aria-expanded="false" aria-controls="filter-collapse">
+                                <small><span class="fa fa-filter"></span></small>
+                            </button>
+                        </a>
+                    </span> -->
+
+                    <span id = "download">
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
+                            <button class="btn download" v-on:click='download_as_csv()'>
+                                <small><span class="fa fa-download"></span></small>
+                            </button>
+                        </a>
+                    </span>
+                    <span >
+                        <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
+                            <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh">
+                                <small><span class="fa fa-refresh"></span></small>
+                            </button>
+                        </a>
+                    </span>
+
+                    <span href="#" data-toggle="tooltip" data-placement="top" title="Notify">
+                        <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify">
+                            <small v-if = "notification" ><span class="fa fa-bell-slash notify"></span></small>
+                            <small v-else><span class="fa fa-bell notify"></span></small>
+                        </button>
+                    </span>    
+                </v-col>
+            </v-row>            
+            <!-- <v-select
                 class = "px-1"
                 v-model="selected_fields"
                 :items="fields"
@@ -225,9 +268,35 @@ const M_DATA_TABLE_INFO = `
                         >(+{{ selected_fields.length - 1 }} others)</span>
                 </template>
             
-            </v-select>
+            </v-select> -->
         </v-col>
     </v-row>
+    <div :id = "is_mobile__class()" :class = "show_table_settings__class()">
+        <v-select        
+            class = "px-1"
+            v-model="selected_fields"
+            :items="fields"
+            menu-props="auto"
+            label="Select"
+            multiple
+            hide-details
+            dense
+            solo
+            single-line
+        >
+            <template v-slot:selection="{ item, index }">
+                <v-chip v-if="index < 2">
+                    <span>{{ item.text }}</span>
+                </v-chip>
+                <span
+                    v-if="index === 2"
+                    class="grey--text caption"
+                    >(+{{ selected_fields.length - 1 }} others)</span>
+            </template>
+        
+        </v-select>
+    </div>
+
     </div>
 `
 
@@ -379,6 +448,7 @@ const M_FILTER_SIDEBAR = `
                     <m-multiselect
                         :search = "search"
                         :items = "ticker_options"
+                        :selected_all = "ticker_values"
                         @change = "update_selected_tickers"
                         >
                     </m-multiselect>
@@ -639,14 +709,16 @@ const M_APP = `
 <v-container fluid class = "blue lighten-5">
     <m-navigator class = "p-0"></m-navigator>
     <v-row>
-        <v-col cols = "12" md = "3" class = "p-0">
+        <v-col 
+            style="width: 21%; flex: 1 0 21%;max-width:22%;" 
+            class = "p-0">
             <v-row>
                 <v-col cols = "12" md = "11" class = "float-left">
                     <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
                 </v-col>
             </v-row>
          </v-col>
-        <v-col cols = "12" md = "9"> 
+        <v-col> 
             <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
          </v-col>
     </v-row>

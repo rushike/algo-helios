@@ -17,5 +17,5 @@ urlpatterns = [
     path('clear-filter/', views.clear_filter, name = "clear_filter"),
     path('clear-filter2/', views.clear_filter2, name = "clear_filter2"),
     path('calls-from-db/', views.get_calls_from_db, name = "calls_from_db"),
-    path('calls-from-db2/', views.get_calls_from_db, name = "calls_from_db2")
+    path('calls-from-db2/', views.get_calls_from_db2, name = "calls_from_db2")
 ]

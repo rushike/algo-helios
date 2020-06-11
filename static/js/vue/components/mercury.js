@@ -13,6 +13,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             },
             filterOn : [],
             fields0 : "JUJ",
+            search_fields : "",
         }
     },
     created(){
@@ -49,7 +50,7 @@ const MStockTable = Vue.component("m-stocks-table", {
 
                 else if(Array.isArray(this.filter.tickers) && 
                         this.filter.tickers.length != 0 && 
-                        !this.filter.tickers.map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase()))
+                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase()))
                     return false
                 
                 else if(Array.isArray(this.filter.risk_reward) && 
@@ -59,6 +60,21 @@ const MStockTable = Vue.component("m-stocks-table", {
                     return false
                 return true
             })
+        },
+        selected_fields : {
+            get(){                
+                return this.$store.getters.selected_fields
+            },
+            set(selected_fields){
+                this.$store.dispatch("update_selected_fields", selected_fields)
+            }
+        },
+        fields_(){
+            return this.$store.getters.fields.map(v=>v.text)
+        },
+        selected_fields_(){
+            // console.log("?selght L  : ", this.$store.getters.selected_fields )
+            return this.$store.getters.selected_fields.map(v=>v.text)
         },
         loading(){
             return this.filter_items.length == 0
@@ -71,21 +87,33 @@ const MStockTable = Vue.component("m-stocks-table", {
         onFiltered : function(filteredItems) {            
             this.totalRows = filteredItems.length
         }, 
+        update_selected_fields(sel_fields){
+            this.selected_fields = sel_fields;
+        },
         row_class(group, index, item, items){
             var class_ = "hover-pointer "
+            console.log("index row class : ", index, items.length);
+            
             var border = group ? "mx-1 follow_trade border " : ' ',
-                active = item.active ? ' ' : 'disabled ',
-                group_highlight = (index == items.length - 1) ? ( index == 0 ? '' : 'border-top-0'  ) : (index == 0 ? 'border-bottom-0' : 'border-top-0 border-bottom-0' )
+                active = item.active ? ' ' : 'disabled ', 
+                group_highlight = (index == items.length - 1) ? ( index == 0 ? '' : 'border-top-0 '  ) : (index == 0 ? 'border-bottom-0 ' : 'border-top-0 border-bottom-0 ' )
             return class_ + border + active + group_highlight
              
         },
-        follow_my_trade(item, follow){            
-            item.set_follow(follow)
+        follow_my_trade(item, follow){
+            var callback = Signal.set_follow, params = {item, follow}
+            this.$store.commit("do_from_store", {callback, params} )
+        },
+        delete_call(item){
+            var callback = Signal.hide, params = {item}
+            console.log("hiding for : ", params);            
+            this.$store.commit("do_from_store", {callback, params} )
         },
         portfolio_filter(val, search, item, headers){
             if(search.length < 3 ){
                 return true
             }
+            console.log("VALUE : ", val);
             
             if(val.toString().toLowerCase().includes(search.toLowerCase())){     
                 console.log("this.filter : ", this.filter)           
@@ -93,10 +121,17 @@ const MStockTable = Vue.component("m-stocks-table", {
             }
 
             return false
-        },
-        
+        },        
         filter_on_search(val) {
             this.filter = this.$MultiFilters.updateFilters(this.filter, {search: val});
+        },
+        table_settings_toggle(){
+            store.commit("mobile_toggle")
+        },    
+        is_mobile__class(){
+            if(helpers.is_mobile()) 
+                return 'table-settings--mobile'; 
+            return 'table-settings--desktop';
         },
     },
     template : M_STOCKTABLE_TEMPLATE_STRING,
@@ -258,9 +293,11 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
                 "OPTIONS",
             ],
             notification : true,
+            mobile_settings_toggle : false,
         }
     },
     computed : {
+
         type : {
             get(){
                 return this.$store.state.state.type.toUpperCase()
@@ -304,12 +341,14 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
                 return this.$store.getters.selected_fields
             },
             set(selected_fields){
-                var selected_fields_ = []
-                selected_fields.forEach(v=>{
-                    var el = this.$store.getters.fields.find(element => element.key == v);
-                    selected_fields_.push(el)
-                });
-                this.$store.dispatch("update_selected_fields", selected_fields_)
+                console.log("selected fileds : ", selected_fields);
+                
+                // var selected_fields_ = []
+                // selected_fields.forEach(v=>{
+                //     var el = this.$store.getters.fields.find(element => element.key == v);
+                //     selected_fields_.push(el)
+                // });
+                this.$store.dispatch("update_selected_fields", selected_fields)
             }
         }
     },
@@ -317,7 +356,12 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
         forceRerender : function() {            
             this.tablekey += 1        
         },
-        
+        nifty_50_tick(){
+            return this.$store.getters.instruments[NIFTY_50] ? this.$store.getters.instruments[NIFTY_50].ltp : "0000.00"
+        },
+        nifty_bank_tick(){
+            return this.$store.getters.instruments[NIFTY_BANK] ? this.$store.getters.instruments[NIFTY_BANK].ltp  : "0000.00"
+        },
         filter_on_search(val) {
             this.filters = this.$MultiFilters.updateFilters(this.filters, {search: val});
         },
@@ -347,8 +391,25 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             this.$store.dispatch('refresh_table', {force, mercury})
         },
         async allow_notification(){
+            this.notification = !this.notification
             var data =  (await axios.post('/user/toggle-notification/', {})).data
             this.notification = data['allow_notification']
+        },
+        show_table_settings__class(){
+            var mobile_settings_toggle = store.getters.mobile_toggle
+            if(helpers.is_mobile() || mobile_settings_toggle){                
+                return "table-settings--visible";
+            }else{
+                return "table-settings--invisible"
+            }
+        },
+        is_mobile(){
+            return helpers.is_mobile()
+        },
+        is_mobile__class(){
+            if(helpers.is_mobile()) 
+                return 'table-settings--mobile'; 
+            return 'table-settings--desktop';
         },
     },
     template : M_DATA_TABLE_INFO,
@@ -508,10 +569,12 @@ const MNavigator = Vue.component('m-navigator', {
 })
 
 const MMultiselect = Vue.component('m-multiselect', {
-    props : ['items', 'search', 'height'],
+    props : ['items', 'search', 'height', 'selected_all', 'wait'],
     data : ()=>{
+        
         return {
-            selected : [],
+            selected: [],
+            emit : false,
             headers : [
                 {
                     key : "name",
@@ -522,6 +585,12 @@ const MMultiselect = Vue.component('m-multiselect', {
                 }
             ],
         }
+    },
+    async created (){    
+        while(this.wait){
+            await sleep(500)
+        }
+        if(Array.isArray(this.selected_all)) this.selected = this.selected_all.filter(v=>v).map(v=>{return{name : v}})
     },
     computed : {
         __m_items(){            
@@ -538,20 +607,32 @@ const MMultiselect = Vue.component('m-multiselect', {
         row_clicked(item){            
             // this.$emit("item-selected", {item : item, value : true})
             // this.selected.push(item.name)
+            this.emit = true
         },
         item_selected(item, value){
             // console.log("item, value : ", this.selected)
+            this.emit = true
         }
     },
     watch : {
         selected(){
-            this.$emit('change', this.selected.map(v=>v.name))
+            if(this.emit){
+                console.log("seleacted all : ", this.selected_all, this.selected);
+                this.$emit('change', this.selected.filter(v=>v).map(v=>v.name))
+            }
+        },
+        selected_all(){
+            if(Array.isArray(this.selected_all)) {
+                this.emit = false 
+                this.selected = this.selected_all.map(v=>{return{name : v}})  
+            }
+            
         }
     },
     template : M_MULTISELECT
 })
 
-const MFiterSidebar = Vue.component('m-filter-sidebar', {
+const MFilterSidebar = Vue.component('m-filter-sidebar', {
     data: () => {
         return {
             transProps: {
@@ -585,9 +666,8 @@ const MFiterSidebar = Vue.component('m-filter-sidebar', {
                 return this.$store.getters.tickers
         },
         ticker_values:{
-            get(){
-                // console.log("values copmputed: ", this.filter.tickers)
-                return this.filter.tickers || []
+            get(){                
+                return (this.filter.tickers || this.ticker_options).filter(v=>v)
             },
             set(value){
                 // console.log("ticks valuess :", this.filter.tickers, value);

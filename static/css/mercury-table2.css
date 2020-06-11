@@ -3,7 +3,7 @@ html, body{
     margin: 0;
     height: 100%;
     width: 100%;
-    font-family: "Arial", Gadget, sans-serif;
+    font-family: 'Nunito Sans' !important;
 }
 
 .navbar {
@@ -108,7 +108,11 @@ html, body{
  }
 
  .hover-pointer {
-    cursor: pointer;
+    cursor: pointer;    
+ }
+
+ .hover-pointer:hover{
+    /**box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12)!important; **/
  }
 
  .disabled {
@@ -136,11 +140,12 @@ html, body{
  }
 
  .BUY_btn, .SELL_btn {
-    border-radius: 10px;
+    border-radius: 4px;
     letter-spacing: 1px;
     border: none;
     font-size: 12px;
-    padding: 0 10px 0 10px;
+    min-width: 3.5rem;
+    padding: 2px 6px;
  }
 
  .BUY_btn:hover, .SELL_btn:hover {
@@ -148,7 +153,7 @@ html, body{
  }
 
  .BUY_header, .SELL_header {
-    border-radius: 20px 20px 0 0 !important;
+    border-radius: 2px 2px 0 0 !important;
  }
 
 .BUY_btn, .BUY_header {
@@ -165,29 +170,70 @@ html, body{
     font-size: 12px;
     font-weight: 700;
     width: 5rem;
-    padding: 3px;
+    /* height: 2rem; */
+    text-align: center;
+    padding: 5px 3px;
     letter-spacing: 1px;
     color: white;
+    opacity: 1 !important;
+}
+
+.total--text{
+    color: #0073C6;
+}
+
+.total{
+    background-color: #0073C6;
+}
+
+.active_status--text {
+    color: #2589EC;
 }
 
 .active_status {
-    background: dodgerblue;
+    background: #2589EC;
+}
+
+.miss_status--text {
+    color: #DA0000;    
 }
 
 .miss_status {
-    background: #cc0000;    
+    background: #DA0000;    
+}
+
+.hit_status--text {
+    color: #1BC100;
 }
 
 .hit_status {
-    background: darkgreen;
+    background: #1BC100;
+}
+
+.partialhit_status--text {
+    color: #26EF05;
 }
 
 .partialhit_status {
-    background: limegreen;
+    background: #26EF05;
+}
+
+.inactive_status--text {
+    color: dimgray;
 }
 
 .inactive_status {
     background: dimgray;
+    color: white;
+}
+
+.inactive--text {
+    color: dimgray;
+}
+
+.inactive {
+    background: dimgray !important;
+    color: white !important;
 }
 
 .count_display {
@@ -209,14 +255,19 @@ html, body{
 }
 
 .filter, .download, .refresh {
-    color: white;
+    color: #004b96;
     margin-right: 20px;
-    background: #7DDCFF;
+    background: transparent;
     outline: none;
+    font-size: 1.5rem;
     border-radius: 20px !important;
     line-height: 1px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
+}
+
+.filter:focus, .download:focus, .refresh:focus {
+    border: none;
 }
 
 .multiselect.invalid .multiselect__tags,
@@ -261,7 +312,8 @@ h6 {
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 4px;
+    height: 4px;  
   }
   
   /* Track */
@@ -280,3 +332,36 @@ h6 {
   ::-webkit-scrollbar-thumb:hover {
     background: #004b96;
   }
+
+.table-settings--visible{
+    display: block;
+}
+
+.table-settings--invisible{
+    display: none;
+}
+#table-settings--desktop{
+      position: absolute;
+      width: 20rem;
+      top: 22%;
+      right: 10%;
+      z-index: 67;
+}
+
+#table-settings--mobile{
+    position: relative;
+}
+
+.head-tickers{
+    color: black !important;
+    font-size: 17px;
+      
+}
+
+.head-ticks{
+    color: #004b96;
+    font-size: 15px;
+}
+.btn:focus{    
+    box-shadow: none;
+}

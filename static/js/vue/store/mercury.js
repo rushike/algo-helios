@@ -18,6 +18,8 @@ const store = new Vuex.Store({
         instruments : {},
         calls : {},
         loaded : false,
+        filter_loaded : false,
+        mobile_settings_toggle : false,
     },
     getters: {
         state : (state, getters)=>{
@@ -52,6 +54,9 @@ const store = new Vuex.Store({
         },
         loaded : function(state, getters){
             return state.loaded
+        },
+        mobile_toggle : function(state, getters){
+            return state.mobile_settings_toggle
         },
     },
     mutations: {
@@ -182,6 +187,7 @@ const store = new Vuex.Store({
             // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
             filter = FILTER.set(filter, db_fetch)
             Vue.set(state, "filter", filter)
+            Vue.set(state.filter, 'loaded', true)
         },
         clear_filter(state){
             state.filter.init()
@@ -208,6 +214,12 @@ const store = new Vuex.Store({
             } 
             return state.instruments[key].ltp
         },
+        mobile_toggle(state){
+            state.mobile_settings_toggle = !state.mobile_settings_toggle
+        },
+        do_from_store(state, {callback, params}){
+            callback(state, params)
+        }
     },
     actions: {
         async refresh_table(context, options){
@@ -243,8 +255,8 @@ const store = new Vuex.Store({
             head_list.push({
                 key : 'action', 
                 value : 'action', 
-                text : 'Follow',
-                label : 'Follow',
+                text : 'Action',
+                label : 'Action',
                 sortable : false,
             })
             context.commit('update_fields', head_list)
@@ -296,8 +308,9 @@ const store = new Vuex.Store({
             // console.log("filters : ", response.data)
             Object.entries(response.data).forEach(([key, value])=>{
                 table[key].filter = value
-            });
-            context.dispatch('load_filter')
+            });            
+            context.dispatch('propogate_state_change')
+            // context.dispatch('load_filter')
         },
         load_filter(context){
             let mstate = context.getters.state,
@@ -322,11 +335,15 @@ const store = new Vuex.Store({
         },
         update_selected_fields(context, selected_fields){
             var selected_fields_ = []
-            context.getters.fields.forEach(field =>{                
-                if(selected_fields.some(e => e.key == field.key)){
+            console.log("sellll : ", selected_fields);
+            
+            context.getters.fields.forEach(field =>{   
+                console.log('e : ', field.text, field.key, selected_fields.some(e => e == field.text || e == field.key) , field.key == 'action')
+                if(selected_fields.some(e => e == field.text || e == field.key) || field.key == 'action' ){
                     selected_fields_.push(field)
                 }
             })
+            console.log("selected fields : ", selected_fields, selected_fields_, context.getters.fields);
             context.commit('update_selected_fields', selected_fields_)
         },
         update_items(context, items){
