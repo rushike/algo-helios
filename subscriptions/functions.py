@@ -229,8 +229,8 @@ def can_subscribe(user, group_type, plan_type, plan_name):
 
 def is_trial_applicable(group_type, plan_type, plan_name):
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
-    group_type_id = UserGroupType.objects.filter(type_name = group_type).last()
-    plan_type_id = PlanType.objects.filter(type_name = plan_type).last()
+    group_type_id = UserGroupType.objects.filter(type_name__iexact = group_type).last()
+    plan_type_id = PlanType.objects.filter(type_name__iexact = plan_type).last()
     return plan_type_id.trial_applicable and group_type_id.eligible_for_trial 
 
 

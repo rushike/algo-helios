@@ -70,7 +70,7 @@ const MercuryPlans = `
             <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
             <input class="periodcode" name = "period"  :value="subscription_period_selected" hidden></input>
             <input class="plancode" name= "plancode"   :value="'basic'" hidden></input>
-            <input class="planname" name= "planname"   :value='basic_product_name_selected' hidden></input>
+            <input class="planname" name= "planname"   :value='$store.getters.state.plan_name' hidden></input>
             <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
           <button type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
         </form>

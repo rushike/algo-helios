@@ -47,6 +47,14 @@ const mercury_plans = Vue.component('mercury-plans', {
             }
         },
         
+        group_type_selected_name () {
+            var current_state = this.$store.getters.state; 
+            var product_data = this.$store.getters.product_data;
+            console.log("product data : ", product_data, ", current data : ", current_state);
+            
+            return product_data ? product_data[current_state.group_type].group_type : 'individual'
+        },
+
         subscription_period_selected : {
             get() {
                 return this.$store.getters.state.subscription_period
@@ -118,16 +126,7 @@ const mercury_plans = Vue.component('mercury-plans', {
                     plan_name : "mercury#"+value , product_name : "mercury#"+value
                 })
             }
-        },
-
-        group_type_selected_name :  {
-            var current_state = this.$store.getters.state 
-            var product_data = this.$store.getters.product_data
-            
-            return product_data[current_state.group_type].group_type
-        }
-        
-
+        },    
     },
 
     watch : {

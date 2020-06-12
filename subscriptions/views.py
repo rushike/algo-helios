@@ -271,7 +271,7 @@ def secure_order_details(request):
         request.session['order_details_post'] = POST
         logger.debug(f"secure_order_details context : {POST}")
         return HttpResponseRedirect(redirect_to='/subscriptions/plans')
-    if subscriptions.functions.is_trial_applicable(group_type = group_type, plan_type = plan_type, plan_name = plan_type):
+    if subscriptions.functions.is_trial_applicable(group_type = group_type, plan_type = plan_type, plan_name = plan_name):
         request.session['order_details_post'] = POST
         if not subscriptions.functions.already_had_trial(request.user, group_type, plan_type, plan_name):
             logger.debug(f"secure_order_details context : {POST}")
