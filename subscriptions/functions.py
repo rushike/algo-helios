@@ -169,6 +169,47 @@ def get_context_for_plans(user=None):
                 context[i][0][j][0].append([list(products), plan]) 
     return context
 
+# testing 
+def get_context_for_plans2(user=None): 
+    """
+     PRODUCT_DATA = {
+                    group_type : {
+                            plan_type : {
+                                plan_name : { 
+                                    data : []
+                                }
+                            }
+                        }
+                    }
+    group_type is a GroupType Model Object
+    """
+    user = users.functions.get_user_object(user)
+    context = {}
+    plan_types = get_all_plan_type()
+    user_groups = users.functions.get_all_standard_groups()
+    for i, group_type in enumerate(user_groups):
+        plan_group_id = str(group_type).lower()
+        # context.append([[], group_type])
+        context[group_type.max_members] = {"group_type" : group_type.type_name}
+
+        for j, plan_type in enumerate(plan_types):
+            
+            plan_type_id = str(plan_type).lower()
+            context[group_type.max_members][plan_type.type_name.lower()] = {}
+            # context[i][0].append([[], plan_type])
+            plans = Plan.objects.filter(plan_type_id = plan_type, user_group_type_id = group_type)  
+            plans = sorted(plans, key = lambda plan: plan.plan_name)
+            for k, plan in enumerate(plans):
+                plan_id = str(plan.id)
+                products = get_all_products_in_plan(plan)
+                products = [product.product_name for product in products]
+                # context[i][0][j][0].append([list(products), plan]) 
+                context[group_type.max_members][plan_type.type_name.lower()][plan.plan_name.lower()] = {
+                    "data" : products,
+                    "monthly_price" : plan.price_per_month,
+                    "yearly_price" : plan.price_per_year
+                }
+    return context
 
 def can_subscribe(user, group_type, plan_type, plan_name):
     # Guy having premium paid subscription should not able to subscribe other non premium plans

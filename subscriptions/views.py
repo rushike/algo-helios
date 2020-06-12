@@ -33,8 +33,13 @@ def plans2(request):
     POST = request.session.get('order_details_post')
     if 'order_details_post' in request.session: del request.session['order_details_post']
     alert = POST.get('alert')  if POST else False
-    context = {'details' : subscriptions.functions.get_context_for_plans(request.user), 'alert' : alert}
+    context = {'details' : subscriptions.functions.get_context_for_plans2(request.user), 'alert' : alert}
     return render(request, 'subscriptions/plans_copy.html', context=context)
+
+
+def mercury_product_data(request):
+    data = subscriptions.functions.get_context_for_plans2(request.user)
+    return JsonResponse(data, safe=False)
 
 def can_subscribe(request):
     pass
