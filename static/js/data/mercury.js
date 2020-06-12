@@ -3,16 +3,23 @@ const PORTFOLIOS = ['', 'nifty50', 'intraday', 'btst', 'positional', 'longterm']
 const STOCKS = 'stocks';
 const OPTIONS = 'options';
 
+const OPTIONS_PROD = "OPT"
+const STOCKS_PROD = "EQ"
+
+const NIFTY_50 = 256265
+
+const NIFTY_BANK = 260105
+
 const KEY_2_LABEL = {
     ticker : "Ticker",
-    ltp : "Last Price",
+    ltp : "LTP",
     signal : "Signal",
     time : "Signal Time",
     signal_time : "Signal Time",
     signal_price : "Signal Price",
     price : "Signal Price",
     target_price : "Target Price",
-    stop_loss : "Stop Loss",
+    stop_loss :  "Stop Loss",
     profit : "Profit %",
     status : "Status",  
     underlying : "Underlying",
@@ -53,12 +60,14 @@ const FILTER = {
     profit_percentage : null, // null or float
     risk_reward : null, // null or float
     search : null,
+    loaded : false,
     init(){
         this.tickers = null,
         this.sides = null,
         this.profit_percentage = null,
         this.risk_reward = null,
         this.search = null
+        this.loaded = false
     },
     set(props, db_fetch = false){
         // console.log("props : ", props, db_fetch)        
@@ -169,6 +178,10 @@ Number.prototype.round = function(places) {
     return +(Math.round(this + "e+" + places)  + "e-" + places);
 }
 
+// Number.prototype.toString = function() {
+//     return this + "";
+// }
+
 class Tick{
     constructor(instrument_id = 129, tick = 12){        
         this.instrument_id = instrument_id
@@ -179,7 +192,7 @@ class Tick{
         return this
     }
     toString(){
-        return this.tick
+        return (this.tick).toFixed(2)
     }
 }
 
@@ -195,7 +208,7 @@ class Signal{
         this.signal = signal
         // signal_time = 2020-05-26T11:59:46.212353+05:30
         // time = 05/26/2020, 11:59:46        
-        this.time = moment(signal_time, moment.ISO_8601).format('Do MMMM YYYY, h:mm')
+        this.time = moment(signal_time, moment.ISO_8601).format('DD MMMM YY, h:mm')
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
@@ -207,7 +220,8 @@ class Signal{
         this.status = status
         this.risk_reward = risk_reward
         this.active = active
-        this.follow = false 
+        this.follow = false
+        this.visible = true 
     }
     update(data){
         console.log("signal update : ", data );        
@@ -215,9 +229,16 @@ class Signal{
         if(data.status) this.status = data.status
         if(data.active == true || data.active == false) this.active = data.active
     }
-    set_follow(follow){
-        this.follow = follow
+    static set_follow(state, params){
+        var {item = null, follow = false} = params
+        console.log("following : ", item ,follow);
+        item.follow = follow
     } 
+    static hide(state, params){
+        var {item = null} = params
+        console.log("hiding : ", item);
+        item.visible = false
+    }
     toString(){
         return `${this.ticker},${this.ltp}, ${this.signal}, ${this.time.replace(',', '  ')}, ` + 
                 `${this.price}, ${this.target_price}, ${this.stop_loss}, ${this.profit}, ${this.status},`
