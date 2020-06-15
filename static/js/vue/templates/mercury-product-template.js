@@ -4,16 +4,12 @@ const MercuryPlans = `
 <div class="mt-5 row justify-content-center">
 	<p class="mx-4">Monthly</p>
 
-  <!-- <v-switch v-model="multiple" class="mx-4 my-0" label=""></v-switch> -->
-  <v-switch v-model="subscription_period_selected" class="mx-4 my-0" label=""></v-switch>
-
-	<!-- <div class="custom-control custom-switch">
-		<input type="checkbox" class="custom-control-input mx-5" id="customSwitch1" checked>
-		<label class="custom-control-label" for="customSwitch1"></label>
-	</div> -->
+  <v-switch v-model="subscription_period_selected" class="mx-4 my-0" label=""
+  style="color: #004b96;">
+  </v-switch>
 
 	<p class="mx-4">Annually</p>
-		<br>
+    <br>
 </div>
 
 <!-- ____________________period switch end___________________ -->
@@ -28,8 +24,15 @@ const MercuryPlans = `
 			<button type="button" class="btn">100</button>
 		</div> 
   </div> -->
-  <v-btn-toggle v-model="group_type_selected" mandatory>
-  <v-btn v-for="group_type in group_types" :value="group_type">
+
+  <v-btn-toggle
+  light
+  tile
+  prominent
+  color="#004b96"
+  v-model="group_type_selected" mandatory>
+  <v-btn v-for="group_type in group_types" :value="group_type" 
+  style="background-color: white;">
       {{ group_type }}
   </v-btn>
 </v-btn-toggle>
@@ -39,63 +42,83 @@ const MercuryPlans = `
 </div>
 
 <!-- __________________cards container start_________________ -->
-<div class="container mt-5 justify-content-center">
-		<div class="row d-flex justify-content-center">
-		<div class="col-md-7">
-		  <div class="card-deck mb-3 text-center" style="">
-		
-			<div class="card mb-4 shadow-sm">
-			  <div class="card-header dark_blue_color text-light rounded shadow-lg">
-				<h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} <small class="text">/ mo</small></h4>
-			  </div>
-			  <div class="card-body justify-content-center">
-        <h1 class="card-title pricing-card-title">BASIC</h1>
-        <div class="justify-content-center w-100">
-          <v-select
-            v-model="basic_product_name_selected"
-            :items="get_basic_products"
-            label="Any One"
-            solo
-          ></v-select>
-        </div>
+<div class="container mt-5 text-center">
+		<div class="row d-flex justify-content-around">
 
-				<ul class="list-unstyled mt-3 mb-4">
-				  <li v-for="basic_product in get_basic_products">
-            {{ basic_product }}
-          </li>
-        </ul>
-        
+		<div class="col-md-3">
+			<div class="card text-center mb-4 shadow-sm">
+            <div class="card-header dark_blue_color text-light rounded shadow-lg">
+            <h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} <small class="text">/ mo</small></h4>
+            </div>
+            <div class="card-body justify-content-center">
+            <h1 class="card-title pricing-card-title">BASIC</h1>
+            <div class="justify-content-center w-100">
+              <v-select
+                class="mx-auto overflow-hidden"
+                height="20"
+                width="10"
+                v-model="basic_product_name_selected"
+                :items="get_basic_products"
+                label="Select Investment Type"
+                solo
+              ></v-select>
+            </div>
+            <ul class="list-unstyled list-inline text-center align-items-center">
+              <li v-for="basic_product in get_basic_products" 
+              class="pr-5">
+                <span v-if = "basic_product_name_selected == basic_product">
+                    <i class="fa fa-check" aria-hidden="true" 
+                    style="font-size:20px;color:green">
+                    </i>
+                    {{ basic_product }}
+                </span>
 
-        <form method = "POST" action="/subscriptions/plan-data"> 
-            <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
-            <input class="periodcode" name = "period"  :value="subscription_period_selected" hidden></input>
-            <input class="plancode" name= "plancode"   :value="'basic'" hidden></input>
-            <input class="planname" name= "planname"   :value='$store.getters.state.plan_name' hidden></input>
-            <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
-          <button type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
-        </form>
-
-			  </div>
-			</div>
-		
-			<div class="card mb-4 shadow-sm">
-			  <div class="card-header dark_blue_color text-light rounded shadow-lg">
-				<h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} <small class="text">/ mo</small></h4>
-			  </div>
-			  <div class="card-body">
-				<h1 class="card-title pricing-card-title">PREMIUM</h1>
-				<ul class="list-unstyled mt-3 mb-4">
-				  <li v-for="premium_product in get_premium_products">
+                <span v-else>
+                    <i class="fa fa-close mr-4" aria-hidden="true" 
+                    style="font-size:20px;color:red">
+                    </i>
+                    {{ basic_product }}
+                </span>
+              </li>
+            </ul>
+            <form method = "POST" action="/subscriptions/plan-data"> 
+                <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
+                <input class="periodcode" name = "period"  :value="subscription_period_selected" hidden></input>
+                <input class="plancode" name= "plancode"   :value="'basic'" hidden></input>
+                <input class="planname" name= "planname"   :value='$store.getters.state.plan_name' hidden></input>
+                <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
+              <button type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
+            </form>
+            </div>
+      </div>
+      
+    </div>
+    
+    <div class="col-md-3">
+			<div class="card text-center mb-4 shadow-sm">
+          <div class="card-header dark_blue_color text-light rounded shadow-lg">
+          <h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} <small class="text">/ mo</small></h4>
+          </div>
+          <div class="card-body">
+          <h1 class="card-title">PREMIUM</h1>
+          <small class="mt-3 mb-5">*Includes all Investment Types</small>
+          <ul class="list-unstyled text-center" style="margin-top: 55px;">
+            <li v-for="premium_product in get_premium_products" class="pr-5">
+              <i class="fa fa-check mr-4" aria-hidden="true" 
+              style="font-size:20px;color:green">
+              </i>
               {{ premium_product }}
-          </li>
-				</ul>
-				<button class="btn btn-sm dark_blue_color text-light">Subscribe</button>
-			  </div>
-			</div>
-		
-		  </div>
+            </li>
+          </ul>
+          <button class="btn btn-sm dark_blue_color text-light">Subscribe</button>
+          </div>
+      </div>
+      
 		</div>
-		</div>
+    
+    <!-- row end below -->
+    </div>
+    <!-- container end below -->
 	  </div>
 	<!-- __________________cards container end_______________ -->
 
@@ -164,48 +187,85 @@ const timeline =
     <v-timeline :dense="$vuetify.breakpoint.smAndDown"> 
 
       <v-timeline-item>
-        <span slot="opposite">Customize & Analyse
+        <span slot="opposite">
+            <v-card class="elevation-0">
+            <v-card-title class="headline">Customize & Analyse</v-card-title>
+            <v-card-text>
+            <span class="float-left">Filter calls as per your convenience and download data for analysis</span>
+            </v-card-text>
+            </v-card>
         </span>
         <v-card class="elevation-2">
           <v-img src="/static/img/custom.png"></v-img>
+          <div class="hide_this_desktop">
           <v-card-title class="headline">Customize & Analyse</v-card-title>
           <v-card-text>
             Filter calls as per your convenience and download data for analysis
           </v-card-text>
+          </div>
         </v-card>
       </v-timeline-item>
 
       <v-timeline-item>
-        <span slot="opposite">One Click Order</span>
+        <span slot="opposite">
+            <v-card class="elevation-0">
+                <v-card-title class="headline">One Click Order</v-card-title>
+                <v-card-text>
+                <span class="float-left">Place your order through your preferred borker with just one click.</span>
+                </v-card-text>
+            </v-card>
+        </span>
         <v-card class="elevation-2">
         <v-img src="/static/img/oneclick.png"></v-img>
+        <div class="hide_this_desktop">
           <v-card-title class="headline">One Click Order</v-card-title>
           <v-card-text>
             Place your order through your preferred borker with just one click.
           </v-card-text>
+          </div>
         </v-card>
       </v-timeline-item>
 
       <v-timeline-item>
-        <span slot="opposite">Real Time Notifications</span>
+        <span slot="opposite">
+            <v-card class="elevation-0">
+                <v-card-title class="headline">Real Time Notifications</v-card-title>
+                <v-card-text>
+                <span class="float-left">Stay updated with real time notifications of calls</span>
+                </v-card-text>
+            </v-card>
+        </span>
         <v-card class="elevation-2">
         <v-img src="/static/img/realtime.png"></v-img>
+        <div class="hide_this_desktop">
           <v-card-title class="headline">Real Time Notifications</v-card-title>
           <v-card-text>
             Stay updated with real time notifications of calls
           </v-card-text>
+          </div>
         </v-card>
       </v-timeline-item>
 
 
       <v-timeline-item>
-        <span slot="opposite">Multiple Investment Types</span>
+        <span slot="opposite">
+            <v-card class="elevation-0">
+                <v-card-title class="headline">Multiple Investment Types</v-card-title>
+                <v-card-text>
+                <span class="float-left">
+                    Diversify your investments with our multiple investment types
+                </span>
+                </v-card-text>
+            </v-card>
+        </span>
         <v-card class="elevation-2">
         <v-img src="/static/img/multi.png"></v-img>
+        <div class="hide_this_desktop">
           <v-card-title class="headline">Multiple Investment Types</v-card-title>
           <v-card-text>
             Diversify your investments with our multiple investment types
           </v-card-text>
+          </div>
         </v-card>
       </v-timeline-item>
 
@@ -214,9 +274,55 @@ const timeline =
 
 <div class="container">  
 
+<!-- <div class="mx-auto mt-5 mb-5">
+  Experience all these Features<br>
+  <button class="btn btn-md text-light mt-5 dark_blue_color">
+		  Start Your Free Trial  
+	</button> 
+</div> -->
+<!-- 
+<div class="row justify-content-center text-center">
+    <div class="col-md-6 d-flex text-center justify-content-center">
+        <span class="text-dark">HELLO</span>
+        <button class="btn btn-md text-light dark_blue_color">
+            Start Your Free Trial  
+        </button>
+    </div>
+</div> -->
 
+<!-- 
+<v-container class="mx-auto">
+    <span class="text-dark text-center">HELLO</span>
+    <button class="btn btn-md text-light dark_blue_color">
+        Start Your Free Trial  
+    </button>
+</v-container> -->
 
-<p class="text-center"><span class="max_font">FAQ</span></p>
+<p class="text-center mt-4 ">
+  <span class="font-weight-bold">Experience all these Features
+</span>
+</p>
+<div class="row justify-content-center mb-4">
+  <button class="btn btn-md text-light dark_blue_color text-center justify-content-center">
+      Start Your Free Trial  
+  </button>
+</div>
+
+<p class="text-center mt-5"><span class="max_font">FAQ</span></p>
+
+    <!-- <v-expansion-panels popout blue elevation="0">
+      <v-expansion-panel
+        v-for="(item,i) in 5"
+        :key="i"
+        flat
+      >
+        <v-expansion-panel-header class="">Item</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels> -->
+
 
 <ul class="accordion" style="list-style: none;">
 	<li>

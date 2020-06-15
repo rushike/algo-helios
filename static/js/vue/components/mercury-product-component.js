@@ -139,7 +139,20 @@ const mercury_plans = Vue.component('mercury-plans', {
             // return document.getElementById("csrf_token").innerHTML
             return $("input[name='csrfmiddlewaretoken']").val()
     
+        },
+
+        isMobile() {
+            if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) 
+            {
+                return true
+            } 
+            else 
+            {
+                return false
+            }
         }
+
+
     }
 
     })
