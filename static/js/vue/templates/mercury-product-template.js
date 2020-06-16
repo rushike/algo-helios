@@ -61,6 +61,7 @@ const MercuryPlans = `
                 :items="get_basic_products"
                 label="Select Investment Type"
                 solo
+                dense
               ></v-select>
             </div>
             <ul class="list-unstyled list-inline text-center align-items-center">
@@ -185,8 +186,7 @@ const timeline =
     One-stop shop for effective trading 
   </span></p>
     <v-timeline :dense="$vuetify.breakpoint.smAndDown"> 
-
-      <v-timeline-item>
+      <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
             <v-card-title class="headline">Customize & Analyse</v-card-title>
@@ -206,7 +206,7 @@ const timeline =
         </v-card>
       </v-timeline-item>
 
-      <v-timeline-item>
+      <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
                 <v-card-title class="headline">One Click Order</v-card-title>
@@ -226,7 +226,7 @@ const timeline =
         </v-card>
       </v-timeline-item>
 
-      <v-timeline-item>
+      <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
                 <v-card-title class="headline">Real Time Notifications</v-card-title>
@@ -247,7 +247,7 @@ const timeline =
       </v-timeline-item>
 
 
-      <v-timeline-item>
+      <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
                 <v-card-title class="headline">Multiple Investment Types</v-card-title>
@@ -322,36 +322,6 @@ const timeline =
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels> -->
-
-
-<ul class="accordion" style="list-style: none;">
-	<li>
-		<a>What happens when my free trials expires ?</a>
-		<p> text </p>
-	</li>
-	<li>
-		<a>Do you offer Discounts ?</a>
-		<p>text</p>
-	</li>
-	<li>
-		<a>Can I pay for my Team ?</a>
-		<p>text</p>
-	</li>
-  	<li>
-	<a>Which payment methods are available ?</a>
-		<p>text</p>
-	</li>
-  	<li>
-	<a>Can I unsubscribe anytime in between?</a>
-		<p>text</p>
-	</li>
-  	<li>
-	<a>Can I get extended trial period ?</a>
-		<p>text</p>
-	</li>
-</ul> <!-- / accordion -->
-
-
 </div>
 </div>
 
