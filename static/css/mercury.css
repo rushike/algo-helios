@@ -254,6 +254,10 @@ background-color: white;
 ul > li > a {
     padding : 0rem 3rem;
 }
+
+ul > li > form > a {
+    padding : 0rem 3rem;
+}
 ul > li > a :hover, ul > li > a :active{
     background-color: #004b96;
 } 

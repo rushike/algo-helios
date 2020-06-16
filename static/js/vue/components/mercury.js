@@ -40,11 +40,11 @@ const MStockTable = Vue.component("m-stocks-table", {
         },
         filter_items(){
             return this.items.filter(d => {
-                if(TYPE[d.product_type] == OPTIONS) return true;
+                // if(TYPE[d.product_type] == OPTIONS) return true;
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
-                            !( this.filter.profit_percentage[0] < d.profit * 100 && 
-                            this.filter.profit_percentage[1] > d.profit * 100 ))
+                            !( this.filter.profit_percentage[0] <= d.profit * 100 && 
+                            this.filter.profit_percentage[1] >= d.profit * 100 ))
                     return false
                 else if(Array.isArray(this.filter.sides) && (this.filter.sides.length == 0 || !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase())))
                     return false
@@ -56,8 +56,8 @@ const MStockTable = Vue.component("m-stocks-table", {
                 
                 else if(Array.isArray(this.filter.risk_reward) && 
                         this.filter.risk_reward.length == 2 && 
-                        !( this.filter.risk_reward[0] < d.risk_reward && 
-                        this.filter.risk_reward[1] > d.risk_reward))
+                        !( this.filter.risk_reward[0] <= d.risk_reward && 
+                        this.filter.risk_reward[1] >= d.risk_reward))
                     return false
                 return true
             })
@@ -557,7 +557,7 @@ const MNavigator = Vue.component('m-navigator', {
     },
     methods : {   
         forceRerender(){            
-            this.tablekey += 1        
+            this.tablekey += 1
         },  
         change_state(){
             var portfolio = PORTFOLIOS[this.active_ + 2]

@@ -58,11 +58,21 @@ nav{
     color:#515252 !important;
     transition-duration: .2s; */
     color: #0056b3 !important;
+    text-decoration: none;
 }
 
 #myNavbar li a:hover{
     transform: scale(1.1) !important;
 }
+
+#myNavbar li form a{
+    /* font-size: 18px !important;
+    color:#515252 !important;
+    transition-duration: .2s; */
+    text-align: center;
+    color: #0056b3 !important;
+}
+
 
 .navbar-header .navbarlogo img{
     transition: transform .2s;
