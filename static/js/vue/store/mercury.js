@@ -20,6 +20,7 @@ const store = new Vuex.Store({
         loaded : false,
         filter_loaded : false,
         mobile_settings_toggle : false,
+        drawer : false
     },
     getters: {
         state : (state, getters)=>{
@@ -57,6 +58,9 @@ const store = new Vuex.Store({
         },
         mobile_toggle : function(state, getters){
             return state.mobile_settings_toggle
+        },        
+        drawer : function(state, getters){
+            return state.drawer
         },
     },
     mutations: {
@@ -98,6 +102,8 @@ const store = new Vuex.Store({
             // data_list.length = 0
             var start = true            
             var key = null, val = 0, v = 0
+            data_list[OPTIONS] = {}
+            data_list[STOCKS] = {}
             calls.forEach(value=>{
                 if(!state.calls[value["call_id"]] || force_init){                
                     if(!value["active"]){
@@ -116,22 +122,42 @@ const store = new Vuex.Store({
                         }
                         val++
                     }
+                    
                     var ltp = state.instruments[key].ltp
-
-                    state.calls[value["call_id"]] = new Signal(
-                        value["call_id"],
-                        value["ticker"],
-                        ltp,
-                        value["signal"],
-                        value["time"],
-                        value["price"],
-                        value["target_price"],
-                        value["stop_loss"],                    
-                        value["status"],
-                        value['risk_reward'],
-                        value['active'],
-                        value["signal_time"],
-                    )
+                    
+                    if(value.product_type == STOCKS_PROD){
+                        state.calls[value["call_id"]] = new Signal(
+                            value["call_id"],
+                            value["ticker"],
+                            ltp,
+                            value["signal"],
+                            value["time"],
+                            value["price"],
+                            value["target_price"],
+                            value["stop_loss"],                    
+                            value["status"],
+                            value['risk_reward'],
+                            value['active'],
+                            value["signal_time"],
+                        )
+                    }else if(value.product_type == OPTIONS_PROD){
+                        state.calls[value["call_id"]] = new OptionsSignal(
+                            value["call_id"],
+                            value["underlying"],
+                            value['expiry'],
+                            value["strike"],            
+                            value["ticker"],            
+                            ltp,
+                            value['signal'],
+                            value["signal_time"],
+                            value["price"],
+                            value["target_price"],
+                            value["stop_loss"],                            
+                            value['risk_reward'],
+                            value['status'],
+                            value['active'],                        
+                        )
+                    }
                 }
                 else {
                     state.calls[value["call_id"]].update(
@@ -140,12 +166,12 @@ const store = new Vuex.Store({
                         value['active']
                     )
                 }
-                
-                if(!data_list[value["portfolio_id"]]){
-                    data_list[value["portfolio_id"]] = Table[STATE.market_type][STATE.market][STATE.type][PORTFOLIOS[value["portfolio_id"]]].data
-                    data_list[value["portfolio_id"]].length = 0
-                }
-                data_list[value["portfolio_id"]].push(state.calls[value["call_id"]])
+                                
+                if(!data_list[TYPE[value.product_type]][value["portfolio_id"]]){                    
+                    data_list[TYPE[value.product_type]][value["portfolio_id"]] = Table[STATE.market_type][STATE.market][TYPE[value.product_type]][PORTFOLIOS[value["portfolio_id"]]].data
+                    data_list[TYPE[value.product_type]][value["portfolio_id"]].length = 0
+                }                
+                data_list[TYPE[value.product_type]][value["portfolio_id"]].push(state.calls[value["call_id"]])
             })   
             console.log("active L : ", val, ", non active : ", v);     
             // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
@@ -214,6 +240,9 @@ const store = new Vuex.Store({
             } 
             return state.instruments[key].ltp
         },
+        update_drawer(state, value){
+            state.drawer = value
+        },
         mobile_toggle(state){
             state.mobile_settings_toggle = !state.mobile_settings_toggle
         },
@@ -268,6 +297,7 @@ const store = new Vuex.Store({
             var meta_ = items.reduce((meta, item) => {
                 // console.log(meta, item)
                 const {total = 0, partial_hit = 0, hit = 0, miss = 0} = meta;
+                // if(TYPE[item.product_type] == OPTIONS) return {...meta, total: total + 1}
                 if (item.status.toLowerCase() === 'partialhit') {
                     return {...meta, total: total + 1, partial_hit : partial_hit + 1};
                 }else if (item.status.toLowerCase() === 'hit') {
@@ -281,6 +311,8 @@ const store = new Vuex.Store({
         load_items(context){
             let mstate = context.getters.state
             var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data
+            console.log("items for ", mstate.type, " i : ", items);
+            
             context.commit('update_items', items)        
         },
         async load_all_tickers(context){ // this loads all filter for only particular market type
@@ -307,7 +339,7 @@ const store = new Vuex.Store({
             var response =  await axios.post('/worker/get-filters/', {})            
             // console.log("filters : ", response.data)
             Object.entries(response.data).forEach(([key, value])=>{
-                table[key].filter = value
+                table[key].filter.set(value, true)
             });            
             context.dispatch('propogate_state_change')
             // context.dispatch('load_filter')
@@ -332,6 +364,11 @@ const store = new Vuex.Store({
             context.dispatch('load_fields')
             context.dispatch('load_items')
             context.dispatch('load_meta')
+        },
+        update_filter(context, filter_){
+            let mstate = context.getters.state;
+            let filter = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].filter;
+            filter.set(filter_);
         },
         update_selected_fields(context, selected_fields){
             var selected_fields_ = []

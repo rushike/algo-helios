@@ -218,6 +218,9 @@ html, body{
     padding-right: 12px !important;
 }
 
+.temp-white{
+    background-color: white;
+}
 /* 
  @media only screen and (max-width: 800px) {
 

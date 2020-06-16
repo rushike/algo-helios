@@ -40,17 +40,18 @@ const MStockTable = Vue.component("m-stocks-table", {
         },
         filter_items(){
             return this.items.filter(d => {
+                if(TYPE[d.product_type] == OPTIONS) return true;
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
                             !( this.filter.profit_percentage[0] < d.profit * 100 && 
                             this.filter.profit_percentage[1] > d.profit * 100 ))
                     return false
-                else if(Array.isArray(this.filter.sides) && this.filter.sides.length != 0 && !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase()))
+                else if(Array.isArray(this.filter.sides) && (this.filter.sides.length == 0 || !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase())))
                     return false
 
                 else if(Array.isArray(this.filter.tickers) && 
-                        this.filter.tickers.length != 0 && 
-                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase()))
+                        (this.filter.tickers.length == 0 || 
+                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase())))
                     return false
                 
                 else if(Array.isArray(this.filter.risk_reward) && 
@@ -91,9 +92,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             this.selected_fields = sel_fields;
         },
         row_class(group, index, item, items){
-            var class_ = "hover-pointer "
-            console.log("index row class : ", index, items.length);
-            
+            var class_ = "hover-pointer "        
             var border = group ? "mx-1 follow_trade border " : ' ',
                 active = item.active ? ' ' : 'disabled ', 
                 group_highlight = (index == items.length - 1) ? ( index == 0 ? '' : 'border-top-0 '  ) : (index == 0 ? 'border-bottom-0 ' : 'border-top-0 border-bottom-0 ' )
@@ -106,7 +105,6 @@ const MStockTable = Vue.component("m-stocks-table", {
         },
         delete_call(item){
             var callback = Signal.hide, params = {item}
-            console.log("hiding for : ", params);            
             this.$store.commit("do_from_store", {callback, params} )
         },
         portfolio_filter(val, search, item, headers){
@@ -390,11 +388,11 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             var force = false, mercury = Mercury
             this.$store.dispatch('refresh_table', {force, mercury})
         },
-        async allow_notification(){
+        allow_notification :  _.throttle(async function(){
             this.notification = !this.notification
             var data =  (await axios.post('/user/toggle-notification/', {})).data
             this.notification = data['allow_notification']
-        },
+        }, 10000),       
         show_table_settings__class(){
             var mobile_settings_toggle = store.getters.mobile_toggle
             if(helpers.is_mobile() || mobile_settings_toggle){                
@@ -552,6 +550,9 @@ const MNavigator = Vue.component('m-navigator', {
                 console.log("Value active in tab : ", value)
                 this.active_ = value
             }
+        }, 
+        portfolios(){
+            return PORTFOLIOS.slice(2)
         }
     },
     methods : {   
@@ -606,18 +607,32 @@ const MMultiselect = Vue.component('m-multiselect', {
     methods :{
         row_clicked(item){            
             // this.$emit("item-selected", {item : item, value : true})
-            // this.selected.push(item.name)
+            // this.selected.push(item.name)        
+
             this.emit = true
+            if(this.selected.some(v => v.name == item.name)){
+                this.selected = this.selected.filter(v=> v.name != item.name)
+            }else{
+                this.selected.push(item)
+            }
+            
+
+            console.log("row click item ", item, item.name, this.selected);
+            
         },
         item_selected(item, value){
-            // console.log("item, value : ", this.selected)
+            // console.log("item, value : ", this.selected)                        
             this.emit = true
+            if(Array.isArray(item)){
+                Vue.set(this, 'selected', item)
+            }
         }
     },
     watch : {
         selected(){
-            if(this.emit){
-                console.log("seleacted all : ", this.selected_all, this.selected);
+            if(this.emit){         
+                console.log("watch : selected change : ", this.selected);
+                       
                 this.$emit('change', this.selected.filter(v=>v).map(v=>v.name))
             }
         },
@@ -633,6 +648,7 @@ const MMultiselect = Vue.component('m-multiselect', {
 })
 
 const MFilterSidebar = Vue.component('m-filter-sidebar', {
+    props : [],
     data: () => {
         return {
             transProps: {
@@ -645,11 +661,19 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
             min__profit_percentage : 0,
             max__profit_percentage : 50,
             min__risk_reward : 0,
-            max__risk_reward : 5,
-            drawer : true,
+            max__risk_reward : 5,            
         }
     },
     computed : {
+        drawer : {
+            get(){
+                return this.$store.getters.drawer
+            },
+            set(value){
+                this.$store.commit("update_drawer", value);
+            }
+        },
+        
         filter : {
             get(){
                 return this.$store.getters.filter
@@ -709,16 +733,19 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
         forceRerender : function() {            
             this.tablekey += 1        
         },        
-        update_selected_tickers(sel_tickers){
+        update_selected_tickers(sel_tickers){            
             this.ticker_values = sel_tickers
         },
         async clear_filter(){
             await axios.post("/worker/clear-filter2/", {portfolio_id : STATE.portfolio})
             this.$store.dispatch("clear_filter")
         },
-        apply_filters : _.debounce(async function(){
-                await axios.post("/worker/apply-filters2/", {portfolio_id : STATE.portfolio, ...FILTER})
-            }, 10000),
+        apply_filters(){
+            this.$store.dispatch('update_filter', FILTER)
+            return _.debounce(async function(){
+                await axios.post("/worker/apply-filters2/", {portfolio_id : STATE.portfolio, type : STATE.type, ...FILTER})
+            }, 10000)
+        },
         select (option) {
             option.selected = !option.selected
         },
@@ -728,8 +755,20 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
         side_name(option){
             return option.side
         },
+        is_mobile(){
+            return helpers.is_mobile()
+        },
+        show_drawer(){
+            console.log("drawer show : ", this.drawer);
+            this.drawer = true
+        },
     },
-    template : M_FILTER_SIDEBAR,
+    watch : {
+        drawer() {
+            console.log("drawer changed :  ", this.drawer);
+        }
+    },
+    template : helpers.is_mobile() ? M_DRAWER_FILTER : M_FILTER_SIDEBAR,
     // components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}
 })
 
@@ -742,6 +781,7 @@ const MApp = Vue.component('m-app', {
                 name: 'flip-list'
             },
             fields0 : "JUJ",
+            drawer : false,
         }
     },
     computed : {
@@ -759,7 +799,19 @@ const MApp = Vue.component('m-app', {
     methods : {                
         forceRerender : function() {            
             this.tablekey += 1        
-        },  
+        },
+        is_mobile(){
+            return helpers.is_mobile()
+        },            
+        swipe(direction){
+            console.log("swipe direction : ", direction);            
+            if(direction=='right'){
+                this.$store.commit("update_drawer", true)
+            }
+            if(direction=='left'){
+                this.$store.commit("update_drawer", false)
+            }
+        }    
     },
     template : M_APP,
     components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}

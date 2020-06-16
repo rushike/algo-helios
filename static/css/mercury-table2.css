@@ -172,7 +172,7 @@ html, body{
     width: 5rem;
     /* height: 2rem; */
     text-align: center;
-    padding: 5px 3px;
+    padding: 5px 3px !important;
     letter-spacing: 1px;
     color: white;
     opacity: 1 !important;
@@ -364,4 +364,15 @@ h6 {
 }
 .btn:focus{    
     box-shadow: none;
+}
+.v-application--wrap{
+    flex: 1 1 auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 40vh;
+    max-width: 100%;
+    position: relative;
+    overflow-y: hidden;
 }

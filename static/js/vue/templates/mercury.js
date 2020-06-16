@@ -13,7 +13,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :group-desc = "true"
         group-by = "follow"
         mobile-breakpoint = "500"
-        height="70vh"
+        height="60vh"
         class="elevation-1"        
         style="max-height: calc(100vh ); backface-visibility: hidden;"
         hide-default-footer
@@ -21,7 +21,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 
         <template v-slot:header.action="{header}" >
             Action
-            <span v-on:click = "table_settings_toggle()" class = "pl-2" style = "font-size : 1rem; cursor : pointer;">   
+            <span v-on:click = "table_settings_toggle()" class = "pl-2" style = "font-size : 1rem; cursor : pointer; position:abosolute;">   
                 <v-menu bottom left>
                     <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -30,7 +30,19 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                         v-bind="attrs"
                         v-on="on"
                     >
-                        <img src = "/static/img/edit-pencil.svg" class = "fa-2x" style = "color:rgb(0, 0, 0, 0.6);height:30%"></img>
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <img 
+                                src = "/static/img/edit-pencil.svg"
+                                class = "fa-2x" 
+                                style = "color:rgb(0, 0, 0, 0.6);height:30%"  
+                                v-bind="attrs"
+                                v-on="on"                              
+                            ></img>
+                        </template>
+                        <span>Customize Table</span>
+                    </v-tooltip>
+                  
                     </v-btn>
                     </template>
                 
@@ -65,19 +77,53 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </button>
                         </span>
                         <span v-else-if = "header.key == 'status'">
-                            <span :class = "'badge elevation-7 ' + item.status + '_status'">
+                            <span :class = "'badge elevation-7 ' + item.status.toLowerCase() + '_status'">
                                 {{ item.status }}
                             </span>
                         </span>
-                         <span v-else-if = "header.key == 'action'" style = "width = '3rem'">
-                            <span v-if = "item.follow">                                            
-                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin-slash.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true"></img>
-                                <img class = "px-1 fa-2x" v-on:click="delte_call(item)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
-                            </span>
-                            <span v-else>
-                                <img class = "px-1 fa-2x" v-on:click="follow_my_trade(item, true)" src="/static/img/pin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
-                                <img class = "px-1 fa-2x" v-on:click="delete_call(item)" src="/static/img/bin.svg" style = "cursor:pointer; height : 30%;" aria-hidden="true" ></img>
-                            </span>
+                         <span v-else-if = "header.key == 'action'" style = "width : '3rem'">                            
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <img 
+                                        v-if = "item.follow"
+                                        class = "px-1 fa-2x" 
+                                        v-on:click="follow_my_trade(item, false)" 
+                                        src="/static/img/pin-slash.svg" 
+                                        data-toggle="tooltip" data-placement="top" title="Pin Call" style = "cursor : pointer; height : 30%;" 
+                                        aria-hidden="true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        ></img>
+                                        
+                                    <img 
+                                        v-else
+                                        class = "px-1 fa-2x" 
+                                        v-on:click="follow_my_trade(item, true)" 
+                                        src="/static/img/pin.svg" 
+                                        data-toggle="tooltip" data-placement="top" title="Pin Call"
+                                        style = "cursor:pointer; height : 30%;" 
+                                        aria-hidden="true" 
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        ></img>
+                                </template>
+                                <span>Pin Call</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <img                                     
+                                        class = "px-1 fa-2x" 
+                                        v-on:click="delete_call(item)" 
+                                        src="/static/img/bin.svg" 
+                                        data-toggle="tooltip" data-placement="top" title="Delete Call"
+                                        style = "cursor:pointer; height : 30%;" 
+                                        aria-hidden="true" 
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        ></img>                                
+                                </template>
+                                <span>Delete Call</span>
+                              </v-tooltip>
                             
                         </span> 
                         <span v-else>                        
@@ -91,21 +137,21 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 `
 
 const M_OPTIONSTABLE_TEMPLATE_STRING = `
-    <v-data-table
-        :headers="headers"
-        :items="filter_items"     
-        :items-per-page = "items.length"
-        :search = "search"        
-        loading = 'loading'
-        loading-text="Loading... Please wait"
-        fixed-header
-        :disable-pagination = "true"
-        hide-default-footer
-        height="70vh"
-        class="elevation-1"        
-        style="max-height: calc(100vh ); backface-visibility: hidden;">
-        
-    </v-data-table>  
+        <v-data-table
+            :headers="headers"
+            :items="filter_items"     
+            :items-per-page = "items.length"
+            :search = "search"        
+            loading = 'loading'
+            loading-text="Loading... Please wait"
+            fixed-header
+            :disable-pagination = "true"
+            hide-default-footer
+            height="70vh"
+            class="elevation-1"        
+            :style="'max-height: calc(100vh ); backface-visibility: hidden; '">
+            
+        </v-data-table>      
 `
 
 const M_EQUITY_TEMPLATE_STRING = `
@@ -224,51 +270,44 @@ const M_DATA_TABLE_INFO = `
                     </span> -->
 
                     <span id = "download">
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="Download">
-                            <button class="btn download" v-on:click='download_as_csv()'>
-                                <small><span class="fa fa-download"></span></small>
-                            </button>
-                        </a>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="Download" v-bind="attrs" v-on="on">
+                                    <button class="btn download" v-on:click='download_as_csv()'>
+                                        <small><span class="fa fa-download notify" style="font-size: 1rem;"></span></small>
+                                    </button>
+                                </a>
+                            </template>
+                            <span>Download</span>
+                        </v-tooltip>
                     </span>
                     <span >
-                        <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh">
-                            <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh">
-                                <small><span class="fa fa-refresh"></span></small>
-                            </button>
-                        </a>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh"  v-bind="attrs" v-on="on">
+                                    <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh">
+                                        <small><span class="fa fa-refresh notify" style="font-size: 1rem;"></span></small>
+                                    </button>
+                                </a>
+                            </template>
+                            <span>Refresh</span>
+                        </v-tooltip>
                     </span>
-
-                    <span href="#" data-toggle="tooltip" data-placement="top" title="Notify">
-                        <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify">
-                            <small v-if = "notification" ><span class="fa fa-bell-slash notify"></span></small>
-                            <small v-else><span class="fa fa-bell notify"></span></small>
-                        </button>
-                    </span>    
+                    <span>
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <span href="#" data-toggle="tooltip" data-placement="top" title="Notify" v-bind="attrs" v-on="on">
+                                    <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify">
+                                        <small v-if = "notification" ><span class="fa fa-bell-slash notify" style="font-size: 1rem;"></span></small>
+                                        <small v-else><span class="fa fa-bell notify" style="font-size: 1rem;"></span></small>
+                                    </button>
+                                </span>
+                            </template>
+                            <span>Notify</span>
+                        </v-tooltip>
+                    </span>
                 </v-col>
-            </v-row>            
-            <!-- <v-select
-                class = "px-1"
-                v-model="selected_fields"
-                :items="fields"
-                menu-props="auto"
-                label="Select"
-                multiple
-                hide-details
-                dense
-                solo
-                single-line
-            >
-                <template v-slot:selection="{ item, index }">
-                    <v-chip v-if="index < 2">
-                        <span>{{ item.text }}</span>
-                    </v-chip>
-                    <span
-                        v-if="index === 2"
-                        class="grey--text caption"
-                        >(+{{ selected_fields.length - 1 }} others)</span>
-                </template>
-            
-            </v-select> -->
+            </v-row>      
         </v-col>
     </v-row>
     <div :id = "is_mobile__class()" :class = "show_table_settings__class()">
@@ -379,32 +418,33 @@ const M_FILTER_INLINE = `
 
 const M_MULTISELECT =  `
 <div>
-    <v-data-table
-        v-model="selected"
-        :headers="headers"
-        :items="__m_items"
-        :search = "search"
-        :height = "__m_height"
-        :loading = "loading"
-        loading-text="Loading... Please wait"
-        mobile-breakpoint = 0
-        disable-pagination
-        item-key="name"
-        show-select
-        dense
-        clipped
-        fixed-header
-        :class="this.$vuetify.theme.dark "
-        hide-default-footer
-        @click:row = "row_clicked"
-        @item-selected="item_selected"        
-        >
-    </v-data-table>
+        <v-data-table
+            v-model="selected"
+            :headers="headers"
+            :items="__m_items"
+            :search = "search"
+            :height = "__m_height"
+            :loading = "loading"
+            loading-text="Loading... Please wait"
+            mobile-breakpoint = 0
+            disable-pagination
+            item-key="name"
+            show-select
+            dense
+            clipped
+            fixed-header
+            :class="this.$vuetify.theme.dark "
+            hide-default-footer
+            @click:row = "row_clicked"
+            @item-selected="item_selected"
+            @toggle-select-all = 'item_selected'  
+            >
+        </v-data-table>        
 </div>
 `
 
 const M_FILTER_SIDEBAR = `
-<v-card>
+<v-card >
     <v-container>
         <v-row dense>
             <v-col>
@@ -526,39 +566,7 @@ const M_FILTER_SIDEBAR = `
                     step = 0.1
                     ticks
                     >
-                </v-range-slider>
-                <!--
-                <v-row>
-                    <v-col cols = "5">
-                    <v-row class = "float-left">
-                        <v-col col = "6" >Min : </v-col>
-                        <v-col col = "6">
-                            <v-text-field
-                                v-model = "rr_range[0]"
-                                label="min__risk_reward"
-                                disable
-                                solo
-                                dense
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    </v-col>
-                    <v-spacer></v-spacer>
-                    <v-col cols = "5">
-                    <v-row class = "float-right">
-                        <v-col col = "6">Max</v-col>
-                        <v-col col = "6">
-                            <v-text-field
-                                v-model = "rr_range[1]"
-                                label="min__risk_reward"
-                                disable
-                                solo
-                                dense
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    </v-col>
-                </v-row> -->
+                </v-range-slider>                
         </v-col>        
     </v-row>
 
@@ -591,43 +599,8 @@ const M_FILTER_SIDEBAR = `
                     ticks
                     >
                 </v-range-slider>
-                <!--
-                <v-row>
-                    <v-col cols = "5">
-                        <v-row class = "float-left">
-                            <v-col cols = "6" >Min : </v-col>
-                            <v-col cols = "6">
-                                <v-text-field
-                                    v-model = "pp_range[0]"
-                                    label="min__profit_percentage"
-                                    disable
-                                    solo
-                                    dense
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                    <v-spacer></v-spacer>
-                    <v-col cols = "5">
-                        <v-row class = "float-right">
-                            <v-col cols = "6">Max</v-col>
-                            <v-col cols = "6">
-                                <v-text-field
-                                    v-model = "pp_range[1]"
-                                    label = "max__profit_percentage"
-                                    disable
-                                    solo
-                                    dense
-                                ></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-col>
-                </v-row> -->
         </v-col>        
     </v-row>
-
-
-
     </v-container>
 
 
@@ -642,74 +615,97 @@ const M_TABLE_WRAPPER = `
 `
 
 const M_DRAWER_FILTER = `
-
+<div
+>
 <v-navigation-drawer
-        v-model="drawer"
-        :expand-on-hover="true"
-        :permanent="true"
-        width = "30vw"
-        absolute
-        style = "z-index:100;"
-        floating
+        v-model="drawer"        
+        fixed
+
+        temporary        
+        height = "100vh"
+        width = "80vw"
+        
       >
-        <v-list-item
-            link
+        <v-list-item        
             >
-            <v-list-item-icon class = "mr-1">
-              <v-icon class="fa fa-filter blue--text darken-4--text" aria-hidden="true"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content collapse>
+            <v-list-item-content >
 
                 ${M_FILTER_SIDEBAR}
             </v-list-item-content>
         </v-list-item>   
-    
+        <v-list-item
+            link
+            >
+            <v-list-item-content class = "text-center">
+                <a class="navbarlogo" href="{%url 'index'%}">
+                    <img id="logo" src="/static/algonauts.png" width="80vh" height="auto">
+                </a>
+            </v-list-item-content>
+        </v-list-item> 
 </v-navigation-drawer>
+</div>
+
 `
 
 const M_NAVIGATOR = `
-    <v-card
-    flat
-    class="m-0 p-0"
-    style= "background : transparent"
-    >
-            <v-row
-                align="center"
-                justify="center"
-            >                
-                <v-btn-toggle
-                    v-model="toggle_exclusive"            
-                    mandatory                    
-                    @change="change_state"
-                    rounded
-                    
-                    class = "mb-1"
-                >
-                    <v-btn active-class="active-head" class = "p-4">
-                        
-                                <span class = "title" > Intraday </span>
-                    </v-btn>
-                    <v-btn active-class="active-head" class = "p-4">
-                        <span class = "title" > BTST </span>
-                    </v-btn>
-                    <v-btn active-class="active-head" class = "p-4">
-                        <span class = "title" > Positional </span>
-                    </v-btn>
-                    <v-btn active-class="active-head" class = "p-4">
-                        <span class = "title" > Longterm </span>
-                    </v-btn>
-                </v-btn-toggle>
-            </v-row>
-        
-    </v-card>
+        <v-item-group
+            v-model="toggle_exclusive"            
+            mandatory
+            @change="change_state" 
+        >
+            <v-container>
+                <v-row>
+                    <v-col                
+                    cols="12"
+                    md="3"
+                    v-for = "n in 4" 
+                    class="py-0"
+                    >
+                    <div v-if="false"> loop starts with 1 </div>
+                        <v-item v-slot:default="{ active, toggle }" active-class="active-head" class = "p-4" :value = "n">
+                            <v-card                                
+                                
+                                @click="toggle"
+                                no-gutters
+                                dense
+                                class="align-center py-2 text-center mx-2 temp-white"
+
+                                style="cursor: pointer;"
+
+                            >
+                            <span class = "title text-center" >{{portfolios[n - 1].toUpperCase()}} </span>
+                            </v-card>
+                        </v-item>
+                    </v-col>
+                </v-row>
+            </v-container>
+        </v-item-group>    
 `
 
 const M_APP = `
-<v-app>
-<v-container fluid class = "blue lighten-5">
-    <m-navigator class = "p-0"></m-navigator>
+<v-app     
+    v-touch="{
+        left: () => swipe('left'),
+        right: () => swipe('right'),
+        up: () => swipe('up'),
+        down: () => swipe('down')
+    }"
+    style="min-height: 50vh;">
+<v-container fluid class = " blue lighten-5 container-fluid" style="min-width: 40vh;max-width: 10000px;">
     <v-row>
+        <v-col
+            v-if="!is_mobile()"
+            style="width: 21%; flex: 1 0 21%;max-width:22%;" 
+        >
+
+        </v-col>
+        <v-col class="p-0">
+            <m-navigator class = "p-0"></m-navigator>
+        </v-col>
+    </v-row>
+    <v-row>    
         <v-col 
+            v-if = "!is_mobile()"
             style="width: 21%; flex: 1 0 21%;max-width:22%;" 
             class = "p-0">
             <v-row>
@@ -717,12 +713,15 @@ const M_APP = `
                     <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
                 </v-col>
             </v-row>
-         </v-col>
-        <v-col> 
+        </v-col>
+        <v-col v-else>
+            <m-filter-sidebar ></m-filter-sidebar>
+        </v-col>
+        <v-col :cols= "is_mobile() ? '12' : ''"> 
             <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
          </v-col>
     </v-row>
-    <!-- <m-filter-sidebar ></m-filter-sidebar>
+    <!-- <m-filter-sidebar :drawer = "drawer"></m-filter-sidebar>
     <div style = "margin-left : 5vw !important;">
         <m-navigator ></m-navigator>
         <m-table-wrapper ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
