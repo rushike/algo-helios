@@ -662,7 +662,7 @@ const M_NAVIGATOR = `
                     class="py-0"
                     >
                     <div v-if="false"> loop starts with 1 </div>
-                        <v-item v-slot:default="{ active, toggle }" active-class="active-head" class = "p-4" :value = "n">
+                        <v-item v-slot:default="{ active, toggle }" active-class="active-head" class = "p-4" :value = "n - 1">
                             <v-card                                
                                 
                                 @click="toggle"
@@ -673,7 +673,7 @@ const M_NAVIGATOR = `
                                 style="cursor: pointer;"
 
                             >
-                            <span class = "title text-center" >{{portfolios[n - 1].toUpperCase()}} </span>
+                            <span class = "title text-center" >{{portfolios[n-1].toUpperCase()}} </span>
                             </v-card>
                         </v-item>
                     </v-col>

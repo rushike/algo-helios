@@ -119,15 +119,14 @@
                     <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="{% url 'feedback' %}">Feedback</a></li>
                     <li class="dropdown-item" href=""><a class = "link-unstyled dark-gray" href="/worker/mercury">Mercury</a></li>
                     <li class="dropdown-item" href="">
-                        <a class = "link-unstyled dark-gray">
                             <form method="post" id="logout" action="{% url 'account_logout' %}">
                                 {% csrf_token %}
                                 {% if redirect_field_value %}>
                                     <input name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" hidden/>    
                                 {% endif %}
-                                <button id = "logout-btn" class="btn btn-sm border-0" type="submit" style="padding:0px;">Sign Out</button>
+                                <!-- <button id = "logout-btn" class="btn btn-sm border-0" type="submit" style="padding:0px;">Sign Out</button> -->
+                                <a type = submit onclick="this.closest('form').submit();return false;" class = "link-unstyled dark-gray" href="/worker/mercury">Sign Out</a>
                             </form>
-                        </a>
                     </li>
                 </ul>
             </li>
