@@ -29,7 +29,6 @@ const store = new Vuex.Store({
         // updates in mutations
         update_state : (state, state_dict)=>{        
             state.state.update(state_dict)
-            console.log("mutation :state dict is ", state_dict)
         },
 
         update_product_data : (state, product_data_dict)=>{        
@@ -49,8 +48,9 @@ const store = new Vuex.Store({
            var data = (await axios.post('/subscriptions/mercury-product-data/', {} )).data
            
            context.commit('update_product_data', data)
-           
-           console.log(PRODUCT_DATA)
+           console.log('====================================');
+           console.log("data from DB", data);
+           console.log('====================================');
         }
     }
 });

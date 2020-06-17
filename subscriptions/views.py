@@ -177,31 +177,31 @@ def create_order(request):
                 "payment_capture" : 1, 
             }
     POST["group_emails"] = group_mails
-    try : 
-        plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
-        invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
-        order = client.order.fetch(invoice["order_id"])
-        order["receipt"] = order_receipt
-        POST["invoice_id"] = invoice["id"]
-        POST["razorpay_order_id"] = order["id"]
-        request.session["order_details_post"] = POST
-        user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
-        subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
-        context = {
-            "order_id" : order["id"],
-            "amount" : int(amount * 100), # Stores, Operates in paise
-            "currency" : order_currency,
-            "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
-            "name" : " ".join([request.user.first_name, request.user.last_name]),
-            'email' : request.user.email,
-            'contact' : request.user.contact_no,
-            'razorpay_key' : RAZORPAY_KEY,
-            'group_emails' : group_mails,
-            'notes' : notes
-        }
-    except Exception as e:
-        logger.error(f"Error Occured : {e}")
-        return JsonResponse({'Exception' : str(e)})
+    # try : 
+    plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
+    invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
+    order = client.order.fetch(invoice["order_id"])
+    order["receipt"] = order_receipt
+    POST["invoice_id"] = invoice["id"]
+    POST["razorpay_order_id"] = order["id"]
+    request.session["order_details_post"] = POST
+    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
+    subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
+    context = {
+        "order_id" : order["id"],
+        "amount" : int(amount * 100), # Stores, Operates in paise
+        "currency" : order_currency,
+        "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
+        "name" : " ".join([request.user.first_name, request.user.last_name]),
+        'email' : request.user.email,
+        'contact' : request.user.contact_no,
+        'razorpay_key' : RAZORPAY_KEY,
+        'group_emails' : group_mails,
+        'notes' : notes
+    }
+    # except Exception as e:
+    #     # logger.error(f"Error Occured : {e}")
+    #     return JsonResponse({'Exception' : str(e)})
     # return render(request, 'subscriptions/payment.html', context = context)
     return JsonResponse(context)
 
@@ -225,24 +225,24 @@ def create_order2(request):
             }
     POST["group_emails"] = group_mails
     request.session["order_details_post"] = POST
-    try :
-        order = client.order.create(data = DATA)
-        user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
-        subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
-        context = {
-            "order_id" : order["id"],
-            "amount" : amount,
-            "currency" : order_currency,
-            "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
-            "name" : " ".join([request.user.first_name, request.user.last_name]),
-            'email' : request.user.email,
-            'contact' : request.user.contact_no,
-            'razorpay_key' : RAZORPAY_KEY,
-            'group_emails' : group_mails
-        }
-    except Exception as e:
-        logger.error(f"Error Occured : {e}")
-        return JsonResponse({'Exception' : str(e)})
+    
+    order = client.order.create(data = DATA)
+    user_group_id = users.functions.get_user_group(user = request.user, group_type = group_type, create=True)
+    subscriptions.functions.register_order(user_group_id = user_group_id, razorpay_order = order)
+    context = {
+        "order_id" : order["id"],
+        "amount" : amount,
+        "currency" : order_currency,
+        "plan_details" : "|".join([plan_type, '-'.join(plan_name.split()), group_type]),
+        "name" : " ".join([request.user.first_name, request.user.last_name]),
+        'email' : request.user.email,
+        'contact' : request.user.contact_no,
+        'razorpay_key' : RAZORPAY_KEY,
+        'group_emails' : group_mails
+    }
+    # except Exception as e:
+    #     # logger.error(f"Error Occured : {e}")
+    #     return JsonResponse({'Exception' : str(e)})
     return render(request, 'subscriptions/payment.html', context = context)
 
 def payment_success(request):

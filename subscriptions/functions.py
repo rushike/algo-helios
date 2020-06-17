@@ -190,12 +190,14 @@ def get_context_for_plans2(user=None):
     for i, group_type in enumerate(user_groups):
         plan_group_id = str(group_type).lower()
         # context.append([[], group_type])
-        context[group_type.max_members] = {"group_type" : group_type.type_name}
+        context[group_type.max_members] = {"group_type" : group_type.type_name, "eligible_for_trial": group_type.eligible_for_trial}
 
         for j, plan_type in enumerate(plan_types):
             
             plan_type_id = str(plan_type).lower()
-            context[group_type.max_members][plan_type.type_name.lower()] = {}
+            context[group_type.max_members][plan_type.type_name.lower()] = {
+                "trial_applicable": plan_type.trial_applicable
+            }
             # context[i][0].append([[], plan_type])
             plans = Plan.objects.filter(plan_type_id = plan_type, user_group_type_id = group_type)  
             plans = sorted(plans, key = lambda plan: plan.plan_name)
@@ -237,8 +239,8 @@ def is_trial_applicable(group_type, plan_type, plan_name):
 def already_had_trial(user, group_type, plan_type, plan_name):
     user = users.functions.get_user_object(user)
     plan_id = Plan.objects.filter(plan_name__iexact = plan_name).order_by('expiry_time').last()
-    group_type_id = UserGroupType.objects.filter(type_name = group_type).last()
-    plan_type_id = PlanType.objects.filter(type_name = plan_type).last()
+    group_type_id = UserGroupType.objects.filter(type_name__iexact = group_type).last()
+    plan_type_id = PlanType.objects.filter(type_name__iexact = plan_type).last()
     if not plan_type_id.trial_applicable or not group_type_id.eligible_for_trial: return True
     user_groups = UserGroupMapping.objects.filter(user_profile_id = user).values("user_group_id")
     user_group_id_ = UserGroup.objects.filter(user_group_type_id = group_type_id, id__in = user_groups)

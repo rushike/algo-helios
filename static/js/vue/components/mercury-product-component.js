@@ -17,8 +17,7 @@ const m_product_timeline = Vue.component('m-product-timeline', {
 const mercury_plans = Vue.component('mercury-plans', {
     template : MercuryPlans,
     created() {
-        console.log(this)
-        console.log(this.$store)
+        
         this.$store.dispatch('load_product_data', {})
         
     },
@@ -33,13 +32,19 @@ const mercury_plans = Vue.component('mercury-plans', {
             return x ? Object.keys(x) : [];
         },
 
+        trial_apply(){
+            var current_state = this.$store.getters.state; 
+            var product_data = this.$store.getters.product_data;
+            return product_data ? product_data[current_state.group_type].eligible_for_trial && product_data[current_state.group_type].premium.trial_applicable : false
+        },
+
+
         group_type_selected : {
             get() {
                 return this.$store.getters.state.group_type
             },
             set(value){
-                console.log(value)
-                console.log(typeof value)
+                
                 this.$store.commit('update_state',{
                     // group_type : parseInt(this.group_types[value])
                     group_type : value
@@ -55,13 +60,23 @@ const mercury_plans = Vue.component('mercury-plans', {
 
         subscription_period_selected : {
             get() {
-                return this.$store.getters.state.subscription_period
+                return this.$store.getters.state.subscription_period == MONTHLY ? false : true
             },
             set(value){
+                if ( value ) 
+                { 
+                        this.$store.commit('update_state',{
+                        subscription_period : YEARLY
+                    })
                 
-                this.$store.commit('update_state',{
-                    subscription_period : value ? YEARLY : MONTHLY
-                })
+                }
+
+                else 
+                {
+                        this.$store.commit('update_state',{
+                        subscription_period : MONTHLY
+                    })
+                }
             }
         },
 
@@ -102,7 +117,7 @@ const mercury_plans = Vue.component('mercury-plans', {
             if (!product_data)
                 { return [] }
 
-            return product_data[current_state.group_type].premium.mercury.data.map(v=>v.split('#')[1])
+            return product_data[current_state.group_type].premium.mercury.data.map(v=>v.split('#')[1]).filter(v=>v)
         },
 
         get_basic_products() {
@@ -112,7 +127,11 @@ const mercury_plans = Vue.component('mercury-plans', {
             if (!product_data)
                 { return [] }
 
-            return Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1])
+            console.log('====================================');
+            console.log(Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1]));
+            console.log('====================================');
+
+            return Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1]).filter(v=>v)
         },
 
         basic_product_name_selected : {

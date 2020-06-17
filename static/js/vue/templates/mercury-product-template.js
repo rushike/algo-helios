@@ -46,7 +46,7 @@ const MercuryPlans = `
 		<div class="row d-flex justify-content-around">
 
 		<div class="col-md-3">
-			<div class="card text-center mb-4 shadow-sm">
+			<div class="card text-center mb-4 shadow-sm elevation-4">
             <div class="card-header dark_blue_color text-light rounded shadow-lg">
             <h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} <small class="text">/ mo</small></h4>
             </div>
@@ -62,29 +62,49 @@ const MercuryPlans = `
                 label="Select Investment Type"
                 solo
                 dense
-              ></v-select>
+              >
+                <template v-slot:item="{item}" >
+                    <span v-if="item == 'btst'">
+                        {{ item.toUpperCase() }}
+                    </span>
+                    <span v-else>{{ item.charAt(0).toUpperCase() }}{{ item.slice(1).toLowerCase() }}
+                    </span>
+                </template>
+
+                <template v-slot:selection="{item}" >
+                    <span v-if="item == 'btst'">
+                        {{ item.toUpperCase() }}
+                    </span>
+                    <span v-else>{{ item.charAt(0).toUpperCase() }}{{ item.slice(1).toLowerCase() }}
+                    </span>
+                </template>
+
+              </v-select>
             </div>
+
             <ul class="list-unstyled list-inline text-center align-items-center">
               <li v-for="basic_product in get_basic_products" 
               class="pr-5">
-                <span v-if = "basic_product_name_selected == basic_product">
-                    <i class="fa fa-check" aria-hidden="true" 
+                <span>
+                  <div class="row">
+                    <i v-if = "basic_product_name_selected == basic_product" class="fa fa-check mr-2" aria-hidden="true" 
                     style="font-size:20px;color:green">
                     </i>
-                    {{ basic_product }}
-                </span>
-
-                <span v-else>
-                    <i class="fa fa-close mr-4" aria-hidden="true" 
+                    <i v-else class="fa fa-close mr-4" aria-hidden="true" 
                     style="font-size:20px;color:red">
                     </i>
-                    {{ basic_product }}
+                    <span v-if="basic_product == 'btst'">
+                      {{ basic_product.toUpperCase() }}
+                    </span>
+                    <span v-else>{{ basic_product.charAt(0).toUpperCase() }}{{ basic_product.slice(1).toLowerCase() }}
+                    </span>
+                  </div>
                 </span>
               </li>
             </ul>
             <form method = "POST" action="/subscriptions/plan-data"> 
                 <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
-                <input class="periodcode" name = "period"  :value="subscription_period_selected" hidden></input>
+                <input class="periodcode" name = "period"  :value="$store.getters.state.subscription_period" hidden></input>
                 <input class="plancode" name= "plancode"   :value="'basic'" hidden></input>
                 <input class="planname" name= "planname"   :value='$store.getters.state.plan_name' hidden></input>
                 <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
@@ -96,7 +116,7 @@ const MercuryPlans = `
     </div>
     
     <div class="col-md-3">
-			<div class="card text-center mb-4 shadow-sm">
+			<div class="card text-center mb-4 shadow-sm elevation-2">
           <div class="card-header dark_blue_color text-light rounded shadow-lg">
           <h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} <small class="text">/ mo</small></h4>
           </div>
@@ -105,13 +125,25 @@ const MercuryPlans = `
           <small class="mt-3 mb-5">*Includes all Investment Types</small>
           <ul class="list-unstyled text-center" style="margin-top: 55px;">
             <li v-for="premium_product in get_premium_products" class="pr-5">
-              <i class="fa fa-check mr-4" aria-hidden="true" 
-              style="font-size:20px;color:green">
-              </i>
-              {{ premium_product }}
+              <div class="row">
+                <i class="fa fa-check mr-4" aria-hidden="true" 
+                style="font-size:20px;color:green">
+                </i>
+                {{ premium_product }}
+              </div>
             </li>
           </ul>
-          <button class="btn btn-sm dark_blue_color text-light">Subscribe</button>
+          <form method = "POST" action="/subscriptions/plan-data"> 
+            <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
+            <input class="periodcode" name = "period"  :value='$store.getters.state.subscription_period' hidden></input>
+            <input class="plancode" name= "plancode"   :value="'premium'" hidden></input>
+            <input class="planname" name= "planname"   :value="'mercury'" hidden></input>
+            <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
+            
+            <button v-if="trial_apply" type="submit" class="btn btn-sm dark_blue_color text-light">Trial</button>
+            
+            <button v-else type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
+          </form>
           </div>
       </div>
       

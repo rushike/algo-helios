@@ -22,6 +22,7 @@ const STATE = {
     },
     update(props){
         if(!props) return this
+
         if(props.group_type) this.group_type = props.group_type
         if(props.plan_type) this.plan_type = props.plan_type
         if(props.subscription_period) this.subscription_period = props.subscription_period

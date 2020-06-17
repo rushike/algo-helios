@@ -137,9 +137,9 @@ class SubscriptionType(models.Model):
 class SubscriptionManager(models.Manager):
     def create_subscription(self, user, group_type, plan_type, plan_name, period, payment_id):
         # user_plan is an array type
-        user_group_type_id = UserGroupType.objects.filter(type_name = group_type).first() # group type is string 
-        plan_type_id = PlanType.objects.filter(type_name = plan_type).first() # plan type is string
-        plan_id = Plan.objects.filter(plan_name=plan_name, user_group_type_id = user_group_type_id, plan_type_id = plan_type_id).first()
+        user_group_type_id = UserGroupType.objects.filter(type_name__iexact = group_type).first() # group type is string 
+        plan_type_id = PlanType.objects.filter(type_name__iexact = plan_type).first() # plan type is string
+        plan_id = Plan.objects.filter(plan_name__iexact=plan_name, user_group_type_id = user_group_type_id, plan_type_id = plan_type_id).first()
         #one user linked with multiple groups
         user_group_id = UserGroup.objects.create_user_group(user_group_type_id, admin=user)
 
