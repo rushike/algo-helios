@@ -118,8 +118,12 @@
 	  font-weight: bold;
 	  border-bottom: 2px solid #004b96;
   }
+  .normal_font{
+	font-family: 'Open Sans', sans-serif;
+	font-size: 25px;
+  }
   .min_font{
-	  font-size: 15px;
+	  font-size: 20px;
 	  font-weight: bold;
   }
   
@@ -191,4 +195,12 @@
     .hide_this_desktop{
         display:none;
 	}
+}
+
+#yellow_banner {
+	/* background-image: "/static/img/premium_bg.svg"; */
+	background: url("/static/img/premium_bg.svg");
+	height: 10vh;
+	width: 35vh; 
+	/*margin-top: -3vh; */
 }
