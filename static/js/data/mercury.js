@@ -8,10 +8,21 @@ const NIFTY_50 = 256265
 
 const NIFTY_BANK = 260105
 
+const INTRADAY = "intraday"
+
 const PORTFOLIOS = ['', 'nifty50', 'intraday', 'btst', 'positional', 'longterm'];
 
 const TYPE = {};
 TYPE[OPTIONS_PROD] = OPTIONS; TYPE[STOCKS_PROD] = STOCKS;
+
+const User = {
+    init(email, first_name, last_name, notification){
+        this.email = email
+        this.first_name = first_name
+        this.last_name = last_name
+        this.notification = notification
+    }
+}
 
 const KEY_2_LABEL = {
     ticker : "Ticker",
@@ -20,9 +31,9 @@ const KEY_2_LABEL = {
     time : "Signal Time",
     signal_time : "Signal Time",
     signal_price : "Signal Price",
-    price : "Signal Price",
-    target_price : "Target Price",
-    stop_loss :  "Stop Loss",
+    price : "Call Price",
+    target_price : "TP",
+    stop_loss :  "SL",
     profit : "Profit %",
     status : "Status",  
     underlying : "Underlying",
@@ -214,7 +225,7 @@ class Signal{
         this.signal = signal
         // signal_time = 2020-05-26T11:59:46.212353+05:30
         // time = 05/26/2020, 11:59:46        
-        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM YY, h:mm')
+        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM, h:mm')
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
@@ -318,3 +329,34 @@ class OptionsSignal{
     }
     
 }
+
+const Notifications = {
+    data : [],
+    expiry : 0,
+    clear : null,
+    async init(){
+        var notifications;
+        console.log("console : ", notifications);
+        var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
+        console.log("console : ", notifications);
+        this.data.length = 0
+        notifications.data.forEach(v=>{
+            this.data.push(v)
+        });        
+        this.expiry = notifications.expiry
+        this.clear = notifications.clear
+    },
+    update(notifications){
+        console.log("notifiaction :::::::::::::: ", notifications);
+        
+        // this.data = notifications.data
+        this.data.length = 0
+        notifications.data.forEach(v=>{
+            this.data.push(v)
+        });
+        this.expiry = notifications.expiry
+        this.clear = notifications.clear
+        console.log("notifiaction :::::::::::::: ", this);
+    }
+}
+// Notifications.init()

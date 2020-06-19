@@ -20,7 +20,8 @@ const store = new Vuex.Store({
         loaded : false,
         filter_loaded : false,
         mobile_settings_toggle : false,
-        drawer : false
+        drawer : false,
+        notifications : Notifications
     },
     getters: {
         state : (state, getters)=>{
@@ -62,6 +63,9 @@ const store = new Vuex.Store({
         drawer : function(state, getters){
             return state.drawer
         },
+        notifications : function(state, getters){
+            return state.notifications
+        }
     },
     mutations: {
         /**
@@ -248,8 +252,12 @@ const store = new Vuex.Store({
         },
         do_from_store(state, {callback, params}){
             callback(state, params)
+        },
+        update_notifications(state, notifications){
+            state.notifications.update(notifications)
         }
     },
+    
     actions: {
         async refresh_table(context, options){
             console.log("options : ", options)
@@ -287,6 +295,7 @@ const store = new Vuex.Store({
                 text : 'Action',
                 label : 'Action',
                 sortable : false,
+                width : "85px"
             })
             context.commit('update_fields', head_list)
             context.commit('update_selected_fields', head_list)
@@ -423,6 +432,13 @@ const store = new Vuex.Store({
         update_equity_call(context, signal_update){
             context.commit("update_signal", signal_update)
         },
+        async load_notifications(context){
+            var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
+            console.log("notification :::: ", notifications);
+            
+            context.commit("update_notifications", notifications)
+            
+        }
     }
 });
 

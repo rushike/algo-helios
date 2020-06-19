@@ -24,7 +24,7 @@ def mercury(request):
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 def mercury2(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
@@ -135,7 +135,7 @@ def get_calls_from_db(request):
         logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
     subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
-    return JsonResponse({'calls' : worker.functions.filter_calls_from_db(user, all_calls), 'subs-active' : subs_active}, safe= False)
+    return JsonResponse({'calls' : worker.functions.serialize_data( all_calls), 'subs-active' : subs_active}, safe= False)
 
 @login_required(login_url = '/accounts/login/')
 def get_calls_from_db2(request):

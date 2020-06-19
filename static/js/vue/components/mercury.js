@@ -1,3 +1,86 @@
+/**
+ * Trade Modal
+ */
+const MTradeModal = Vue.component('m-trade-modal', {
+    props : ['item'],
+    data : () =>{
+        return {
+            broker : 'Zerodha',
+            instrument_name : 'Nifty 50',
+            order_type : '',
+            exec_type : '',
+            quantity : 1,
+            disclosed_quantity : 1,
+            trailing_stop_loss : 0,
+            trigger_price : 0,
+            // quantity : 0,
+            // show : this.item ? true : false
+        }
+    },
+    computed : {
+        show: {
+            get(){
+                return this.item ? true : false
+            },
+            set(value){
+                
+            }
+        },
+        trade_type:{
+            get(){
+                return this.$store.getters.state.portfolio == INTRADAY ? "MIS" : "CNC";
+            },
+            set(value){
+
+            }
+        },
+    },
+    methods : {
+        closed(){
+            this.$emit('closed')
+        },
+        place_order(){
+            var self = this;
+            console.log("self : ", self);
+            function kite_warpper(self){    
+                return function() {
+                    // You can initialize multiple instances if you need
+                    var kite = new KiteConnect("tpisubdoz4a7cskn"); // Initialize a new Kite instance
+                    console.log("self : ", self);
+                    
+                    var trade_input = {
+                        "tradingsymbol": self.item.ticker,//$('#trade_ticker').text(),
+                        "exchange": "NSE",
+                        "transaction_type": self.item.signal,//$('#trade_action2').text(),
+                        "order_type": self.order_type, //$('input[name="order_type"]:checked').val(),
+                        "product": self.trade_type ,//$('input[name="trade_type"]:checked').val(),
+                        "price": parseFloat(self.item.price) ,// parseFloat($('input[name=price]').val()),
+                        "quantity": parseFloat(self.quantity),//parseInt($('input[name=quantity]').val()),
+                        "variety": self.exec_type,//$('input[name="exec_type"]:checked').val(),
+                        "stoploss": parseFloat(self.item.stop_loss),//parseFloat($('input[name=stop_loss]').val()),
+                        "squareoff": parseFloat(self.item.target_price),//parseFloat($('input[name=target_price]').val()),
+                        "trailing_stoploss": parseFloat(self.trailing_stop_loss), //parseFloat($('input[name=trailing_stop_loss]').val()),
+                        "trigger_price": parseFloat(self.trigger_price), //parseFloat($('input[name=trigger_price]').val()),
+                        "disclosed_quantity": self.disclosed_quantity, //parseInt($('input[name=quantity]').val())
+                    }
+                    console.log(trade_input)
+                    // Add a Bracket Order
+                    kite.add(trade_input);
+
+                    // Register an (optional) callback.
+                    kite.finished(function(status, request_token) {
+                        alert("Order Placed!! Status is " + status);
+                    });
+
+                    // Render the in-built button inside a given target
+                    kite.link("#trade_action");
+                }
+            }
+            KiteConnect.ready(kite_warpper(self))
+        }
+    },
+    template : M_TRADE_MODAL,
+});
 
 
 /**
@@ -12,7 +95,9 @@ const MStockTable = Vue.component("m-stocks-table", {
                 name: 'flip-list'
             },
             filterOn : [],
+            trade_item : null,
             fields0 : "JUJ",
+            show : false,
             search_fields : "",
         }
     },
@@ -131,6 +216,14 @@ const MStockTable = Vue.component("m-stocks-table", {
                 return 'table-settings--mobile'; 
             return 'table-settings--desktop';
         },
+        show_trade_modal(item){
+            this.show = !this.show
+            if(this.trade_item){
+                this.trade_item = null
+            }else {
+                this.trade_item = item
+            }
+        }
     },
     template : M_STOCKTABLE_TEMPLATE_STRING,
 });
@@ -389,10 +482,10 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             this.$store.dispatch('refresh_table', {force, mercury})
         },
         allow_notification :  _.throttle(async function(){
-            this.notification = !this.notification
+            // this.notification = !this.notification
             var data =  (await axios.post('/user/toggle-notification/', {})).data
             this.notification = data['allow_notification']
-        }, 10000),       
+        }, 3000),       
         show_table_settings__class(){
             var mobile_settings_toggle = store.getters.mobile_toggle
             if(helpers.is_mobile() || mobile_settings_toggle){                
@@ -784,6 +877,9 @@ const MApp = Vue.component('m-app', {
             drawer : false,
         }
     },
+    created(){
+        this.$store.dispatch("load_notifications")
+    },
     computed : {
         type : {
             get(){
@@ -794,9 +890,27 @@ const MApp = Vue.component('m-app', {
                 console.log("radio toggle | value : ", value, ", type : ", type)
                 this.$store.dispatch('change_state', {'type' : type})
             }
-        }
+        },
+        user (){
+            return User
+        },
+        notifications (){
+            var notis = this.$store.getters.notifications.data
+            var displayers = []
+            notis.forEach(v=>{
+                var display = {}
+                display.title = PORTFOLIOS[v.portfolio_id].toUpperCase() +  '- ' + " - " + v.ticker.toUpperCase() + " - " + v.signal
+                display.subtitle = `<span class='text--primary'>${v.status.toUpperCase()}</span> &mdash; Price : ${v.price}, Target Price : ${v.target_price}, Stop Loss : ${v.stop_loss}`
+                displayers.push(display)
+            })
+            return displayers
+        },        
     },
     methods : {                
+        notifications_ (){
+            console.log(Notifications.data)
+            return Notifications.data
+        },
         forceRerender : function() {            
             this.tablekey += 1        
         },
@@ -811,7 +925,11 @@ const MApp = Vue.component('m-app', {
             if(direction=='left'){
                 this.$store.commit("update_drawer", false)
             }
-        }    
+        },
+        get_csrf_token(){
+            return $("input[name='csrfmiddlewaretoken']").val()
+    
+        },
     },
     template : M_APP,
     components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}

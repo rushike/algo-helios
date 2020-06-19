@@ -1,231 +1,153 @@
-
-class Tick{
-    constructor(instrument_id = 129, tick = 12){
-        this.instrument_id = instrument_id
-        this.tick = tick
-    }
-    update(tick){
-        this.tick = tick
-        return this
-    }
-    toString(){
-        return this.tick
-    }
-}
-
-class Profit{
-    constructor(instrument_id = 129, tick = 12, target_price, price){
-        this.instrument_id = instrument_id
-        this.tick = tick
-        this.target_price = target_price
-        this.price = price
-    }
-    update(tick, target_price, price){
-        this.tick = tick
-        this.target_price = target_price
-        this.price = price
-        return this
-    }
-    toString(){        
-        return ((this.tick - this.target_price) / this.price).toFixed(2)
-    }
-}
-
-class Signal{
-    constructor(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status){        
-        this.init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss,  status)        
-    }
-    init(call_id, ticker, ltp, signal, time, price, target_price, stop_loss, status){
-        var self = this
-        this.call_id = call_id
-        this.ticker = ticker
-        this.ltp = ltp
-        this.signal = signal
-        this.time = time
-        this.price = price
-        this.target_price = target_price
-        this.stop_loss = stop_loss
-        this.profit = {
-                    toString(){
-                        return (Math.abs(self.ltp - self.target_price) / self.price).toFixed(2)
-                    }
-                }
-        this.status = status
-        this.isActive = true
-    }
-    update(signal, status){
-        if(signal) this.signal = signal
-        if(status) this.status = status
-    }
-}
-
-class Data{
-    constructor(){
-        this.data = Table;
-        this.fields = []
-        this.items = []
-        this.instruments = {}
-        this.calls = {}
-        
-    }
-    
-    update_tick(instrument_id, ltp){
-        if(this.instruments[instrument_id] && this.instruments[instrument_id].ltp) {
-            this.instruments[instrument_id].ltp.update(ltp)
-        }else if(!this.instruments[instrument_id]) this.instruments[instrument_id] = {}
-        this.instruments[instrument_id].ltp = new Tick(instrument_id, ltp)
-        return this.instruments[instrument_id].ltp
-    }
-
-    /**
-     * dicts in data are in format specified from calls format in janus
-     * @param {String} portfolio_id intraday, btst, positional, longterm
-     * @param {String} nature equity, options
-     * @param {Array} data list of calls dictionaries
-     */
-    load_calls(portfolio_id, type, data, mercury){
-        // console.log("params :  portfolios_id : ", portfolio_id, ", type : ", type, ", data : ", data)
-        var data_list = this.data[STATE.market_type][STATE.market][STATE.type][portfolio_id].data
-        var head = this.data[STATE.market_type][STATE.market][STATE.type].header;
-        data_list.length = 0
-
-        data.forEach(value=>{
-            if(!this.calls[value["call_id"]]){
-                this.calls[value["call_id"]] = new Signal(
-                    value["call_id"],
-                    value["ticker"],
-                    value["ltp"],
-                    value["signal"],
-                    value["time"],
-                    value["price"],
-                    value["target_price"],
-                    value["stop_loss"],                    
-                    value["status"]
-                )
-            }else {
-                this.calls[value["call_id"]].update(
-                    value["signal"],
-                    value["status"]
-                )
-            }
-            data_list.push(this.calls[value["call_id"]])
-        })        
-        // Vue.set(mercury.vue_mercury.$refs.stocktable, "items", data_list)
-        Vue.set(mercury.vue_mercury, "items", data_list)
-        // Vue.set(store, "items", data_list)
-
-        // store.dispatch("refresh_table", data_list)
-        // mercury.vue_mercury.refresh_table(data_list)        
-    }
-}
-
-class MercuryTable{
-    constructor(props = {id : "test"}){
-        this.id = props.id;
-        this.data = new Data();
-        this.state = STATE    
-    }
-
-    get_portfolio(portfolio_id){    
-        if(typeof portfolio_id == Number){
-            return PORTFOLIOS[portfolio_id]
-        }else if(typeof portfolio_id == String){
-            if (PORTFOLIOS.includes(portfolio_id.lower())) return portfolio_id.lower()
+// PUSH Notifications
+async function tester(){
+    console.log("tester to config localfoarage");    
+    localforage.config({
+        driver      : localforage.INDEXEDDB, // Force WebSQL; same as using setDriver()
+        name        : 'mercury',
+        version     : 2.0,
+        size        : 4980736, // Size of database, in bytes. WebSQL-only for now.
+        storeName   : 'notifications', // Should be alphanumeric, with underscores.
+        description : 'notifications store'
+    });
+    console.log("config set.");
+    var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
+    if(!notifications || (notifications && notifications.constructor != Object)){
+        notifications = {
+            time : Date.now(),
+            expiry : 86400000,
+            data : []
         }
     }
+    await localforage.setItem("notifications", JSON.stringify(notifications))
+    console.log("demo created");
     
-    get_table_header(){
-        var head = this.data.data.indian_market.equity[this.state.type].header
-        console.log(head, this.data.data)        
-        var head_list = []//this.data.fields
-        Object.entries(head).forEach(([key, value]) => {
-            head_list.push(
-                {
-                    key : key,
-                    label : KEY_2_LABEL[key],
-                    sortable : value.sortable || false
-                }
-            )
-        });        
-        storex.fields = head_list
-        return head_list
-    }
+}
+tester()
+const registerSw = async () => {
+    if ('serviceWorker' in navigator) {
+        console.log("Will initialte sw.js NOTIFICATION")
+        const reg = await navigator.serviceWorker.register('/static/js/sw.js');
+        navigator.serviceWorker.addEventListener('message', event => {
+            // event is a MessageEvent object
+            console.log(`The service worker sent me a message: ${event.data}`);
+        });
+        initialiseState(reg)
+        console.log("initialted sw.js with reg : ", reg)
 
-    insert_option_call(portfolio_id){
-        portfolio_id = this.get_portfolio(portfolio_id)
+    } else {
+        console.log("Not eligible for push notifications!!")
     }
-    insert_equity_call(portfolio_id){
-        portfolio_id = this.get_portfolio(portfolio_id)
+};
+
+const initialiseState = (reg) => {
+    if (!reg.showNotification) {
+        console.log('Showing notifications isn\'t supported');
+        return
     }
-    reinit(){
-        document.getElementById(this.id).innerHTML = `<m-table-wrapper ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>`
-        // document.getElementById(this.id).innerHTML = M_STOCKTABLE_TEMPLATE_STRING
+    if (Notification.permission === 'denied') {
+        console.log('You prevented us from showing notifications');
+        return
     }
-    render(){
-        this.reinit()
-        this.get_table_header()
-            
-        this.vue_mercury = new Vue({ 
-            el: `#${this.id}`,
-            store,
-            vuetify: new Vuetify(),
-            data : {
-                state : storex.state,
-                // items: storex.items,
-                // fields: storex.fields,             
-            }, 
-            
-            created() {
-                // var head_list = this.$store.getters.fields
-                // this.$store.commit('update_fields', head_list)                
-                this.$store.dispatch('load_filters')
-                this.$store.dispatch('load_fields')
-            },
-            computed: {
-                sortOptions() {
-                  // Create an options list from our fields
-                  return this.fields
-                    .filter(f => f.sortable)
-                    .map(f => {
-                      return { text: f.label, value: f.key }
-                    })
-                },
-                items : {
-                    get(){
-                        return this.$store.getters.items
-                    },
-                    set(items_){
-                        this.$store.commit("update_items", items_);
-                    }
-                },
-                fields : {
-                    get(){
-                        return this.$store.getters.fields
-                    },
-                    set(fields_){
-                        return this.$store.commit("update_fields", fields_);
-                    }
-                },
-                headers : {
-                    get(){
-                        return this.$store.getters.fields
-                    },
-                    set(fields_){
-                        return this.$store.commit("update_fields", fields_);
-                    }
-                }
-              },
-              mounted() {
-                // Set the initial number of items
-                this.totalRows = this.items.length
-              },
-            methods : {
-                  onFiltered(filteredItems) {
-                    // Trigger pagination to update the number of buttons/pages due to filtering
-                    this.totalRows = filteredItems.length
-                    this.currentPage = 1
-                  }
+    if (!'PushManager' in window) {
+        console.log("Push isn't allowed in your browser");
+        return
+    }
+    subscribe(reg);
+}
+
+function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    const outputData = outputArray.map((output, index) => rawData.charCodeAt(index));
+
+    return outputData;
+}
+
+function request_permission(){
+    return new Promise(function(resolve, reject) {
+        const permissionResult = Notification.requestPermission(function(result) {
+            resolve(result);
+        });
+    
+        if (permissionResult) {
+          permissionResult.then(resolve, reject);
+        }
+    }).then(function(permissionResult) {
+            if (permissionResult !== 'granted') {                
+                const sub = reg.pushManager.subscribe(options);
+                sendSubData(sub)
             }
         });
-    }
 }
+
+const subscribe = async (reg) => {
+    const subscription = await reg.pushManager.getSubscription();
+    console.log("Subscribe : subscriptions : ", subscription)
+    if (subscription) {
+        sendSubData(subscription);
+        return;
+    }
+
+    const vapidMeta = document.querySelector('meta[name="vapid-key"]');
+    const key = vapidMeta.content;
+
+    const options = {
+        userVisibleOnly: true, 
+        // ...(key && {applicationServerKey: urlB64ToUint8Array(key)})// if key exists, create applicationServerKey property 
+    };
+    if(key) {
+        options.applicationServerKey = urlB64ToUint8Array(key)
+    }
+
+    // request_permission()
+    const sub = await reg.pushManager.subscribe(options);
+    sendSubData(sub)
+    
+};
+
+// TODOs
+// Get all products subscribed from backend
+// You get the list of products
+const sendSubData = async (subscription) => {
+    const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
+    groups = await fetch('/worker/user_channel_groups/')
+        .then(async (response) => {
+            return await response.json();
+        })
+
+
+    console.log("Groups await from channels are : ", groups, groups.length)
+    // Subscribe based on the groups eligible
+    for(var i = 0; i < groups.length; i++){
+        const data = {
+            status_type: 'subscribe',
+            subscription: subscription.toJSON(),
+            browser: browser,
+            group: groups[i],
+        };
+        console.log("Data to Webpush Save : ", data);
+        const res = await fetch('/webpush/save_information', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'content-type': 'application/json'
+            },
+            credentials: "include"
+        });
+
+        console.log("sendSubData res : is :  ", res)
+
+        handleResponse(res);
+    }
+};
+
+const handleResponse = (res) => {
+    console.log(res.status);
+};
+
+registerSw();

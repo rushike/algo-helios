@@ -209,12 +209,14 @@ async def send_notification_for_signal_or_signal_update(data):
     signal, portfolio_ids = data.get('signal'), data.get('portfolio_id')
     for portfolio_id in portfolio_ids:
         group_name = ConsumerManager().get_mapped_group(portfolio_id)
+        data["portfolio_id"] = portfolio_id
         if data_type == 'signal' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
             payload = {'head': f"{data.get('algo_category').upper()} - {signal} {ticker}",
-                    'body': f"{signal} {ticker} @ {data.get('price')} with "
-                            f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
-                            f"Risk Reward {data.get('risk_reward')} and "
-                            f"Profit Percentage {data.get('profit_percent')}",
+                    # 'body': f"{signal} {ticker} @ {data.get('price')} with "
+                    #         f"TP {data.get('target_price')}, SL {data.get('target_price')}, "
+                    #         f"Risk Reward {data.get('risk_reward')} and "
+                    #         f"Profit Percentage {data.get('profit_percent')}",
+                        "body" : json.dumps(data),
                         "icon":  ''.join([DOMAIN, '/static/img/algonauts.jpg']), 
                         'url': ''.join([DOMAIN, '/worker/mercury/'])
                         }
@@ -222,7 +224,8 @@ async def send_notification_for_signal_or_signal_update(data):
             await send_push_notification_on_check(group_name=group_name, payload=payload, ttl=1000)        
         elif data_type == 'signal_update' and portfolio_id != 5: # not sending notification for longterm, portfolio = 5
             payload = {'head': f"{data.get('algo_category').upper()} - {ticker} {data.get('status')}",
-                    'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
+                    # 'body': f"{ticker} {signal} signal {data.get('status')} at price {data.get('price')}",
+                    "body" : json.dumps(data),
                     "icon": ''.join([DOMAIN, '/static/img/algonauts.jpg']),
                     'url': ''.join([DOMAIN, '/worker/mercury/'])
                     }

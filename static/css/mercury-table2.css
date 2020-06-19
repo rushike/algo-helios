@@ -236,23 +236,6 @@ html, body{
     color: white !important;
 }
 
-.count_display {
-    color: dimgray;
-    padding-top: 6px;
-    letter-spacing: 1px;
-    text-align: center;
-}
-
-.count_display .param {
-    font-weight: 500 !important;
-    font-size: 14px;
-}
-
-.count_display .value {
-    color: darkslategray;
-    font-weight: 600 !important;
-    font-size: 16px;
-}
 
 .filter, .download, .refresh {
     color: #004b96;
@@ -353,9 +336,13 @@ h6 {
 }
 
 .head-tickers{
-    color: black !important;
-    font-size: 17px;
-      
+    color: #212529 !important;
+    font-size: 14px;      
+}
+
+.meta-text{
+    
+    font-size: 14px;
 }
 
 .head-ticks{
@@ -375,4 +362,8 @@ h6 {
     max-width: 100%;
     position: relative;
     overflow-y: hidden;
+}
+
+.text-shadow{
+    text-shadow: 2px 2px #292929;
 }

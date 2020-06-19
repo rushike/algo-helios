@@ -48,10 +48,10 @@ const MercuryPlans = `
 		<div class="col-md-3">
 			<div class="card text-center mb-4 shadow-sm elevation-4">
             <div class="card-header dark_blue_color text-light rounded shadow-lg">
-            <h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} <small class="text">/ mo</small></h4>
+            <h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} </h4>
             </div>
             <div class="card-body justify-content-center">
-            <h1 class="card-title pricing-card-title">BASIC</h1>
+            <h2 class="card-title pricing-card-title">BASIC</h2>
             <div class="justify-content-center w-100">
               <v-select
                 class="mx-auto overflow-hidden"
@@ -118,19 +118,19 @@ const MercuryPlans = `
     <div class="col-md-3">
 			<div class="card text-center mb-4 shadow-sm elevation-2">
           <div class="card-header dark_blue_color text-light rounded shadow-lg">
-          <h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} <small class="text">/ mo</small></h4>
+          <h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} </h4>
           </div>
           <div class="card-body">
           
           <span style="position: relative;" class="mb-3">
 
                 <img src="/static/img/premium_bg.svg" 
-                class=""
-                style="position: absolute; width: 40vh;left: -20vh; height: fixed;"
+                class="yellow-banner"
+                
                 />
 
                 <span style="position: relative;">
-                  <h1>PREMIUM</h1>
+                  <h2>PREMIUM</h2>
                 </span>
                 
           </span>
