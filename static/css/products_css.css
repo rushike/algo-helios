@@ -112,7 +112,12 @@
 	background-color: #004b96;
 	color: white;
   }
-
+  .max_font2{
+	font-size: 35px;
+	font-weight: bold;
+	border-bottom: 2px solid #7DDCFF;
+	/* margin: 0.5vw 2%; */
+  }
   .max_font{
 	  font-size: 35px;
 	  font-weight: bold;
@@ -194,6 +199,14 @@
     top: -14px !important;
     left: -26vh !important;
 }
+.v_center{
+	align-content: center;
+}
+
+@media (min-width: 0px) and (max-width: 500px) {
+    .hide_this_mobile {display:none;}
+}
+
 
 /* // Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) { 
@@ -203,9 +216,6 @@
 		/* height: 10vh; */
 		top: -42px !important;
 		left: -43vh !important;
-	}
-	.hide_this_mobile{
-        display:none;
 	}
 	#reduce_margin{
 		margin-top: 6vh !important;
@@ -223,12 +233,14 @@
  }
 
 /* // Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { .yellow-banner{
+@media (min-width: 992px) { 
+	.yellow-banner{
 		position: absolute !important; 
 		width: 34vh !important; 
 		left: -17vh !important;
 		top: 0px !important;
-	} }
+	} 
+}
 
 /* // Extra large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) { 
