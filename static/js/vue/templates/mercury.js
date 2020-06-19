@@ -3,7 +3,7 @@ const M_TRADE_MODAL = `
       <v-dialog v-if = "item" v-model="show" persistent max-width="600px">        
         <v-card>
           <v-card-title class="text-center mx-auto">
-            <span class="headline">{{item.ticker.toUpperCase()}}</span>
+            <span class="headline" style="font-size: 16px!important;">{{item.ticker.toUpperCase()}}</span>
           </v-card-title>
           <v-card-text>
             <v-container style="font-size: 13px;">
@@ -141,6 +141,120 @@ const M_TRADE_MODAL = `
 const M_STOCKTABLE_TEMPLATE_STRING = `
 <div>
     <m-trade-modal :item = "trade_item" @closed = "show_trade_modal()"></m-trade-modal>
+    <v-bottom-sheet v-model="sheet" persistent>
+        
+        <!-- <v-sheet class="text-center"> -->
+        <v-btn
+            class="mt-6"
+            text
+            color="white"
+            @click="show_details()"
+            style="font-size: 2rem;"
+        >×</v-btn>
+        <v-list v-if = "detail_item">
+            <v-list-item two-line>
+                <v-list-item-content>
+                  <v-list-item-title class="text-left" style="font-size: 16px;">{{detail_item.ticker.toUpperCase()}}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    <v-row>
+                        <v-col cols= "3">
+                                
+                                    <img 
+                                            v-if = "detail_item.follow"
+                                            class = "px-1 fa-2x" 
+                                            v-on:click="follow_my_trade(detail_item, false)" 
+                                            src="/static/img/pin-slash.svg"
+                                            style = "cursor:pointer; height : 12px;" 
+                                            ></img>
+                                            
+                                    <img 
+                                        v-else
+                                        class = "px-1 fa-2x" 
+                                        v-on:click="follow_my_trade(detail_item, true)" 
+                                        src="/static/img/pin.svg"                                     
+                                        style = "cursor:pointer; height : 12px;" 
+                                        aria-hidden="true"                                     
+                                        ></img>    
+                                
+                                <span>
+                                    Pin
+                                </span>
+                        </v-col>
+                        <v-col cols= "3">
+                            
+                                <img                                     
+                                class = "px-1 fa-2x" 
+                                v-on:click="delete_call(detail_item)" 
+                                src="/static/img/bin.svg" 
+                                data-toggle="tooltip" data-placement="top" title="Delete Call"
+                                style = "cursor:pointer; height : 12px;"                             
+                                ></img> 
+                            
+                            <span>
+                                Delete
+                            </span>
+                        </v-col>                            
+                    </v-row>
+
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-action>
+                    <button rounded type="button"  :class="detail_item.signal + '_btn trade elevation-7 ' + (detail_item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
+                                    data-target="#trade_modal">
+                        <span >            
+                            {{ detail_item.signal }}
+                        </span>
+                    </button>
+                  </v-list-item-action>
+              </v-list-item>
+              <div class="card px-3 border-bottom-0" style="font-size: 11px;font-weight: 500;">
+                <v-row>
+                    <v-col class="py-1">
+                        <span class="float-left">
+                            <span >Targert Price : </span>
+                            <span>{{detail_item.target_price}}</span>
+                        </span>
+                    </v-col>
+                    <v-col class="py-1">
+                        <span class="float-right">
+                            <span >LTP : </span>
+                            <span>{{detail_item.ltp}}</span>
+                        </span>
+                    </v-col>
+                </v-row>                
+                <v-row>
+                    <v-col class="py-1">
+                        <span class="float-left">
+                            <span >Stop Loss : </span>
+                            <span>{{detail_item.stop_loss}}</span>
+                        </span>
+                    </v-col>
+                    <v-col class="py-1">
+                        <span class="float-right">
+                            <span >Signal Price : </span>
+                            <span>{{detail_item.price}}</span>
+                        </span>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col class="py-1">
+                        <span class="float-left">
+                            <span >Signal Time : </span>
+                            <span>{{detail_item.time}}</span>
+                        </span>
+                    </v-col>
+                    <v-col class="py-1">
+                        <span class="float-right">
+                            <span >Profit % : </span>
+                            <span>{{detail_item.profit}}</span>
+                        </span>
+                    </v-col>
+                </v-row>
+            </div>
+        </v-list>
+
+        <!-- </v-sheet> -->
+    </v-bottom-sheet>
     <v-data-table
         :headers="fields"
         :items="filter_items"     
@@ -150,6 +264,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :loading = 'loading'
         loading-text="Loading... Please wait"
         :disable-pagination = "true"
+        
         :group-desc = "true"
         group-by = "follow"
         mobile-breakpoint = "500"
@@ -208,9 +323,47 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         <template v-slot:group.header="{group, groupBy}" >
               {{group}} {{groupBy}}
         </template>
-
+        
         <template v-slot:group="{group, options, items, headers}" >             
-                <tr v-for = "(item, index) in items" v-if = "item.visible" :class = "row_class(group, index, item, items)  + (item.ltp.instrument_id)" :id = "item.call_id">
+                <v-card v-for = "(item, index) in items" v-if = "is_mobile() && item.visible" :class="row_class(group, index, item, items) + ' border p-2 '" @click = "show_details(item)">   
+                    <v-container fluid style="font-size: 12px;">                 
+                        <v-row  >
+                            <v-col cols = "2" class = "p-1"  @click = "show_trade_modal(item)">
+                                <button rounded type="button"  :class="item.signal + '_btn trade elevation-7 ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
+                                    data-target="#trade_modal">
+                                    <span >            
+                                        {{ item.signal }}
+                                    </span>
+                                </button>
+                            </v-col>
+                            <v-col cols = "3" class = "p-1">
+                                {{item.ticker.toUpperCase()}}
+                            </v-col>
+                            <v-spacer></v-spacer>
+                            <v-col cols = "2" class = "p-1 pr-0">
+                                <span class="float-right">{{item.ltp}}</span>
+                            </v-col>
+                            <v-col cols = "2" class = "p-1">
+                                <span :class = "'badge elevation-7 ' + item.status.toLowerCase() + '_status float-right '">
+                                    {{ item.status }}
+                                </span>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols = "3"  class = "p-1">
+                                TP : {{item.target_price}}
+                            </v-col>
+                            <v-col cols = "3"  class = "p-1">
+                                SL : {{item.stop_loss}}
+                            </v-col>
+                            <v-spacer></v-spacer>                            
+                            <v-col cols = "3" class = "p-1">
+                                <span class="float-right">{{item.time}}</span>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                    </v-card>
+                <tr v-for = "(item, index) in items" v-else-if = "item.visible" :class = "row_class(group, index, item, items) + (item.ltp.instrument_id)" :id = "item.call_id">
                     <td  v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'" @click = "show_trade_modal(item)">
                             <button rounded type="button"  :class="item.signal + '_btn trade elevation-7 ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
@@ -318,11 +471,11 @@ const M_DATA_TABLE = `
 
 const M_DATA_TABLE_INFO = `
     <div class = "pb-1">
-    <v-row
+    <v-row        
         class="mx-3"
         no-gutters
         >
-        <v-col cols="12" md = "5"  class="p-0">
+        <v-col v-if = "!is_mobile()"  cols="12" md = "5"  class="p-0">
             <v-row >
                 <v-col cols = "6" md = "6" class = " p-3">
                     <span class = "head-tickers px-2">
@@ -339,36 +492,54 @@ const M_DATA_TABLE_INFO = `
             </v-row>
         </v-col>
         
-        <v-col cols ="12" md = "7" class = "text-center p-0">
+        <v-col cols ="7" md = "7" class = "text-center p-0 stats-wrapper">
             <v-row >
-                <v-col cols = "12" md = "6" class = "text-center p-0">
-                    <v-row>
-                        <v-col cols ="6" class = "text-center">                            
-                            <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold headline">{{meta.total}}</span>
-                            <span class = "total--text px-2 meta-text"> Total</span>
-                        </v-col>
-
-                        <v-col cols ="6" class = "text-center">                                                  
-                            <span pill color="green accent-3" :content = "'Partial HIT'" class = "partialhit_status--text font-weight-bold headline">{{meta.partial_hit}}</span>
-                            <span class = "partialhit_status--text px-2 meta-text"> Partial Hits</span>
-                        </v-col>
-                    </v-row>
+                <v-col cols ="3" class = "text-center p-0">                            
+                    <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold stats-head">{{meta.total}}</span><br v-if = "is_mobile()">
+                    <span class = "total--text  meta-text"> Total</span>
                 </v-col>
 
-                <v-col cols = "12" md = "6" class = "text-center p-0">
-                    <v-row>
-                        <v-col cols ="6" class = "text-center">
-                            <span pill color="green lighten-1"  :content = "'HIT'" class = "hit_status--text font-weight-bold headline">{{meta.hit}}</span>
-                            <span class = "hit_status--text px-2 meta-text">Hits</span>
-                        </v-col>
-
-                        <v-col cols ="6" class = "text-center">
-                            <span pill color="red" :content = "'MISS'" class = "miss_status--text font-weight-bold headline">{{meta.miss}}</span>
-                            <span class = "miss_status--text px-2 meta-text"> Miss</span>
-                        </v-col>
-                    </v-row>
+                <v-col cols ="3" class = "text-center p-0">                                                  
+                    <span pill color="green accent-3" :content = "'Partial HIT'" class = "partialhit_status--text font-weight-bold stats-head">{{meta.partial_hit}}</span><br v-if = "is_mobile()">
+                    <span class = "partialhit_status--text  meta-text"> Partial Hits</span>
                 </v-col>
+                <v-col cols ="3" class = "text-center p-0">
+                    <span pill color="green lighten-1"  :content = "'HIT'" class = "hit_status--text font-weight-bold stats-head">{{meta.hit}}</span><br v-if = "is_mobile()">
+                    <span class = "hit_status--text  meta-text">Hits</span>
+                </v-col>
+
+                <v-col cols ="3" class = "text-center p-0">
+                    <span pill color="red" :content = "'MISS'" class = "miss_status--text font-weight-bold stats-head">{{meta.miss}}</span><br v-if = "is_mobile()">
+                    <span class = "miss_status--text  meta-text"> Miss</span>
+                </v-col>                    
             </v-row>
+        </v-col>
+        <v-col v-if = "is_mobile()" cols = "5"  >
+            <v-row align="center" justify="center" :class = "is_mobile() ? 'text-center ' : 'float-right center pt-3' " >
+                <v-col cols = "12" class = "p-1" >
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="Download" >
+                                    <button class="btn download" v-on:click='download_as_csv()' style="margin: 0px;">
+                                        <small><span class="fa fa-download notify" style="font-size: 16px;"></span></small>
+                                    </button>
+                                </a>                            
+                    </span>
+                    <span >                      
+                                <a href="#" data-toggle="tooltip" data-placement="top" title="Refresh"  >
+                                    <button class="btn refresh" v-on:click = "refresh_table()" id = "refresh"  title="Refresh" style="margin: 0px;">
+                                        <small><span class="fa fa-refresh notify" style="font-size: 16px;"></span></small>
+                                    </button>
+                                </a>                           
+                    </span>
+                    <span>                       
+                                <span href="#" data-toggle="tooltip" data-placement="top" title="Notify" >
+                                    <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify" style="margin: 0px;">
+                                        <small v-if = "notification" ><span class="fa fa-bell-slash notify" style="font-size: 1rem;"></span></small>
+                                        <small v-else><span class="fa fa-bell notify" style="font-size: 16px;"></span></small>
+                                    </button>
+                                </span>                           
+                    </span>
+                </v-col>
+            </v-row>      
         </v-col>
     </v-row>
     
@@ -376,21 +547,7 @@ const M_DATA_TABLE_INFO = `
         class="mx-3"
         no-gutters
         >
-        <v-col cols = "12" md = "3" lg = "2" class = "mx-1">    
-            <v-select
-                class = "mx-1 elevation-1"
-                v-model="type"
-                :items="equity_type"
-                menu-props="auto"
-                label="Select"
-                hide-details          
-                single-line
-                dense
-                solo            
-                >
-            </v-select>    
-        </v-col>        
-        <v-col cols = "12" md = "4" lg = "3" class = "mx-1">
+        <v-col cols = "8" md = "4" lg = "3" class = "px-1">
             <v-text-field
                 v-model="search"
                 class = "px-1 p-1  blue lighten-5 elevation-3"
@@ -400,10 +557,27 @@ const M_DATA_TABLE_INFO = `
                 single-line
                 hide-details
                 dense
+                style="font-size: 10px;"
             ></v-text-field>
         </v-col>
+        
+        <v-col cols = "4" md = "3" lg = "2" class = "px-1">    
+            <v-select
+                class = "mx-1 elevation-1"
+                v-model="type"
+                :items="equity_type"
+                menu-props="auto"
+                label="Select"
+                hide-details          
+                single-line
+                dense
+                solo     
+                style="font-size: 10px;"       
+                >
+            </v-select>    
+        </v-col>        
         <v-spacer></v-spacer>
-        <v-col cols = "12" md = "4"  >
+        <v-col v-if = "!is_mobile()" md = "4"  >
             <v-row align="center" justify="center" :class = "is_mobile() ? 'text-center ' : 'float-right ' ">
                 <v-col cols = "12" class = "p-1" >
                     <!-- <span id = "filter">
@@ -793,12 +967,27 @@ const M_DRAWER_FILTER = `
 `
 
 const M_NAVIGATOR = `
-        <v-item-group
+<v-container class="px-3" >
+    <v-row v-if = "is_mobile()">
+        <v-col class="px-3">
+            <v-select
+                v-model = "active_portfolio"
+                class="px-3"
+                :items="portfolios.map(v=>v.toUpperCase())"
+                label="Solo field"
+                dense
+                solo
+          ></v-select>
+        </v-col>
+    </v-row>
+    <v-item-group
+            v-else
             v-model="toggle_exclusive"            
             mandatory
             @change="change_state" 
         >
             <v-container>
+                
                 <v-row>
                     <v-col                
                     cols="12"
@@ -823,47 +1012,13 @@ const M_NAVIGATOR = `
                         </v-item>
                     </v-col>
                 </v-row>
+
             </v-container>
-        </v-item-group>    
+    </v-item-group>    
+</v-container>        
 `
 
-const M_NAVBAR = `
-<v-card class="overflow-hidden">
-    <v-app-bar
-      absolute
-      color="white"
-      elevate-on-scroll
-      scroll-target="#scrolling-techniques-7"
-    >
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-        <v-toolbar-title>Title</v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <v-btn icon>
-            <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-            <v-icon>mdi-heart</v-icon>
-        </v-btn>
-
-        <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
-        </v-app-bar>
-        <v-sheet
-        id="scrolling-techniques-7"
-        class="overflow-y-auto"
-        max-height="600"
-        >
-        <v-container style="height: 1500px;">
-
-        </v-container>
-        </v-sheet>
-  </v-card>
-`
 
 const M_APP = `
 <v-app     
@@ -887,62 +1042,63 @@ const M_APP = `
             <v-spacer></v-spacer>
             <v-toolbar-title class= "font-weight-bold">MERCURY</v-toolbar-title>
             <v-spacer></v-spacer>        
-            
-            <v-menu
-                class="mx-2 p-1"
-                v-for="([text, rounded], index) in [['Removed', '0'],]"
-                :key="text"
-                :rounded="rounded"
-                offset-y
-                max-width = "20%"
-            >
-                <template v-slot:activator="{ attrs, on }">
-                <span
-                    v-bind="attrs"
-                    v-on="on"
-                    style="min-width: 2rem;text-align: center;"
-                >
-                    <v-badge
-                        bordered
-                        color="error"
-                        :content = "notifications.length"
-                        link           
-                        >
-                        <span class="fa fa-bell notify" style="font-size: 1rem;"></span>
-                    </v-badge>
-                </span>
-                </template>
-        
-                <v-list three-line>
-                    <template v-for="(item, index) in notifications">
-                        
-                        <v-subheader
-                            v-if="item.header"
-                            :key="item.header"
-                            v-text="'Today'"
-                        ></v-subheader>
-            
-                        <v-divider
-                            v-else-if="item.divider"
-                            :key="index"
-                            :inset="item.inset"
-                        ></v-divider>
+            <span v-if="!is_mobile()">
+                <v-menu
                 
-                        <v-list-item
-                            v-else
-                            :key="item.title"
-                            @click=""
-                        >
-                            <v-list-item-content>
-                                
-                                <v-list-item-title v-html="item.title"></v-list-item-title>
-                                <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>                                
-                            </v-list-item-content>
-                        </v-list-item>
+                    class="mx-2 p-1"
+                    v-for="([text, rounded], index) in [['Removed', '0'],]"
+                    :key="'notification-key'"
+                    :rounded="rounded"
+                    offset-y
+                    :max-width = "is_mobile() ? '20%' : '80%'"
+                >
+                    <template v-slot:activator="{ attrs, on }">
+                    <span
+                        v-bind="attrs"
+                        v-on="on"
+                        style="min-width: 2rem;text-align: center;"
+                    >
+                        <v-badge
+                            bordered
+                            color="error"
+                            :content = "notifications.length"
+                            link           
+                            >
+                            <span class="fa fa-bell notify" style="font-size: 1rem;"></span>
+                        </v-badge>
+                    </span>
                     </template>
-                </v-list>
-            </v-menu>
-
+            
+                    <v-list three-line>
+                        <template v-for="(item, index) in notifications">
+                            
+                            <v-subheader
+                                v-if="item.header"
+                                :key="item.header"
+                                v-text="'Today'"
+                            ></v-subheader>
+                
+                            <v-divider
+                                v-else-if="item.divider"
+                                :key="index"
+                                :inset="item.inset"
+                            ></v-divider>
+                    
+                            <v-list-item
+                                v-else
+                                :key="item.title"
+                                @click=""
+                            >
+                                <v-list-item-content>
+                                    
+                                    <v-list-item-title v-html="item.title"></v-list-item-title>
+                                    <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>                                
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                    </v-list>
+                </v-menu>
+            </span>
             <v-menu
                 class="mx-2 p-1"
                 v-for="([text, rounded], index) in [['Removed', '0'],]"
@@ -954,10 +1110,11 @@ const M_APP = `
                 <span
                     v-bind="attrs"
                     v-on="on"
-                    style="min-width: 7rem;text-align: center;"
+                    style="min-width: 6rem;text-align: center;"
                 >
                     {{ user.first_name }}
-                </span>
+                    <i class="fa fa-caret-down pl-2" aria-hidden="true"></i>
+                </span>            
                 </template>
         
                 <v-list>
@@ -989,9 +1146,10 @@ const M_APP = `
             id="scrolling-techniques-7"
             class="overflow-y-auto"
             max-height="100vh"
+            max-width = "100vw"
         >
 
-            <v-container fluid class = " blue lighten-5 container-fluid" style="min-width: 100vh;max-width: 10000px;">
+            <v-container fluid class = " blue lighten-5 container-fluid" style="min-width: 100vw;max-width: 10000px;">
                 <v-row>
                     <v-col
                         v-if="!is_mobile()"
@@ -1000,7 +1158,7 @@ const M_APP = `
 
                     </v-col>
                     <v-col class="p-0">
-                        <m-navigator class = "p-0"></m-navigator>
+                        <m-navigator class = "p-0" style="min-width: 2px;"></m-navigator>
                     </v-col>
                 </v-row>
                 <v-row>    
@@ -1017,7 +1175,7 @@ const M_APP = `
                     <v-col v-else>
                         <m-filter-sidebar ></m-filter-sidebar>
                     </v-col>
-                    <v-col :cols= "is_mobile() ? '12' : ''"> 
+                    <v-col :cols= "is_mobile() ? '12' : ''" :style=" is_mobile() ? ' margin-top: -15%; ' : ' '"> 
                         <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
                     </v-col>
                 </v-row>
