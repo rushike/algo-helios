@@ -134,10 +134,10 @@ const MercuryPlans = `
                 </span>
                 
           </span>
-          <p style="margin-top: 2vh;">
-            <small>*Includes all Investment Types</small>
-          </p>
-          <ul class="list-unstyled text-center" style="margin-top:45px;">
+          <!-- <p style="margin-top: 2vh;"> -->
+            <!-- <small>*Includes all Investment Types< /small> -->
+          <!-- </p> -->
+          <ul class="list-unstyled text-center" style="margin-top:75px;">
             <li v-for="premium_product in get_premium_products" class="pr-5">
               <div class="row">
                 <i class="fa fa-check mr-4" aria-hidden="true" 
@@ -190,7 +190,7 @@ const app = `
 <div class="container-fluid pt-4">
   
 <!-- <div class="row"> -->
-  <p class="text-center"><span class="max_font">Features</span></p>
+  <p class="text-center"><span class="max_font2">Features</span></p>
 <!-- </div>   -->
 
   <div class="row text-center">
@@ -228,7 +228,7 @@ const app = `
 const timeline = 
 `
 <div class='container mt-4 mb-2'>
-  <p class="text-center"><span class="max_font">
+  <p class="text-center"><span class="max_font2">
     One-stop shop for effective trading 
   </span></p>
     <v-timeline :dense="$vuetify.breakpoint.smAndDown"> 
@@ -307,7 +307,7 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/multi.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class="headline font-weight-bold">Multiple Investment Types</v-card-title>
+          <v-card-title class="headline font-weight-bold">Multi Investment Types</v-card-title>
           <v-card-text class="text-dark time_line_font_sm">
             Diversify your investments with our multiple investment types
           </v-card-text>
@@ -354,7 +354,7 @@ const timeline =
   </button>
 </div>
 
-<p class="text-center mt-5"><span class="max_font">FAQ</span></p>
+<p class="text-center mt-5"><span class="max_font2">FAQ</span></p>
 
     <!-- <v-expansion-panels popout blue elevation="0">
       <v-expansion-panel
