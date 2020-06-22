@@ -336,9 +336,7 @@ const Notifications = {
     clear : null,
     async init(){
         var notifications;
-        console.log("console : ", notifications);
         var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
-        console.log("console : ", notifications);
         this.data.length = 0
         notifications.data.forEach(v=>{
             this.data.push(v)
@@ -347,16 +345,12 @@ const Notifications = {
         this.clear = notifications.clear
     },
     update(notifications){
-        console.log("notifiaction :::::::::::::: ", notifications);
-        
-        // this.data = notifications.data
         this.data.length = 0
         notifications.data.forEach(v=>{
             this.data.push(v)
         });
         this.expiry = notifications.expiry
-        this.clear = notifications.clear
-        console.log("notifiaction :::::::::::::: ", this);
+        this.clear = notifications.clear        
     }
 }
 // Notifications.init()

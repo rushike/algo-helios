@@ -18,6 +18,11 @@ async function tester(){
             data : []
         }
     }
+    notifications = {
+        time : Date.now(),
+        expiry : 86400000,
+        data : []
+    }
     await localforage.setItem("notifications", JSON.stringify(notifications))
     console.log("demo created");
     

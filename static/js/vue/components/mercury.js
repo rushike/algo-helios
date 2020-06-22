@@ -96,9 +96,11 @@ const MStockTable = Vue.component("m-stocks-table", {
             },
             filterOn : [],
             trade_item : null,
+            detail_item : null,
             fields0 : "JUJ",
             show : false,
             search_fields : "",
+            sheet : false,
         }
     },
     created(){
@@ -109,8 +111,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             get(){
                 return this.$store.getters.search
             },
-            set(value){
-                console.log(value)
+            set(value){                
                 this.$store.commit("update_search", value);
             }
         },
@@ -118,14 +119,12 @@ const MStockTable = Vue.component("m-stocks-table", {
             get(){
                 return this.$store.getters.filter
             },
-            set(value){
-                console.log(value)
+            set(value){                
                 this.$store.commit("update_filter", value);
             }
         },
         filter_items(){
             return this.items.filter(d => {
-                // if(TYPE[d.product_type] == OPTIONS) return true;
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
                             !( this.filter.profit_percentage[0] <= d.profit * 100 && 
@@ -159,7 +158,6 @@ const MStockTable = Vue.component("m-stocks-table", {
             return this.$store.getters.fields.map(v=>v.text)
         },
         selected_fields_(){
-            // console.log("?selght L  : ", this.$store.getters.selected_fields )
             return this.$store.getters.selected_fields.map(v=>v.text)
         },
         loading(){
@@ -195,9 +193,7 @@ const MStockTable = Vue.component("m-stocks-table", {
         portfolio_filter(val, search, item, headers){
             if(search.length < 3 ){
                 return true
-            }
-            console.log("VALUE : ", val);
-            
+            }            
             if(val.toString().toLowerCase().includes(search.toLowerCase())){     
                 console.log("this.filter : ", this.filter)           
                 return true
@@ -210,7 +206,10 @@ const MStockTable = Vue.component("m-stocks-table", {
         },
         table_settings_toggle(){
             store.commit("mobile_toggle")
-        },    
+        },
+        is_mobile(){
+            return helpers.is_mobile()
+        },
         is_mobile__class(){
             if(helpers.is_mobile()) 
                 return 'table-settings--mobile'; 
@@ -223,6 +222,19 @@ const MStockTable = Vue.component("m-stocks-table", {
             }else {
                 this.trade_item = item
             }
+        },
+        show_details(item){
+            var self = this            
+                if(!self.show){
+                    self.sheet = !self.sheet
+                    console.log("self sheet : ", self.sheet);
+                    
+                    if(self.detail_item){
+                        self.detail_item = null
+                    }else {
+                        self.detail_item = item
+                    }
+                }            
         }
     },
     template : M_STOCKTABLE_TEMPLATE_STRING,
@@ -383,7 +395,7 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
                 "STOCKS",
                 "OPTIONS",
             ],
-            notification : true,
+            notification : User.notification,
             mobile_settings_toggle : false,
         }
     },
@@ -485,6 +497,7 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             // this.notification = !this.notification
             var data =  (await axios.post('/user/toggle-notification/', {})).data
             this.notification = data['allow_notification']
+            User.notification = this.notification
         }, 3000),       
         show_table_settings__class(){
             var mobile_settings_toggle = store.getters.mobile_toggle
@@ -643,7 +656,16 @@ const MNavigator = Vue.component('m-navigator', {
                 console.log("Value active in tab : ", value)
                 this.active_ = value
             }
-        }, 
+        },
+        active_portfolio :{
+            get(){
+                return this.$store.getters.state.portfolio.toUpperCase()
+            },
+            set(value){
+                console.log("value : ", value);
+                this.$store.dispatch('change_state', {"portfolio" : value.toLowerCase()})
+            }
+        },
         portfolios(){
             return PORTFOLIOS.slice(2)
         }
@@ -652,6 +674,9 @@ const MNavigator = Vue.component('m-navigator', {
         forceRerender(){            
             this.tablekey += 1
         },  
+        is_mobile(){
+            return helpers.is_mobile()
+        },
         change_state(){
             var portfolio = PORTFOLIOS[this.active_ + 2]
             console.log("portfolio changed to : ", portfolio)
