@@ -22,4 +22,5 @@ urlpatterns = [
     path('download-invoice/<slug:invoice_id>', views.download_invoice.as_view()),
     path('plans2', views.plans2, name='plans_page2'),
     path('mercury-product-data/', views.mercury_product_data, name='mercury_product_data'),
+    path('jupiter/', views.jupiter, name='jupiter'),
 ]
