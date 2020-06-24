@@ -159,8 +159,8 @@ const Table = {
             options : {
                 header : {
                     // underlying : {},
-                    expiry : {},
-                    strike : {},
+                    // expiry : {},
+                    // strike : {},
                     ticker : {},
                     ltp : {},
                     signal : {},
@@ -244,6 +244,7 @@ class Signal{
         console.log("signal update : ", data );        
         if(data.signal) this.signal = data.signal
         if(data.status) this.status = data.status
+        if(data.profit_percent) this.profit = data.profit_percent
         if(data.active == true || data.active == false) this.active = data.active
     }
     static set_follow(state, params){
@@ -277,10 +278,10 @@ class Signal{
     risk_reward : {}
  */
 class OptionsSignal{
-    constructor(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss, profit, risk_reward, status, active){
-        this.init(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss,  profit, risk_reward, status,active)
+    constructor(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss, profit, risk_reward, status, active, option_type){
+        this.init(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss,  profit, risk_reward, status,active, option_type)
     }
-    init(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss, risk_reward, status, active){
+    init(call_id, underlying, expiry, strike, ticker, ltp, signal, signal_time, price, target_price, stop_loss, risk_reward, status, active, option_type){
         var self = this
         this.product_type = OPTIONS_PROD
         this.call_id = call_id
@@ -304,18 +305,19 @@ class OptionsSignal{
         this.risk_reward = risk_reward
         this.status = status
         this.active = active
+        this.option_type = option_type
         this.follow = false
         this.visible = true 
     }
     update(data){
         console.log("signal update : ", data );        
-        // if(data.signal) this.signal = data.signal
-        // if(data.status) this.status = data.status
+        if(data.signal) this.signal = data.signal
+        if(data.status) this.status = data.status
+        if(data.profit_percent) this.profit = data.profit_percent
         if(data.active == true || data.active == false) this.active = data.active
     }
     static set_follow(state, params){
-        var {item = null, follow = false} = params
-        console.log("following : ", item ,follow);
+        var {item = null, follow = false} = params        
         item.follow = follow
     } 
     static hide(state, params){
@@ -334,16 +336,6 @@ const Notifications = {
     data : [],
     expiry : 0,
     clear : null,
-    async init(){
-        var notifications;
-        var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
-        this.data.length = 0
-        notifications.data.forEach(v=>{
-            this.data.push(v)
-        });        
-        this.expiry = notifications.expiry
-        this.clear = notifications.clear
-    },
     update(notifications){
         this.data.length = 0
         notifications.data.forEach(v=>{

@@ -132,15 +132,20 @@ def serialize_data(calls_dict):
     logger.debug(f"call_dict : {calls_dict}")
     for k, v in calls_dict.items():        
         for data in v: # iterating over calls in each porfolio
+            
             data.update({
                         'signal' : data['signal'] if isinstance(data['signal'], str) else data['signal'].name,
                         'status' : data['status'] if isinstance(data['status'], str) else  data['status'].value, 
                         'time' : data['time'] if isinstance(data['time'], str) else  data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
                         'active' :data['active'], 
-                        'product_type' : data['product_type'] if isinstance(data['product_type'], str) else data['product_type'].value,
+                        'product_type' : data['product_type'] if isinstance(data['product_type'], str) else data['product_type'].value,                        
                         'portfolio_id' : k, 
                         'profit_percent' : round(data['profit_percent'], 2)
                         })
+            if data['product_type'] == "OPT":
+                data.update({
+                    'option_type' : data['option_type'] if isinstance(data['option_type'], str) else data['option_type'].value,
+                })                        
             calls.append(data)
     logger.debug(f"calls : {calls}")
     return calls

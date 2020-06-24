@@ -143,8 +143,12 @@ socket.onmessage = function (e) {
     else if (dataType == 'signal'){
         console.log("signal : ", data_dict);        
         data_dict.instrument_id = data_dict.instrument_token
-        // Mercury.insert_equity_call(data_dict)
-        store.dispatch("insert_equity_call", {...data_dict, instrument_id : data_dict.instrument_token})
+        if(data_dict.product_type == OPTIONS_PROD){
+            store.dispatch("insert_options_call", {...data_dict, instrument_id : data_dict.instrument_token})
+        }else {
+            store.dispatch("insert_equity_call", {...data_dict, instrument_id : data_dict.instrument_token})
+        }
+        
     }
     else if (dataType == "tick"){                    
         if (data_dict.data && Array.isArray(data_dict.data)){
