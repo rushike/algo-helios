@@ -51,6 +51,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js"></script>  
     <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/vue-dragscroll"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.4/localforage.min.js"></script> -->
     <script src="/static/js/localforage.js"></script>
 
@@ -70,10 +71,10 @@
     <script src="{% static 'js/accordion.js' %}"></script>
     <script src="{% static 'js/colors.js' %}"></script>            
     <script src="{% static 'js/chatbot.js' %}"></script>
-
+    <title>Mercury</title>
     
   </head>
-  <body>
+  <body style="min-height: 100%;">
   {% csrf_token %}
   
 

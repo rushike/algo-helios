@@ -957,5 +957,6 @@ const MApp = Vue.component('m-app', {
         },
     },
     template : M_APP,
-    components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo}
+    components: { 'm-data-table': MDataTable, 'm-data-table-info' : MDataTableInfo},
+    
 })
