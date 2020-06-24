@@ -200,7 +200,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                 </v-list-item-content>
                 <v-list-item-action>
                     <button rounded type="button"  :class="detail_item.signal + '_btn trade elevation-7 ' + (detail_item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
-                                    data-target="#trade_modal">
+                                    data-target="#trade_modal" @click = "show_trade_modal(detail_item)">
                         <span >            
                             {{ detail_item.signal }}
                         </span>
@@ -255,7 +255,11 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
 
         <!-- </v-sheet> -->
     </v-bottom-sheet>
+    <div
+        v-dragscroll
+    >
     <v-data-table
+        
         :headers="fields"
         :items="filter_items"     
         :items-per-page = "items.length"
@@ -321,11 +325,11 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         </template>
         
         <template v-slot:group.header="{group, groupBy}" >
-              {{group}} {{groupBy}}
+
         </template>
-        
-        <template v-slot:group="{group, options, items, headers}" >             
-                <v-card v-for = "(item, index) in items" v-if = "is_mobile() && item.visible" :class="row_class(group, index, item, items) + ' border p-2 '" @click = "show_details(item)">   
+
+        <template v-if = "is_mobile()"  v-slot:group="{group, options, items, headers}">
+            <v-card v-for = "(item, index) in items" v-if = "is_mobile() && item.visible" :class="row_class(group, index, item, items) + ' border p-2 '" @click = "show_details(item)">   
                     <v-container fluid style="font-size: 12px;">                 
                         <v-row  >
                             <v-col cols = "2" class = "p-1"  @click = "show_trade_modal(item)">
@@ -362,8 +366,10 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </v-col>
                         </v-row>
                     </v-container>
-                    </v-card>
-                <tr v-for = "(item, index) in items" v-else-if = "item.visible" :class = "row_class(group, index, item, items) + (item.ltp.instrument_id)" :id = "item.call_id">
+                </v-card>
+        </template>        
+        <template v-else v-slot:group="{group, options, items, headers}" >
+                <tr v-for = "(item, index) in items" v-if = "item.visible" :class = "row_class(group, index, item, items) + (item.ltp.instrument_id)" :id = "item.call_id">
                     <td  v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'" @click = "show_trade_modal(item)">
                             <button rounded type="button"  :class="item.signal + '_btn trade elevation-7 ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
@@ -444,6 +450,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                 </tr>      
         </template>        
     </v-data-table>  
+</div>
 </div>
 `
 
@@ -575,7 +582,7 @@ const M_DATA_TABLE_INFO = `
             ></v-text-field>
         </v-col>
         
-        <v-col cols = "6" md = "3" lg = "2" class = "px-1">    
+        <v-col cols = "6" md = "3" lg = "3" class = "px-1">    
             <v-select
                 class = "mx-1 elevation-1"
                 v-model="type"
@@ -1054,7 +1061,7 @@ const M_APP = `
             <v-spacer></v-spacer>
             <v-toolbar-title class= "font-weight-bold">MERCURY</v-toolbar-title>
             <v-spacer></v-spacer>        
-            <span v-if="!is_mobile()">
+            <span v-if="false">
                 <v-menu
                 
                     class="mx-2 p-1"

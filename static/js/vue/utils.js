@@ -1,6 +1,6 @@
 const helpers = {
     is_mobile(){
-        return this.get.bodywidth() < 960  
+        return this.get.bodywidth() < 560  
     },
     converter : {
         vh2px(value) {

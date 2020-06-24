@@ -1,4 +1,5 @@
 Vue.use(MultiFiltersPlugin)
+Vue.use(VueDragscroll)
 
 class Data{
     constructor(){
