@@ -3,7 +3,7 @@ from django.urls import path, include
 from subscriptions import views
 
 urlpatterns = [
-    path('plans', views.plans, name='plans_page'),
+    path('plans', views.plans2, name='plans_page'),
     path('subscribe', views.subscribe, name ='subscribe'),
     path('can_subscribe', views.can_subscribe, name ='subscribe'),
     path('neft-details', views.neft_details, name ='neft_details'),
