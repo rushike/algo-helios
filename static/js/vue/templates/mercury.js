@@ -378,6 +378,20 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                                 {{ item.status }}
                             </span>
                         </span>
+                        <span v-else-if = "header.key == 'ticker'">
+                            <span v-if = "item.product_type == 'OPT'">
+                            <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
+                            <span class="">@</span>
+                            <span class="options-strike">{{ item.strike }}</span> 
+                            <span class="">@</span>
+                            <span class="options-expiry">{{item.expiry}}</span>
+                            <span class="">@</span>
+                            <span class="option-type badge badge-warning px-1">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
+                            </span>                        
+                            <span v-else>
+                                {{item.ticker}}
+                            </span>
+                        </span>
                          <span v-else-if = "header.key == 'action'" style = "width : '3rem'">                            
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
@@ -493,7 +507,7 @@ const M_DATA_TABLE_INFO = `
         </v-col>
         
         <v-col cols ="7" md = "7" class = "text-center p-0 stats-wrapper">
-            <v-row >
+            <v-row class="p-1">
                 <v-col cols ="3" class = "text-center p-0">                            
                     <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold stats-head">{{meta.total}}</span><br v-if = "is_mobile()">
                     <span class = "total--text  meta-text"> Total</span>
@@ -547,7 +561,7 @@ const M_DATA_TABLE_INFO = `
         class="mx-3"
         no-gutters
         >
-        <v-col cols = "8" md = "4" lg = "3" class = "px-1">
+        <v-col cols = "6" md = "3" lg = "3" class = "px-1">
             <v-text-field
                 v-model="search"
                 class = "px-1 p-1  blue lighten-5 elevation-3"
@@ -557,11 +571,11 @@ const M_DATA_TABLE_INFO = `
                 single-line
                 hide-details
                 dense
-                style="font-size: 10px;"
+                :style=" is_mobile() ? ' font-size: 10px;' : ' font-size:13px' "
             ></v-text-field>
         </v-col>
         
-        <v-col cols = "4" md = "3" lg = "2" class = "px-1">    
+        <v-col cols = "6" md = "3" lg = "2" class = "px-1">    
             <v-select
                 class = "mx-1 elevation-1"
                 v-model="type"
@@ -572,7 +586,7 @@ const M_DATA_TABLE_INFO = `
                 single-line
                 dense
                 solo     
-                style="font-size: 10px;"       
+                :style=" is_mobile() ? ' font-size: 10px;' : ' font-size:13px' "
                 >
             </v-select>    
         </v-col>        
@@ -769,7 +783,7 @@ const M_FILTER_SIDEBAR = `
             <v-col>
                 <h5 class = "p-1">
                     <span class = "font-weight-bold"> Filters </span>
-                    <span class = "float-right text-danger" v-on:click = "clear_filter()" style = "cursor:pointer">Clear</span>
+                    <span class = "float-right text-danger h6" v-on:click = "clear_filter()" style = "cursor:pointer">Clear</span>
                 </h5> 
             </v-col>
         </v-row>
@@ -1031,9 +1045,7 @@ const M_APP = `
     style="min-height: 50vh;">
     <v-app-bar
       
-      color="white"
-      elevate-on-scroll
-      scroll-target="#scrolling-techniques-7"
+      color="white"                  
     >
         <a class="navbarlogo" href="/">
             <img id="logo" src="/static/algotext.png" width="130px" height="auto">
@@ -1145,7 +1157,7 @@ const M_APP = `
         <v-sheet
             id="scrolling-techniques-7"
             class="overflow-y-auto"
-            max-height="100vh"
+            max-height="90vh"
             max-width = "100vw"
         >
 
@@ -1158,7 +1170,7 @@ const M_APP = `
 
                     </v-col>
                     <v-col class="p-0">
-                        <m-navigator class = "p-0" style="min-width: 2px;"></m-navigator>
+                        <m-navigator class = "p-0" style="min-width: 2px; max-height: 10%;"></m-navigator>
                     </v-col>
                 </v-row>
                 <v-row>    
@@ -1176,7 +1188,7 @@ const M_APP = `
                         <m-filter-sidebar ></m-filter-sidebar>
                     </v-col>
                     <v-col :cols= "is_mobile() ? '12' : ''" :style=" is_mobile() ? ' margin-top: -15%; ' : ' '"> 
-                        <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
+                        <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem;max-height: 90%;" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
                     </v-col>
                 </v-row>
                 <!-- <m-filter-sidebar :drawer = "drawer"></m-filter-sidebar>

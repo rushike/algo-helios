@@ -159,7 +159,8 @@ const store = new Vuex.Store({
                             value["stop_loss"],                            
                             value['risk_reward'],
                             value['status'],
-                            value['active'],                        
+                            value['active'],
+                            value['option_type'],
                         )
                     }
                 }
@@ -181,10 +182,12 @@ const store = new Vuex.Store({
             // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
             // Vue.set(state, "items", data)
         },
-        add_signal(state, {signal, portfolio_id, empty}){
+        add_signal(state, {signal, portfolio_id, type, empty}){
             var mstate = state.state
             state.calls[signal.call_id] = signal
-            var data_list = Table[mstate.market_type][mstate.market][mstate.type][portfolio_id].data            
+            type = type || TYPE[signal.product_type]
+            portfolio_id = portfolio_id || PORTFOLIOS[signal.portfolio_id]
+            var data_list = Table[mstate.market_type][mstate.market][type][portfolio_id].data            
             if(empty){
                 data_list.length = 0
             }
@@ -260,13 +263,11 @@ const store = new Vuex.Store({
     
     actions: {
         async refresh_table(context, options){
-            console.log("options : ", options)
             var {force = false, mercury = Mercury} = options
             var portfolios = force ? PORTFOLIOS.slice(2) : [context.getters.state.portfolio]
             var req_data = {portfolio_id : portfolios}
             console.log("portfolios refreshing data : ", portfolios);            
-            var data_ = (await axios.post('/worker/calls-from-db2/', req_data)).data
-            console.log("portfolios data : ", data_)
+            var data_ = (await axios.post('/worker/calls-from-db2/', req_data)).data            
             context.commit('refresh_table', {calls : data_.calls, force_init : true})
             if(force){
                 context.commit('update_loaded', true)
@@ -380,16 +381,13 @@ const store = new Vuex.Store({
             filter.set(filter_);
         },
         update_selected_fields(context, selected_fields){
-            var selected_fields_ = []
-            console.log("sellll : ", selected_fields);
-            
+            var selected_fields_ = []                        
             context.getters.fields.forEach(field =>{   
                 console.log('e : ', field.text, field.key, selected_fields.some(e => e == field.text || e == field.key) , field.key == 'action')
                 if(selected_fields.some(e => e == field.text || e == field.key) || field.key == 'action' ){
                     selected_fields_.push(field)
                 }
-            })
-            console.log("selected fields : ", selected_fields, selected_fields_, context.getters.fields);
+            })            
             context.commit('update_selected_fields', selected_fields_)
         },
         update_items(context, items){
@@ -404,10 +402,7 @@ const store = new Vuex.Store({
             context.commit('update_instrument', {key, ltp, active, call_id})
         },
         insert_equity_call(context, data){
-            var portfolio_id = PORTFOLIOS[data.portfolio_id || 2]
-            // console.log("m data : ", this.data, ", m data data : ", this.data.data, portfolio_id);
-            // console.log("signal data : ", data);
-            // var ltp = this.data.update_tick(data.instrument_id, data.ltp || -1)
+            var portfolio_id = PORTFOLIOS[data.portfolio_id || 2]            
             var key = data.active ? data.instrument_id : data.call_id, ltp = data.ltp || -1;
             // console.log("instrument id : ", key, ", ltp : ", ltp)
             context.commit('update_instrument', {key, ltp})            
@@ -430,6 +425,33 @@ const store = new Vuex.Store({
             context.commit('add_signal', {signal, portfolio_id, empty})
         },
         update_equity_call(context, signal_update){
+            context.commit("update_signal", signal_update)
+        },
+        insert_options_call(context, data){
+            var portfolio_id = PORTFOLIOS[data.portfolio_id || 2]            
+            var key = data.active ? data.instrument_id : data.call_id, ltp = data.ltp || -1;            
+            context.commit('update_instrument', {key, ltp})                        
+            var signal = new OptionsSignal(
+                                    value["call_id"],
+                                    value["underlying"],
+                                    value['expiry'],
+                                    value["strike"],
+                                    value["ticker"],
+                                    ltp,
+                                    value['signal'],
+                                    value["signal_time"],
+                                    value["price"],
+                                    value["target_price"],
+                                    value["stop_loss"],                            
+                                    value['risk_reward'],
+                                    value['status'],
+                                    value['active'],
+                                    value['option_type'],
+                                )
+            var empty = data.empty, type = TYPE[data.product_type]
+            context.commit('add_signal', {signal, portfolio_id, empty, type})
+        },
+        update_options_call(context, signal_update){
             context.commit("update_signal", signal_update)
         },
         async load_notifications(context){
