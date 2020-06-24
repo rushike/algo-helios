@@ -432,21 +432,21 @@ const store = new Vuex.Store({
             var key = data.active ? data.instrument_id : data.call_id, ltp = data.ltp || -1;            
             context.commit('update_instrument', {key, ltp})                        
             var signal = new OptionsSignal(
-                                    value["call_id"],
-                                    value["underlying"],
-                                    value['expiry'],
-                                    value["strike"],
-                                    value["ticker"],
+                                    data["call_id"],
+                                    data["underlying"],
+                                    data['expiry'],
+                                    data["strike"],
+                                    data["ticker"],
                                     ltp,
-                                    value['signal'],
-                                    value["signal_time"],
-                                    value["price"],
-                                    value["target_price"],
-                                    value["stop_loss"],                            
-                                    value['risk_reward'],
-                                    value['status'],
-                                    value['active'],
-                                    value['option_type'],
+                                    data['signal'],
+                                    data["signal_time"],
+                                    data["price"],
+                                    data["target_price"],
+                                    data["stop_loss"],                            
+                                    data['risk_reward'],
+                                    data['status'],
+                                    data['active'],
+                                    data['option_type'],
                                 )
             var empty = data.empty, type = TYPE[data.product_type]
             context.commit('add_signal', {signal, portfolio_id, empty, type})
