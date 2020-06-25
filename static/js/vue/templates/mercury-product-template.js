@@ -122,7 +122,7 @@ const MercuryPlans = `
           </div>
           <div class="card-body">
           
-          <span style="position: relative;" class="mb-3">
+          <!-- <span style="position: relative;" class="mb-3">
 
                 <img src="/static/img/premium_bg.svg" 
                 class="yellow-banner"
@@ -133,11 +133,19 @@ const MercuryPlans = `
                   <h2>PREMIUM</h2>
                 </span>
                 
-          </span>
-          <!-- <p style="margin-top: 2vh;"> -->
-            <!-- <small>*Includes all Investment Types< /small> -->
-          <!-- </p> -->
-          <ul class="list-unstyled text-center" style="margin-top:75px;">
+          </span> -->
+
+          <div class="card-title text-dark width_reduce border-1 rounded" 
+          style="background-color: #FFDF00; margin-left: -3vh;">
+            <h2>PREMIUM</h2>
+          </div>
+          <!-- <p>
+            <small>*Includes all Investment Types</small>
+          </p> -->
+          <small>
+            *Includes all Investment Types
+          </small>
+          <ul class="list-unstyled text-center" style="margin-top:45px;">
             <li v-for="premium_product in get_premium_products" class="pr-5">
               <div class="row">
                 <i class="fa fa-check mr-4" aria-hidden="true" 
@@ -187,7 +195,7 @@ const app = `
 
 
 
-<div class="container-fluid pt-4">
+<div class="container-fluid pt-5">
   
 <!-- <div class="row"> -->
   <p class="text-center"><span class="max_font2">Features</span></p>
@@ -227,7 +235,7 @@ const app = `
 
 const timeline = 
 `
-<div class='container mt-4 mb-2'>
+<div class='container mt-5 mb-5'>
   <p class="text-center"><span class="max_font2">
     One-stop shop for effective trading 
   </span></p>
@@ -235,7 +243,7 @@ const timeline =
       <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
-            <v-card-title class="headline font-weight-bold">Customize & Analyse</v-card-title>
+            <v-card-title class=" font-weight-bold">Customize & Analyse</v-card-title>
             <v-card-text class="text-dark time_line_font_sm">
             <span class="float-left">Filter calls as per your convenience and download data for analysis</span>
             </v-card-text>
@@ -244,7 +252,7 @@ const timeline =
         <v-card class="elevation-2">
           <v-img src="/static/img/custom.png"></v-img>
           <div class="hide_this_desktop">
-          <v-card-title class="headline font-weight-bold">Customize & Analyse</v-card-title>
+          <v-card-title class=" font-weight-bold">Customize & Analyse</v-card-title>
           <v-card-text class="text-dark time_line_font_sm">
             Filter calls as per your convenience and download data for analysis
           </v-card-text>
@@ -255,7 +263,7 @@ const timeline =
       <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
-                <v-card-title class="headline font-weight-bold">One Click Order</v-card-title>
+                <v-card-title class=" font-weight-bold">One Click Order</v-card-title>
                 <v-card-text class="text-dark time_line_font_sm">
                 <span class="float-left">Place your order through your preferred borker with just one click.</span>
                 </v-card-text>
@@ -264,7 +272,7 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/oneclick.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class="headline font-weight-bold">One Click Order</v-card-title>
+          <v-card-title class=" font-weight-bold">One Click Order</v-card-title>
           <v-card-text class="text-dark time_line_font_sm">
             Place your order through your preferred borker with just one click.
           </v-card-text>
@@ -275,7 +283,7 @@ const timeline =
       <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
-                <v-card-title class="headline font-weight-bold">Real Time Notifications</v-card-title>
+                <v-card-title class=" font-weight-bold">Real Time Notifications</v-card-title>
                 <v-card-text class="text-dark time_line_font_sm">
                 <span class="float-left">Stay updated with real time notifications of calls</span>
                 </v-card-text>
@@ -284,7 +292,7 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/realtime.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class="headline font-weight-bold">Real Time Notifications</v-card-title>
+          <v-card-title class=" font-weight-bold">Real Time Notifications</v-card-title>
           <v-card-text class="text-dark time_line_font_sm">
             Stay updated with real time notifications of calls
           </v-card-text>
@@ -296,7 +304,7 @@ const timeline =
       <v-timeline-item :small="true">
         <span slot="opposite">
             <v-card class="elevation-0">
-                <v-card-title class="headline font-weight-bold">Multiple Investment Types</v-card-title>
+                <v-card-title class=" font-weight-bold">Multiple Investment Types</v-card-title>
                 <v-card-text class="text-dark time_line_font_sm">
                 <span class="float-left">
                     Diversify your investments with our multiple investment types
@@ -307,7 +315,7 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/multi.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class="headline font-weight-bold">Multi Investment Types</v-card-title>
+          <v-card-title class=" font-weight-bold">Multi Investment Types</v-card-title>
           <v-card-text class="text-dark time_line_font_sm">
             Diversify your investments with our multiple investment types
           </v-card-text>
