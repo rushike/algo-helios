@@ -311,3 +311,10 @@
 		width: 36.3vh !important;
 	}
 }
+
+
+.highlight_hover:hover{
+	font-size: 25px;
+	font-weight: bold;
+	border-bottom: 4px solid #004b96;
+}
