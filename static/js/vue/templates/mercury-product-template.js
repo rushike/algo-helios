@@ -51,7 +51,8 @@ const MercuryPlans = `
             <h4 class="my-0 font-weight-normal">&#x20b9; {{ basic_plan_price }} </h4>
             </div>
             <div class="card-body justify-content-center">
-            <h2 class="card-title pricing-card-title">BASIC</h2>
+            <!-- <h2 class="card-title pricing-card-title">BASIC</h2> -->
+            <h3 style="letter-spacing: 3px;">BASIC</h3>
             <div class="justify-content-center w-100">
               <v-select
                 class="mx-auto overflow-hidden"
@@ -117,7 +118,7 @@ const MercuryPlans = `
     
     <div class="col-md-3">
 			<div class="card text-center mb-4 shadow-sm elevation-2">
-          <div class="card-header dark_blue_color text-light rounded shadow-lg">
+          <div class="card-header bg-warning text-dark shadow-lg">
           <h4 class="my-0 font-weight-normal">&#x20b9; {{ premium_plan_price }} </h4>
           </div>
           <div class="card-body">
@@ -135,9 +136,8 @@ const MercuryPlans = `
                 
           </span> -->
 
-          <div class="card-title text-dark width_reduce border-1 rounded" 
-          style="background-color: #FFDF00; margin-left: -3vh;">
-            <h2>PREMIUM</h2>
+          <div class="card-title text-dark border-1 rounded" style="">
+            <h3 style="letter-spacing: 3px;">PREMIUM</h3>
           </div>
           <!-- <p>
             <small>*Includes all Investment Types</small>
@@ -252,7 +252,9 @@ const timeline =
         <v-card class="elevation-2">
           <v-img src="/static/img/custom.png"></v-img>
           <div class="hide_this_desktop">
-          <v-card-title class=" font-weight-bold">Customize & Analyse</v-card-title>
+          <v-card-text class="pb-0">
+              <h5 class="font-weight-bold">Customize & Analyse<h5>
+          </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Filter calls as per your convenience and download data for analysis
           </v-card-text>
@@ -272,7 +274,9 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/oneclick.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class=" font-weight-bold">One Click Order</v-card-title>
+          <v-card-text class="pb-0">
+              <h5 class="font-weight-bold">One Click Order<h5>
+          </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Place your order through your preferred borker with just one click.
           </v-card-text>
@@ -292,7 +296,9 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/realtime.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class=" font-weight-bold">Real Time Notifications</v-card-title>
+          <v-card-text class="pb-0">
+            <h5 class="font-weight-bold">Real Time Notifications<h5>
+          </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Stay updated with real time notifications of calls
           </v-card-text>
@@ -315,7 +321,9 @@ const timeline =
         <v-card class="elevation-2">
         <v-img src="/static/img/multi.png"></v-img>
         <div class="hide_this_desktop">
-          <v-card-title class=" font-weight-bold">Multi Investment Types</v-card-title>
+          <v-card-text class="pb-0">
+              <h5 class="font-weight-bold">Multi Investment Types<h5>
+          </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Diversify your investments with our multiple investment types
           </v-card-text>
