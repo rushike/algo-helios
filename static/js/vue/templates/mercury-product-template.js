@@ -334,7 +334,7 @@ const timeline =
     </v-timeline>
 
 
-<div class="container">  
+<div class="container mt-5">  
 
 <!-- <div class="mx-auto mt-5 mb-5">
   Experience all these Features<br>
@@ -364,13 +364,13 @@ const timeline =
   <span class="font-weight-bold">Experience all these Features
 </span>
 </p>
-<div class="row justify-content-center mb-4">
+<div class="row justify-content-center mt-5 mb-5">
   <button class="btn btn-md text-light dark_blue_color text-center justify-content-center">
       Start Your Free Trial  
   </button>
 </div>
 
-<p class="text-center mt-5"><span class="max_font2">FAQ</span></p>
+<p class="text-center mt-5"><span class="max_font2 mt-5">FAQ</span></p>
 
     <!-- <v-expansion-panels popout blue elevation="0">
       <v-expansion-panel

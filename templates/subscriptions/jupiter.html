@@ -18,7 +18,7 @@
 {% endblock navbar_selector%}
 
 {% block js_imports %}	
-<script>
+<!-- <script>
 		$(document).ready(()=>{
 			// console.log("Will change css.")
 			$("nav").attr({style : "background-color: rgb(225,238,252)!important"});      
@@ -52,8 +52,15 @@
             })
         });
 
+</script> -->
+<script>
+	$(function () {
+  		$(document).scroll(function () {
+	  	var $nav = $(".navbar-fixed-top");
+	  	$nav.toggleClass('scrolled', $(this).scrollTop() > $nav.height());
+	});
+	});
 </script>
-
 	<!-- <script src="{% static '/js/plans.js' %}" type="text/javascript"></script> -->
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     
@@ -68,10 +75,6 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
 {% endblock %}
-
-<style>
-
-</style>
 
 {% block subscriptions_content %}
 
@@ -107,10 +110,10 @@
 		  Start Your Free Trial  
 		</button> 
 	  </div>
-
+	  <!-- "padding-top: 5rem; padding-left: 5rem; -->
 		<div class="col-md-5 justify-content-center text-center hide_this_mobile">
-			<img src="/static/img/mercury_prod_bg.svg" class="img-fluid"
-			style="padding-bottom: 5.5rem; padding-left: 2rem;"
+			<img src="/static/img/jupiter-product-bg.png" class="img-fluid"
+			style="padding-top: 2rem ;width: 950px;"
 			>
 		</div>
 
@@ -124,8 +127,8 @@
 
 	<div class="row">
 		<p class="float-left">
-			<span class="max_font2 m-2">
-				Smart Index Fund
+			<span class="max_font m-2">
+				<div class="smart_text"></div><div class="not_smart_text">ndex Fund</div>
 			</span>
 		</p>
 	</div>
@@ -133,12 +136,12 @@
 	<div class="row">
 
 		<div class="col-md-7 text-justify float-left p-0 mt-3">
-			<p class="text-justify p-2">
+			<p class="text-justify p-2" style="font-size: 1.3rem;">
 				SIF is smarter than usual index funds and it 
 				invests in selective stocks of index with same 
 				weights thereby ensuring that the underperforming 
 				stocks are avoided and hold onto the outperforming 
-				stocks. This is achieved by a inhouse propertiary 
+				stocks. This is achieved by a inhouse proprietary 
 				algorithm which scans the stocks 24*7 to throw out 
 				the stocks prices thus making sure that the SIF always 
 				outperforms the regular index funds. 
@@ -177,10 +180,13 @@
 
 	</div>
 <!-- ----------------------------------------------------- -->
-<div class="text-center">
-	<button class="btn btn-md text-light mt-3 dark_blue_color">
+<div class="text-center mt-4 mb-5">
+	
+	<button class="btn btn-md text-light mt-3 dark_blue_color shadow-sm px-3">
 		Invest 
+		<svg class="bi bi-chevron-right" width="32" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z"/></svg>
 	</button>
+
 </div>
 <!-- ----------------------------------------------------- -->
 <div class="container text-center mx-auto mt-3">
@@ -195,17 +201,18 @@
 	
 	
 	<!-- <p class="text-center">CAGR & SIP Investment Smart Index Fund vs Nifty 50</p> -->
-	<div class="table-responsive">
-		<table class="table table-bordered">
-			<caption>'Things assumed for backtest : • Avg Dividend yield: 1% • Money market 
+	<div class="table-responsive table-bordered" style="border-radius: 10px;">
+		<table class="table">
+			<caption class="p-2"><small>
+				Things assumed for backtest :<br> • Avg Dividend yield: 1% • Money market 
 				Interest Rate: 4% • Transaction Charges 0.5% (Brokerage • GST • STT) • NAV values 
-				are inclusive of Algcnauts charges • Charges are considered on higher side to include
+				are inclusive of Algonauts charges • Charges are considered on higher side to include
 				execution inefficiencies 
-			</caption>
+			</small></caption>
 
 					<thead>
 					<tr>
-					<th colspan="5" class="dark_blue_color text-light">CAGR and SIP Investment : Smart Index Fund Vs Nifty 50 </th>
+					<th colspan="5" class="light_blue_color" style="color: black;">CAGR and SIP Investment : Smart Index Fund Vs Nifty 50 </th>
 					</tr>
 					  <tr>
 						<th rowspan="2">Period</th>
@@ -224,44 +231,45 @@
 						<td>3 Years</td>
 						<td>2.16</td>
 						<td>-6.65</td>
-						<td>Rs. xxx</td>
-						<td>Rs. xxx</td>
+						<td>-5.22</td>
+						<td>23.92</td>
 					  </tr>
 					  <tr>
 						<td>5 Years</td>
 						<td>6.17</td>
 						<td>1.45</td>
-						<td>Rs. xxx</td>
-						<td>Rs. xxx</td>
+						<td>3.11</td>
+						<td>-7.65</td>
 					  </tr>
 					  <tr>
 						<td>10 Years</td>
 						<td>6.93</td>
 						<td>3.42</td>
-						<td>Rs. xxx</td>
-						<td>Rs. xxx</td>
+						<td>7.64</td>
+						<td>2.37</td>
 					  </tr>
 					  <tr>
 						<td>12 Years</td>
 						<td>5.74</td>
 						<td>2.49</td>
-						<td>Rs. xxx</td>
-						<td>Rs. xxx</td>
+						<td>8.5</td>
+						<td>4.3</td>
 					  </tr>
 					</tbody>
 				  </table>
 			</div>	  
 
-<p class="float-left text-justify">As seen, SIF has managed to survive the drawdown since January 2020 with the help of our decision making algorithm whereas Nifty has collapsed during the period. 
-<br>
-	The Smart Index Fund strategy has out performed Nifty's CAGR by significant margin since 2008 
+<p class="float-left text-justify mt-5 mb-5">As seen, SIF has managed to survive the drawdown since January 2020 with the help of our decision making algorithm whereas Nifty has collapsed during the period. 
 <br>
 	<h3>NAV : Smart Index Fund vs Nifty 50 </h3>
 
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz" class="mb-5"></div>
 
+
+<p class="font-italic">The Smart Index Fund strategy has out performed Nifty's CAGR by significant margin since 2008 </p>
 </p>
+
 </div>
 <!-- ----------------------------------------------------- -->
 
@@ -431,16 +439,31 @@
 	</p>
 <ul class="accordion" style="list-style: none;">
 		<li>
-			<a>What happens when my free trials expires ?</a>
-			<p> During your free trial, you have access to the Premium plan with the full functionality of Mercury. When the trial ends, you won’t be charged. You may choose to upgrade to a Basic or Premium plan from here.</p>			</li>
-		<li>
-			<a>Do you offer Discounts ?</a>
-			<p>Yes! Our discount schemes keep changing.Refer us to get Rs. 150/- off and the referee will get Rs. 100/- on his subscription.</p>
+			<a>What are index funds ?</a>
+			<p></p>
 		</li>
 		<li>
-			<a>Can I pay for my Team ?</a>
-			<p>Yes, you can. You can create your own team and pay for them in bulk to get a better offer.</p>
+			<a>Who should invest ?</a>
+			<p></p>
 		</li>
+		<li>
+			<a>What is the minimum investment ?</a>
+			<p></p>
+		</li>
+		<li>
+			<a>How long does the investment period vary ?</a>
+			<p></p>
+		</li>
+		<li>
+			<a>What is the turnover ratio of the index ?</a>
+			<p></p>
+		</li>
+
+		<li>
+			<a>How is SIF different from regular index funds ?</a>
+			<p></p>
+		</li>
+		
 </ul> <!-- / accordion -->
 </div>
 

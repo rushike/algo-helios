@@ -80,7 +80,9 @@
 .dark_blue_color{
 	background-color: #004b96 !important;
 }
-
+.light_blue_color{
+	background-color: #E1EEFC;
+}
 .btn-group { 
 	display: flex; 
 	flex-direction: row; 
@@ -323,4 +325,47 @@ nav{
 }
 .navbar{
 	background-color: #e1eefc;
+}
+
+.smart_text::before {
+		content: "Smart I";
+		background-color : #E1EEFC;
+		font-size: 35px;
+		font-weight	: bold;
+		padding-left: 15px;
+}
+.not_smart_text{
+	font-size: 35px;
+	font-weight	: bold;
+}
+
+.table-curved {
+    border-collapse: separate;
+}
+.table-curved {
+    border: solid #ccc 1px;
+    border-radius: 6px;
+    border-left:0px;
+}
+.table-curved td, .table-curved th {
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+.table-curved th {
+    border-top: none;
+}
+.table-curved th:first-child {
+    border-radius: 6px 0 0 0;
+}
+.table-curved th:last-child {
+    border-radius: 0 6px 0 0;
+}
+.table-curved th:only-child{
+    border-radius: 6px 6px 0 0;
+}
+.table-curved tr:last-child td:first-child {
+    border-radius: 0 0 0 6px;
+}
+.table-curved tr:last-child td:last-child {
+    border-radius: 0 0 6px 0;
 }
