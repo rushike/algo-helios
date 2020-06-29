@@ -1,21 +1,21 @@
 const M_TRADE_MODAL = `
-    <v-row justify="center">
+    <v-row justify="center" >
       <v-dialog v-if = "item" v-model="show" persistent max-width="600px">        
-        <v-card>
-          <v-card-title class="text-center mx-auto">
-            <span class="headline" style="font-size: 16px!important;">{{item.ticker.toUpperCase()}}</span>
+        <v-card :class = "trade_wrapper_class(item.signal)">
+          <v-card-title :class="'text-center mx-auto ' + trade_header_class(item.signal) ">
+            <span class="headline font-weight-bold" style="font-size: 16px!important;">{{item.ticker.toUpperCase()}}</span>
           </v-card-title>
-          <v-card-text>
+          <v-card-text class = "p-3 pt-0">
             <v-container style="font-size: 13px;">
               <v-row>
                 <v-col cols="6" class="py-0">
                     <v-select
                         v-model="broker"
-                        :items="['Zerodha', 'Upstox', 'HDFC Sec', 'Kotak Sec', 'ICIC Direct', 'Edelweiss']"                        
+                        :items="[{text : 'Zerodha'}, { text : 'Upstox', disabled : true}, { text : 'HDFC Sec', disabled : true}, { text : 'Kotak Sec', disabled : true}, { text : 'ICIC Direct', disabled : true}, { text : 'Edelweiss', disabled : true}]"                        
                         label="Broker"
                         data-vv-name="select"
                         required
-                        readonly
+                        
                         class="m-0"
                   ></v-select>
                 </v-col>
@@ -26,9 +26,9 @@ const M_TRADE_MODAL = `
                         row 
                         class="m-0"              
                   >
-                    <v-radio label="REG" value = "regular"></v-radio>
-                    <v-radio label="BOO" value = "bo"></v-radio>
-                    <v-radio label="CO" value = "co"></v-radio>
+                    <v-radio label="REG" :color = "bg_color(item.signal)" background-color = "bg_color(item.signal)" value = "regular"></v-radio>
+                    <v-radio label="BO" :color = "bg_color(item.signal)" value = "bo"></v-radio>
+                    <v-radio label="CO" :color = "bg_color(item.signal)" value = "co"></v-radio>
                   </v-radio-group>
                 </v-col>
             </v-row>            
@@ -41,8 +41,8 @@ const M_TRADE_MODAL = `
                         row 
                         class="m-0"                   
                         >
-                            <v-radio label="MIS" value = "MIS"></v-radio>
-                            <v-radio label="CNC" value = "CNC"></v-radio>                            
+                            <v-radio label="MIS" :color = "bg_color(item.signal)" value = "MIS"></v-radio>
+                            <v-radio label="CNC" :color = "bg_color(item.signal)" value = "CNC"></v-radio>                            
                         </v-radio-group>                        
                 </v-col>
                 <v-col cols="6" class="py-0 ">
@@ -52,17 +52,18 @@ const M_TRADE_MODAL = `
                         row
                         class="m-0" 
                         >
-                            <v-radio label="MARKET" value = "MARKET"></v-radio>
-                            <v-radio label="LIMIT" value = "LIMIT"></v-radio>                            
+                            <v-radio label="MARKET" :color = "bg_color(item.signal)" value = "MARKET"></v-radio>
+                            <v-radio label="LIMIT" :color = "bg_color(item.signal)" value = "LIMIT"></v-radio>                            
                         </v-radio-group>                        
                 </v-col>                
               </v-row>
-              <v-divider></v-divider>
+              <hr role="separator" aria-orientation="horizontal" class="mercury-divider" :style = "'margin-top:0px; background-color:' + bg_color(item.signal) + '; '">
               <v-row>
                     <v-col cols="6" class="py-0">
                         <v-text-field
                         label="Quantity"
                         :value = "quantity"
+                        type = "number"
                         outlined
                         dense
                         ></v-text-field>
@@ -71,6 +72,7 @@ const M_TRADE_MODAL = `
                         <v-text-field
                         label="Disclosed Quantity"
                         :value = "disclosed_quantity"
+                        type = "number"
                         outlined
                         dense
                         ></v-text-field>
@@ -81,7 +83,7 @@ const M_TRADE_MODAL = `
                         <v-text-field
                         label="Price"
                         :value = "item.price"
-                        readonly
+                        type = "number"                        
                         outlined
                         dense
                         ></v-text-field>
@@ -90,7 +92,7 @@ const M_TRADE_MODAL = `
                         <v-text-field
                         label="Target Price"
                         :value = "item.target_price"
-                        readonly
+                        type = "number"                        
                         outlined
                         dense
                         ></v-text-field>
@@ -101,6 +103,7 @@ const M_TRADE_MODAL = `
                         <v-text-field
                         label="TP"
                         :value = "item.target_price"
+                        type = "number"
                         outlined
                         dense
                         ></v-text-field>
@@ -109,6 +112,7 @@ const M_TRADE_MODAL = `
                         <v-text-field
                         label="SL"
                         :value = "item.stop_loss"
+                        type = "number"
                         outlined
                         dense
                         ></v-text-field>
@@ -117,19 +121,19 @@ const M_TRADE_MODAL = `
                     <v-col cols="4" class="py-0">
                         <v-text-field
                         label="Trailing SL"
+                        type = "number"
                         :value = "0"
                         outlined
                         dense
                         ></v-text-field>
                     </v-col>
                 </v-row>
-            </v-container>
-            <small>*indicates required field</small>
+            </v-container>            
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closed()">Close</v-btn>
-            <v-btn id = "trade_action" color="blue darken-1" text @click="place_order()">{{item.signal.toUpperCase()}}</v-btn>
+            <button id = "trade_action" :class = "'btn ' + trade_btn_class(item.signal)" color="blue darken-1" text @click="place_order()">{{item.signal.toUpperCase()}}</button>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -372,7 +376,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                 <tr v-for = "(item, index) in items" v-if = "item.visible" :class = "row_class(group, index, item, items) + (item.ltp.instrument_id)" :id = "item.call_id">
                     <td  v-for = "header in headers" >
                         <span v-if = "header.key == 'signal'" @click = "show_trade_modal(item)">
-                            <button rounded type="button"  :class="item.signal + '_btn trade elevation-7 ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
+                            <button rounded type="button"  :class="item.signal + '_btn trade shadow ' + (item.active ? ' ' : 'inactive ')"  data-toggle="modal" 
                                 data-target="#trade_modal">
                                 <span >            
                                     {{ item.signal }}
@@ -380,19 +384,21 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </button>
                         </span>
                         <span v-else-if = "header.key == 'status'">
-                            <span :class = "'badge elevation-7 ' + item.status.toLowerCase() + '_status'">
+                            <span :class = "'badge shadow ' + item.status.toLowerCase() + '_status'">
                                 {{ item.status }}
                             </span>
                         </span>
                         <span v-else-if = "header.key == 'ticker'">
                             <span v-if = "item.product_type == 'OPT'">
-                            <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
-                            <span class="">@</span>
-                            <span class="options-strike">{{ item.strike }}</span> 
-                            <span class="">@</span>
-                            <span class="options-expiry">{{item.expiry}}</span>
-                            <span class="">@</span>
-                            <span class="option-type badge badge-warning px-1">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
+                                <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
+                                <span class="option-type badge badge-warning px-1">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
+                                <!-- <span class="">@</span> -->
+                                <br>
+                                <span class="options-strike">{{ item.strike }}</span> 
+                                <!-- <span class="">@</span> -->
+                                <span class="options-expiry">{{item.expiry}}</span>
+                                <!-- <span class="">@</span> -->
+                                
                             </span>                        
                             <span v-else>
                                 {{item.ticker}}
@@ -571,7 +577,7 @@ const M_DATA_TABLE_INFO = `
         <v-col cols = "6" md = "3" lg = "3" class = "px-1">
             <v-text-field
                 v-model="search"
-                class = "px-1 p-1  blue lighten-5 elevation-3"
+                class = "px-1 p-1  blue lighten-5"
                 rounded
                 append-icon="mdi-magnify"
                 label="Search"
@@ -584,7 +590,7 @@ const M_DATA_TABLE_INFO = `
         
         <v-col cols = "6" md = "3" lg = "3" class = "px-1">    
             <v-select
-                class = "mx-1 elevation-1"
+                class = "mx-1 shadow"
                 v-model="type"
                 :items="equity_type"
                 menu-props="auto"
@@ -1017,9 +1023,9 @@ const M_NAVIGATOR = `
                     class="py-0"
                     >
                     <div v-if="false"> loop starts with 1 </div>
-                        <v-item v-slot:default="{ active, toggle }" active-class="active-head" class = "p-4" :value = "n - 1">
+                        <v-item v-slot:default="{ active, toggle }" active-class="active-head" class = "p-2 shadow-2" :value = "n - 1" :disabled = "true"> 
                             <v-card                                
-                                
+                                :disabled = "portfolio_clickable(n-1)"
                                 @click="toggle"
                                 no-gutters
                                 dense
@@ -1028,7 +1034,7 @@ const M_NAVIGATOR = `
                                 style="cursor: pointer;"
 
                             >
-                            <span class = "title text-center" >{{portfolios[n-1].toUpperCase()}} </span>
+                            <span class = "text-center title-mercury" >{{portfolios[n-1].toUpperCase()}} </span>
                             </v-card>
                         </v-item>
                     </v-col>

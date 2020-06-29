@@ -8,9 +8,15 @@ const NIFTY_50 = 256265
 
 const NIFTY_BANK = 260105
 
-const INTRADAY = "intraday"
+const INTRADAY = "intraday";
+const POSITIONAL = "positional";
+const LONGTERM = "longterm";
 
 const PORTFOLIOS = ['', 'nifty50', 'intraday', 'btst', 'positional', 'longterm'];
+
+const BUY = "buy";
+
+const SELL = "sell";
 
 const TYPE = {};
 TYPE[OPTIONS_PROD] = OPTIONS; TYPE[STOCKS_PROD] = STOCKS;
@@ -31,7 +37,7 @@ const KEY_2_LABEL = {
     time : "Signal Time",
     signal_time : "Signal Time",
     signal_price : "Signal Price",
-    price : "Call Price",
+    price : "Signal Price",
     target_price : "TP",
     stop_loss :  "SL",
     profit : "Profit %",
@@ -48,6 +54,12 @@ const STATE = {
     market : "equity",
     market_type : "indian_market",
     update : true,
+
+    set(props){
+        Object.entries(props).forEach(([key, value])=>{
+            this[key] = value;
+        });
+    },
 }
 
 const META = {
@@ -70,14 +82,16 @@ const META = {
 };META.init();
 
 class Filter{
-    constructor(){
-        this.init()
+    constructor(portfolio = null, type = null){
+        this.init({portfolio, type});
     }
-    init(){
-        this.tickers = null,  // null or list of ticker names
-        this.sides = null, // null or BUY / SELL
-        this.profit_percentage = null, // null or float
-        this.risk_reward = null, // null or float
+    init({portfolio = null, type = null}){
+        this.tickers = null  // null or list of ticker names
+        this.sides = null // null or BUY / SELL
+        this.profit_percentage = null // null or float
+        this.risk_reward = null // null or float
+        this.type = type // null or 'OPTIONS' / 'STOCKS'
+        this.portfolio = portfolio // null or 'intraday', 'btst', 'positional' and 'longterm'
         this.search = null
         this.loaded = false
     }
@@ -91,9 +105,11 @@ class Filter{
                 this.sides = props.sides.map(v=>v.toUpperCase())
             }
         }
-        if(props.profit_percentage) this.profit_percentage = props.profit_percentage
-        if(props.risk_reward) this.risk_reward = props.risk_reward
-        if(props.search) this.search = props.search
+        if(props.profit_percentage) this.profit_percentage = props.profit_percentage;
+        if(props.risk_reward) this.risk_reward = props.risk_reward;
+        if(props.search) this.search = props.search;
+        if(props.portfolio) this.portfolio = props.portfolio;
+        if(props.type) this.type = props.type;
         return this
     }
 }

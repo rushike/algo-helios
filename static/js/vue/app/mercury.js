@@ -164,6 +164,7 @@ class MercuryTable{
             created() {
                 // var head_list = this.$store.getters.fields
                 // this.$store.commit('update_fields', head_list)
+                // this.$store.dispatch("load_state");
                 var force = true, data = Mercury.data
                 this.$store.dispatch('refresh_table', {force, data})
                 this.$store.dispatch('load_filters')                

@@ -2,6 +2,9 @@ Vue.use(Vuex);
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
+console.log("=+================================");
+console.log("STATE : ", STATE);
+console.log("=+================================");
 
 const store = new Vuex.Store({
     strict: true,
@@ -80,6 +83,8 @@ const store = new Vuex.Store({
             Object.entries(state_dict).forEach(([key, value])=>{
                 state.state[key] = value;
             });
+            sessionStorage.setItem("state", JSON.stringify(state.state));
+            console.log("state : ", sessionStorage.state);            
         },
         /**
          * Structure : payload
@@ -345,9 +350,9 @@ const store = new Vuex.Store({
         },
         async load_filters(context){ // this loads all filter for only particular market type
             let mstate = context.getters.state
-            let table = Table[mstate.market_type][mstate.market][mstate.type]
-            var response =  await axios.post('/worker/get-filters/', {})            
-            // console.log("filters : ", response.data)
+            var response =  await axios.post('/worker/get-filters/', {});
+            var type = response.data.type || mstate.type
+            let table = Table[mstate.market_type][mstate.market][type]
             Object.entries(response.data).forEach(([key, value])=>{
                 table[key].filter.set(value, true)
             });            
@@ -356,18 +361,41 @@ const store = new Vuex.Store({
         },
         load_filter(context){
             let mstate = context.getters.state,
-             db_fetch = true            
-            let filter = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].filter
+             db_fetch = true;
+            var type = FILTER.type || mstate.type
+            let filter = Table[mstate.market_type][mstate.market][type][mstate.portfolio].filter
             console.log("filter should change : ", filter)
             context.commit('update_filter', {filter, db_fetch})
+        },
+        store_filter(context){
+            let mstate = context.getters.state;
+            let filter = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].filter
+            filter.set(FILTER)
         },
         clear_filter(context){
             context.commit("clear_filter")
         },
-        change_state : (context, state_dict)=>{
-            // console.log("Vuex$action#change_state =: context ", ", state_dict : ", state_dict)
+        
+        load_state(context){
+            var state = {};
+            if(!sessionStorage.state){
+                sessionStorage.setItem("state", JSON.stringify(STATE));                
+            }else{
+                state = JSON.parse(sessionStorage.getItem("state"));
+            }
+            context.dispatch("change_state", state);
+            // context.dispatch('propogate_state_change');
+        },
+        change_state : (context, state_dict)=>{          
+            var mstate = context.getters.state;
+            context.dispatch("store_filter")  
+            if(state_dict.type == OPTIONS && [LONGTERM, POSITIONAL].includes(mstate.portfolio)){
+                state_dict.portfolio = INTRADAY
+            }
             context.commit("change_state", state_dict);
             context.dispatch('propogate_state_change')
+            // console.log("State change", context.state.state);  
+            console.log("Filter after changed state  = ", FILTER);
         },
         propogate_state_change(context){
             context.dispatch('load_filter')
@@ -460,13 +488,14 @@ const store = new Vuex.Store({
             
             context.commit("update_notifications", notifications)
             
-        }
+        },
     }
 });
-
+// store.dispatch("load_state");
 const storex =  {
     table : Table,
     state : STATE,
     fields : [],
     items : []
 }
+
