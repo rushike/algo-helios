@@ -37,6 +37,10 @@ def plans2(request):
     return render(request, 'subscriptions/plans_copy.html', context=context)
 
 
+def jupiter(request):
+    return render(request, 'subscriptions/jupiter.html')
+
+
 def mercury_product_data(request):
     data = subscriptions.functions.get_context_for_plans2(request.user)
     return JsonResponse(data, safe=False)
