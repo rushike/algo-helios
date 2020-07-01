@@ -1,7 +1,7 @@
 const MercuryPlans = `
 <div>
 
-<div class="mt-5 row justify-content-center">
+<div class="m-5 row justify-content-center">
 	<p class="mx-4">Monthly</p>
 
   <v-switch v-model="subscription_period_selected" class="mx-4 my-0" label=""
@@ -15,7 +15,7 @@ const MercuryPlans = `
 <!-- ____________________period switch end___________________ -->
 <!-- ____________________N members starts____________________ -->
 
-<div class="row justify-content-center inline">
+<div class="m-5 row justify-content-center inline">
 	<!-- <div class="btn-toolbar shadow-lg" role="toolbar" aria-label="Toolbar with button groups">
 		<div class="btn-group mr-2 border-1" id="" role="group">
 			<button type="button" class="btn">1</button>
@@ -42,7 +42,7 @@ const MercuryPlans = `
 </div>
 
 <!-- __________________cards container start_________________ -->
-<div class="container mt-5 text-center">
+<div class="container text-center p-5">
 		<div class="row d-flex justify-content-around">
 
 		<div class="col-md-3">
@@ -162,7 +162,7 @@ const MercuryPlans = `
             <input class="planname" name= "planname"   :value="'mercury'" hidden></input>
             <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
             
-            <button v-if="trial_apply" type="submit" class="btn btn-sm dark_blue_color text-light">Trial</button>
+            <button v-if="trial_apply" type="submit" class="btn btn-sm bg-warning text-dark">Trial</button>
             
             <button v-else type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
           </form>
@@ -201,7 +201,7 @@ const app = `
   <p class="text-center"><span class="max_font2">Features</span></p>
 <!-- </div>   -->
 
-  <div class="row text-center">
+  <div class="row text-center pb-5">
     
     <div class="col-md-3 mt-3">
       <img src="/static/img/high_hit_rate.png" class="img-fluid img_resize"><br>
@@ -235,7 +235,7 @@ const app = `
 
 const timeline = 
 `
-<div class='container mt-5 mb-5'>
+<div class='container mt-5'>
   <p class="text-center"><span class="max_font2">
     One-stop shop for effective trading 
   </span></p>
