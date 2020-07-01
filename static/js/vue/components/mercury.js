@@ -39,6 +39,18 @@ const MTradeModal = Vue.component('m-trade-modal', {
         closed(){
             this.$emit('closed')
         },
+        trade_header_class(signal){
+            return signal.toLowerCase() == BUY ? "trade-header-buy" : "trade-header-sell";
+        },
+        trade_btn_class(signal){
+            return signal.toLowerCase() == BUY ? "trade-buy-btn" : "trade-sell-btn";
+        },
+        trade_wrapper_class(signal){
+            return signal.toLowerCase() == BUY ? "trade-wrapper-buy" : "trade-wrapper-sell";
+        },
+        bg_color(signal){
+            return signal.toLowerCase() == BUY ? "#004B96" : "#7DDCFF";
+        },
         place_order(){
             var self = this;
             console.log("self : ", self);
@@ -650,11 +662,10 @@ const MNavigator = Vue.component('m-navigator', {
     computed : {
         toggle_exclusive : {
             get(){
-                return this.active_
+                return PORTFOLIOS.indexOf(this.$store.getters.state.portfolio.toLowerCase()) - 2;
             },
-            set(value){
-                console.log("Value active in tab : ", value)
-                this.active_ = value
+            set(value){                
+                this.active_ = value;
             }
         },
         active_portfolio :{
@@ -679,8 +690,14 @@ const MNavigator = Vue.component('m-navigator', {
         },
         change_state(){
             var portfolio = PORTFOLIOS[this.active_ + 2]
-            console.log("portfolio changed to : ", portfolio)
+            // console.log("portfolio changed to : ", portfolio)
+            // if(this.$store.getters.state.type == OPTIONS && ![0, 1].includes(this.active_)) return
             this.$store.dispatch('change_state', {"portfolio" : portfolio})
+        },
+        portfolio_clickable(portfolio_no){
+            if(this.$store.getters.state.type == OPTIONS){
+                return ![0, 1].includes(portfolio_no)
+            }return false
         },
     },
     template : M_NAVIGATOR,
@@ -738,6 +755,7 @@ const MMultiselect = Vue.component('m-multiselect', {
             console.log("row click item ", item, item.name, this.selected);
             
         },
+        
         item_selected(item, value){
             // console.log("item, value : ", this.selected)                        
             this.emit = true
@@ -800,7 +818,7 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
                 let db_fetch = false
                 // console.log("Changes filter value ", filter, db_fetch)
                 this.$store.commit("update_filter", {filter, db_fetch});
-                this.apply_filters()
+                this.apply_filters()()
                 
             }
         },
@@ -855,14 +873,19 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
             this.ticker_values = sel_tickers
         },
         async clear_filter(){
-            await axios.post("/worker/clear-filter2/", {portfolio_id : STATE.portfolio})
-            this.$store.dispatch("clear_filter")
+            var {portfolio, type, market, market_type} = STATE;
+            await axios.post("/worker/clear-filter2/", {portfolio_id : portfolio})
+            this.$store.dispatch("clear_filter")            
+            var filter = Table[market_type][market][type][portfolio].filter;
+            filter.init({market_type, market, type, portfolio})
         },
         apply_filters(){
             this.$store.dispatch('update_filter', FILTER)
-            return _.debounce(async function(){
-                await axios.post("/worker/apply-filters2/", {portfolio_id : STATE.portfolio, type : STATE.type, ...FILTER})
-            }, 10000)
+            return _.throttle(async function(){
+                _.debounce(async function(){
+                    await axios.post("/worker/apply-filters2/", {portfolio_id : STATE.portfolio, ...FILTER, type : STATE.type})
+                }, 10000)()                
+            }, 10000);
         },
         select (option) {
             option.selected = !option.selected

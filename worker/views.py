@@ -73,7 +73,7 @@ def apply_filters2(request):
         "sides" : sides, 
         "risk_reward" : risk_reward,
         "profit_percentage" : profit_percentage,
-        "signal_item" : "",
+        "type" : POST.get("type"),
 
     }
     logger.debug(f"Sending attributes to store or update in database : [ \n\t{request.user._wrapped} , \n\t{'mercury#{}'.format(call_type)}, \n\t{filter_dict}\n]")
