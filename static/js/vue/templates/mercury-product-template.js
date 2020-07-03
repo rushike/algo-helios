@@ -1,7 +1,7 @@
 const MercuryPlans = `
 <div>
 
-<div class="mt-5 mb-3 row justify-content-center">
+<div class="mt-5 mb-3 row justify-content-center" id="SUB_CARDS" style="padding-top: 4rem; padding-bottom: 0.5rem;">
 	<p class="mx-4">Monthly</p>
 
   <v-switch v-model="subscription_period_selected" class="mx-4 my-0" label=""
@@ -236,9 +236,10 @@ const app = `
 const timeline = 
 `
 <div class='container mt-5'>
-  <p class="text-center"><span class="max_font2">
+  <p class="text-center"><span class="max_font2 mt-4 mb-5">
     One-stop shop for effective trading 
   </span></p>
+
     <v-timeline :dense="$vuetify.breakpoint.smAndDown"> 
       <v-timeline-item :small="true">
         <span slot="opposite">
@@ -365,9 +366,11 @@ const timeline =
 </span>
 </p>
 <div class="row justify-content-center mt-5 mb-5">
-  <button class="btn btn-md text-light dark_blue_color text-center justify-content-center">
-      Start Your Free Trial  
-  </button>
+  <a href="#SUB_CARDS">
+    <button class="btn btn-md text-light dark_blue_color text-center justify-content-center">
+      Start Your Free Trial
+    </button>
+  </a>
 </div>
 
 <p class="text-center mt-5"><span class="max_font2 mt-5">FAQ</span></p>
