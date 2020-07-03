@@ -1,7 +1,7 @@
 const MercuryPlans = `
 <div>
 
-<div class="m-5 row justify-content-center">
+<div class="mt-5 mb-3 row justify-content-center">
 	<p class="mx-4">Monthly</p>
 
   <v-switch v-model="subscription_period_selected" class="mx-4 my-0" label=""
@@ -15,7 +15,7 @@ const MercuryPlans = `
 <!-- ____________________period switch end___________________ -->
 <!-- ____________________N members starts____________________ -->
 
-<div class="m-5 row justify-content-center inline">
+<div class="m-3 row justify-content-center inline">
 	<!-- <div class="btn-toolbar shadow-lg" role="toolbar" aria-label="Toolbar with button groups">
 		<div class="btn-group mr-2 border-1" id="" role="group">
 			<button type="button" class="btn">1</button>
@@ -42,7 +42,7 @@ const MercuryPlans = `
 </div>
 
 <!-- __________________cards container start_________________ -->
-<div class="container text-center p-5">
+<div class="container text-center p-3">
 		<div class="row d-flex justify-content-around">
 
 		<div class="col-md-3">
