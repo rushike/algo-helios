@@ -180,44 +180,60 @@ html, body{
 }
 
 .total--text{
-    color: #0073C6;
+    color: #0073C6!important;
 }
 
 .total{
-    background-color: #0073C6;
+    background-color: #0073C6!important;
+}
+
+.total-wrap:hover{
+    border: 2px solid #0073C6!important;
 }
 
 .active_status--text {
-    color: #2589EC;
+    color: #2589EC!important;
 }
 
 .active_status {
-    background: #2589EC;
+    background: #2589EC!important;
 }
 
 .miss_status--text {
-    color: #DA0000;    
+    color: #DA0000!important;    
 }
 
 .miss_status {
-    background: #DA0000;    
+    background: #DA0000!important;    
+}
+
+.miss-wrap:hover{
+    border: 2px solid #DA0000!important;
 }
 
 .hit_status--text {
-    color: #1BC100;
+    color: #1BC100!important;
+}
+
+.hit-wrap:hover{
+    border: 2px solid #1BC100!important;
 }
 
 .hit_status {
-    background: #1BC100;
+    background: #1BC100!important;
 }
 
 .partialhit_status--text {
-    color: #26EF05;
+    color: #26EF05 !important;
 }
 
 .partialhit_status {
     background: #26EF05;
     color: rgb(243, 243, 243)!important;
+}
+
+.partialhit-wrap:hover{
+    border: 2px solid #26EF05;
 }
 
 .inactive_status--text {
@@ -366,12 +382,27 @@ h6 {
 }
 .options-ticker{
     color: #094100;
+    min-width: 5.4rem !important;
+    display: inline-block;
 }
 .options-strike{
     color: #004b96;
+    font-weight: 700;
+    min-width: 32px;
+    display: inline-block;
+}
+
+.options-type{
+    position: absolute;
+    top: 12%;
+    font-size: 11px;
+    border-radius: 18px;
 }
 .options-expiry{
     color: tomato;
+    min-width: 32px;
+    font-weight: 700;
+    display: inline-block;
 }
 
 .shadow{
@@ -438,6 +469,11 @@ h6 {
     border: 4px solid #7DDCFF !important;
     border-radius: 0px;
 }
+
+#sel-dropdown .v-input > .v-input__control{
+    min-height: 33px;
+}
+
 
 @media (max-width: 1024px) and (min-width: 480px){
     .meta-text{    

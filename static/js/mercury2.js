@@ -11,6 +11,10 @@ async function tester(){
     });
     console.log("config set.");
     var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
+    if((Date.now() - notifications.time) > notifications.expiry ){
+            notifications.data = []   
+            notifications.time = Date.now()
+    }
     if(!notifications || (notifications && notifications.constructor != Object)){
         notifications = {
             time : Date.now(),
@@ -18,11 +22,11 @@ async function tester(){
             data : []
         }
     }
-    notifications = {
-        time : Date.now(),
-        expiry : 86400000,
-        data : []
-    }
+    // notifications = {
+    //     time : Date.now(),
+    //     expiry : 86400000,
+    //     data : []
+    // }
     await localforage.setItem("notifications", JSON.stringify(notifications))
     console.log("demo created");
     

@@ -37,18 +37,7 @@
                 var get_request = objectStore.get("notifications")
                 get_request.onsuccess = function(event){
                     var notifications_str = get_request.result
-                    var notifications = JSON.parse(notifications_str)
-
-                    if(!notifications.time){
-                        notifications.time = Date.now()
-                    }
-                    if(!notifications.data){
-                        notifications.data = []
-                    }
-                    if((Date.now() - notifications.time) > notifications.expiry ){
-                            notifications.data = []   
-                            notifications.time = Date.now()                      
-                    }
+                    var notifications = JSON.parse(notifications_str)                  
                     notifications.data.push(body)
                     var request = objectStore.put(JSON.stringify(notifications), "notifications" );
                     request.onsuccess = function(event) {
@@ -57,11 +46,18 @@
                 }
             }                    
             if(body.dtype == "signal"){
-                bodytext += `${body.signal.toUpperCase()} - ${body.ticker} @ ${body.price} with `+
+                if(body.product_type == "OPT"){
+                    bodytext += `${body.signal.toUpperCase()} - ${body.ticker} @ ${body.price} with `+
                             `TP : ${body.target_price}, SL : ${body.stop_loss},`+
                             `  Risk $ : ${body.risk_reward} & Profit % : ${body.profit_percent}`
+                }
+                else {
+                    bodytext += `${body.signal.toUpperCase()} - ${body.ticker} @ ${body.price} with `+
+                            `TP : ${body.target_price}, SL : ${body.stop_loss},`+
+                            `  Risk $ : ${body.risk_reward} & Profit % : ${body.profit_percent}`
+                }
             }else{                
-                bodytext += `${body.ticker} - ${body.signal}, ${body.status} @ ${body.price}`
+                bodytext += `${body.ticker} - ${body.signal}, ${body.status}`
             }
             // Keep the service worker alive until the notification is created.
             event.waitUntil(

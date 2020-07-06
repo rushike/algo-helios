@@ -303,6 +303,8 @@ const store = new Vuex.Store({
                 sortable : false,
                 width : "85px"
             })
+            var tick_dict = head_list.find((v)=>v.key == "ticker")
+            tick_dict.width = "9rem";
             context.commit('update_fields', head_list)
             context.commit('update_selected_fields', head_list)
         },
@@ -491,6 +493,8 @@ const store = new Vuex.Store({
         },
     }
 });
+
+
 // store.dispatch("load_state");
 const storex =  {
     table : Table,
