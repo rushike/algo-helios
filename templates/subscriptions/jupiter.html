@@ -7,7 +7,7 @@
 	<!-- <link rel="stylesheet" type="text/css" href="{% static '/css/plans.css' %}">
 	<link rel="stylesheet" type="text/css" href="{% static '/css/services.css' %}"> -->
 	<link rel="stylesheet" type="text/css" href="{% static '/css/products_css.css' %}">
-	<script src="https://d3js.org/d3.v4.js"></script>
+	<!-- <script src="https://d3js.org/d3.v4.js"></script> -->
 
 {% endblock %}
 
@@ -121,8 +121,8 @@
 	  </div>
 	  <!-- "padding-top: 5rem; padding-left: 5rem; -->
 		<div class="col-md-5 justify-content-center text-center hide_this_mobile">
-			<img src="/static/img/jupiter-product-bg.png" class="img-fluid"
-			style="padding-top: 2rem ;width: 950px;"
+			<img src="/static/img/jupiter-images/jupiter-product-bg.svg" class="img-responsive"
+			style="padding-top: 0rem ;width: 600px;"
 			>
 		</div>
 
@@ -136,7 +136,7 @@
 
 	<div class="row">
 		<p class="float-left">
-			<span class="max_font m-2">
+			<span class="max_font m-1 ml-0">
 				<div class="smart_text"></div><div class="not_smart_text">ndex Fund</div>
 			</span>
 		</p>
@@ -193,12 +193,12 @@
 	
 	<button class="btn btn-md text-light mt-3 dark_blue_color shadow-sm px-3">
 		Invest 
-		<svg class="bi bi-chevron-right" width="32" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z"/></svg>
+		<svg class="bi bi-chevron-right mt-0 align-content-center" width="32" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z"/></svg>
 	</button>
 
 </div>
 <!-- ----------------------------------------------------- -->
-<div class="container text-center mx-auto mt-3">
+<div class="container text-center mx-auto mt-5 mb-4">
 	<p class="text-center">
 			<span>
 				<p class="max_font2">Fund Performance</p>
@@ -210,7 +210,7 @@
 	
 	
 	<!-- <p class="text-center">CAGR & SIP Investment Smart Index Fund vs Nifty 50</p> -->
-	<div class="table-responsive table-bordered" style="border-radius: 10px;">
+	<div class="table-responsive table-bordered" style="border-radius: 10px;margin-top:3rem;">
 		<table class="table">
 			<caption class="p-2"><small>
 				Things assumed for backtest :<br> • Avg Dividend yield: 1% • Money market 
@@ -270,13 +270,16 @@
 
 <p class="float-left text-justify mt-5 mb-5">As seen, SIF has managed to survive the drawdown since January 2020 with the help of our decision making algorithm whereas Nifty has collapsed during the period. 
 <br>
-	<h3>NAV : Smart Index Fund vs Nifty 50 </h3>
+	<!-- <h3>NAV : Smart Index Fund vs Nifty 50 </h3> -->
 
 <!-- Create a div where the graph will take place -->
-<div id="my_dataviz" class="mb-5"></div>
+<!-- <div id="my_dataviz" class="mb-5"></div> -->
+<!-- <div class="container"> -->
+	<img src="/static/img/jupiter-images/jupiter-
+	NAV-graph.svg" class="img-responsive mt-5" style="width: 100%; height: 40%;">
+<!-- </div> -->
 
-
-<p class="font-italic">The Smart Index Fund strategy has out performed Nifty's CAGR by significant margin since 2008 </p>
+<p class="font-italic mt-5">The Smart Index Fund strategy has out performed Nifty's CAGR by significant margin since 2008 </p>
 </p>
 
 </div>
@@ -290,7 +293,7 @@
 				</span>
 		</p>
 
-	<div class="container pb-5">
+	<div class="container-fluid pb-5">
 		<div class="row d-flex justify-content-around pt-4">
 			<div class="col-md-4">
 				<div class="row border rounded shadow-sm " style="background-color: white;"> 					
@@ -448,28 +451,28 @@
 	</p>
 <ul class="accordion" style="list-style: none;">
 		<li>
-			<a>What are index funds ?</a>
+			<a class="font-weight-bold">What are index funds ?</a>
 			<p></p>
 		</li>
 		<li>
-			<a>Who should invest ?</a>
+			<a class="font-weight-bold">Who should invest ?</a>
 			<p></p>
 		</li>
 		<li>
-			<a>What is the minimum investment ?</a>
+			<a class="font-weight-bold">What is the minimum investment ?</a>
 			<p></p>
 		</li>
 		<li>
-			<a>How long does the investment period vary ?</a>
+			<a class="font-weight-bold">How long does the investment period vary ?</a>
 			<p></p>
 		</li>
 		<li>
-			<a>What is the turnover ratio of the index ?</a>
+			<a class="font-weight-bold">What is the turnover ratio of the index ?</a>
 			<p></p>
 		</li>
 
 		<li>
-			<a>How is SIF different from regular index funds ?</a>
+			<a class="font-weight-bold">How is SIF different from regular index funds ?</a>
 			<p></p>
 		</li>
 		
