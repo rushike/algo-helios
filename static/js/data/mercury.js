@@ -82,10 +82,10 @@ const META = {
 };META.init();
 
 class Filter{
-    constructor(portfolio = null, type = null){
-        this.init({portfolio, type});
+    constructor(portfolio = null, type = null, dynamic = false){
+        this.init({portfolio, type, dynamic});
     }
-    init({portfolio = null, type = null}){
+    init({portfolio = null, type = null, dynamic = false}){
         this.tickers = null  // null or list of ticker names
         this.sides = null // null or BUY / SELL
         this.profit_percentage = null // null or float
@@ -93,6 +93,7 @@ class Filter{
         this.type = type // null or 'OPTIONS' / 'STOCKS'
         this.portfolio = portfolio // null or 'intraday', 'btst', 'positional' and 'longterm'
         this.search = null
+        this.dynamic = dynamic
         this.loaded = false
     }
     set(props, db_fetch = false){
@@ -108,13 +109,13 @@ class Filter{
         if(props.profit_percentage) this.profit_percentage = props.profit_percentage;
         if(props.risk_reward) this.risk_reward = props.risk_reward;
         if(props.search) this.search = props.search;
-        if(props.portfolio) this.portfolio = props.portfolio;
-        if(props.type) this.type = props.type;
+        if(this.dynamic && props.portfolio) this.portfolio = props.portfolio;
+        if(this.dynamic && props.type) this.type = props.type;
         return this
     }
 }
 
-const FILTER = new Filter()
+const FILTER = new Filter(STATE.portfolio, STATE.type, true)
 
 /**
  * Structure : 
@@ -153,22 +154,22 @@ const Table = {
                 },
                 intraday : {
                     data : [], // this will store data that will display by Bootstrap - Vue table,
-                    filter : new Filter(),
+                    filter : new Filter(type = STOCKS),
                     tickers : [],
                 },
                 btst : {
                     data : [], 
-                    filter : new Filter(),
+                    filter : new Filter(type = STOCKS),
                     tickers : [],
                 },
                 positional :{
                     data : [],
-                    filter : new Filter(),
+                    filter : new Filter(type = STOCKS),
                     tickers : [],
                 },
                 longterm : {
                     data : [],
-                    filter : new Filter(),
+                    filter : new Filter(type = STOCKS),
                     tickers : [],
                 }
             }, 
@@ -190,12 +191,12 @@ const Table = {
                 },
                 intraday : {
                     data : [],
-                    filter : new Filter(),
+                    filter : new Filter(type = OPTIONS),
                     tickers : [],
                 },
                 btst : {
                     data : [],
-                    filter : new Filter(),   
+                    filter : new Filter(type = OPTIONS),   
                     tickers : [],                  
                 }
             }, 
@@ -247,14 +248,19 @@ class Signal{
         this.stop_loss = stop_loss.round(2)
         this.profit = {
                     toString(){                        
-                        return (Math.abs(self.ltp - self.target_price) / self.price).toFixed(2)
+                        return (Math.abs(self.ltp - self.target_price) * 100 / self.price).toFixed(2) 
                     }
                 }
         this.status = status
         this.risk_reward = risk_reward
         this.active = active
-        this.follow = false
+        // this.follow = false
         this.visible = true
+        this.set_follow_from_localStorage();
+    }
+    set_follow_from_localStorage(){
+        var pinned_list = JSON.parse(localStorage.getItem("pinned_calls"));
+        this.follow = pinned_list.includes(this.call_id);
     }
     update(data){
         console.log("signal update : ", data );        
@@ -264,9 +270,9 @@ class Signal{
         if(data.active == true || data.active == false) this.active = data.active
     }
     static set_follow(state, params){
-        var {item = null, follow = false} = params
-        console.log("following : ", item ,follow);
+        var {item = null, follow = false} = params;    
         item.follow = follow
+        pin_to_localStorage(item);
     } 
     static hide(state, params){
         var {item = null} = params
@@ -315,15 +321,19 @@ class OptionsSignal{
         this.stop_loss = stop_loss.round(2)
         this.profit = {
                     toString(){                        
-                        return (Math.abs(self.ltp - self.target_price) / self.price).toFixed(2)
+                        return (Math.abs(self.ltp - self.target_price) * 100 / self.price).toFixed(2)
                     }
                 }        
         this.risk_reward = risk_reward
         this.status = status
         this.active = active
-        this.option_type = option_type
-        this.follow = false
+        this.option_type = option_type        
         this.visible = true 
+        this.set_follow_from_localStorage();
+    }    
+    set_follow_from_localStorage(){
+        var pinned_list = JSON.parse(localStorage.getItem("pinned_calls"));
+        this.follow = pinned_list.includes(this.call_id);
     }
     update(data){
         console.log("signal update : ", data );        
@@ -335,6 +345,7 @@ class OptionsSignal{
     static set_follow(state, params){
         var {item = null, follow = false} = params        
         item.follow = follow
+        pin_to_localStorage(item);
     } 
     static hide(state, params){
         var {item = null} = params
@@ -348,6 +359,18 @@ class OptionsSignal{
     
 }
 
+function pin_to_localStorage(item){
+    var pinned_list = JSON.parse(localStorage.getItem("pinned_calls"));
+    console.log("pinned_list : ", pinned_list);
+    
+    if(Array.isArray(pinned_list) && !pinned_list.includes(item.call_id) && item.follow){
+        pinned_list.push(item.call_id);
+    }
+    if(Array.isArray(pinned_list) && pinned_list.includes(item.call_id) && !item.follow){
+        pinned_list = pinned_list.filter(v =>v != item.call_id);
+    }
+    localStorage.setItem("pinned_calls", JSON.stringify(pinned_list));
+}
 const Notifications = {
     data : [],
     expiry : 0,
@@ -360,5 +383,9 @@ const Notifications = {
         this.expiry = notifications.expiry
         this.clear = notifications.clear        
     }
+}
+
+if(!localStorage.pinned_calls || (localStorage.pinned_calls && !Array.isArray(JSON.parse(localStorage.pinned_calls)))){    
+    localStorage.setItem("pinned_calls", JSON.stringify([]));
 }
 // Notifications.init()

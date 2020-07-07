@@ -5,7 +5,7 @@ const M_TRADE_MODAL = `
           <v-card-title :class="'text-center mx-auto ' + trade_header_class(item.signal) ">
             <span class="headline font-weight-bold" style="font-size: 16px!important;">{{item.ticker.toUpperCase()}}</span>
           </v-card-title>
-          <v-card-text class = "p-3 pt-0">
+          <v-card-text class = "p-3 pt-1">
             <v-container style="font-size: 13px;">
               <v-row>
                 <v-col cols="6" class="py-0">
@@ -15,8 +15,8 @@ const M_TRADE_MODAL = `
                         label="Broker"
                         data-vv-name="select"
                         required
-                        
-                        class="m-0"
+                        dense
+                        class="m-0 mt-1"
                   ></v-select>
                 </v-col>
                 <v-col cols="6" class="py-0" >
@@ -389,14 +389,14 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </span>
                         </span>
                         <span v-else-if = "header.key == 'ticker'">
-                            <span v-if = "item.product_type == 'OPT'">
+                            <span v-if = "item.product_type == 'OPT'" style = "position:relative;">
                                 <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
-                                <span class="option-type badge badge-warning px-1">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
+                                <span class="options-type badge badge-warning px-2">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
                                 <!-- <span class="">@</span> -->
                                 <br>
-                                <span class="options-strike">{{ item.strike }}</span> 
+                                <span class="options-strike ">{{ item.strike }}</span> 
                                 <!-- <span class="">@</span> -->
-                                <span class="options-expiry">{{item.expiry}}</span>
+                                <span class="options-expiry ">{{item.expiry}}</span>
                                 <!-- <span class="">@</span> -->
                                 
                             </span>                        
@@ -521,21 +521,21 @@ const M_DATA_TABLE_INFO = `
         
         <v-col cols ="7" md = "7" class = "text-center p-0 stats-wrapper">
             <v-row class="p-1">
-                <v-col cols ="3" class = "text-center p-0">                            
+                <v-col cols ="3" class = "text-center p-0 ">                            
                     <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold stats-head">{{meta.total}}</span><br v-if = "is_mobile()">
                     <span class = "total--text  meta-text"> Total</span>
                 </v-col>
 
-                <v-col cols ="3" class = "text-center p-0">                                                  
+                <v-col cols ="3" class = "text-center p-0 ">                                                  
                     <span pill color="green accent-3" :content = "'Partial HIT'" class = "partialhit_status--text font-weight-bold stats-head">{{meta.partial_hit}}</span><br v-if = "is_mobile()">
                     <span class = "partialhit_status--text  meta-text"> Partial Hits</span>
                 </v-col>
-                <v-col cols ="3" class = "text-center p-0">
+                <v-col cols ="3" class = "text-center p-0 ">
                     <span pill color="green lighten-1"  :content = "'HIT'" class = "hit_status--text font-weight-bold stats-head">{{meta.hit}}</span><br v-if = "is_mobile()">
                     <span class = "hit_status--text  meta-text">Hits</span>
                 </v-col>
 
-                <v-col cols ="3" class = "text-center p-0">
+                <v-col cols ="3" class = "text-center p-0 ">
                     <span pill color="red" :content = "'MISS'" class = "miss_status--text font-weight-bold stats-head">{{meta.miss}}</span><br v-if = "is_mobile()">
                     <span class = "miss_status--text  meta-text"> Miss</span>
                 </v-col>                    
@@ -560,8 +560,8 @@ const M_DATA_TABLE_INFO = `
                     <span>                       
                                 <span href="#" data-toggle="tooltip" data-placement="top" title="Notify" >
                                     <button class="btn refresh user-notify" v-on:click = "allow_notification()" title="notify" style="margin: 0px;">
-                                        <small v-if = "notification" ><span class="fa fa-bell-slash notify" style="font-size: 1rem;"></span></small>
-                                        <small v-else><span class="fa fa-bell notify" style="font-size: 16px;"></span></small>
+                                        <small v-if = "notification" ><span class="fa fa-bell notify" style="font-size: 1rem;"></span></small>
+                                        <small v-else><span class="fa fa-bell-slash notify" style="font-size: 16px;"></span></small>
                                     </button>
                                 </span>                           
                     </span>
@@ -588,7 +588,7 @@ const M_DATA_TABLE_INFO = `
             ></v-text-field>
         </v-col>
         
-        <v-col cols = "6" md = "3" lg = "3" class = "px-1">    
+        <v-col cols = "6" md = "3" lg = "3" class = "px-1" id = "sel-dropdown">    
             <v-select
                 class = "mx-1 shadow"
                 v-model="type"
@@ -598,8 +598,9 @@ const M_DATA_TABLE_INFO = `
                 hide-details          
                 single-line
                 dense
+                height = "30px"
                 solo     
-                :style=" is_mobile() ? ' font-size: 10px;' : ' font-size:13px' "
+                :style=" is_mobile() ? ' font-size: 10px;' : ' font-size:13px; margin-top:3px; '"                
                 >
             </v-select>    
         </v-col>        
@@ -1051,9 +1052,7 @@ const M_APP = `
 <v-app     
     v-touch="{
         left: () => swipe('left'),
-        right: () => swipe('right'),
-        up: () => swipe('up'),
-        down: () => swipe('down')
+        right: () => swipe('right'),        
     }"
     style="min-height: 50vh;">
     <v-app-bar
@@ -1061,13 +1060,14 @@ const M_APP = `
       color="white"                  
     >
         <a class="navbarlogo" href="/">
-            <img id="logo" src="/static/algotext.png" width="130px" height="auto">
+            <img v-if = "is_mobile()" id="logo" src="/static/algonauts.png" width="50px" height="auto">
+            <img v-else id="logo" src="/static/algotext.png" width="130px" height="auto">
         </a>
             
             <v-spacer></v-spacer>
             <v-toolbar-title class= "font-weight-bold">MERCURY</v-toolbar-title>
             <v-spacer></v-spacer>        
-            <span v-if="false">
+            <span>
                 <v-menu
                 
                     class="mx-2 p-1"
@@ -1075,19 +1075,19 @@ const M_APP = `
                     :key="'notification-key'"
                     :rounded="rounded"
                     offset-y
-                    :max-width = "is_mobile() ? '20%' : '80%'"
+                    :max-width = "is_mobile() ? '80%' : '20%'"
                 >
                     <template v-slot:activator="{ attrs, on }">
                     <span
                         v-bind="attrs"
                         v-on="on"
-                        style="min-width: 2rem;text-align: center;"
+                        style="min-width: 2rem;text-align: center;"                        
                     >
                         <v-badge
                             bordered
                             color="error"
                             :content = "notifications.length"
-                            link           
+                            link        
                             >
                             <span class="fa fa-bell notify" style="font-size: 1rem;"></span>
                         </v-badge>
@@ -1102,16 +1102,10 @@ const M_APP = `
                                 :key="item.header"
                                 v-text="'Today'"
                             ></v-subheader>
-                
-                            <v-divider
-                                v-else-if="item.divider"
-                                :key="index"
-                                :inset="item.inset"
-                            ></v-divider>
+                           <hr class = "m-0">
                     
-                            <v-list-item
-                                v-else
-                                :key="item.title"
+                            <v-list-item                                
+                                :key="item.key"
                                 @click=""
                             >
                                 <v-list-item-content>
@@ -1135,11 +1129,11 @@ const M_APP = `
                 <span
                     v-bind="attrs"
                     v-on="on"
-                    style="min-width: 6rem;text-align: center;"
+                    style="min-width: 4.8rem;text-align: right;"
                 >
                     {{ user.first_name }}
                     <i class="fa fa-caret-down pl-2" aria-hidden="true"></i>
-                </span>            
+                </span>
                 </template>
         
                 <v-list>

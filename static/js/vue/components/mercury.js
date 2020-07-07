@@ -139,8 +139,8 @@ const MStockTable = Vue.component("m-stocks-table", {
             return this.items.filter(d => {
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
-                            !( this.filter.profit_percentage[0] <= d.profit * 100 && 
-                            this.filter.profit_percentage[1] >= d.profit * 100 ))
+                            !( this.filter.profit_percentage[0] <= d.profit && 
+                            this.filter.profit_percentage[1] >= d.profit ))
                     return false
                 else if(Array.isArray(this.filter.sides) && (this.filter.sides.length == 0 || !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase())))
                     return false
@@ -402,17 +402,19 @@ const MDataTable = Vue.component('m-data-table', {
 const MDataTableInfo = Vue.component('m-data-table-info', {       
     data: () => {
         return {
-            lsearch : this.filter,
-            equity_type : [
-                "STOCKS",
-                "OPTIONS",
-            ],
-            notification : User.notification,
+            lsearch : this.filter,                    
             mobile_settings_toggle : false,
+            notification : User.notification,
         }
     },
     computed : {
 
+        equity_type(){
+            return [
+                {text : "STOCKS"},
+                {text : "OPTIONS", disabled : ["positional", "longterm"].includes(this.$store.getters.state.portfolio)},
+            ]
+        },
         type : {
             get(){
                 return this.$store.state.state.type.toUpperCase()
@@ -673,8 +675,12 @@ const MNavigator = Vue.component('m-navigator', {
                 return this.$store.getters.state.portfolio.toUpperCase()
             },
             set(value){
-                console.log("value : ", value);
-                this.$store.dispatch('change_state', {"portfolio" : value.toLowerCase()})
+                // console.log("value : ", value);
+                var opt = {};
+                if(this.$store.getters.state.type == OPTIONS && [POSITIONAL, LONGTERM].includes(value) ){
+                    opt.type = STOCKS;
+                }
+                this.$store.dispatch('change_state', {"portfolio" : value.toLowerCase(), ...opt})
             }
         },
         portfolios(){
@@ -691,13 +697,17 @@ const MNavigator = Vue.component('m-navigator', {
         change_state(){
             var portfolio = PORTFOLIOS[this.active_ + 2]
             // console.log("portfolio changed to : ", portfolio)
-            // if(this.$store.getters.state.type == OPTIONS && ![0, 1].includes(this.active_)) return
-            this.$store.dispatch('change_state', {"portfolio" : portfolio})
+            var opt = {};
+            if(this.$store.getters.state.type == OPTIONS && ![0, 1].includes(this.active_)) {
+                opt.type = STOCKS;
+            }
+            this.$store.dispatch('change_state', {"portfolio" : portfolio, ...opt});
         },
         portfolio_clickable(portfolio_no){
             if(this.$store.getters.state.type == OPTIONS){
-                return ![0, 1].includes(portfolio_no)
-            }return false
+                // return ![0, 1].includes(portfolio_no)
+                return false;
+            }return false;
         },
     },
     template : M_NAVIGATOR,
@@ -947,17 +957,39 @@ const MApp = Vue.component('m-app', {
             var displayers = []
             notis.forEach(v=>{
                 var display = {}
-                display.title = PORTFOLIOS[v.portfolio_id].toUpperCase() +  '- ' + " - " + v.ticker.toUpperCase() + " - " + v.signal
-                display.subtitle = `<span class='text--primary'>${v.status.toUpperCase()}</span> &mdash; Price : ${v.price}, Target Price : ${v.target_price}, Stop Loss : ${v.stop_loss}`
+                display.key = v.call_id + "-" + v.status
+                display.title = this.title_html(v)//`<b>` + PORTFOLIOS[v.portfolio_id].toUpperCase() +  '- ' + " - " + v.ticker.toUpperCase() + "</b> - " + this.btn_html(v)
+                display.subtitle = this.subtitle_html(v)//`<span class='${v.status.toLowerCase()}_status--text font-weight-bold'>${v.status.toUpperCase()}</span> &mdash; Price : ${v.price}, Target Price : ${v.target_price}, Stop Loss : ${v.stop_loss}`
                 displayers.push(display)
             })
             return displayers
-        },        
+        },
     },
     methods : {                
         notifications_ (){
             console.log(Notifications.data)
             return Notifications.data
+        },
+        btn_html(item, update = false){
+            console.log("notification item printing : ", item);
+            
+            return `
+            <button rounded type="button"  class="${item.signal}_btn trade elevation-7 " >
+                <span >            
+                    ${item.signal}
+                </span>
+            </button>
+            `
+        },
+        title_html(item){
+            if(item.product_type == "OPT"){
+                return `<b>` + PORTFOLIOS[item.portfolio_id].toUpperCase() +  '- ' + " - " + item.ticker.toUpperCase() + "</b> - " + this.btn_html(item)
+            }
+            return `<b>` + PORTFOLIOS[item.portfolio_id].toUpperCase() +  '- ' + " - " + item.ticker.toUpperCase() + "</b> - " + this.btn_html(item)
+        },
+        subtitle_html(item){
+            if (item.dtype == "signal_update") return `<span class='${item.status.toLowerCase()}_status--text font-weight-bold'>${item.status.toUpperCase()}</span> <span class = "badge badge-warning float-right">Signal Update</span>`
+            return `<span class='${item.status.toLowerCase()}_status--text font-weight-bold'>${item.status.toUpperCase()}</span> &mdash; Price : ${item.price}, Target Price : ${item.target_price}, Stop Loss : ${item.stop_loss}`
         },
         forceRerender : function() {            
             this.tablekey += 1        
