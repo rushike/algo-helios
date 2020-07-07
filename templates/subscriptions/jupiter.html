@@ -8,7 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="{% static '/css/services.css' %}"> -->
 	<link rel="stylesheet" type="text/css" href="{% static '/css/products_css.css' %}">
 	<!-- <script src="https://d3js.org/d3.v4.js"></script> -->
-
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block navbar_selector %}
@@ -150,7 +151,8 @@
 				invests in selective stocks of index with same 
 				weights thereby ensuring that the underperforming 
 				stocks are avoided and hold onto the outperforming 
-				stocks. This is achieved by a inhouse proprietary 
+				stocks. <br>
+				This is achieved by a inhouse proprietary 
 				algorithm which scans the stocks 24*7 to throw out 
 				the stocks prices thus making sure that the SIF always 
 				outperforms the regular index funds. 
@@ -159,13 +161,15 @@
 
 		<div class="col-md-5">
 
-					<div class="row">
+					<div class="row mt-4">
 						<div class="col-md-6 col-sm-4 col-xs-4">
-								<img src="/static/img/jupiter-images/algo-driven.svg" class="img-fluid img_resize"><br>
+								<img src="/static/img/jupiter-images/algo-driven.svg" class="img-fluid img_resize" 
+								style="height: 4rem; width: 5rem;"><br>
 								Algo Driven Decisions
 						</div>
 						<div class="col-md-6 col-sm-4 col-xs-4">
-								<img src="/static/img/jupiter-images/high_returns.svg" class="img-fluid img_resize"><br>
+								<img src="/static/img/jupiter-images/high_returns.svg" class="img-fluid img_resize" 
+								style="height: 4rem; width: 5rem;"><br>
 								High Returns
 						</div>
 					</div>
@@ -179,7 +183,8 @@
 								Fund in your Account
 						</div>
 						<div class="col-md-6 col-sm-4 col-xs-4">
-								<img src="/static/img/jupiter-images/low_risk.svg" class="img-fluid img_resize"><br>
+								<img src="/static/img/jupiter-images/low_risk.svg" class="img-fluid img_resize" 
+								style="height: 4.5rem; width: 4.5rem;"><br>
 								Low Risk
 						</div>
 					</div>
@@ -201,7 +206,7 @@
 <div class="container text-center mx-auto mt-5 mb-4">
 	<p class="text-center">
 			<span>
-				<p class="max_font2">Fund Performance</p>
+				<p class="max_font2 mb-4">Fund Performance</p>
 			<br>
 			</span>
 			Below is the backtested performance comparison between Smart Index Fund & Nifty 50
@@ -210,7 +215,7 @@
 	
 	
 	<!-- <p class="text-center">CAGR & SIP Investment Smart Index Fund vs Nifty 50</p> -->
-	<div class="table-responsive table-bordered" style="border-radius: 10px;margin-top:3rem;">
+	<div class="table-responsive table-bordered shadow bg-white rounded mt-4" style="border-radius: 10px !important;margin-top:3rem;">
 		<table class="table">
 			<caption class="p-2"><small>
 				Things assumed for backtest :<br> • Avg Dividend yield: 1% • Money market 
@@ -296,7 +301,7 @@
 	<div class="container-fluid pb-5">
 		<div class="row d-flex justify-content-around pt-4">
 			<div class="col-md-4">
-				<div class="row border rounded shadow-sm " style="background-color: white;"> 					
+				<div class="row border rounded shadow-sm" style="background-color: white;"> 					
 					<div class="col-md-2 text-light pt-3" 
 					style="background-color: #004b96; font-size: 1.5rem;">
 						1.
@@ -354,10 +359,10 @@
 							</div>
 							<div class="col-md-10 pt-2">
 								<div class="row px-3">
-									<p class="float-left font-weight-bold">Minimum Ticket Size :</p>
+									<p class="float-left font-weight-bold">Minimum SIP :</p>
 								</div>
 								<div class="row px-3">
-									<p class="float-left">Rs. 1 lakh</p>
+									<p class="float-left">Rs. 10K per month</p>
 								</div>
 							</div>
 						</div>
@@ -443,41 +448,59 @@
 <!-- ----------------------------------------------------- -->
 <!-- ----------------------------------------------------- -->
 
-<div class="container mt-5">
-	<p class="text-center mb-5">
+<div class="container mt-5 mb-5">
+	<p class="text-center">
 		<span class="max_font2">
 		FAQ
-		</span>
+		</span>	
 	</p>
 <ul class="accordion" style="list-style: none;">
 		<li>
 			<a class="font-weight-bold">What are index funds ?</a>
-			<p></p>
+			<p>
+				An index fund is a mutual fund or exchange-traded fund designed to follow certain 
+				preset rules so that the fund can track a specified index.
+			</p>
 		</li>
 		<li>
 			<a class="font-weight-bold">Who should invest ?</a>
-			<p></p>
+			<p>
+				Any individual (Resident Indian or NRI) can transact with Algonauts. This is an 
+				ideal product for a Risk-averse investor.
+			</p>
 		</li>
 		<li>
 			<a class="font-weight-bold">What is the minimum investment ?</a>
-			<p></p>
+			<p>
+				Investors can start investing in this fund with a minimum investment amount
+				 of Rs. 1 lakh lump-sum or SIP of Rs. 10,000
+			</p>
 		</li>
 		<li>
-			<a class="font-weight-bold">How long does the investment period vary ?</a>
-			<p></p>
-		</li>
-		<li>
-			<a class="font-weight-bold">What is the turnover ratio of the index ?</a>
-			<p></p>
+			<a class="font-weight-bold">How is Smart Index Fund different from regular index funds ?
+			</a>
+			<p>
+				SIF is smarter than usual index funds as it invests in selective stocks
+				of the index decided by the algorithm with the same weights, thereby ensuring
+				that the underperforming stocks are avoided and hold onto the
+				outperforming stocks.
+			</p>
 		</li>
 
 		<li>
-			<a class="font-weight-bold">How is SIF different from regular index funds ?</a>
-			<p></p>
+			<a class="font-weight-bold">How Smart Index Fund manages to outperform the Regular 
+				Index Fund ?
+			</a>
+			<p>
+				It is achieved by an inhouse proprietary algorithm that scans the stocks 24x7 to 
+				throw out the analysis of the stocks, which in turn filters out the weak
+				stocks thus making sure that the SIF always outperforms the regular index funds.		
+			</p>
 		</li>
 		
 </ul> <!-- / accordion -->
 </div>
+
 
 {% endblock %}
 
@@ -510,68 +533,37 @@
 
   </script>
 
+{% endblock %}
+
+{% block base_scripts %}
+
 <script>
+        $(function () {
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 0) {
+                    $('nav').attr('style', 'box-shadow:2px 2px 5px grey; background-color: rgb(225, 238, 252)!important;');
+                    $('.navbar-collapse').attr('style', 'padding-top:10px;background-color: rgb(225, 238, 252)!important');
+                    $('.navbar-header').attr('style', 'padding-top:5px;padding-bottom:5px;padding-left:10px;background-color: rgb(225, 238, 252)!important');
+                    $('#logo').attr('style', 'transform: scale(0.8)');
 
-// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
-var svg = d3.select("#my_dataviz")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
-
-//Read the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/5_OneCatSevNumOrdered.csv", function(data) {
-
-  // group the data: I want to draw one line per group
-  var sumstat = d3.nest() // nest function allows to group the calculation per level of a factor
-    .key(function(d) { return d.name;})
-    .entries(data);
-
-  // Add X axis --> it is a date format
-  var x = d3.scaleLinear()
-    .domain(d3.extent(data, function(d) { return d.year; }))
-    .range([ 0, width ]);
-  svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x).ticks(5));
-
-  // Add Y axis
-  var y = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.n; })])
-    .range([ height, 0 ]);
-  svg.append("g")
-    .call(d3.axisLeft(y));
-
-  // color palette
-  var res = sumstat.map(function(d){ return d.key }) // list of group names
-  var color = d3.scaleOrdinal()
-    .domain(res)
-    .range(['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00','#ffff33','#a65628','#f781bf','#999999'])
-
-  // Draw the line
-  svg.selectAll(".line")
-      .data(sumstat)
-      .enter()
-      .append("path")
-        .attr("fill", "none")
-        .attr("stroke", function(d){ return color(d.key) })
-        .attr("stroke-width", 1.5)
-        .attr("d", function(d){
-          return d3.line()
-            .x(function(d) { return x(d.year); })
-            .y(function(d) { return y(+d.n); })
-            (d.values)
-        })
-
-})
-
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(0.85)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(0.8)');
+                    });
+                }
+                if ($(this).scrollTop() < 0) {
+                    $('nav').attr('style', 'box-shadow:none;background-color: rgb(225, 238, 252)!important');
+                    $('.navbar-collapse').attr('style', 'padding-top:25px;background-color: rgb(225, 238, 252)!important');
+                    $('.navbar-header').attr('style', 'padding-top:18px;padding-left:10px;background-color: rgb(225, 238, 252)!important')
+                    $('#logo').attr('style', 'transform: scale(1)');
+                    $("#logo").hover(function () {
+                        $("#logo").attr('style', 'transform:scale(1.1)');
+                    }, function () {
+                        $("#logo").attr('style', 'transform:scale(1)');
+                    });
+                }
+            })
+        });
 </script>
-
 {% endblock %}
