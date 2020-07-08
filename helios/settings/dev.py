@@ -53,7 +53,7 @@ DATABASES = {
     }
 }
 
-DATABASES = {
+DATABASES_ = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'helios_db',

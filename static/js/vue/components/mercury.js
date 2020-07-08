@@ -965,7 +965,7 @@ const MApp = Vue.component('m-app', {
                 display.subtitle = this.subtitle_html(v)//`<span class='${v.status.toLowerCase()}_status--text font-weight-bold'>${v.status.toUpperCase()}</span> &mdash; Price : ${v.price}, Target Price : ${v.target_price}, Stop Loss : ${v.stop_loss}`
                 displayers.push(display)
             })
-            return displayers
+            return displayers.reverse()
         },
     },
     methods : {                

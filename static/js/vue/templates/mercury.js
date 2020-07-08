@@ -271,7 +271,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         
         :loading = 'loading'
         loading-text="Loading... Please wait"
-        :disable-pagination = "!is_mobile()"
+        :disable-pagination = "true"
         
         :group-desc = "true"
         v-scroll:#stock-table="onScroll"
@@ -279,8 +279,8 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         mobile-breakpoint = "500"
         height="70vh"
         class="elevation-1"        
-        style="max-height: calc(100vh ); backface-visibility: hidden;"
-        :hide-default-footer = "!is_mobile()"
+        style="max-height: 68vh; backface-visibility: hidden;"
+        :hide-default-footer = "true"
         fixed-header>
 
         <template v-slot:header.action="{header}" >
@@ -345,8 +345,21 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                                     </span>
                                 </button>
                             </v-col>
-                            <v-col cols = "3" class = "p-1">
-                                {{item.ticker.toUpperCase()}}
+                            <v-col cols = "3" class = "p-1">                                
+                                <span v-if = "item.product_type == 'OPT'" style = "position:relative;">
+                                    <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
+                                    <span class="options-type badge badge-warning px-2">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
+                                    <!-- <span class="">@</span> -->
+                                    <br>
+                                    <span class="options-strike ">{{ item.strike }}</span> 
+                                    <!-- <span class="">@</span> -->
+                                    <span class="options-expiry ">{{item.expiry}}</span>
+                                    <!-- <span class="">@</span> -->
+                                    
+                                </span>                        
+                                <span v-else>
+                                    {{item.ticker}}
+                                </span>
                             </v-col>
                             <v-spacer></v-spacer>
                             <v-col cols = "2" class = "p-1 pr-0">
@@ -388,6 +401,9 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             <span :class = "'badge shadow ' + item.status.toLowerCase() + '_status'">
                                 {{ item.status }}
                             </span>
+                        </span>
+                        <span v-else-if = "header.key == 'time'">
+                            {{item.time.toString()}}
                         </span>
                         <span v-else-if = "header.key == 'ticker'">
                             <span v-if = "item.product_type == 'OPT'" style = "position:relative;">
@@ -457,7 +473,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                 </tr>      
         </template>        
     </v-data-table>  
-</div>
+    </div>
 </div>
 `
 
@@ -480,12 +496,8 @@ const M_OPTIONSTABLE_TEMPLATE_STRING = `
 `
 
 const M_EQUITY_TEMPLATE_STRING = `
-<div>
-<m-stocks-table v-if = "state.type == 'stocks'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
+<m-stocks-table  ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
 </m-stocks-table>
-<m-stocks-table v-if = "state.type == 'options'" ref="m_stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >
-</m-stocks-table>
-</div>
 `
 
 const M_INDIAN_MARKET_TEMPLATE_STRING = `
@@ -503,16 +515,16 @@ const M_DATA_TABLE_INFO = `
         class="mx-3"
         no-gutters
         >
-        <v-col v-if = "!is_mobile()"  cols="12" md = "5"  class="p-0">
+        <v-col v-if = "!is_mobile()"  cols="12" md = "6" lg = "5"  class="pl-3">
             <v-row >
-                <v-col cols = "6" md = "6" class = " p-3">
-                    <span class = "head-tickers px-2">
+                <v-col cols = "6" md = "6" class = " px-1 pr-0">
+                    <span class = "head-tickers px-1">
                         NIFTY 50
                     </span>
-                    <span class = "head-ticks px-2">{{nifty_50_tick()}}</span>
+                    <span class = "head-ticks px-1">{{nifty_50_tick()}}</span>
                 </v-col>
-                <v-col cols = "6" md = "6" class = " p-3">
-                    <span class = "head-tickers px-2">
+                <v-col cols = "6" md = "6" class = " px-1 px-0">
+                    <span class = "head-tickers px-1">
                         NIFTY BANK
                     </span>
                     <span class = "head-ticks px-1">{{nifty_bank_tick()}}</span>
@@ -520,7 +532,7 @@ const M_DATA_TABLE_INFO = `
             </v-row>
         </v-col>
         
-        <v-col cols ="7" md = "7" class = "text-center p-0 stats-wrapper">
+        <v-col cols ="7" md = "6" lg = "7" class = "text-center p-0 stats-wrapper">
             <v-row class="p-1">
                 <v-col cols ="3" class = "text-center p-0 ">                            
                     <span pill variant="primary" color="blue" :content = "'Total'" class = "total--text font-weight-bold stats-head">{{meta.total}}</span><br v-if = "is_mobile()">
@@ -957,8 +969,8 @@ const M_FILTER_SIDEBAR = `
 
 const M_TABLE_WRAPPER = `
     <div class = "border" >
-        <m-data-table-info ></m-data-table-info> 
-        <m-data-table ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" ></m-data-table>
+        <m-data-table-info style="max-height: 15vh;"></m-data-table-info> 
+        <m-data-table style="max-height: 67vh;" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" ></m-data-table>
     </div>
 `
 
@@ -984,9 +996,9 @@ const M_DRAWER_FILTER = `
         <v-list-item
             link
             >
-            <v-list-item-content class = "text-center">
+            <v-list-item-content class = "text-center p-0">
                 <a class="navbarlogo" href="{%url 'index'%}">
-                    <img id="logo" src="/static/algonauts.png" width="80vh" height="auto">
+                    <img id="logo" src="/static/algonauts.png" width="75vh" height="auto">
                 </a>
             </v-list-item-content>
         </v-list-item> 
@@ -1015,7 +1027,7 @@ const M_NAVIGATOR = `
             mandatory
             @change="change_state" 
         >
-            <v-container>
+            <v-container style = "padding-top: 5px;">
                 
                 <v-row>
                     <v-col                
@@ -1057,10 +1069,11 @@ const M_APP = `
         top: () => swipe('top'),
         bottom: () => swipe('bottom'),
     }"
-    style="min-height: 50vh;">
+    style="max-height: 100vh; margin: 0px;">
     <v-app-bar
       
-      color="white"                  
+      color="white"
+      style="max-height: 8vh;margin: 0px;"
     >
         <a class="navbarlogo" href="/">
             <img v-if = "is_mobile()" id="logo" src="/static/algonauts.png" width="50px" height="auto">
@@ -1097,7 +1110,7 @@ const M_APP = `
                     </span>
                     </template>
             
-                    <v-list class="overflow-y-auto" three-line>
+                    <v-list class="overflow-y-auto" max-height = "70vh" three-line>
                         <template v-for="(item, index) in notifications">
                             
                             <v-subheader
@@ -1166,29 +1179,29 @@ const M_APP = `
         
         <v-sheet
             id="scrolling-techniques-7"
-            class="overflow-y-auto"
-            max-height="90vh"
+            class="overflow-y-hidden"
+            max-height="92vh"
             max-width = "100vw"
         >
 
-            <v-container fluid class = " blue lighten-5 container-fluid" style="min-width: 100vw;max-width: 10000px;">
-                <v-row>
+            <v-container fluid class = " blue lighten-5 container-fluid" style="min-width: 100vw;max-width: 10000px;padding: 0px;min-height: 92vh;">
+                <v-row class = "m-navigator" style="/*max-height: 6vh; margin: 0px;*/">
                     <v-col
                         v-if="!is_mobile()"
                         style="width: 21%; flex: 1 0 21%;max-width:22%;" 
                     >
 
                     </v-col>
-                    <v-col class="p-0">
+                    <v-col class="p-0" >
                         <m-navigator class = "p-0" style="min-width: 2px; max-height: 10%;"></m-navigator>
                     </v-col>
                 </v-row>
-                <v-row>    
+                <v-row class="app-body">    
                     <v-col 
                         v-if = "!is_mobile()"
                         style="width: 21%; flex: 1 0 21%;max-width:22%;" 
                         class = "p-0">
-                        <v-row>
+                        <v-row style="max-height: 81vh;">
                             <v-col cols = "12" md = "11" class = "float-left">
                                 <m-filter-sidebar class = "elevation-7" style = "border-radius : 0.7rem" ></m-filter-sidebar>
                             </v-col>
@@ -1197,8 +1210,8 @@ const M_APP = `
                     <v-col v-else>
                         <m-filter-sidebar ></m-filter-sidebar>
                     </v-col>
-                    <v-col :cols= "is_mobile() ? '12' : ''" :style=" is_mobile() ? ' margin-top: -15%; ' : ' '"> 
-                        <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem;max-height: 90%;" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
+                    <v-col :cols= "is_mobile() ? '12' : ''" :style=" is_mobile() ? ' margin-top: -6%; ' : ' overflow-y:hidden'"> 
+                        <m-table-wrapper class = "white elevation-13"  style = "border-radius : 0.7rem;max-height: 81vh;" ref="stocktable" :items = "items" :fields = "fields" :headers = "headers" :state = "state" >{{fields}}</m-table-wrapper>    
                     </v-col>
                 </v-row>
                 <!-- <m-filter-sidebar :drawer = "drawer"></m-filter-sidebar>
