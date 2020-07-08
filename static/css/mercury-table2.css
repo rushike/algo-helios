@@ -4,7 +4,7 @@ html, body{
     height: 100%;
     width: 100%;
     font-family: 'Nunito Sans' !important;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .navbar {
@@ -474,7 +474,14 @@ h6 {
     min-height: 33px;
 }
 
-
+.v-data-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: .75rem;
+    padding: 0 0px !important;
+}
 @media (max-width: 1024px) and (min-width: 480px){
     .meta-text{    
         font-size: 12px;

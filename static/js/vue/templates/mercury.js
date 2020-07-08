@@ -263,23 +263,24 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         v-dragscroll
     >
     <v-data-table
-        
+        id = "stock-table"
         :headers="fields"
         :items="filter_items"     
-        :items-per-page = "items.length"
+        :items-per-page = "is_mobile() ? 8 : items.length"
         :search = "search"
         
         :loading = 'loading'
         loading-text="Loading... Please wait"
-        :disable-pagination = "true"
+        :disable-pagination = "!is_mobile()"
         
         :group-desc = "true"
+        v-scroll:#stock-table="onScroll"
         group-by = "follow"
         mobile-breakpoint = "500"
         height="70vh"
         class="elevation-1"        
         style="max-height: calc(100vh ); backface-visibility: hidden;"
-        hide-default-footer
+        :hide-default-footer = "!is_mobile()"
         fixed-header>
 
         <template v-slot:header.action="{header}" >
@@ -1052,7 +1053,9 @@ const M_APP = `
 <v-app     
     v-touch="{
         left: () => swipe('left'),
-        right: () => swipe('right'),        
+        right: () => swipe('right'),
+        top: () => swipe('top'),
+        bottom: () => swipe('bottom'),
     }"
     style="min-height: 50vh;">
     <v-app-bar
@@ -1094,7 +1097,7 @@ const M_APP = `
                     </span>
                     </template>
             
-                    <v-list three-line>
+                    <v-list class="overflow-y-auto" three-line>
                         <template v-for="(item, index) in notifications">
                             
                             <v-subheader

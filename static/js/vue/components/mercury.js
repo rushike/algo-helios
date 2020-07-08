@@ -247,7 +247,11 @@ const MStockTable = Vue.component("m-stocks-table", {
                         self.detail_item = item
                     }
                 }            
-        }
+        },
+        onScroll(value){
+            console.log("value scroll : ", value);
+            
+        },
     },
     template : M_STOCKTABLE_TEMPLATE_STRING,
 });
@@ -777,8 +781,6 @@ const MMultiselect = Vue.component('m-multiselect', {
     watch : {
         selected(){
             if(this.emit){         
-                console.log("watch : selected change : ", this.selected);
-                       
                 this.$emit('change', this.selected.filter(v=>v).map(v=>v.name))
             }
         },
@@ -933,10 +935,11 @@ const MApp = Vue.component('m-app', {
             },
             fields0 : "JUJ",
             drawer : false,
+            scr : 0,
         }
     },
     created(){
-        this.$store.dispatch("load_notifications")
+        setInterval(()=>this.$store.dispatch("load_notifications"), 20000);
     },
     computed : {
         type : {
@@ -970,9 +973,7 @@ const MApp = Vue.component('m-app', {
             console.log(Notifications.data)
             return Notifications.data
         },
-        btn_html(item, update = false){
-            console.log("notification item printing : ", item);
-            
+        btn_html(item, update = false){            
             return `
             <button rounded type="button"  class="${item.signal}_btn trade elevation-7 " >
                 <span >            
@@ -997,13 +998,20 @@ const MApp = Vue.component('m-app', {
         is_mobile(){
             return helpers.is_mobile()
         },            
-        swipe(direction){
-            console.log("swipe direction : ", direction);            
+        swipe(direction){            
             if(direction=='right'){
                 this.$store.commit("update_drawer", true)
             }
             if(direction=='left'){
                 this.$store.commit("update_drawer", false)
+            }
+            if(direction=='top'){
+                this.scr += 100;
+                this.$vuetify.goTo(this.scr, {})
+            }
+            if(direction=='bottom'){
+                this.scr -= 100;
+                this.$vuetify.goTo(this.scr, {})
             }
         },
         get_csrf_token(){
