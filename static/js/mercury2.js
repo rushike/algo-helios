@@ -15,9 +15,10 @@ async function tester(){
             notifications.data = []   
             notifications.time = Date.now()
     }
-    if(!notifications || (notifications && notifications.constructor != Object)){
+    if(!notifications || (notifications && 
+            (notifications.constructor != Object || (!notifications.time || !notifications.expiry || !notifications.data) )) ){
         notifications = {
-            time : Date.now(),
+            time : moment().endOf('day').valueOf(),
             expiry : 86400000,
             data : []
         }
@@ -28,8 +29,7 @@ async function tester(){
     //     data : []
     // }
     await localforage.setItem("notifications", JSON.stringify(notifications))
-    console.log("demo created");
-    
+    console.log("demo created");   
 }
 tester()
 const registerSw = async () => {

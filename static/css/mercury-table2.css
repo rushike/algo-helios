@@ -4,7 +4,7 @@ html, body{
     height: 100%;
     width: 100%;
     font-family: 'Nunito Sans' !important;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
 }
 
 .navbar {
@@ -474,15 +474,42 @@ h6 {
     min-height: 33px;
 }
 
+.v-data-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: .75rem;
+    padding: 0 0px !important;
+}
 
+.m-navigator{
+    max-height: 7vh !important; 
+    margin: 0px !important;
+}
+.app-body{
+    max-height: 83vh !important; 
+    margin: 0px !important;
+}
 @media (max-width: 1024px) and (min-width: 480px){
+    .head-tickers{
+        font-size: 12px;
+    }
+    .head-ticks{
+        color: #004B96;
+        font-size: 12px;
+    }
     .meta-text{    
         font-size: 12px;
     }
     
-    .head-ticks{
-        color: #004b96;
-        font-size: 14px;
+    .app-body{
+        max-height: 85vh !important; 
+        margin: 0px !important;
+    }
+    .m-navigator{
+        max-height: 6vh !important; 
+        margin: 0px !important;
     }
     .stats-head{
         font-size: 1.32rem !important;
@@ -541,5 +568,9 @@ h6 {
     }
     .v-text-field__slot{
         font-size: 12px !important;
+    }
+    .v-data-table__wrapper::-webkit-scrollbar{
+        width : 4px;
+        height : 4px;
     }
 }

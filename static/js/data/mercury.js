@@ -178,16 +178,16 @@ const Table = {
                     // underlying : {},
                     // expiry : {},
                     // strike : {},
-                    ticker : {},
+                    ticker : {sortable : true},
                     ltp : {},
-                    signal : {},
-                    time : {},
-                    price : {},
+                    signal : {sortable :true},
+                    time : {sortable :true},
+                    price : {sortable :true},
                     target_price : {},
                     stop_loss : {},
-                    profit : {},
-                    risk_reward : {},
-                    status : {}
+                    profit : {sortable :true},
+                    // risk_reward : {},
+                    status : {sortable :true}
                 },
                 intraday : {
                     data : [],
@@ -242,7 +242,7 @@ class Signal{
         this.signal = signal
         // signal_time = 2020-05-26T11:59:46.212353+05:30
         // time = 05/26/2020, 11:59:46        
-        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM, h:mm')
+        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
@@ -315,7 +315,7 @@ class OptionsSignal{
         this.signal = signal
         // signal_time = 2020-05-26T11:59:46.212353+05:30
         // time = 05/26/2020, 11:59:46        
-        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM YY, h:mm')
+        this.time = moment(signal_time, moment.ISO_8601).format('DD MMM YY, hh:mm')
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
