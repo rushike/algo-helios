@@ -1,529 +1,105 @@
-{% extends "worker/base.html" %}
 {% load static %}
 
-{% block css_imports %}
-    <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
-	<link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
-	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-	{% endblock %}
-
-{% block js_imports %}
-    <script src="{% static 'js/mercury.js' %}?version=1"></script>
-	<script src="{% static 'js/mercury-table.js' %}?version=1"></script>
-	<script src="{% static 'js/landing-page.js' %}?version=1"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-{% endblock %}
-
-{% block mercury %}
-{% csrf_token %}
-	<style>
-
-    #algonauts-fire{
-		position: absolute;
-		width: 100%;
-		height: 100%;
-    }
-
-    /* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 5rem;
-  height: 2rem;
-}
-
-.toggle.btn {
-    min-width: 10rem;
-    min-height: 3rem;
-}
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* .btn-success, .btn-success:hover, .btn-success:active, .btn-success:focus{
-	background-color: #004B96;
-}
-
-.btn-info, .btn-info:active, .btn-info:hover .btn-info:focus{
-	background-color: #7DDCFF;
-} */
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-
-	</style>
-	
-    <script>
-		if(sessionStorage.getItem("portfolio") == null) sessionStorage.setItem("portfolio", "Section1");
-		$(document).ready(()=>{
-			['intraday', 'btst', 'positional', 'longterm'].forEach((value, index)=>{
-				console.log("#", value,", ", index ,", will resistor click event ...")
-				$("#" + value).click(()=>{
-					// console.log("#", 'Section' + index, ", clicked ...")
-					$('meta[name=active-tab]').attr('content', 'Section' + (index + 1));
-					// if (sessionStorage.getItem("portfolio") != 'Section' + (index + 1)) toggle_dict(sessionStorage.getItem("portfolio"))
-					sessionStorage.setItem("portfolio", 'Section' + (index + 1));
-
-					// switch_btn_update()
-				})
-			})
-    });
+<html>
+  <head>
+    <meta name="vapid-key" content="{{ vapid_key }}">
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
     
-    $(document).ready(()=>{
-      
-		var ALLOW_NOTIFICATION = "{{user.allow_notification}}"
-		// console.log("ALLOW_NOTIFIACTION : ", ALLOW_NOTIFICATION, ALLOW_NOTIFICATION.toLowerCase())
-		if(ALLOW_NOTIFICATION.toLowerCase() == "true"){
-			$(".user-notify").html(
-				`<small><span class="fa fa-bell notify" style = "color : black !important"></span></small>`
-			)
-		}else{
-			$(".user-notify").html(
-				`<small><span class="fa fa-bell-slash notify" style = "color : white !important"></span></small>`
-			)
-		}
-	  //Create table from received data from database
-	//   $.each([ "intraday", "btst", "positional", "longterm" ], function( index, value ) {
-			var data = $.ajax({
-				type: "POST",
-				url: "/worker/calls-from-db/",           
-				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value},
-				success: function(data)
-				{
-					console.log("Success  : ", data)
-          			update_from_db(data.calls);
-					fire.fly_up()
-					showpage()
-					if (!data['subs-active'] ){
-						if (window.confirm(`Don't have any active plans. If you click "ok" you would be redirected to our plans page. Cancel will load this website `))                         {
-							window.location.href='/subscriptions/plans';
-						};
-					}
-				},
-				error: function(request, status, error)
-				{
-					alert(request.responseText);
-				}
-			});  
-	// });	
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
-	function update_from_db(data_dictionary){
-		  data_dictionary.forEach((data, i) => {
-				var status = data['status']
-				var active = data['active']
-				var portfolioId = data["portfolio_id"];
-				console.log("portfolio_id : ", portfolioId)
-				var activeTab = getEligibleTab(portfolioId);
-				var dataTable = document.getElementById(activeTab + "_data-table")
-
-				newRow = insert_new_row_for_equity(dataTable, data, 0, status);
-				if (active != 1) {
-					newRow.className = "disabled";
-				}
-			})
-
-			allTabs = document.getElementById("ordertypes").getElementsByTagName("li")
-			for (var i = 0, max = allTabs.length; i < max; i++) {
-				updateCount(allTabs[i].getAttribute("id"))
-			}
-			// updateCount(activeTab)		
-		}
-	})
+    <link href='https://fonts.googleapis.com/css?family=Nunito Sans' rel='stylesheet'>
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+   
 
 
-	</script>
-	
-    <div id = "algonauts-fire" class="container text-center" style="margin-top : 20vh;">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script> -->
+	<script src="https://kit.fontawesome.com/a26aa1e038.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"  crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.js"></script>
+	<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.7.0/js/bootstrap.min.js" ></script> -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css" >
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex@3.4.0/dist/vuex.js"></script>
+    <!-- <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script> -->
+    <!-- <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.13.1/lodash.min.js"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.1.2"></script>
+    <script src="https://kite.trade/publisher.js?v=3"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment-with-locales.min.js"></script>   -->    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone.min.js"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.31/moment-timezone-with-data.min.js"></script>  
+    <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/vue-dragscroll"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.4/localforage.min.js"></script> -->
+    <script src="/static/js/localforage.js"></script>
 
-    </div>
-    <Script>
-        var fire = new Lander({
-                              id : "algonauts-fire",
-							  style : "margin-top : 20vh;",
-							  after_div_classes : "containerm",
-                            })
-    </Script>
-    <div class="containerm" style="text-align: center;display: none;" >
 
-        
-        <div id="container" style="text-align: center; min-height: 830px;">
+    
+    <link href="{% static 'css/mercury.css' %}?version=1" rel="stylesheet"></link>
+    <link href="{% static 'css/mercury-table2.css' %}" rel="stylesheet"></link>
+    <link href="{% static 'css/profile.css' %}?version=1" rel="stylesheet"></link>
 
-                  
+    <link rel="stylesheet" type="text/css" href="/static/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/chatbot.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-        <div class="container-fluid wrapper">
-            <div class="tab" role="tabpanel">
-                <h2 style="color: white; letter-spacing: 2px;">MERCURY</h2>
-                <!-- Nav tabs -->
-                <div class="row">
-                    <div class="col-md-2">
-						<div id = "eq-op-toggle-btn" style="margin-top: 1rem;">
-							<!-- <input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info"> -->
-						</div>
-						
-					</div>
-                    <div class="col-md-8 col-12">
-                        <ul class="nav nav-tabs tabs_start_position" id="ordertypes" role="tablist">
-                            <li role="presentation" id="intraday">
-                                <a href="#Section1" aria-controls="home" role="tab" data-toggle="tab" class="product_tabs product-tabs">Intraday</a>
-                            </li>
-                            <li role="presentation" id="btst" data-toggle="tooltip" title="Buy/Sell Today Sell/Buy Tomorrow">
-                                <a href="#Section2" aria-controls="profile" role="tab" data-toggle="tab" class="product_tabs product-tabs">BTST / STBT</a>
-                            </li>
-                            <li role="presentation" id="positional">
-                                <a href="#Section3" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs product-tabs">Positional</a>
-                            </li>
-                            <li role="presentation" id="longterm">
-                                <a href="#Section4" aria-controls="messages" role="tab" data-toggle="tab" class="product_tabs product-tabs">Long Term</a>
-                            </li>
-                        </ul>                    
-					</div>	
-					<div class="col-md-2">
+    <script src="{% static 'js/mercury2.js' %}?version=1"></script>
+    <script src="{% static 'js/accordion.js' %}"></script>
+    <script src="{% static 'js/colors.js' %}"></script>            
+    <script src="{% static 'js/chatbot.js' %}"></script>
+    <title>Mercury</title>
+    
+  </head>
+  <body style="max-height: 100vh;margin: 0px;">
+  {% csrf_token %}
+  
 
-					</div>
-                </div>
 
-                <!-- Tab panes -->
-                <div class="tab-content tabs" id="tabswrapper">
-                    <div role="tabpanel" class="tab-pane fade" id="Section1">
-                        <div id="intraday_content"></div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane fade" id="Section2">
-                        <div id="btst_content"></div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane fade" id="Section3">
-                        <div id="positional_content"></div>
-                    </div>
-
-                    <div role="tabpanel" class="tab-pane fade" id="Section4">
-                        <div id="longterm_content"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal -->
-            <div id="trade_modal" class="modal" role="dialog">
-              <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                  <div class="modal-header" id="trade_header">
-                    <button type="button" class="closex" data-dismiss="modal"><i class="fa fa-times white" aria-hidden="true"></i>
-                    </button>
-                    <h4 class="modal-title" id="trade_ticker"></h4>
-                  </div>
-                  <div class="modal-body">
-                    <form id="trade_form" class="form-horizontal" style="text-align: left;">
-                        {% csrf_token %}
-                        <div class="form-group">
-                          <div class="row">
-                              <div class="col-md-7">
-                                <label style="margin-right: 10px;">Broker </label>
-                                 <select class="trade_form_element" id="trade_broker">
-                                    <option>Zerodha</option>
-                                    <option disabled>Upstox</option>
-                                    <option disabled>HDFC Sec</option>
-                                    <option disabled>Kotak Sec</option>
-                                    <option disabled>ICICI Direct</option>
-                                    <option disabled>Edelweiss</option>
-                                 </select>
-                              </div>
-                              <div class="col-md-5">
-                                <label class="radio-inline">
-                                    <input type="radio" name="exec_type" class="trade_radio" value="regular">REG
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="exec_type" class="trade_radio" value="bo" checked>BO
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="exec_type" class="trade_radio" value="co">CO
-                                </label>
-                              </div>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <div class="row">
-                              <div class="col-md-7">
-                                <label class="radio-inline">
-                                    <input type="radio" name="trade_type" class="trade_radio" value="MIS">MIS
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="trade_type" class="trade_radio" value="CNC">CNC
-                                </label>
-                              </div>
-                              <div class="col-md-5">
-                                <label class="radio-inline">
-                                    <input type="radio" name="order_type" class="trade_radio" value="MARKET">MARKET
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" name="order_type" class="trade_radio" value="LIMIT" checked>LIMIT
-                                </label>
-                              </div>
-                          </div>
-                        </div>
-                        <hr>
-                        <div class="form-group" style="padding-top: 10px;">
-                            <label class="col-md-1 control-label">Qty</label>
-                            <div class="col-md-4">
-                              <div class="input-group">
-                                <input  name="quantity" id="qty" value="1" placeholder="1" class="form-control"  type="number">
-                              </div>
-                            </div>
-
-                            <label class="col-md-3 control-label">Disclosed Qty</label>
-                            <div class="col-md-4">
-                              <div class="input-group">
-                                <input  name="disclosed_quantity" value="1" id="disclosed_qty" placeholder="1"
-                                        class="form-control"  type="number">
-                              </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-md-1 control-label">Price</label>
-                            <div class="col-md-4 inputGroupContainer">
-                              <div class="input-group">
-                                <input  name="price" id="price" placeholder="0" class="form-control"  type="number">
-                              </div>
-                            </div>
-
-                            <label class="col-md-3 control-label">Trigger Price</label>
-                            <div class="col-md-4">
-                              <div class="input-group">
-                                <input  name="trigger_price" id="trigger_price" placeholder="0" class="form-control"  type="number" disabled>
-                              </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="trade_bo_params" hidden>
-
-                            <label class="col-md-1 control-label">TP</label>
-                            <div class="col-md-3 inputGroupContainer">
-                              <div class="input-group">
-                                <input  name="target_price" id="target_price" placeholder="0" class="form-control"  type="number">
-                              </div>
-                            </div>
-
-                            <label class="col-md-1 control-label">SL</label>
-                            <div class="col-md-3 inputGroupContainer">
-                              <div class="input-group">
-                                <input  name="stop_loss" id="stop_loss" placeholder="0" class="form-control"  type="number">
-                              </div>
-                            </div>
-
-                            <label class="col-md-2 control-label">Trailing SL</label>
-                            <div class="col-md-2 inputGroupContainer">
-                              <div class="input-group">
-                                <input  name="trailing_stop_loss" id="trailing_stop_loss" placeholder="0" class="form-control"  type="number">
-                              </div>
-                            </div>
-                        </div>
-                        <div class="form-group" id="buttonView">
-                          <!--<button type="button" id="trade_action" class="trade_action btn btn-rounded"-->
-                                  <!--style=""></button>-->
-                      </div>
-                        <!-- <div class="form-group row text-center" id="buttonView">        
-                            <div class = "col-md-12 text-center content-para p-3" id = "btn-col-12">
-                            
-                        </div> -->
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-        </div>
+    <div id="test" class=" p-0" style="max-height: 100vh;margin: 0px;">
+      {% verbatim %}      
+      {% endverbatim %}
     </div>
 
+
+    
+    <script src="{% static 'js/vue/utils.js' %}"></script>
+    <script src="{% static 'js/data/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/templates/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/plugins/multi-filter.js' %}"></script>
+    <script src="{% static 'js/vue/store/mercury.js' %}"></script>    
+    <script src="{% static 'js/vue/components/mercury.js' %}"></script>
+    <script src="{% static 'js/vue/app/mercury.js' %}"></script>
+    <script src="{% static 'js/mercury-socket.js' %}"></script>
 
     <script>
-		const STOCKS = "equity"
-		const OPTIONS = "options"
-		const TABLE_TOGGLE = {
-			intraday : STOCKS, // two options STOCKS and OPTIONS
-			btst : STOCKS,
-			positional : STOCKS,
-			longterm : STOCKS
-		}
-
-		document.body.scrollTop = 0;
-  		document.documentElement.scrollTop = 0;
-		document.querySelector('.containerm').style.display = "none";
-		
-
-		function showpage(){
-			document.querySelector('.containerm').style.display = "block";
-			document.querySelector('.containerm').style.opacity = "0%"
-		}
-
-		function downloadCSV(csv, filename) {
-		    //console.log($('.nav-tabs .active').attr("id"))
-            var csvFile;
-            var downloadLink;
-
-            // CSV file
-            csvFile = new Blob([csv], {type: "text/csv"});
-
-            // Download link
-            downloadLink = document.createElement("a");
-
-            // File name
-            downloadLink.download = filename;
-
-            // Create a link to the file
-            downloadLink.href = window.URL.createObjectURL(csvFile);
-
-            // Hide download link
-            downloadLink.style.display = "none";
-
-            // Add the link to DOM
-            document.body.appendChild(downloadLink);
-
-            // Click download link
-            downloadLink.click();
-        }
-
-		function exportTableToCSV(tabToDownload) {
-		    var d = new Date();
-		    filename = "AlgonautsCalls_" + tabToDownload + '_' + d.getFullYear() + '' + (d.getMonth()+1) + '' + d.getDate() + ".csv"
-        var csv = [];
-        var rows = document.querySelectorAll("#" + tabToDownload + "_data-table tr");
-			console.log("rows : " , rows)
-            for (var i = 0; i < rows.length; i++) {
-                var row = [], cols = rows[i].querySelectorAll("td, th");
-
-				for (var j = 0; j < cols.length; j++){
-					row.push(cols[j].innerText.replace(",", " -"));
-				}
-                csv.push(row.join(","));
-            }
-
-            // Download CSV file
-            downloadCSV(csv.join("\n"), filename);
-		}
-
-		function toggle_btn_for_eq_op(key){
-			if(TABLE_TOGGLE[key] == STOCKS){
-				TABLE_TOGGLE[key] = OPTIONS
-			}else if (TABLE_TOGGLE[key] == OPTIONS){
-				TABLE_TOGGLE[key] = STOCKS
-			}
-		}
-
-		function toggle_dict(porfolio){
-			console.log("toggle_dict portfolio : ", porfolio)
-			if(porfolio == "Section1"){
-				toggle_btn_for_eq_op("intraday")
-			}else if (porfolio == "Section2"){
-				toggle_btn_for_eq_op("btst")
-			}
-		}
-		
-		function switch_btn_update(){
-			if(["Section1", "Section2"].includes(sessionStorage.getItem("portfolio"))){
-				// console.log(sessionStorage.getItem("portfolio"))
-				$("#eq-op-toggle-btn").html(
-					`<input id = "eq-op-toggle-btn-input" type="checkbox" checked data-toggle="toggle" data-on="Equity" data-off="Options" data-onstyle="success" data-offstyle="info">`				
-					)
-					$('#eq-op-toggle-btn-input').bootstrapToggle()
-					if(sessionStorage.getItem("portfolio") == "Section1"){				
-						if(TABLE_TOGGLE.intraday == STOCKS){
-							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
-							
-						}else if (TABLE_TOGGLE.intraday == OPTIONS){
-							$('#eq-op-toggle-btn-input').bootstrapToggle('off')
-							
-						}
-					} 
-					if(sessionStorage.getItem("portfolio") == "Section2"){				
-						if(TABLE_TOGGLE.btst == STOCKS){
-							$('#eq-op-toggle-btn-input').bootstrapToggle('on')
-							
-						}else if (TABLE_TOGGLE.btst == OPTIONS){
-							$('#eq-op-toggle-btn-input').bootstrapToggle('off')
-							
-						}
-					}
-				}else{
-				$('#eq-op-toggle-btn-input').bootstrapToggle('destroy')
-				$("#eq-op-toggle-btn").html(
-					``
-				)
-				
-			}
-    }
-    function get_portfolio_from_section(section){
-      console.log("section : ", section)
-      var port = [ "intraday", "btst", "positional", "longterm" ]
-      var index = parseInt(section.charAt(section.length-1))
-      return port[index - 1]
-    }
-    function update_toggle_dict(){
-        toggle_dict(sessionStorage.getItem('portfolio'))
-    }
-
-		$(document).ready(()=>{
-			
-			switch_btn_update
-			// $("#eq-op-toggle-btn").click(()=>{
-			// 	console.log(TABLE_TOGGLE)
-			// 	update_toggle_dict()
-			// 	console.log(TABLE_TOGGLE)
-			// 	var value = get_portfolio_from_section(sessionStorage.getItem("portfolio"))
-			// 	if(TABLE_TOGGLE[value] == STOCKS){
-			// 		add_equity_table_header(`#${value}_data-table`, value)
-			// 	}else {
-			// 		add_options_table_header(`#${value}_data-table`, value)
-			// 	}
-			// });
-		});
+		const Mercury = new MercuryTable({id  : "test"})
+    Mercury.render()
+    User.init("{{user.email}}", "{{user.first_name}}", "{{user.last_name}}", "{{user.allow_notification}}" == "True" ? true : false)
     </script>
-    {% endblock mercury %}
+
+  </body>
+</html>

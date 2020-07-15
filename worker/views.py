@@ -19,19 +19,19 @@ def get_health_status(request):
 
 
 @login_required(login_url='/accounts/login/')
-def mercury(request):
-    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
-    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
-
-@login_required(login_url='/accounts/login/')
 def mercury2(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
     return render(request, 'worker/datapage2.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
 
 @login_required(login_url='/accounts/login/')
-def apply_filters(request):
+def mercury(request):
+    webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
+    vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
+    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
+
+@login_required(login_url='/accounts/login/')
+def apply_filters3(request):
     GET = request.GET.dict()
     logger.info(f"REQUEST  ==:> {request},\nDATA ==:> {request.GET}, \nDICT ==:> {GET} ")
     call_type = request.GET.get('call_type')
@@ -56,7 +56,7 @@ def apply_filters(request):
     return HttpResponse(status=200)
 
 @login_required(login_url='/accounts/login/')
-def apply_filters2(request):
+def apply_filters(request):
     logger.info(f"request.body : {type(request.body)} {request.body}")
     POST = json.loads(request.body.decode('utf-8'))
     call_type = POST.get('portfolio_id')

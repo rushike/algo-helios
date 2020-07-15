@@ -147,7 +147,12 @@ const MStockTable = Vue.component("m-stocks-table", {
 
                 else if(Array.isArray(this.filter.tickers) && 
                         (this.filter.tickers.length == 0 || 
-                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase())))
+                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes((d ) =>{
+                            log("d.product_type : ", d.product_type, ", underlyning : ", d.underlying);
+                            if(d.product_type == OPTIONS){
+                                return d.underlying.toLowerCase()
+                            }return d.ticker.toLowerCase()
+                        })))
                     return false
                 
                 else if(Array.isArray(this.filter.risk_reward) && 
@@ -960,7 +965,7 @@ const MApp = Vue.component('m-app', {
             var displayers = []
             notis.forEach(v=>{
                 var display = {}
-                display.key = v.call_id + "-" + v.status
+                display.key = JSON.stringify(v).hashCode();
                 display.title = this.title_html(v)//`<b>` + PORTFOLIOS[v.portfolio_id].toUpperCase() +  '- ' + " - " + v.ticker.toUpperCase() + "</b> - " + this.btn_html(v)
                 display.subtitle = this.subtitle_html(v)//`<span class='${v.status.toLowerCase()}_status--text font-weight-bold'>${v.status.toUpperCase()}</span> &mdash; Price : ${v.price}, Target Price : ${v.target_price}, Stop Loss : ${v.stop_loss}`
                 displayers.push(display)
