@@ -155,16 +155,16 @@ const MercuryPlans = `
               </div>
             </li>
           </ul>
-          <form method = "POST" action="/subscriptions/plan-data"> 
+          <form method = "POST" action="/subscriptions/plan-renew"> 
             <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
             <input class="periodcode" name = "period"  :value='$store.getters.state.subscription_period' hidden></input>
             <input class="plancode" name= "plancode"   :value="'premium'" hidden></input>
             <input class="planname" name= "planname"   :value="'mercury'" hidden></input>
             <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
             
-            <button v-if="trial_apply" type="submit" class="btn btn-sm bg-warning text-dark">Trial</button>
-            
-            <button v-else type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
+            <!-- <button v-if="trial_apply" type="submit" class="btn btn-sm bg-warning text-dark">Trial</button> -->
+
+            <button type="submit" class="btn btn-sm dark_blue_color text-light">Subscribe</button>
           </form>
           </div>
       </div>
@@ -173,10 +173,22 @@ const MercuryPlans = `
     
     <!-- row end below -->
     </div>
+    <form method="POST" action="/subscriptions/plan-data">
+      <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
+      <input class="periodcode" name = "period"  :value='$store.getters.state.subscription_period' hidden></input>
+      <input class="plancode" name= "plancode"   :value="'premium'" hidden></input>
+      <input class="planname" name= "planname"   :value="'mercury'" hidden></input>
+      <input class="groupcode" name= "groupcode" :value="group_type_selected_name" hidden></input>
+  
+      <button v-if="trial_apply" type="submit" 
+      class="btn btn-md text-light dark_blue_color text-center justify-content-center mb-4">
+        Start Your Free Trial
+      </button>
+
+    </form>
     <!-- container end below -->
 	  </div>
 	<!-- __________________cards container end_______________ -->
-
 
 
 </div>
