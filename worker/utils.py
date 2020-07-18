@@ -8,26 +8,23 @@ from helios.settings import DATABASES
 
 logger = logging.getLogger('worker')
 
-class DBSingleton(type):
-    _instances = {}
+# class DBSingleton(type):
+#     _instances = {}
 
-    def __call__(cls, *args, **kwargs):
-        if isinstance(cls, DBManager) and  cls in cls._instances and not cls._instances[cls].db_handler:
-            cls._instances[cls] = super(DBSingleton, cls).__call__(*args, **kwargs)
-        if cls not in cls._instances:
-            cls._instances[cls] = super(DBSingleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+#     def __call__(cls, *args, **kwargs):
+#         if isinstance(cls, DBManager) and  cls in cls._instances and not cls._instances[cls].db_handler:
+#             cls._instances[cls] = super(DBSingleton, cls).__call__(*args, **kwargs)
+#         if cls not in cls._instances:
+#             cls._instances[cls] = super(DBSingleton, cls).__call__(*args, **kwargs)
+#         return cls._instances[cls]
 
 
-class DBManager(metaclass=DBSingleton):
+class DBManager(metaclass=Singleton):
     def __init__(self):
-        try : 
-            self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
-                    user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], 
-                    port = DATABASES["janus"]["PORT"], set_update_hitrate_timer=False)
-            logger.debug(f"Database handler opened : {self.db_handler}")
-        except : 
-            self.db_handler = None
+        self.db_handler = DBConnHandler(host = DATABASES["janus"]["HOST"], database = DATABASES["janus"]["NAME"], 
+                user = DATABASES["janus"]["USER"], password = DATABASES["janus"]["PASSWORD"], 
+                port = DATABASES["janus"]["PORT"], set_update_hitrate_timer=False)
+        logger.debug(f"Database handler opened : {self.db_handler}")
 
         self.portfolios = dict(self.db_handler.get_portfolios())  # int --> str
         self.reverse_portfolios = dict([(v.lower(), k) for k, v in self.portfolios.items()]) # key are in lower case, str --> int

@@ -268,6 +268,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :items="filter_items"     
         :items-per-page = "is_mobile() ? 8 : items.length"
         :search = "search"
+        :custom-sort = "signal_time_sort"
         
         :loading = 'loading'
         loading-text="Loading... Please wait"
@@ -347,7 +348,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                             </v-col>
                             <v-col cols = "3" class = "p-1">                                
                                 <span v-if = "item.product_type == 'OPT'" style = "position:relative;">
-                                    <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
+                                    <span class="options-ticker">{{ item.ticker.toUpperCase() }}</span> 
                                     <span class="options-type badge badge-warning px-2">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
                                     <!-- <span class="">@</span> -->
                                     <br>
@@ -407,7 +408,7 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
                         </span>
                         <span v-else-if = "header.key == 'ticker'">
                             <span v-if = "item.product_type == 'OPT'" style = "position:relative;">
-                                <span class="options-ticker">{{ item.underlying.toUpperCase() }}</span> 
+                                <span class="options-ticker">{{ item.ticker.toUpperCase() }}</span> 
                                 <span class="options-type badge badge-warning px-2">{{(item.option_type ? item.option_type.toUpperCase() : "CE")}}</span>
                                 <!-- <span class="">@</span> -->
                                 <br>
@@ -593,6 +594,8 @@ const M_DATA_TABLE_INFO = `
                 class = "px-1 p-1  blue lighten-5"
                 rounded
                 append-icon="mdi-magnify"
+                sort-by = "time"
+                :sort-desc = "true"
                 label="Search"
                 single-line
                 hide-details

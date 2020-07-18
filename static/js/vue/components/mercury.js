@@ -137,25 +137,19 @@ const MStockTable = Vue.component("m-stocks-table", {
         },
         filter_items(){
             return this.items.filter(d => {
+                
                 if(Array.isArray(this.filter.profit_percentage) && 
                             this.filter.profit_percentage.length == 2 && 
                             !( this.filter.profit_percentage[0] <= d.profit && 
                             this.filter.profit_percentage[1] >= d.profit ))
                     return false
-                else if(Array.isArray(this.filter.sides) && (this.filter.sides.length == 0 || !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase())))
+                if(Array.isArray(this.filter.sides) && (this.filter.sides.length == 0 || !this.filter.sides.map(v=>v.toLowerCase()).includes(d.signal.toLowerCase())))
                     return false
-
-                else if(Array.isArray(this.filter.tickers) && 
+                if(Array.isArray(this.filter.tickers) && 
                         (this.filter.tickers.length == 0 || 
-                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes((d ) =>{
-                            log("d.product_type : ", d.product_type, ", underlyning : ", d.underlying);
-                            if(d.product_type == OPTIONS){
-                                return d.underlying.toLowerCase()
-                            }return d.ticker.toLowerCase()
-                        })))
+                        !this.filter.tickers.filter(v=>v).map(v=>v.toLowerCase()).includes(d.ticker.toLowerCase())))
                     return false
-                
-                else if(Array.isArray(this.filter.risk_reward) && 
+                if(Array.isArray(this.filter.risk_reward) && 
                         this.filter.risk_reward.length == 2 && 
                         !( this.filter.risk_reward[0] <= d.risk_reward && 
                         this.filter.risk_reward[1] >= d.risk_reward))
@@ -163,6 +157,7 @@ const MStockTable = Vue.component("m-stocks-table", {
                 return true
             })
         },
+        
         selected_fields : {
             get(){                
                 return this.$store.getters.selected_fields
@@ -181,7 +176,27 @@ const MStockTable = Vue.component("m-stocks-table", {
             return this.filter_items.length == 0
         },
     },
-    methods : {                
+    methods : {    
+        signal_time_sort(items, index, isDesc){
+            console.log(items, index, isDesc);
+            items.sort((a, b) => {
+                if (index[1] === "time") {
+                  if (!isDesc[1] || typeof isDesc === "boolean") {
+                    return a.time.valueOf() < b.time.valueOf() ? -1 : 1;
+                  } else {
+                    return b.time.valueOf() < a.time.valueOf() ? -1 : 1;
+                  }
+                }
+                else {
+                    if (!isDesc[1] || typeof isDesc === "boolean") {
+                      return a[index[1]] < b[index[1]] ? -1 : 1;
+                    } else {
+                      return b[index[1]] < a[index[1]] ? -1 : 1;
+                    }
+                }
+            });
+            return items;
+        },            
         forceRerender : function() {            
             this.tablekey += 1        
         },  

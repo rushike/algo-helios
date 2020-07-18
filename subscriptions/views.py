@@ -140,8 +140,9 @@ def order_details(request):
     if 'plan_name' in POST:
         plan_name = POST.get('plan_name')
     period = POST.get('period', 'Monthly')
-    
+
     plan = subscriptions.functions.get_plan(plan_type, plan_name, group_type)
+    # raise OSError
     amount = plan.price_per_month if period.lower() == 'monthly' else plan.price_per_year
     gst = .18 * amount
     total_amount = 1.18 * amount
@@ -182,6 +183,7 @@ def create_order(request):
             }
     POST["group_emails"] = group_mails
     # try : 
+    logger.info(f"==> : {plan_name}, {plan_type}, {group_type}")
     plan = subscriptions.functions.get_plan_id(plan_name, plan_type, group_type)
     invoice = subscriptions.razorpay.create_razorpay_invoice(request.user, plan, period)
     order = client.order.fetch(invoice["order_id"])

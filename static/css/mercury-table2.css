@@ -524,6 +524,7 @@ h6 {
 }
 
 @media (max-width: 480px){
+
     .BUY_btn, .SELL_btn {
         border-radius: 4px;
         letter-spacing: 1px;
@@ -572,5 +573,12 @@ h6 {
     .v-data-table__wrapper::-webkit-scrollbar{
         width : 4px;
         height : 4px;
+    }
+    .options-type {
+        position: absolute;
+        top: 25%;
+        right: -50%;
+        font-size: 11px;
+        border-radius: 18px;
     }
 }

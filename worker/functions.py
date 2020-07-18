@@ -136,7 +136,7 @@ def serialize_data(calls_dict):
             data.update({
                         'signal' : data['signal'] if isinstance(data['signal'], str) else data['signal'].name,
                         'status' : data['status'] if isinstance(data['status'], str) else  data['status'].value, 
-                        'time' : data['time'] if isinstance(data['time'], str) else  data['time'].strftime("%m/%d/%Y, %H:%M:%S"), 
+                        'time' : data['signal_time'] if isinstance(data['signal_time'], str) else  data['signal_time'].strftime("%m/%d/%Y, %H:%M:%S"), 
                         'active' :data['active'], 
                         'product_type' : data['product_type'] if isinstance(data['product_type'], str) else data['product_type'].value,                        
                         'portfolio_id' : k, 
