@@ -243,13 +243,6 @@ class Signal{
         // signal_time = 2020-05-26T11:59:46.212353+05:30
         // time = 05/26/2020, 11:59:46        
         // this.time = moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
-        this.time = {
-            valueOf : () => {
-                // console.log("signal time L ", signal_time)
-                return moment(signal_time, moment.ISO_8601).format("X");
-            },
-            toString : () => moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
-        }
         this.price = price
         this.target_price = target_price.round(2)
         this.stop_loss = stop_loss.round(2)
@@ -264,6 +257,12 @@ class Signal{
         // this.follow = false
         this.visible = true
         this.set_follow_from_localStorage();
+        this.time = {
+            valueOf : () => {
+                return  moment(signal_time, moment.ISO_8601).format("X"); 
+            },
+            toString : () => moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
+        }
     }
     set_follow_from_localStorage(){
         var pinned_list = JSON.parse(localStorage.getItem("pinned_calls"));

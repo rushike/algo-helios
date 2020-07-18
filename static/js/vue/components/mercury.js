@@ -178,20 +178,19 @@ const MStockTable = Vue.component("m-stocks-table", {
     },
     methods : {    
         signal_time_sort(items, index, isDesc){
-            console.log(items, index, isDesc);
             items.sort((a, b) => {
                 if (index[1] === "time") {
                   if (!isDesc[1] || typeof isDesc === "boolean") {
-                    return a.time.valueOf() < b.time.valueOf() ? -1 : 1;
+                    return a.time.valueOf() < b.time.valueOf() ? 1 : -1;
                   } else {
-                    return b.time.valueOf() < a.time.valueOf() ? -1 : 1;
+                    return b.time.valueOf() < a.time.valueOf() ? 1 : -1;
                   }
                 }
                 else {
                     if (!isDesc[1] || typeof isDesc === "boolean") {
-                      return a[index[1]] < b[index[1]] ? -1 : 1;
+                      return a[index[1]] < b[index[1]] ? 1 : -1;
                     } else {
-                      return b[index[1]] < a[index[1]] ? -1 : 1;
+                      return b[index[1]] < a[index[1]] ? 1 : -1;
                     }
                 }
             });

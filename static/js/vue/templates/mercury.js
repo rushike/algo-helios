@@ -273,7 +273,6 @@ const M_STOCKTABLE_TEMPLATE_STRING = `
         :loading = 'loading'
         loading-text="Loading... Please wait"
         :disable-pagination = "true"
-        
         :group-desc = "true"
         v-scroll:#stock-table="onScroll"
         group-by = "follow"
