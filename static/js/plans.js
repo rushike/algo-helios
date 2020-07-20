@@ -18,7 +18,7 @@ $(document).ready(function(){
         // });
 
         content = $("#ah-left-a").text()
-        console.log("clicked on text ", content, $("#ah-left-a").toArray()) 
+        // console.log("clicked on text ", content, $("#ah-left-a").toArray()) 
 
         head = (head + hlen - 1) % hlen
         l = (head + hlen - 1) % hlen
@@ -35,13 +35,13 @@ $(document).ready(function(){
     });
 
     $("#ah-center").click(function(){
-        console.log("center clicked");
+        // console.log("center clicked");
     });
 
     $("#ah-right").click(function(){
 
         content = $("#ah-right-a").text()
-        console.log("clicked on text ", content, $("#ah-right-a").toArray())    
+        // console.log("clicked on text ", content, $("#ah-right-a").toArray())    
         head = (head  + 1) % hlen
         l = (head + hlen - 1) % hlen 
         c = head; 

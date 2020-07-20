@@ -12,7 +12,7 @@ class Data{
     }
     
     update_tick(instrument_id, ltp){
-        // console.log("instrument id : ", instrument_id, ", ltp : ", ltp);
+        // // console.log("instrument id : ", instrument_id, ", ltp : ", ltp);
         
         if(this.instruments[instrument_id] && this.instruments[instrument_id].ltp) {
             this.instruments[instrument_id].ltp.update(ltp)
@@ -33,7 +33,7 @@ class Data{
      * @param {Array} data list of calls dictionaries
      */
     load_calls(portfolio_id, type, data, mercury){
-        // console.log("params :  portfolios_id : ", portfolio_id, ", type : ", type, ", data : ", data)
+        // // console.log("params :  portfolios_id : ", portfolio_id, ", type : ", type, ", data : ", data)
         var data_list = {}// this.data[STATE.market_type][STATE.market][STATE.type][portfolio_id].data
         var head = this.data[STATE.market_type][STATE.market][STATE.type].header;
         data_list.length = 0
@@ -68,7 +68,7 @@ class Data{
             }
             data_list[value["portfolio_id"]].push(this.calls[value["call_id"]])
         })        
-        console.log("setting mercury item : ", data_list[STATE.portfolio], STATE.portfolio)
+        // console.log("setting mercury item : ", data_list[STATE.portfolio], STATE.portfolio)
          
     }
 }
@@ -92,7 +92,7 @@ class MercuryTable{
     
     get_table_header(){
         var head = this.data.data.indian_market.equity[this.state.type].header
-        // console.log(head, this.data.data)
+        // // console.log(head, this.data.data)
         var head_list = []//this.data.fields
         Object.entries(head).forEach(([key, value]) => {
             head_list.push(
@@ -113,8 +113,8 @@ class MercuryTable{
     insert_equity_call(data = {}){
         var data_list = {};
         var portfolio_id = this.get_portfolio(data.portfolio_id || 2)
-        // console.log("m data : ", this.data, ", m data data : ", this.data.data, portfolio_id);
-        console.log("signal data : ", data);
+        // // console.log("m data : ", this.data, ", m data data : ", this.data.data, portfolio_id);
+        // console.log("signal data : ", data);
 
         var ltp = this.data.update_tick(data.instrument_id, data.ltp || -1)
 

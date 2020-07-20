@@ -81,12 +81,12 @@ All logic of vue app making is done in 2 directory **data** and **vue**. Vue is 
             - Strings may includes any htmls tags, bootsrap classes, or any other style / js function included from main **`.html`**
 
 ## Refrences 
-Bootstap 4 : https://getbootstrap.com/docs/4.5/getting-started/introduction/
-JQuery : https://api.jquery.com/
-Axios : https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/
-Axios NPM : https://www.npmjs.com/package/axios
-Vue : https://vuejs.org/v2/guide/
-Vue Store : https://vuex.vuejs.org/
+- Bootstap 4 : https://getbootstrap.com/docs/4.5/getting-started/introduction/
+- JQuery : https://api.jquery.com/
+- Axios : https://blog.logrocket.com/how-to-make-http-requests-like-a-pro-with-axios/
+- Axios NPM : https://www.npmjs.com/package/axios
+- Vue : https://vuejs.org/v2/guide/
+- Vue Store : https://vuex.vuejs.org/
 
 [axios]: https://www.npmjs.com/package/axios
 [vue]: https://vuejs.org/v2/guide/

@@ -2,9 +2,9 @@ Vue.use(Vuex);
 
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
 axios.defaults.xsrfCookieName = "csrftoken"
-console.log("=+================================");
-console.log("STATE : ", STATE);
-console.log("=+================================");
+// console.log("=+================================");
+// console.log("STATE : ", STATE);
+// console.log("=+================================");
 
 const store = new Vuex.Store({
     strict: true,
@@ -84,7 +84,7 @@ const store = new Vuex.Store({
                 state.state[key] = value;
             });
             sessionStorage.setItem("state", JSON.stringify(state.state));
-            console.log("state : ", sessionStorage.state);            
+            // console.log("state : ", sessionStorage.state);            
         },
         /**
          * Structure : payload
@@ -92,7 +92,7 @@ const store = new Vuex.Store({
          * adds 'object' of type 'signal' in table particular list based on state
          */
         add_entry : (state, signal)=>{
-            // console.log("Vuex$mutations#add_entry =: mercury state : ", mstate, ", payload : ", payload);
+            // // console.log("Vuex$mutations#add_entry =: mercury state : ", mstate, ", payload : ", payload);
             let table = state.items
             Vue.set(table, table.length, signal)
         },
@@ -183,8 +183,8 @@ const store = new Vuex.Store({
                 }                
                 data_list[TYPE[value.product_type]][value["portfolio_id"]].push(state.calls[value["call_id"]])
             })   
-            console.log("active L : ", val, ", non active : ", v);     
-            // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
+            // console.log("active L : ", val, ", non active : ", v);     
+            // // console.log("setting mercury item : ",data_list, data_list[STATE.portfolio], STATE.portfolio)    
             // Vue.set(state, "items", data)
         },
         add_signal(state, {signal, portfolio_id, type, empty}){
@@ -200,7 +200,7 @@ const store = new Vuex.Store({
             
         },
         update_signal(state, signal_update){
-            console.log("signal_update : ", signal_update)
+            // console.log("signal_update : ", signal_update)
             state.calls[signal_update.call_id].update(signal_update)
         },
         update_items : (state, items)=>{
@@ -217,12 +217,12 @@ const store = new Vuex.Store({
             Vue.set(state, "meta", meta)
         },
         update_search(state, value){
-            // console.log("Vuex$mutations#update_search =: search value : ", value)
+            // // console.log("Vuex$mutations#update_search =: search value : ", value)
             // state.search = value
             Vue.set(state, "search", value)
         },
         update_filter(state, {filter, db_fetch}){
-            // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
+            // // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
             filter = FILTER.set(filter, db_fetch)
             Vue.set(state, "filter", filter)
             Vue.set(state.filter, 'loaded', true)
@@ -231,14 +231,14 @@ const store = new Vuex.Store({
             state.filter.init()
         },
         update_tickers(state, tickers){
-            // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
+            // // console.log("Vuex$mutations#update_search =: filter : ", filter, db_fetch)
             Vue.set(state, "tickers", tickers)
         }, 
         update_loaded(state, value){
             Vue.set(state, "loaded", value)
         },
         update_instrument(state, {key, ltp, active, call_id}){
-            // console.log("update instrument : ", key, ltp, active, call_id)
+            // // console.log("update instrument : ", key, ltp, active, call_id)
             if(!active){
                 state.instruments[key] = {ltp : new Tick(key, ltp)}
             }
@@ -271,7 +271,7 @@ const store = new Vuex.Store({
             var {force = false, mercury = Mercury} = options
             var portfolios = force ? PORTFOLIOS.slice(2) : [context.getters.state.portfolio]
             var req_data = {portfolio_id : portfolios}
-            console.log("portfolios refreshing data : ", portfolios);            
+            // console.log("portfolios refreshing data : ", portfolios);            
             var data_ = (await axios.post('/worker/calls-from-db2/', req_data)).data            
             console.log("data_ calls : ", data_.calls);
             
@@ -314,7 +314,7 @@ const store = new Vuex.Store({
             let mstate = context.getters.state
             var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data
             var meta_ = items.reduce((meta, item) => {
-                // console.log(meta, item)
+                // // console.log(meta, item)
                 const {total = 0, partial_hit = 0, hit = 0, miss = 0} = meta;
                 // if(TYPE[item.product_type] == OPTIONS) return {...meta, total: total + 1}
                 if (item.status.toLowerCase() === 'partialhit') {
@@ -330,7 +330,7 @@ const store = new Vuex.Store({
         load_items(context){
             let mstate = context.getters.state
             var items = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].data
-            console.log("items for ", mstate.type, " i : ", items);
+            // console.log("items for ", mstate.type, " i : ", items);
             
             context.commit('update_items', items)        
         },
@@ -339,7 +339,7 @@ const store = new Vuex.Store({
             let table = Table[mstate.market_type][mstate.market][mstate.type]
             var response =  await axios.post('/worker/get-instruments-for-portfolios/', {})
             Object.entries(response.data).forEach(([key, value])=>{
-                console.log(table[PORTFOLIOS[key]].tickers, PORTFOLIOS[key], key)
+                // console.log(table[PORTFOLIOS[key]].tickers, PORTFOLIOS[key], key)
                 table[PORTFOLIOS[key]]["tickers"] = value
             });
             context.dispatch('load_tickers')
@@ -347,7 +347,7 @@ const store = new Vuex.Store({
         load_tickers(context){
             let mstate = context.getters.state,
              db_fetch = true
-            console.log("port : ",mstate, mstate.portfolio)
+            // console.log("port : ",mstate, mstate.portfolio)
             let tickers = Table[mstate.market_type][mstate.market][mstate.type][mstate.portfolio].tickers
             // tickers = tickers.map(v=>{return {name : v}})
             context.commit('update_tickers', tickers)
@@ -368,7 +368,7 @@ const store = new Vuex.Store({
              db_fetch = true;
             var type = FILTER.type || mstate.type
             let filter = Table[mstate.market_type][mstate.market][type][mstate.portfolio].filter
-            console.log("filter should change : ", filter)
+            // console.log("filter should change : ", filter)
             context.commit('update_filter', {filter, db_fetch})
         },
         store_filter(context){
@@ -398,8 +398,8 @@ const store = new Vuex.Store({
             }
             context.commit("change_state", state_dict);
             context.dispatch('propogate_state_change')
-            // console.log("State change", context.state.state);  
-            console.log("Filter after changed state  = ", FILTER);
+            // // console.log("State change", context.state.state);  
+            // console.log("Filter after changed state  = ", FILTER);
         },
         propogate_state_change(context){
             context.dispatch('load_filter')
@@ -415,7 +415,7 @@ const store = new Vuex.Store({
         update_selected_fields(context, selected_fields){
             var selected_fields_ = []                        
             context.getters.fields.forEach(field =>{   
-                console.log('e : ', field.text, field.key, selected_fields.some(e => e == field.text || e == field.key) , field.key == 'action')
+                // console.log('e : ', field.text, field.key, selected_fields.some(e => e == field.text || e == field.key) , field.key == 'action')
                 if(selected_fields.some(e => e == field.text || e == field.key) || field.key == 'action' ){
                     selected_fields_.push(field)
                 }
@@ -427,7 +427,7 @@ const store = new Vuex.Store({
         },
         update_instrument(context, options){
             // options = {instrument_id, ltp, active, call_id}
-            // console.log("options : ", options);
+            // // console.log("options : ", options);
             
             var {key = null, ltp = null, active = true, call_id = null} = options
             key = options.instrument_id
@@ -436,9 +436,9 @@ const store = new Vuex.Store({
         insert_equity_call(context, data){
             var portfolio_id = PORTFOLIOS[data.portfolio_id || 2]            
             var key = data.active ? data.instrument_id : data.call_id, ltp = data.ltp || -1;
-            // console.log("instrument id : ", key, ", ltp : ", ltp)
+            // // console.log("instrument id : ", key, ", ltp : ", ltp)
             context.commit('update_instrument', {key, ltp})            
-            // console.log("instrument id : ", key, ", ltp : ", ltp)
+            // // console.log("instrument id : ", key, ", ltp : ", ltp)
             var signal = new Signal(
                                     data.call_id,
                                     data.ticker,
@@ -488,7 +488,7 @@ const store = new Vuex.Store({
         },
         async load_notifications(context){
             var notifications = JSON.parse(await localforage.getItem("notifications") || "{}")
-            console.log("notification :::: ", notifications);
+            // console.log("notification :::: ", notifications);
             
             context.commit("update_notifications", notifications)
             

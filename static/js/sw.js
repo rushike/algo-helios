@@ -26,7 +26,7 @@
 
                 // Do something when all the data is added to the database.
                 transaction.oncomplete = function(event) {
-                    console.log("All done!");
+                    // console.log("All done!");
                 };
 
                 transaction.onerror = function(event) {

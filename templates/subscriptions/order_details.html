@@ -184,13 +184,13 @@
                                     },
                                     success: function(data)
                                     {
-                                        console.log("data : ", data)
+                                        // console.log("data : ", data)
                                         var datamap = data.map(x => x.email)
                                     
                                         datastr = datamap.join(",")
-                                        console.log("datamap : ", datamap, ", datastr : ", datastr)
+                                        // console.log("datamap : ", datamap, ", datastr : ", datastr)
                                         $("input[name='group-mails']").val(datastr);
-                                        console.log("val : - group-mails : ", $("input[name='group-mails]").val())
+                                        // console.log("val : - group-mails : ", $("input[name='group-mails]").val())
                                         // return update_add_members(data, {group_type:groupcode});
 
                                         $(document).ready(()=>{                                                                                
@@ -245,7 +245,7 @@
 <script>
     $(document).ready(function(){
         max = document.getElementById("group-member-add").getAttribute("max")
-        console.log("Max : ", max)
+        // console.log("Max : ", max)
         str_html = ""
         for(var i = 0; i < max; i++){
             str_html += ('<div class="form-row p-1">' + 
@@ -257,7 +257,7 @@
             '</div>' +
         '</div>')
         }
-        console.log("str + HTML : ", str_html)
+        // console.log("str + HTML : ", str_html)
         var g = document.getElementById("group-member-add")
         g.innerHTML = str_html
     });
@@ -267,13 +267,13 @@
     }
 
     $(".payonline").click((e)=>{
-            console.log(e)
+            // console.log(e)
             $.ajax({
             type : "GET",
             url: '{% url "update_session" %}',
             data: {"data" : JSON.stringify({"group-mails" : $('input[name="group-mails"]').val()})}, // data to be submit
             success : function(response){
-                console.log(response);
+                // console.log(response);
                 // location.href = "{% url 'create_order' %}"
                 create_razorpay_dialog(e)
             },   
@@ -290,7 +290,7 @@
 			},
 			success: function(data)
 			{
-                console.log("data : ", data)
+                // console.log("data : ", data)
 				insert_data_in_razorpay(data, e)
 				
 			},
@@ -314,7 +314,7 @@
             "description" : data["plan_details"],
             "image" : "{% static 'algonauts.png' %}",
             "handler": function (response){
-                console.log("response : ", response)
+                // console.log("response : ", response)
                 $.ajax({
                     type: "POST",
                     url: "{% url 'payment_success' %}",

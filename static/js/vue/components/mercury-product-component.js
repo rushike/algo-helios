@@ -8,7 +8,7 @@ const m_product_timeline = Vue.component('m-product-timeline', {
     
 
     watch : {
-        reverse_() { console.log("heyy") }
+        reverse_() { // console.log("heyy") }
     }
 
     })
@@ -127,9 +127,9 @@ const mercury_plans = Vue.component('mercury-plans', {
             if (!product_data)
                 { return [] }
 
-            console.log('====================================');
-            console.log(Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1]));
-            console.log('====================================');
+            // console.log('====================================');
+            // console.log(Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1]));
+            // console.log('====================================');
 
             return Object.keys(product_data[current_state.group_type].basic).map(v=>v.split('#')[1]).filter(v=>v)
         },
@@ -147,12 +147,12 @@ const mercury_plans = Vue.component('mercury-plans', {
     },
 
     watch : {
-        reverse_() { console.log("heyy") }
+        reverse_() { // console.log("heyy") }
     },
 
     methods : {
         get_csrf_token(){
-            // console.log(document.getElementById("csrf_token").innerHTML)
+            // // console.log(document.getElementById("csrf_token").innerHTML)
             // return document.getElementById("csrf_token").innerHTML
             return $("input[name='csrfmiddlewaretoken']").val()
     

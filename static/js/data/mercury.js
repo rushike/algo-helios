@@ -97,7 +97,7 @@ class Filter{
         this.loaded = false
     }
     set(props, db_fetch = false){
-        // console.log("props : ", props, db_fetch)        
+        // // console.log("props : ", props, db_fetch)        
         if(!props) return this
         if(props.tickers) this.tickers = props.tickers
         if(props.sides){ 
@@ -269,7 +269,7 @@ class Signal{
         this.follow = pinned_list.includes(this.call_id);
     }
     update(data){
-        console.log("signal update : ", data );        
+        // console.log("signal update : ", data );        
         if(data.signal) this.signal = data.signal
         if(data.status) this.status = data.status
         if(data.profit_percent) this.profit = data.profit_percent
@@ -282,7 +282,7 @@ class Signal{
     } 
     static hide(state, params){
         var {item = null} = params
-        console.log("hiding : ", item);
+        // console.log("hiding : ", item);
         item.visible = false
     }
     toString(){
@@ -323,7 +323,7 @@ class OptionsSignal{
         // time = 05/26/2020, 11:59:46        
         this.time = {
             valueOf : () => moment(signal_time, moment.ISO_8601),
-            string : () => moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
+            toString : () => moment(signal_time, moment.ISO_8601).format('DD MMM, hh:mm')
         }
         this.price = price
         this.target_price = target_price.round(2)
@@ -345,7 +345,7 @@ class OptionsSignal{
         this.follow = pinned_list.includes(this.call_id);
     }
     update(data){
-        console.log("signal update : ", data );        
+        // console.log("signal update : ", data );        
         if(data.signal) this.signal = data.signal
         if(data.status) this.status = data.status
         if(data.profit_percent) this.profit = data.profit_percent
@@ -358,7 +358,7 @@ class OptionsSignal{
     } 
     static hide(state, params){
         var {item = null} = params
-        console.log("hiding : ", item);
+        // console.log("hiding : ", item);
         item.visible = false
     }
     toString(){
@@ -370,7 +370,7 @@ class OptionsSignal{
 
 function pin_to_localStorage(item){
     var pinned_list = JSON.parse(localStorage.getItem("pinned_calls"));
-    console.log("pinned_list : ", pinned_list);
+    // console.log("pinned_list : ", pinned_list);
     
     if(Array.isArray(pinned_list) && !pinned_list.includes(item.call_id) && item.follow){
         pinned_list.push(item.call_id);

@@ -6,10 +6,10 @@ function start_app() {
     store, 
     vuetify: new Vuetify(),
     created(){
-        // console.log('====================================');
-        // console.log(this);
-        // console.log(this.$store);
-        // console.log('====================================');
+        // // console.log('====================================');
+        // // console.log(this);
+        // // console.log(this.$store);
+        // // console.log('====================================');
     }
     })
 }

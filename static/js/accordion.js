@@ -36,7 +36,7 @@ function getAccordion(element_id,screen)
 	
     $('.accordion a').click(function(j) {
         var dropDown = $(this).closest('li').find('p');
-		console.log("inside FAQ")
+		// console.log("inside FAQ")
         $(this).closest('.accordion').find('p').not(dropDown).slideUp();
 
         if ($(this).hasClass('active')) {

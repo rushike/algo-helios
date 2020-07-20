@@ -95,7 +95,7 @@
 					url: '{% url "update_session" %}',
 					data: {"data" : JSON.stringify({'data' : {"referral-code" : $('input[name="referral-code"]').val()}})}, // data to be submit
 					success : function(response){
-						console.log(response);
+						// console.log(response);
 						// location.href = "{% url 'create_order' %}"
 					},
 				});

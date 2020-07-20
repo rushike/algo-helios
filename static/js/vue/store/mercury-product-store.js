@@ -48,9 +48,9 @@ const store = new Vuex.Store({
            var data = (await axios.post('/subscriptions/mercury-product-data/', {} )).data
            
            context.commit('update_product_data', data)
-           console.log('====================================');
-           console.log("data from DB", data);
-           console.log('====================================');
+           // console.log('====================================');
+           // console.log("data from DB", data);
+           // console.log('====================================');
         }
     }
 });

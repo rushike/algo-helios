@@ -33,7 +33,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             this.totalRows = filteredItems.length            
         }, 
         portfolio_filter(items, filters, filter, headers){
-            console.log("this.$MultiFilters : ", this.$MultiFilters)
+            // console.log("this.$MultiFilters : ", this.$MultiFilters)
             const cf = new this.$MultiFilters(items, filters, filter, headers);
 
             // cf.registerFilter('search', function (searchWord, items) {
@@ -205,7 +205,7 @@ const MFILTER_INLINE = Vue.component('m-filter-inline', {
                 return ticker
             },
             set(value){
-                console.log("Filter set value : ", value)
+                // console.log("Filter set value : ", value)
             }
         },
         // sides_options(){            

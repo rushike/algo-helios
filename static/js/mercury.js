@@ -199,7 +199,7 @@ function make_notification_ajax_call(){
 }
 
 function add_equity_table_header(id, tab){
-    console.log("adding equity header ...", id, tab)
+    // console.log("adding equity header ...", id, tab)
     $(id).html(
         `
             <table id="${tab}_data-table" class="table">
@@ -227,7 +227,7 @@ function add_equity_table_header(id, tab){
 }
 
 function add_options_table_header(id, tab){
-    console.log("adding options header ...", id, tab)
+    // console.log("adding options header ...", id, tab)
     $(id).html(
         `
             <table id="${tab}_data-table" class="table">
@@ -269,7 +269,7 @@ $(document).ready(function() {
             success: function(data)
             {
                 $.each(data, function(tab_to_consider, filter_data) {
-                    console.log("Filter data recieved from database for portfolio : ", tab_to_consider, ", Data ", filter_data)
+                    // console.log("Filter data recieved from database for portfolio : ", tab_to_consider, ", Data ", filter_data)
                     tab_id = "#" + tab_to_consider
                     $( tab_id + "_rr_range" ).val(filter_data['risk_reward'][0] + " - " + filter_data['risk_reward'][1]);
                     $( tab_id + "_profit_range" ).val(filter_data['profit_percentage'][0] + " - " + filter_data['profit_percentage'][1]);
@@ -340,7 +340,7 @@ $(document).ready(function() {
                 data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : value},
                 success: function(data)
                 {
-                    console.log("filter cleared")
+                    // console.log("filter cleared")
                     location.reload();
                 },
                 error: function(request, status, error)
@@ -379,7 +379,7 @@ $(document).ready(function() {
 				data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value, 'portfolio_id' : [value]},
 				success: function(data)
 				{
-                    console.log(`#${value}-refresh` + " success  : ", data)                
+                    // console.log(`#${value}-refresh` + " success  : ", data)                
                     return update_from_db_to_table(data.calls, value);
 				},
 				error: function(request, status, error)
@@ -391,7 +391,7 @@ $(document).ready(function() {
     });
 
     function update_from_db_to_table(data_dictionary, value){
-        console.log(data_dictionary)
+        // console.log(data_dictionary)
         var activeTab = value
         var dataTable = document.getElementById(activeTab + "_data-table")
         $("#" + activeTab + "_data-table").find("tr:not(:first)").remove();
@@ -507,7 +507,7 @@ $(document).ready(function() {
 
         var trade_action_btn = $('<button id="trade_action2" type="button" class= "trade_action col-md-offset-2 col-md-8 btn btn-rounded rounded-large">');
         trade_action_btn.attr("data-name", signal);
-        console.log("trade_action : ", trade_action_btn, ", signal : ", signal)
+        // console.log("trade_action : ", trade_action_btn, ", signal : ", signal)
         trade_action_btn.text(signal);
         if (signal == "BUY") {
             trade_action_btn.removeClass("SELL_btn");
@@ -542,7 +542,7 @@ $(document).ready(function() {
                     "trigger_price": parseFloat($('input[name=trigger_price]').val()),
                     "disclosed_quantity": parseInt($('input[name=quantity]').val())
                 }
-                console.log(trade_input)
+                // console.log(trade_input)
                 // Add a Bracket Order
                 kite.add(trade_input);
 
@@ -557,7 +557,7 @@ $(document).ready(function() {
         });
 
         $('.trade_action').on('click', function(e){
-            console.log("trade action clicked")
+            // console.log("trade action clicked")
             $('#trade_modal').modal('toggle');
         });
     });
@@ -625,14 +625,14 @@ $(document).ready(function() {
 
     $(".filter_apply").on('click', function () {
         var current_tab = $('.nav-tabs .active').attr("id")
-        console.log("Data to be send", $('#' + current_tab + "_filter_form").serialize(), $('#' + current_tab + "_filter_form") )
+        // console.log("Data to be send", $('#' + current_tab + "_filter_form").serialize(), $('#' + current_tab + "_filter_form") )
         $.ajax({
             type: "GET",
             url: "/worker/apply-filters/",
             data: $('#' + current_tab + "_filter_form").serialize()  + '&call_type=' + current_tab,
             success: function(data)
             {
-                console.log("Filter applied successfully!");
+                // console.log("Filter applied successfully!");
                 location.reload();
             },
             error: function(request, status, error)
@@ -643,7 +643,7 @@ $(document).ready(function() {
     });
 
     $(".product-tabs").on('click', function () {
-        console.log($('.nav-tabs li.active a').attr("href"))
+        // console.log($('.nav-tabs li.active a').attr("href"))
         $("meta[name=active-tab]").attr("content", $('.nav-tabs li.active a').attr("href"));
     });
 
@@ -656,27 +656,27 @@ $(document).ready(function() {
 
 const registerSw = async () => {
     if ('serviceWorker' in navigator) {
-        console.log("Will initialte sw.js NOTIFICATION")
+        // console.log("Will initialte sw.js NOTIFICATION")
         const reg = await navigator.serviceWorker.register('/static/js/sw.js');
         initialiseState(reg)
-        console.log("initialted sw.js with reg : ", reg)
+        // console.log("initialted sw.js with reg : ", reg)
 
     } else {
-        console.log("Not eligible for push notifications!!")
+        // console.log("Not eligible for push notifications!!")
     }
 };
 
 const initialiseState = (reg) => {
     if (!reg.showNotification) {
-        console.log('Showing notifications isn\'t supported');
+        // console.log('Showing notifications isn\'t supported');
         return
     }
     if (Notification.permission === 'denied') {
-        console.log('You prevented us from showing notifications');
+        // console.log('You prevented us from showing notifications');
         return
     }
     if (!'PushManager' in window) {
-        console.log("Push isn't allowed in your browser");
+        // console.log("Push isn't allowed in your browser");
         return
     }
     subscribe(reg);
@@ -714,7 +714,7 @@ function request_permission(){
 
 const subscribe = async (reg) => {
     const subscription = await reg.pushManager.getSubscription();
-    console.log("Subscribe : subscriptions : ", subscription)
+    // console.log("Subscribe : subscriptions : ", subscription)
     if (subscription) {
         sendSubData(subscription);
         return;
@@ -748,7 +748,7 @@ const sendSubData = async (subscription) => {
         })
 
 
-    console.log("Groups await from channels are : ", groups, groups.length)
+    // console.log("Groups await from channels are : ", groups, groups.length)
     // Subscribe based on the groups eligible
     for(var i = 0; i < groups.length; i++){
         const data = {
@@ -757,7 +757,7 @@ const sendSubData = async (subscription) => {
             browser: browser,
             group: groups[i],
         };
-        console.log("Data to Webpush Save : ", data);
+        // console.log("Data to Webpush Save : ", data);
         const res = await fetch('/webpush/save_information', {
             method: 'POST',
             body: JSON.stringify(data),
@@ -767,14 +767,14 @@ const sendSubData = async (subscription) => {
             credentials: "include"
         });
 
-        console.log("sendSubData res : is :  ", res)
+        // console.log("sendSubData res : is :  ", res)
 
         handleResponse(res);
     }
 };
 
 const handleResponse = (res) => {
-    console.log(res.status);
+    // console.log(res.status);
 };
 
 registerSw();

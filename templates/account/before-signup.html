@@ -1,5 +1,5 @@
 <script>
     sessionStorage.setItem('referral-code', "{{referral_code}}");
-    console.log(sessionStorage.getItem('referral-code'))
+    // console.log(sessionStorage.getItem('referral-code'))
     location.href = '{% url "account_signup" %}'
 </script>

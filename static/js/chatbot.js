@@ -143,7 +143,7 @@ $(document).ready(function() {
 			var retrievedSession = sessionStorage.getItem('session');
 		}
 		return retrievedSession;
-		// console.log('session: ', retrievedSession);
+		// // console.log('session: ', retrievedSession);
 	}
 
 	// Call Session init
@@ -190,7 +190,7 @@ $(document).ready(function() {
     $(".mybtn").click(function(f){
         var text = $("#"+$(this).attr('id')).text();
 
-        // console.log(text);
+        // // console.log(text);
 
         if(text == "" ||  $.trim(text) == '') {
                 f.preventDefault();
@@ -209,7 +209,7 @@ $(document).ready(function() {
     $(document).on("click", "button.mybtn", function(f){
         var text = $("#"+$(this).attr('id')).text();
 
-        // console.log(text);
+        // // console.log(text);
 
         if(text == "" ||  $.trim(text) == '') {
                 f.preventDefault();
@@ -238,10 +238,10 @@ $(document).ready(function() {
 			// data: JSON.stringify({ query: text, lang: "en", sessionId: "somerandomthing" }),
 			success: function(data) {
 				main(data);
-				// console.log(data);
+				// // console.log(data);
 			},
 			error: function(e) {
-				console.log (e);
+				// console.log (e);
 			}
 		});
 	}

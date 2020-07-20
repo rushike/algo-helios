@@ -217,7 +217,7 @@
 																				$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
 																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
 																				}, function(){
-																					console.log("{{group_type.1}}-{{plan.0.0.product_name}}")
+																					// console.log("{{group_type.1}}-{{plan.0.0.product_name}}")
 																					$('input[name="planname"]').val("{{plan.0.0.product_name}}");
 																				});
 																				$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
@@ -238,7 +238,7 @@
 																					$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
 																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					}, function(){
-																						console.log("{{group_type.1}}-{{product.product_name}}")
+																						// console.log("{{group_type.1}}-{{product.product_name}}")
 																						$('input[name="planname"]').val("{{product.product_family_id}}");
 																					});
 																					$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
@@ -275,15 +275,15 @@
 				
 											<script>
 												$(document).ready(function(){
-													console.log("{{plan_type.1}}")
+													// console.log("{{plan_type.1}}")
 													if("{{plan_type.1}}" === "Premium"){
 														$("#star-premium").addClass("badge badge-pill badge-danger")
 													}											
 													$("#{{group_type.1}}-{{plan_type.1}}").hover(function(){												
-														console.log("{{group_type.1}}-{{plan_type.1}}")
+														// console.log("{{group_type.1}}-{{plan_type.1}}")
 														$('input[name="plancode"]').val("{{plan_type.1}}");
 													}, function(){
-														console.log("{{group_type.1}}-{{plan.1}}")
+														// console.log("{{group_type.1}}-{{plan.1}}")
 														$('input[name="plancode"]').val("{{plan_type.1}}");
 													});
 													$("#{{group_type.1}}-{{plan_type.1}}").click(function(){
@@ -459,14 +459,14 @@
 			// a.click()
 			$(".plancode-div").click(()=>{
 				if(plancode_clicked == 0){
-					console.log("plancode val = ", plancode_clicked)
+					// console.log("plancode val = ", plancode_clicked)
 					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797", "border-width":"1.6px"})
 				}
 			});
 			$('input[required]').on('invalid', function(e){
-				console.log("errr : ", e, e.target, e.target.name)
+				// console.log("errr : ", e, e.target, e.target.name)
 				if(e.target.name == "groupcode"){
-					console.log("changing border")
+					// console.log("changing border")
 					$("#group-header").css({"border-style": "solid", "border-color": "#ff9797"})
 				}
 			});

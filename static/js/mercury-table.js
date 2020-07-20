@@ -7,13 +7,13 @@ if (loc.protocol == "https:") {
 }
 var endpoint = wsStart + loc.host + "/channel/";
 var socket = new WebSocket(endpoint);
-console.log("socket : coonn ,,, ", socket)
+// console.log("socket : coonn ,,, ", socket)
 
-console.log(sessionStorage)
+// console.log(sessionStorage)
 
 
 socket.onopen = function (e) {
-    console.log("Web-socket conn opened ", e);
+    // console.log("Web-socket conn opened ", e);
     socket.send(JSON.stringify({'load' : true}));
 }
 
@@ -124,7 +124,7 @@ function update_the_tick(data_dict){
 }
 
 socket.onmessage = function (e) {
-    // console.log("message ", e);
+    // // console.log("message ", e);
 
     var data_dict = JSON.parse(e['data']);
     if (typeof data_dict == 'undefined' || data_dict.length <= 0) {
@@ -158,7 +158,7 @@ socket.onmessage = function (e) {
                     status = getStatus(status)
                     row = insert_new_row_for_equity(dataTable, data, 0, status)
                     if(!active){
-                        console.log("Will disable row with call id in --signal: ", call_id)
+                        // console.log("Will disable row with call id in --signal: ", call_id)
                         row.className = "disabled";
                         
                     }
@@ -168,14 +168,14 @@ socket.onmessage = function (e) {
                 status = getStatus(status)
                 row = insert_new_row_for_equity(dataTable, data, 0, status);
                 if (!active) {
-                    console.log("Will disable row with call id : ", call_id)
+                    // console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
                 }
             }
         }
         else if (dataType == "signal_update"){
             console.debug("data recieved : ", data_dict)
-            console.log("Signal Update : data_dict = ", data_dict)
+            // console.log("Signal Update : data_dict = ", data_dict)
             if (dataTable && row) {
                 
                 if(data_dict['last_price']) 
@@ -191,7 +191,7 @@ socket.onmessage = function (e) {
                     row.cells.namedItem("price").innerHTML = data_dict['price'];
                 
                 if (!active) {
-                    console.log("Will disable row with call id : ", call_id)
+                    // console.log("Will disable row with call id : ", call_id)
                     row.className = "disabled";
                 }
             }
@@ -213,11 +213,11 @@ socket.onmessage = function (e) {
 }
 
 socket.onerror = function (e) {
-    console.log("error", e);
+    // console.log("error", e);
 }
 
 socket.onclose = function (e) {
-    console.log("close", e);
+    // console.log("close", e);
 }
 
 window.onbeforeunload = function () {

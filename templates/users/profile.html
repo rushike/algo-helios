@@ -96,7 +96,7 @@
 					lead_head += $("#if-referred").html() == 'yes' ? ` | <span class="pl-2 pr-2" onclick = "put_content('win')" style="cursor: pointer;"> Win by refer </span>` : ``;
 					
 					function put_content(head_bool){
-						console.log("head-bool : ", head_bool)
+						// console.log("head-bool : ", head_bool)
 						if (head_bool == 'credit'){
 							$("#credits-content").html(refer_credits);
 						}
@@ -722,7 +722,7 @@ $('.alertx').alert()
 	})
   
 	var current_contact = document.getElementById("contact_no_field").innerHTML
-	// console.log("juna contact is ", current_contact)
+	// // console.log("juna contact is ", current_contact)
 
 	$(document).ready(()=>{
 		
@@ -752,7 +752,7 @@ $('.alertx').alert()
 				},
 				success: function(data)
 				{
-					console.log(data)
+					// console.log(data)
 					$(`#inputAddress1`).val(data["line1"])
 					$(`#inputAddress2`).val(data["line2"])
 					$(`#inputState`).val(data["state"])
@@ -787,9 +787,9 @@ $('.alertx').alert()
 		});
 
 		$("#removed-verified").click(()=>{
-			console.log($("input[name='entered-email-id']").val(), $("#confirm-email-id").html(), ",   condition : ", $("input[name='entered-email-id']").val() == $("#confirm-email-id").html())
+			// console.log($("input[name='entered-email-id']").val(), $("#confirm-email-id").html(), ",   condition : ", $("input[name='entered-email-id']").val() == $("#confirm-email-id").html())
 			if($("input[name='entered-email-id']").val() == $("#confirm-email-id").html()){
-				console.log("Will remove ", $("#confirm-email-id").html() ," user from group")
+				// console.log("Will remove ", $("#confirm-email-id").html() ," user from group")
 				$.ajax({
 					type: "POST",
 					url: "{% url 'remove_user_from_group' %}" , // "/user/get-all-users-in-group",
@@ -800,7 +800,7 @@ $('.alertx').alert()
 					},
 					success: function(data)
 					{
-						console.log(data)
+						// console.log(data)
 						$('#confim-user-remove').modal('toggle');
 					},
 					error: function(request, status, error)
@@ -809,7 +809,7 @@ $('.alertx').alert()
 					}
 				});
 			}else{
-				console.log("Incorrect Match")
+				// console.log("Incorrect Match")
 			}
 		});
 
@@ -829,7 +829,7 @@ $('.alertx').alert()
 					},
 					success: function(data)
 					{
-						console.log(data)
+						// console.log(data)
 						$("#confim-user-add").modal('toggle')
 					},
 					error: function(request, status, error)
@@ -839,7 +839,7 @@ $('.alertx').alert()
 				});
 		});
 
-		console.log($(window).height(), $(window).width(), $(window).width() > 450)
+		// console.log($(window).height(), $(window).width(), $(window).width() > 450)
 		if($(window).width() > 450){
 			$(".onepagescroll").onepage_scroll({
 				sectionContainer: "section",    
@@ -874,7 +874,7 @@ $('.alertx').alert()
 					},
 					success: function(data)
 					{
-						console.log("changed contact success : ", data)
+						// console.log("changed contact success : ", data)
 						$('#contact_no_field').html(data.contact_no)
 						$('#contact_no_button').html("Edit")
 					},
@@ -936,7 +936,7 @@ $('.alertx').alert()
 	}
 
 	function update_invoice_table(data){
-		console.log("invoice data : ", data)
+		// console.log("invoice data : ", data)
 		var table = document.getElementById("edit-invoice-table")
 		$("#edit-invoice-table").find("tr:not(:first)").remove();
 		data.forEach((row, index) => {
@@ -964,7 +964,7 @@ $('.alertx').alert()
 	}
 
 	function download_invoice(invoice_id){
-		console.log("download invoice : ", invoice_id)
+		// console.log("download invoice : ", invoice_id)
 		var link = document.createElement('a');
 		link.href = "/subscriptions/download-invoice/" + invoice_id ;
 		link.download = "file.pdf"
@@ -1030,7 +1030,7 @@ $('.alertx').alert()
 	}
 	
 	function update_edit_plan_table(data, extras){
-		console.log( typeof data, ",  ", data, ", group type : ", extras.group_type)
+		// console.log( typeof data, ",  ", data, ", group type : ", extras.group_type)
 		$("#edit-group-type-id").html(extras.group_type)
 		var table = document.getElementById("edit-plan-table")
 		$("#edit-plan-table").find("tr:not(:first)").remove();
@@ -1076,7 +1076,7 @@ $('.alertx').alert()
 			},
 			success: function(data)
 			{
-				console.log("group - add link : ", data)
+				// console.log("group - add link : ", data)
 				$("#group-add-link-input").val(data['link'])
 				$('#group-name').html(data['groupcode'])
 			},

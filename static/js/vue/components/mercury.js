@@ -53,12 +53,12 @@ const MTradeModal = Vue.component('m-trade-modal', {
         },
         place_order(){
             var self = this;
-            console.log("self : ", self);
+            // console.log("self : ", self);
             function kite_warpper(self){    
                 return function() {
                     // You can initialize multiple instances if you need
                     var kite = new KiteConnect("tpisubdoz4a7cskn"); // Initialize a new Kite instance
-                    console.log("self : ", self);
+                    // console.log("self : ", self);
                     
                     var trade_input = {
                         "tradingsymbol": self.item.ticker,//$('#trade_ticker').text(),
@@ -75,7 +75,7 @@ const MTradeModal = Vue.component('m-trade-modal', {
                         "trigger_price": parseFloat(self.trigger_price), //parseFloat($('input[name=trigger_price]').val()),
                         "disclosed_quantity": self.disclosed_quantity, //parseInt($('input[name=quantity]').val())
                     }
-                    console.log(trade_input)
+                    // console.log(trade_input)
                     // Add a Bracket Order
                     kite.add(trade_input);
 
@@ -116,7 +116,7 @@ const MStockTable = Vue.component("m-stocks-table", {
         }
     },
     created(){
-        console.log("stocks table created : ", this.fields);        
+        // console.log("stocks table created : ", this.fields);        
     },
     computed :{
         search : {
@@ -226,7 +226,7 @@ const MStockTable = Vue.component("m-stocks-table", {
                 return true
             }            
             if(val.toString().toLowerCase().includes(search.toLowerCase())){     
-                console.log("this.filter : ", this.filter)           
+                // console.log("this.filter : ", this.filter)           
                 return true
             }
 
@@ -258,7 +258,7 @@ const MStockTable = Vue.component("m-stocks-table", {
             var self = this            
                 if(!self.show){
                     self.sheet = !self.sheet
-                    console.log("self sheet : ", self.sheet);
+                    // console.log("self sheet : ", self.sheet);
                     
                     if(self.detail_item){
                         self.detail_item = null
@@ -268,7 +268,7 @@ const MStockTable = Vue.component("m-stocks-table", {
                 }            
         },
         onScroll(value){
-            console.log("value scroll : ", value);
+            // console.log("value scroll : ", value);
             
         },
     },
@@ -297,7 +297,7 @@ const MOptionsTable = Vue.component("m-options-table", {
                 return this.$store.getters.search
             },
             set(value){
-                console.log(value)
+                // console.log(value)
                 this.$store.commit("update_search", value);
             }
         },
@@ -306,7 +306,7 @@ const MOptionsTable = Vue.component("m-options-table", {
                 return this.$store.getters.filter
             },
             set(value){
-                console.log(value)
+                // console.log(value)
                 this.$store.commit("update_filter", value);
             }
         },
@@ -444,7 +444,7 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
             },
             set(value){
                 var type = value.toLowerCase()
-                // console.log("radio toggle | value : ", value, ", type : ", type)
+                // // console.log("radio toggle | value : ", value, ", type : ", type)
                 this.$store.dispatch('change_state', {'type' : type})
             }
         },
@@ -481,7 +481,7 @@ const MDataTableInfo = Vue.component('m-data-table-info', {
                 return this.$store.getters.selected_fields
             },
             set(selected_fields){
-                console.log("selected fileds : ", selected_fields);
+                // console.log("selected fileds : ", selected_fields);
                 
                 // var selected_fields_ = []
                 // selected_fields.forEach(v=>{
@@ -590,27 +590,27 @@ const MFILTER_INLINE = Vue.component('m-filter-inline', {
                 return this.$store.getters.instruments
             },
             set(value){
-                console.log("Filter set value : ", value)
+                // console.log("Filter set value : ", value)
             }
         },
         ticker_values:{
             get(){
-                // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
+                // // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
                 return this.filter.tickers
             },
             set(value){
-                console.log("ticks valuess :", this.filter.tickers, value);
+                // console.log("ticks valuess :", this.filter.tickers, value);
                 let filter = {"tickers" : value,}
                 Vue.set(this, 'filter', filter)
             }
         },
         side_values:{
             get(){
-                // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
+                // // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
                 return this.filter.sides
             },
             set(value){
-                // console.log(this.filter.sides, value[0], value[1] ? value[1].side :value[1] , value[2] ? value[2].side :value[2]);
+                // // console.log(this.filter.sides, value[0], value[1] ? value[1].side :value[1] , value[2] ? value[2].side :value[2]);
                 let filter = {"sides" : value,}
                 Vue.set(this, 'filter', filter)
             }
@@ -698,7 +698,7 @@ const MNavigator = Vue.component('m-navigator', {
                 return this.$store.getters.state.portfolio.toUpperCase()
             },
             set(value){
-                // console.log("value : ", value);
+                // // console.log("value : ", value);
                 var opt = {};
                 if(this.$store.getters.state.type == OPTIONS && [POSITIONAL, LONGTERM].includes(value) ){
                     opt.type = STOCKS;
@@ -719,7 +719,7 @@ const MNavigator = Vue.component('m-navigator', {
         },
         change_state(){
             var portfolio = PORTFOLIOS[this.active_ + 2]
-            // console.log("portfolio changed to : ", portfolio)
+            // // console.log("portfolio changed to : ", portfolio)
             var opt = {};
             if(this.$store.getters.state.type == OPTIONS && ![0, 1].includes(this.active_)) {
                 opt.type = STOCKS;
@@ -785,12 +785,12 @@ const MMultiselect = Vue.component('m-multiselect', {
             }
             
 
-            console.log("row click item ", item, item.name, this.selected);
+            // console.log("row click item ", item, item.name, this.selected);
             
         },
         
         item_selected(item, value){
-            // console.log("item, value : ", this.selected)                        
+            // // console.log("item, value : ", this.selected)                        
             this.emit = true
             if(Array.isArray(item)){
                 Vue.set(this, 'selected', item)
@@ -847,7 +847,7 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
             },
             set(filter){
                 let db_fetch = false
-                // console.log("Changes filter value ", filter, db_fetch)
+                // // console.log("Changes filter value ", filter, db_fetch)
                 this.$store.commit("update_filter", {filter, db_fetch});
                 this.apply_filters()()
                 
@@ -861,18 +861,18 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
                 return (this.filter.tickers || this.ticker_options).filter(v=>v)
             },
             set(value){
-                // console.log("ticks valuess :", this.filter.tickers, value);
+                // // console.log("ticks valuess :", this.filter.tickers, value);
                 let filter = {"tickers" : value,}
                 Vue.set(this, 'filter', filter)
             }
         },
         side_values:{
             get(){
-                // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
+                // // console.log("values copmputed: ", this.filter, Object.keys(this.filter) ,this.filter.sides, this.$store.getters.filter.sides)
                 return this.filter.sides || ["SELL", "BUY"]
             },
             set(value){
-                // console.log("value : ", value);
+                // // console.log("value : ", value);
                 let filter = {"sides" : value}
                 Vue.set(this, 'filter', filter)
             }
@@ -931,13 +931,13 @@ const MFilterSidebar = Vue.component('m-filter-sidebar', {
             return helpers.is_mobile()
         },
         show_drawer(){
-            console.log("drawer show : ", this.drawer);
+            // console.log("drawer show : ", this.drawer);
             this.drawer = true
         },
     },
     watch : {
         drawer() {
-            console.log("drawer changed :  ", this.drawer);
+            // console.log("drawer changed :  ", this.drawer);
         }
     },
     template : helpers.is_mobile() ? M_DRAWER_FILTER : M_FILTER_SIDEBAR,
@@ -967,7 +967,7 @@ const MApp = Vue.component('m-app', {
             },
             set(value){
                 var type = value.toLowerCase()
-                console.log("radio toggle | value : ", value, ", type : ", type)
+                // console.log("radio toggle | value : ", value, ", type : ", type)
                 this.$store.dispatch('change_state', {'type' : type})
             }
         },
@@ -989,7 +989,7 @@ const MApp = Vue.component('m-app', {
     },
     methods : {                
         notifications_ (){
-            console.log(Notifications.data)
+            // console.log(Notifications.data)
             return Notifications.data
         },
         btn_html(item, update = false){            

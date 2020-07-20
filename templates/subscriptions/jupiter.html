@@ -21,7 +21,7 @@
 {% block js_imports %}	
 <!-- <script>
 		$(document).ready(()=>{
-			// console.log("Will change css.")
+			// // console.log("Will change css.")
 			$("nav").attr({style : "background-color: rgb(225,238,252)!important"});      
 		});
 	
@@ -532,7 +532,7 @@
 	
     $('.accordion a').click(function(j) {
         var dropDown = $(this).closest('li').find('p');
-		console.log("inside FAQ")
+		// console.log("inside FAQ")
         $(this).closest('.accordion').find('p').not(dropDown).slideUp();
 
         if ($(this).hasClass('active')) {
