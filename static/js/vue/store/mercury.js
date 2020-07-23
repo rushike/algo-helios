@@ -272,7 +272,7 @@ const store = new Vuex.Store({
             var portfolios = force ? PORTFOLIOS.slice(2) : [context.getters.state.portfolio]
             var req_data = {portfolio_id : portfolios}
             // console.log("portfolios refreshing data : ", portfolios);            
-            var data_ = (await axios.post('/worker/calls-from-db2/', req_data)).data            
+            var data_ = (await axios.post('/worker/calls-from-db/', req_data)).data            
             console.log("data_ calls : ", data_.calls);
             
             context.commit('refresh_table', {calls : data_.calls, force_init : true})

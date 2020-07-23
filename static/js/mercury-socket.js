@@ -13,7 +13,7 @@ var socket = new WebSocket(endpoint);
 
 
 socket.onopen = function (e) {
-    // console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " Web-socket conn opened ", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " Web-socket conn opened ", e);
     socket.send(JSON.stringify({'load' : true}));
 }
 
@@ -141,7 +141,7 @@ socket.onmessage = function (e) {
         store.dispatch("update_equity_call", data_dict)
     }
     else if (dataType == 'signal'){
-        // console.log("signal : ", data_dict);        
+        console.log("signal : ", data_dict);        
         data_dict.instrument_id = data_dict.instrument_token
         if(data_dict.product_type == OPTIONS_PROD){
             store.dispatch("insert_options_call", {...data_dict, instrument_id : data_dict.instrument_token})
@@ -164,11 +164,11 @@ socket.onmessage = function (e) {
 }
 
 socket.onerror = function (e) {
-    // console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " : error", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), " : error", e);
 }
 
 socket.onclose = function (e) {
-    // console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), "close", e);
+    console.log(moment.tz(moment(), 'Asia/Kolkata').format('DD/MM/YYYY HH:mm'), "close", e);
 }
 
 window.onbeforeunload = function () {

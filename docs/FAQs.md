@@ -14,4 +14,15 @@ solution user need to.
 > Run command on linux like enviroment, `python3 manage.py graph_models -a > helios.dot`
 > Then paste content from .dot file in https://dreampuf.github.io/GraphvizOnline/.It generated PNG, save to local computer
 
+> ## How Give DB calls for all users, regardless of subscription ?
+> Goto `worker/urls.py`, change entry from :  
+```python
+path('calls-from-db/', views get_calls_from_db, name = "calls_from_db")
+```
+> to : 
+```python
+path('calls-from-db/', views get_calls_from_db2, name = "calls_from_db")
+``` 
+
+
 >   

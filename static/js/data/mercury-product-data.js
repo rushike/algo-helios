@@ -32,28 +32,19 @@ const STATE = {
     }
 
 }
-
-// const PRODUCT_DATA = {
-//     group_type : {
-//             plan_type : {
-//                 plan_name : { 
-//                     data : []
-//                     price_per_month
-//                     price_per_year
-//                 }
-//             }
-//         }
-//     }
-
+/*
+PRODUCT_DATA = {
+    group_type : {
+            plan_type : {
+                plan_name : { 
+                    data : []
+                    price_per_month
+                    price_per_year
+                }
+            }
+        }
+    }
+*/
 // all plans data will be loaded 
 var PRODUCT_DATA = null
 
-
-// class Product {
-//     constructor(product_name) {
-//         this.product_name = product_name
-//     }
-//     toString() {
-//         return this.product_name.split('#')[1] //removes # 
-//     }
-// }

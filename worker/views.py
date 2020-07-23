@@ -22,13 +22,17 @@ def get_health_status(request):
 def mercury2(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-    return render(request, 'worker/datapage2.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
+    all_subs = worker.functions.get_user_subs_groups(request.user)
+    subs_active = True if len(all_subs) else False    
+    return render(request, 'worker/datapage2.html', {'vapid_key': vapid_key, 'active_tab': "Section1", "subs_active" : subs_active})
 
 @login_required(login_url='/accounts/login/')
 def mercury(request):
     webpush_settings = getattr(settings, 'WEBPUSH_SETTINGS', {})
     vapid_key = webpush_settings.get('VAPID_PUBLIC_KEY')
-    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1"})
+    all_subs = worker.functions.get_user_subs_groups(request.user)
+    subs_active = True if len(all_subs) else False    
+    return render(request, 'worker/datapage.html', {'vapid_key': vapid_key, 'active_tab': "Section1", "subs_active" : subs_active, "all_subs" : all_subs})
 
 @login_required(login_url='/accounts/login/')
 def apply_filters3(request):
@@ -115,13 +119,13 @@ def get_instruments_for_portfolios(request):
     return JsonResponse(all_instruments, safe= False)
 
 @login_required(login_url = '/accounts/login/')
-def get_calls_from_db(request):
+def get_calls_from_db2(request):
     user = request.user.email
-    portfolios = request.POST.getlist("portfolio_id[]", ['intraday', 'btst', 'positional' , 'longterm'])
+    portfolios = json.loads(request.body.decode('utf-8')).get("portfolio_id", ['intraday', 'btst', 'positional' , 'longterm'])    
     portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    
     groups = ConsumerManager().get_eligible_groups(user) # group-name is product name
 
-    groups = list(set(groups).intersection(portfolios))
+    groups = list(set(groups).union(portfolios))
     product_names =  worker.functions.get_product_names_from_groups(groups)
     all_calls = {}
     user_portfolios = DBManager().get_portfolio_from_group(groups)
@@ -134,11 +138,11 @@ def get_calls_from_db(request):
             calls for portfolio {portfolio_id}, calls : {calls}")
         logger.debug(f"calls for portfolio {portfolio_id}, calls : {calls}")
         all_calls[portfolio_id] = (calls)
-    subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False
-    return JsonResponse({'calls' : worker.functions.serialize_data( all_calls), 'subs-active' : subs_active}, safe= False)
+    subs_active = True if len(worker.functions.get_user_subs_groups(request.user)) else False    
+    return JsonResponse({'calls' : worker.functions.serialize_data(all_calls), 'subs-active' : subs_active}, safe= False)
 
 @login_required(login_url = '/accounts/login/')
-def get_calls_from_db2(request):
+def get_calls_from_db(request):
     user = request.user.email
     portfolios = json.loads(request.body.decode('utf-8')).get("portfolio_id", ['intraday', 'btst', 'positional' , 'longterm'])    
     portfolios = list(map(lambda value : 'mercury-' + value, portfolios))    

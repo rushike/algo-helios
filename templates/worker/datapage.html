@@ -76,8 +76,15 @@
   </head>
   <body style="max-height: 100vh;margin: 0px;">
   {% csrf_token %}
-  
-
+    {% if not subs_active %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <h4 class="alert-heading">No Subscriptions active ...</h4>
+      Check out our<strong> <a href="{% static '/subscriptions/plans' %}" class="alert-link">plans</a>. 
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %}
 
     <div id="test" class=" p-0" style="max-height: 100vh;margin: 0px;">
       {% verbatim %}      

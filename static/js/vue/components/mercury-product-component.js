@@ -1,17 +1,17 @@
-
 const m_product_timeline = Vue.component('m-product-timeline', {
     name : 'm-product-timeline',
     template : timeline,
     data: () => {
         return {}
     },
-    
 
     watch : {
-        reverse_() { // console.log("heyy") }
+        reverse_(){
+
+        }
     }
 
-    })
+})
 
 
 const mercury_plans = Vue.component('mercury-plans', {
@@ -147,7 +147,9 @@ const mercury_plans = Vue.component('mercury-plans', {
     },
 
     watch : {
-        reverse_() { // console.log("heyy") }
+        reverse_(){
+
+        }
     },
 
     methods : {
@@ -172,7 +174,7 @@ const mercury_plans = Vue.component('mercury-plans', {
 
     }
 
-    })
+})
 
 
 

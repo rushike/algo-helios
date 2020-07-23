@@ -103,7 +103,7 @@ const MercuryPlans = `
                 </span>
               </li>
             </ul>
-            <form method = "POST" action="/subscriptions/plan-data"> 
+            <form method = "POST" action="/subscriptions/plan-renew"> 
                 <input type="hidden" name="csrfmiddlewaretoken" :value="get_csrf_token()" hidden> 
                 <input class="periodcode" name = "period"  :value="$store.getters.state.subscription_period" hidden></input>
                 <input class="plancode" name= "plancode"   :value="'basic'" hidden></input>
@@ -266,7 +266,7 @@ const timeline =
           <v-img src="/static/img/custom.png"></v-img>
           <div class="hide_this_desktop">
           <v-card-text class="pb-0">
-              <h5 class="font-weight-bold">Customize & Analyse<h5>
+              <h5 class="font-weight-bold">Customize & Analyse</h5>
           </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Filter calls as per your convenience and download data for analysis
@@ -288,7 +288,7 @@ const timeline =
         <v-img src="/static/img/oneclick.png"></v-img>
         <div class="hide_this_desktop">
           <v-card-text class="pb-0">
-              <h5 class="font-weight-bold">One Click Order<h5>
+              <h5 class="font-weight-bold">One Click Order</h5>
           </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Place your order through your preferred borker with just one click.
@@ -310,7 +310,7 @@ const timeline =
         <v-img src="/static/img/realtime.png"></v-img>
         <div class="hide_this_desktop">
           <v-card-text class="pb-0">
-            <h5 class="font-weight-bold">Real Time Notifications<h5>
+            <h5 class="font-weight-bold">Real Time Notifications</h5>
           </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Stay updated with real time notifications of calls
@@ -335,7 +335,7 @@ const timeline =
         <v-img src="/static/img/multi.png"></v-img>
         <div class="hide_this_desktop">
           <v-card-text class="pb-0">
-              <h5 class="font-weight-bold">Multi Investment Types<h5>
+              <h5 class="font-weight-bold">Multi Investment Types</h5>
           </v-card-text>
           <v-card-text class="text-dark time_line_font_sm">
             Diversify your investments with our multiple investment types
@@ -401,5 +401,4 @@ const timeline =
     </v-expansion-panels> -->
 </div>
 </div>
-
 `
